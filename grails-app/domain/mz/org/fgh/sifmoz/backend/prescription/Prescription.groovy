@@ -1,5 +1,8 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
+import mz.org.fgh.sifmoz.backend.Doctor.Doctor
+import mz.org.fgh.sifmoz.backend.episode.Episode
+
 class Prescription {
 
 
@@ -11,6 +14,8 @@ class Prescription {
     String notes
     String prescriptionSeq
     String uuid = UUID.randomUUID().toString()
+    Doctor doctor
+    Episode episode
 
 
 

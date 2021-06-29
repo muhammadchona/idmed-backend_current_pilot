@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.appointment
 import grails.rest.Resource
 
 
-@Resource(uri='/api/visit')
+//@Resource(uri='/api/visit')
 class Visit {
 
     Date visitDate

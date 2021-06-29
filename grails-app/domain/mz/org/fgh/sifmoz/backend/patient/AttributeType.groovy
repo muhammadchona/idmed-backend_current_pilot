@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.rest.Resource
 
 
-@Resource(uri='/api/AttributeType')
+//@Resource(uri='/api/AttributeType')
 class AttributeType {
 
     String code

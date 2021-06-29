@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.program
 
 import grails.rest.Resource
 
-@Resource(uri='/api/program')
+//@Resource(uri='/api/program')
 class Program {
 
     String code

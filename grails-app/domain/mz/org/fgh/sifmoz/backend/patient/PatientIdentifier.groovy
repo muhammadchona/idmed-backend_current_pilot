@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.rest.Resource
 
 
-@Resource(uri='/api/patientIdentifier')
+//@Resource(uri='/api/patientIdentifier')
 class PatientIdentifier {
 
     String value
