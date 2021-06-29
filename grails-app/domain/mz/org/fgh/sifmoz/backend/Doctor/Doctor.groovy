@@ -1,9 +1,10 @@
-package mz.org.fgh.sifmoz.backend.patient
+package mz.org.fgh.sifmoz.backend.Doctor
 
 import grails.rest.Resource
 
-@Resource(uri='/api/patient')
-class Patient {
+
+@Resource(uri='/api/doctor')
+class Doctor {
 
     String name
     String surname
@@ -12,14 +13,16 @@ class Patient {
     String telephone
     String cellphone
     String address
-    String uuid = UUID.randomUUID().toString()
+    int category
+    boolean active
+
 
     static mapping = {
         version false
     }
 
     static constraints = {
-        uuid nullable: true
+
         telephone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         cellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         gender(inList: ['Masculino', 'Femenino'])
