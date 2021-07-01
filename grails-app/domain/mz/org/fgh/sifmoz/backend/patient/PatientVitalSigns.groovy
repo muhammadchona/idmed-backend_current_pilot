@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.patient.vitalsigns
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.appointment.Visit
 
 @Resource(uri='/api/patientVitalSigns')
 class PatientVitalSigns {
@@ -10,6 +11,7 @@ class PatientVitalSigns {
     double weight;
     int systole;
     double height;
+    Visit visit
 
     static mapping = {
         version false

@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.stock
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.drug.Drug
 
 @Resource(uri='/api/stock')
 class Stock {
@@ -12,6 +13,7 @@ class Stock {
     int stockMoviment
     String manufacture
     boolean hasUnitsRemaining
+    Drug drug
 
     static mapping = {
         version false
