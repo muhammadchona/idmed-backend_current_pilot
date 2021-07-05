@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.Doctor
+package mz.org.fgh.sifmoz.backend.doctor
 
 import grails.gorm.services.Service
 

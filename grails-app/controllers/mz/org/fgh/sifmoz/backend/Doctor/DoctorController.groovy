@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.Doctor
+package mz.org.fgh.sifmoz.backend.doctor
 
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED

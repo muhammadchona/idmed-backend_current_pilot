@@ -1,10 +1,11 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
-import mz.org.fgh.sifmoz.backend.Doctor.Doctor
+import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.episode.Episode
 
+@Resource(uri = '/api/prescription')
 class Prescription {
-
 
     boolean clinicalStage
     int duration
@@ -17,23 +18,6 @@ class Prescription {
     Doctor doctor
     Episode episode
 
-
-
-    static mapping = {
-        version false
-    }
-
     static constraints = {
-        prescriptionSeq nullable: false, unique: true
-        prescriptionDate nullable: false
-        duration nullable: false
-        uuid nullable: false
     }
-
-    @Override
-    String toString() {
-
-    }
-
-
 }
