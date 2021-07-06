@@ -1,6 +1,5 @@
-package mz.org.fgh.sifmoz.backend.stock.take
+package mz.org.fgh.sifmoz.backend.attributeType
 
-import mz.org.fgh.sifmoz.backend.stocktake.StockTake
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -12,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class StockTakeControllerSpec extends Specification implements ControllerUnitTest<StockTakeController>, DomainUnitTest<StockTake> {
+class AttributeTypeControllerSpec extends Specification implements ControllerUnitTest<AttributeTypeController>, DomainUnitTest<AttributeType> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -28,7 +27,7 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
+        controller.attributeTypeService = Mock(AttributeTypeService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -53,8 +52,8 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action correctly persists"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * save(_ as StockTake)
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * save(_ as AttributeType)
         }
 
         when:
@@ -62,7 +61,7 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new StockTake(params)
+        request.json = new AttributeType(params)
         controller.save()
 
         then:
@@ -72,9 +71,9 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * save(_ as StockTake) >> { StockTake stockTake ->
-                throw new ValidationException("Invalid instance", stockTake.errors)
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * save(_ as AttributeType) >> { AttributeType attributeType ->
+                throw new ValidationException("Invalid instance", attributeType.errors)
             }
         }
 
@@ -82,7 +81,7 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new StockTake(params)
+        request.json = new AttributeType(params)
         controller.save()
 
         then:
@@ -92,7 +91,7 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a null id"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
+        controller.attributeTypeService = Mock(AttributeTypeService) {
             1 * get(null) >> null
         }
 
@@ -105,8 +104,8 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a valid id"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * get(2) >> new StockTake()
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * get(2) >> new AttributeType()
         }
 
         when:"A domain instance is passed to the show action"
@@ -130,8 +129,8 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action correctly persists"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * save(_ as StockTake)
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * save(_ as AttributeType)
         }
 
         when:
@@ -139,7 +138,7 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new StockTake(params)
+        def instance = new AttributeType(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -151,16 +150,16 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * save(_ as StockTake) >> { StockTake stockTake ->
-                throw new ValidationException("Invalid instance", stockTake.errors)
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * save(_ as AttributeType) >> { AttributeType attributeType ->
+                throw new ValidationException("Invalid instance", attributeType.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new StockTake(params)
+        def instance = new AttributeType(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -182,8 +181,8 @@ class StockTakeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the delete action with an instance"() {
         given:
-        controller.stockTakeService = Mock(StockTakeService) {
-            1 * delete(2) >> new StockTake(id: 2)
+        controller.attributeTypeService = Mock(AttributeTypeService) {
+            1 * delete(2) >> new AttributeType(id: 2)
         }
 
         when:

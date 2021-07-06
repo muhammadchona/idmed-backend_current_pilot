@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.appointment
 
+import mz.org.fgh.sifmoz.backend.visit.Visit
+import mz.org.fgh.sifmoz.backend.visit.VisitController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND
