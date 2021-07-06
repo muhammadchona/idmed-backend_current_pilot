@@ -8,7 +8,7 @@ class StockEntrance {
 
     String orderNumber
     Date dateReceived
-    static hasMany = [stocks: Stock]
+    Set<Stock> stocks
 
     static constraints = {
     }

@@ -1,7 +1,7 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.visit.Visit
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 @Resource(uri='/api/pregnancyScreening')
 class PregnancyScreening {
@@ -9,7 +9,7 @@ class PregnancyScreening {
     boolean pregnant;
     boolean menstruationLastTwoMonths
     Date childDeliveryPrevision
-    Visit visit
+    PatientVisit visit
 
     static mapping = {
         version false

@@ -1,7 +1,7 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.visit.Visit
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 @Resource(uri='/api/adherenceScreening')
 class AdherenceScreening {
@@ -11,7 +11,7 @@ class AdherenceScreening {
     boolean patientForgotMedicine
     int lateDays
     String lateMotives
-    Visit visit
+    PatientVisit visit
 
     static mapping = {
         version false

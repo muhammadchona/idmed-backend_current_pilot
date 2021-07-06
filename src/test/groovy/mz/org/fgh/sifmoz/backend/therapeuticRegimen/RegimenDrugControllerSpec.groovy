@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.therapeuticRegimen
 
+import mz.org.fgh.sifmoz.backend.regimenDrug.RegimenDrug
+import mz.org.fgh.sifmoz.backend.regimenDrug.RegimenDrugController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND

@@ -17,6 +17,7 @@ class StockAdjustment {
     int finalised
     Stock adjustedStock
     StockOperationType operation
+    static belongsTo = [Inventory, ReferedStockMoviment, DestroyedStock]
     static hasMany = [inventories: Inventory, stockReferences: ReferedStockMoviment, stckDestructions: DestroyedStock]
 
     static mapping = {
