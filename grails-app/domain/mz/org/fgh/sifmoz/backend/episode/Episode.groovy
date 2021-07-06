@@ -13,8 +13,7 @@ class Episode {
     Date stopDate
     String startReason
     String stopReason
-    String startNotes
-    String stopNotes
+    String notes
     Program program
     EpisodeType episodeType
     ClinicSector clinicSector
