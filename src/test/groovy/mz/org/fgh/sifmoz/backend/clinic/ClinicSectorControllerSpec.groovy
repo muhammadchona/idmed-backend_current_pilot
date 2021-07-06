@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.clinic
 
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSectorController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND

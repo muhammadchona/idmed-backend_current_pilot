@@ -1,7 +1,5 @@
-package mz.org.fgh.sifmoz.backend.therapeuticRegimen
+package mz.org.fgh.sifmoz.backend.stockoperation
 
-import mz.org.fgh.sifmoz.backend.regimenDrug.RegimenDrug
-import mz.org.fgh.sifmoz.backend.regimenDrug.RegimenDrugController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -13,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class RegimenDrugControllerSpec extends Specification implements ControllerUnitTest<RegimenDrugController>, DomainUnitTest<RegimenDrug> {
+class StockOperationTypeControllerSpec extends Specification implements ControllerUnitTest<StockOperationTypeController>, DomainUnitTest<StockOperationType> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -29,7 +27,7 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -54,8 +52,8 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the save action correctly persists"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * save(_ as RegimenDrug)
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * save(_ as StockOperationType)
         }
 
         when:
@@ -63,7 +61,7 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new RegimenDrug(params)
+        request.json = new StockOperationType(params)
         controller.save()
 
         then:
@@ -73,9 +71,9 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * save(_ as RegimenDrug) >> { RegimenDrug regimenDrug ->
-                throw new ValidationException("Invalid instance", regimenDrug.errors)
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * save(_ as StockOperationType) >> { StockOperationType stockOperationType ->
+                throw new ValidationException("Invalid instance", stockOperationType.errors)
             }
         }
 
@@ -83,7 +81,7 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new RegimenDrug(params)
+        request.json = new StockOperationType(params)
         controller.save()
 
         then:
@@ -93,7 +91,7 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the show action with a null id"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
             1 * get(null) >> null
         }
 
@@ -106,8 +104,8 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the show action with a valid id"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * get(2) >> new RegimenDrug()
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * get(2) >> new StockOperationType()
         }
 
         when:"A domain instance is passed to the show action"
@@ -131,8 +129,8 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the update action correctly persists"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * save(_ as RegimenDrug)
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * save(_ as StockOperationType)
         }
 
         when:
@@ -140,7 +138,7 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new RegimenDrug(params)
+        def instance = new StockOperationType(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -152,16 +150,16 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * save(_ as RegimenDrug) >> { RegimenDrug regimenDrug ->
-                throw new ValidationException("Invalid instance", regimenDrug.errors)
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * save(_ as StockOperationType) >> { StockOperationType stockOperationType ->
+                throw new ValidationException("Invalid instance", stockOperationType.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new RegimenDrug(params)
+        def instance = new StockOperationType(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -183,8 +181,8 @@ class RegimenDrugControllerSpec extends Specification implements ControllerUnitT
 
     void "Test the delete action with an instance"() {
         given:
-        controller.regimenDrugService = Mock(RegimenDrugService) {
-            1 * delete(2) >> new RegimenDrug(id: 2)
+        controller.stockOperationTypeService = Mock(StockOperationTypeService) {
+            1 * delete(2) >> new StockOperationType(id: 2)
         }
 
         when:
