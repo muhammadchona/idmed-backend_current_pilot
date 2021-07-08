@@ -1,78 +1,79 @@
-package mz.org.fgh.sifmoz.backend.patientIdentifier
+package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 @ReadOnly
-class PatientIdentifierController {
+class ProvinceController {
 
-    PatientIdentifierService patientIdentifierService
+    ProvinceService provinceService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond patientIdentifierService.list(params), model:[patientIdentifierCount: patientIdentifierService.count()]
+        respond provinceService.list(params), model:[provinceCount: provinceService.count()]
     }
 
     def show(Long id) {
-        respond patientIdentifierService.get(id)
+        respond provinceService.get(id)
     }
 
     @Transactional
-    def save(PatientProgramIdentifier patientIdentifier) {
-        if (patientIdentifier == null) {
+    def save(Province province) {
+        if (province == null) {
             render status: NOT_FOUND
             return
         }
-        if (patientIdentifier.hasErrors()) {
+        if (province.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond patientIdentifier.errors
+            respond province.errors
             return
         }
 
         try {
-            patientIdentifierService.save(patientIdentifier)
+            provinceService.save(province)
         } catch (ValidationException e) {
-            respond patientIdentifier.errors
+            respond province.errors
             return
         }
 
-        respond patientIdentifier, [status: CREATED, view:"show"]
+        respond province, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(PatientProgramIdentifier patientIdentifier) {
-        if (patientIdentifier == null) {
+    def update(Province province) {
+        if (province == null) {
             render status: NOT_FOUND
             return
         }
-        if (patientIdentifier.hasErrors()) {
+        if (province.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond patientIdentifier.errors
+            respond province.errors
             return
         }
 
         try {
-            patientIdentifierService.save(patientIdentifier)
+            provinceService.save(province)
         } catch (ValidationException e) {
-            respond patientIdentifier.errors
+            respond province.errors
             return
         }
 
-        respond patientIdentifier, [status: OK, view:"show"]
+        respond province, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || patientIdentifierService.delete(id) == null) {
+        if (id == null || provinceService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

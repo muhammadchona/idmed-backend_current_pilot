@@ -6,9 +6,14 @@ import grails.rest.Resource
 class AttributeType {
 
     String code
+    String name
     String description
-    String dataType
+    String datatype
 
     static constraints = {
+        code nullable: false, unique: true
+        name nullable: false, unique: true
+        description nullable: true, blank: true
+        datatype nullable: true, blank: true
     }
 }

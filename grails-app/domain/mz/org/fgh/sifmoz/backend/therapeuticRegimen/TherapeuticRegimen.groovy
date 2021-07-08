@@ -9,9 +9,11 @@ class TherapeuticRegimen {
     boolean active
     String code
     boolean pedhiatric
-    boolean adult
-    boolean description
+    String description
 
     static constraints = {
+        code nullable: false, unique: true
+        regimenScheme nullable: false
+        description nullable: true
     }
 }

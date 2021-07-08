@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class PatientIdentifierServiceSpec extends Specification {
+class PatientProgramIdentifierServiceSpec extends Specification {
 
     PatientIdentifierService patientIdentifierService
     @Autowired Datastore datastore
@@ -39,7 +39,7 @@ class PatientIdentifierServiceSpec extends Specification {
         setupData()
 
         when:
-        List<PatientIdentifier> patientIdentifierList = patientIdentifierService.list(max: 2, offset: 2)
+        List<PatientProgramIdentifier> patientIdentifierList = patientIdentifierService.list(max: 2, offset: 2)
 
         then:
         patientIdentifierList.size() == 2
@@ -70,7 +70,7 @@ class PatientIdentifierServiceSpec extends Specification {
     void "test save"() {
         when:
         assert false, "TODO: Provide a valid instance to save"
-        PatientIdentifier patientIdentifier = new PatientIdentifier()
+        PatientProgramIdentifier patientIdentifier = new PatientProgramIdentifier()
         patientIdentifierService.save(patientIdentifier)
 
         then:

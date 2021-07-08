@@ -7,10 +7,19 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 @Resource(uri='/api/groupMember')
 class GroupMember {
 
-    Patient patient
+    Date startDate
+    Date endDate
     Group group
-    Date joinDate
+
+    static belongsTo = [patient: Patient]
 
     static constraints = {
+        patient nullable: false, unique: ['group','endDate']
+        startDate(nullable: true, blank: true, validator: { startDate, urc ->
+            return startDate != null ? startDate <= new Date() : null
+        })
+        endDate(nullable: true, blank: true, validator: { endDate, urc ->
+            return endDate != null ? startDate < endDate : null
+        })
     }
 }
