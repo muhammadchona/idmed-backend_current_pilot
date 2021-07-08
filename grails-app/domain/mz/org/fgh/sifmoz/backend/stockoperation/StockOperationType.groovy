@@ -8,7 +8,13 @@ class StockOperationType {
     String description
     String code
 
+    static mapping = {
+        version false
+    }
+
     static constraints = {
+        description(nullable: false, maxSize: 50, blank: false)
+        code(nullable: false, maxSize: 50, blank: false, unique: true)
     }
 
     @Override

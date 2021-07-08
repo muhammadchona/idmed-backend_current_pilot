@@ -27,7 +27,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action correctly persists"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * save(_ as Inventory)
         }
 
@@ -71,7 +71,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * save(_ as Inventory) >> { Inventory inventory ->
                 throw new ValidationException("Invalid instance", inventory.errors)
             }
@@ -91,7 +91,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a null id"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a valid id"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * get(2) >> new Inventory()
         }
 
@@ -129,7 +129,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action correctly persists"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * save(_ as Inventory)
         }
 
@@ -150,7 +150,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * save(_ as Inventory) >> { Inventory inventory ->
                 throw new ValidationException("Invalid instance", inventory.errors)
             }
@@ -181,7 +181,7 @@ class InventoryControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the delete action with an instance"() {
         given:
-        controller.inventoryService = Mock(InventoryService) {
+        controller.inventoryService = Mock(IInventoryService) {
             1 * delete(2) >> new Inventory(id: 2)
         }
 

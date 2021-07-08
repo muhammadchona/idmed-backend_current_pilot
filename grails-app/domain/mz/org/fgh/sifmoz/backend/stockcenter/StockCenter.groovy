@@ -11,7 +11,7 @@ class StockCenter {
 
     static constraints = {
         name(nullable: false, blank: false)
-        name(nullable: false, blank: false, unique: true)
+        code(nullable: false, blank: false, unique: true)
     }
 
     @Override

@@ -8,8 +8,12 @@ class StockEntrance {
 
     String orderNumber
     Date dateReceived
-    Set<Stock> stocks
+    static hasMany = [stocks : Stock]
 
     static constraints = {
+        orderNumber(nullable: false, blank: false, unique: true)
+        dateReceived(nullable: false, blank: false, validator: { dateReceived, urc ->
+            return ((dateReceived <= new Date()))
+        })
     }
 }

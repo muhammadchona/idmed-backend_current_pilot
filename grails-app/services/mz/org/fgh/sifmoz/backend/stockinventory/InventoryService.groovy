@@ -1,18 +1,53 @@
 package mz.org.fgh.sifmoz.backend.stockinventory
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
+import mz.org.fgh.sifmoz.backend.drug.Drug
+import mz.org.fgh.sifmoz.backend.drug.DrugService
+import mz.org.fgh.sifmoz.backend.stock.IStockService
+import mz.org.fgh.sifmoz.backend.stock.Stock
+import mz.org.fgh.sifmoz.backend.stockadjustment.IStockAdjustmentService
+import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 
+@Transactional
 @Service(Inventory)
-interface InventoryService {
+abstract class InventoryService implements IInventoryService{
 
-    Inventory get(Serializable id)
+    IStockAdjustmentService stockAdjustmentService
+    IStockService stockService
 
-    List<Inventory> list(Map args)
+    @Override
+    void processInventoryAdjustments(Inventory inventory) {
 
-    Long count()
+        for (StockAdjustment adjustment : inventory.getAdjustments()) {
+            stockAdjustmentService.processAdjustment(adjustment)
+        }
+    }
 
-    Inventory delete(Serializable id)
+    @Override
+    void initInventory(Inventory inventory) {
+        List<Stock> drugStocks = new ArrayList<>();
 
-    Inventory save(Inventory inventory)
+        for (Drug drug : inventory.getInventoryDrugs()) {
+            drugStocks.addAll(stockService.findAllOnceReceivedByDrug(drug))
+        }
 
+        initInventoryAdjustments(inventory, drugStocks)
+
+    }
+
+    private void initInventoryAdjustments(Inventory inventory, List<Stock> stocks) {
+        List<StockAdjustment> adjustments = new ArrayList<>();
+
+        for(Stock stock : stocks){
+            adjustments.add(initAdjustment(inventory, stock))
+        }
+        inventory.setAdjustments(adjustments as Set<StockAdjustment>)
+    }
+
+    private StockAdjustment initAdjustment(Inventory inventory, Stock stock) {
+        StockAdjustment adjustment = new StockAdjustment(inventory, stock)
+        stockAdjustmentService.save(adjustment)
+        return adjustment
+    }
 }
