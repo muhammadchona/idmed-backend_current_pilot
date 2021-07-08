@@ -14,10 +14,22 @@ class Stock {
     int unitsReceived
     int stockMoviment
     String manufacture
+    String batchNumber
     boolean hasUnitsRemaining
     Drug drug
     StockCenter center
+    static belongsTo = [entrance : StockEntrance]
+
+    static mapping = {
+        version false
+    }
 
     static constraints = {
+        expireDate(nullable: false, blank: false)
+        batchNumber(nullable: false, blank: false, unique: true)
+        shelfNumber(nullable: true, maxSize: 10)
+        unitsReceived(min: 1)
+        stockMoviment(min: 0)
+        manufacture(nullable: false, maxSize: 20)
     }
 }

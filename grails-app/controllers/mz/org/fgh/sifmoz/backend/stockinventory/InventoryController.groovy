@@ -5,7 +5,6 @@ import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
@@ -13,10 +12,10 @@ import grails.gorm.transactions.Transactional
 @ReadOnly
 class InventoryController {
 
-    InventoryService inventoryService
+    IInventoryService inventoryService
 
     static responseFormats = ['json', 'xml']
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [startNewInventory: "POST", update: "PUT", delete: "DELETE", close: "PUT"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -28,6 +27,43 @@ class InventoryController {
     }
 
     @Transactional
+    def close(Inventory inventory) {
+
+        try {
+            inventory.close();
+            inventoryService.processInventoryAdjustments(inventory)
+            inventoryService.save(inventory)
+        } catch (ValidationException e) {
+            respond inventory.errors
+            return
+        }
+
+        respond inventory, [status: OK, view:"show"]
+    }
+
+    @Transactional
+    def startNewInventory(Inventory inventory) {
+        if (inventory == null) {
+            render status: NOT_FOUND
+            return
+        }
+        if (inventory.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond inventory.errors
+            return
+        }
+
+        try {
+            inventoryService.initInventory(inventory)
+        } catch (ValidationException e) {
+            respond inventory.errors
+            return
+        }
+
+        respond inventory, [status: CREATED, view:"show"]
+    }
+
+    /*@Transactional
     def save(Inventory inventory) {
         if (inventory == null) {
             render status: NOT_FOUND
@@ -47,7 +83,7 @@ class InventoryController {
         }
 
         respond inventory, [status: CREATED, view:"show"]
-    }
+    }*/
 
     @Transactional
     def update(Inventory inventory) {

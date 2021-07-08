@@ -1,18 +1,27 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
+@Transactional
 @Service(StockAdjustment)
-interface StockAdjustmentService {
+abstract class StockAdjustmentService implements IStockAdjustmentService{
 
-    StockAdjustment get(Serializable id)
+    @Override
+    void processAdjustment(StockAdjustment adjustment) {
 
-    List<StockAdjustment> list(Map args)
+        if (adjustment.isInventoryAdjustment()) {
+            adjustment.getAdjustedStock().setStockMoviment(adjustment.getAdjustedValue())
+        }else if (adjustment.isDestructionAdjustment()){
+            adjustment.getAdjustedStock().setStockMoviment(adjustment.getAdjustedStock().getStockMoviment() - adjustment.getAdjustedValue())
+        }else if (adjustment.isReferenceAdjustment()){
+            if (adjustment.isPosetiveAdjustment()){
+                if (adjustment.getAdjustedStock().getId() > 0){
+                    adjustment.getAdjustedStock().setStockMoviment(adjustment.getAdjustedStock().getStockMoviment() + adjustment.getAdjustedValue())
+                }
+            }
+        }
 
-    Long count()
-
-    StockAdjustment delete(Serializable id)
-
-    StockAdjustment save(StockAdjustment stockAdjustment)
-
+        adjustment.getAdjustedStock().save()
+    }
 }

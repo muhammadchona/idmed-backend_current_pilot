@@ -1,18 +1,11 @@
 package mz.org.fgh.sifmoz.backend.stock
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
+@Transactional
 @Service(Stock)
-interface StockService {
+abstract class StockService implements IStockService{
 
-    Stock get(Serializable id)
-
-    List<Stock> list(Map args)
-
-    Long count()
-
-    Stock delete(Serializable id)
-
-    Stock save(Stock stock)
 
 }

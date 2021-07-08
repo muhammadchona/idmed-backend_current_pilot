@@ -13,7 +13,17 @@ class ReferedStockMoviment {
     char updateStatus
     static hasMany = [adjustments : StockAdjustment]
 
+    static mapping = {
+        version false
+    }
+
     static constraints = {
+        date(nullable: false, blank: false, validator: { date, urc ->
+            return ((date <= new Date()))
+        })
+        orderNumber(nullable: false, blank: false, maxSize: 20)
+        origin(nullable: false, blank: false, maxSize: 20)
+        quantity(min: 1)
     }
 
     @Override
