@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.patientIdentifier
+package mz.org.fgh.sifmoz.backend.stock
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class PatientIdentifierControllerSpec extends Specification implements ControllerUnitTest<PatientIdentifierController>, DomainUnitTest<PatientIdentifier> {
+class StockControllerSpec extends Specification implements ControllerUnitTest<StockController>, DomainUnitTest<Stock> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
+        controller.stockService = Mock(StockService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * save(_ as PatientIdentifier)
+        controller.stockService = Mock(StockService) {
+            1 * save(_ as Stock)
         }
 
         when:
@@ -61,7 +61,7 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientIdentifier(params)
+        request.json = new Stock(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * save(_ as PatientIdentifier) >> { PatientIdentifier patientIdentifier ->
-                throw new ValidationException("Invalid instance", patientIdentifier.errors)
+        controller.stockService = Mock(StockService) {
+            1 * save(_ as Stock) >> { Stock stock ->
+                throw new ValidationException("Invalid instance", stock.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientIdentifier(params)
+        request.json = new Stock(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
+        controller.stockService = Mock(StockService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * get(2) >> new PatientIdentifier()
+        controller.stockService = Mock(StockService) {
+            1 * get(2) >> new Stock()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * save(_ as PatientIdentifier)
+        controller.stockService = Mock(StockService) {
+            1 * save(_ as Stock)
         }
 
         when:
@@ -138,7 +138,7 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new PatientIdentifier(params)
+        def instance = new Stock(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * save(_ as PatientIdentifier) >> { PatientIdentifier patientIdentifier ->
-                throw new ValidationException("Invalid instance", patientIdentifier.errors)
+        controller.stockService = Mock(StockService) {
+            1 * save(_ as Stock) >> { Stock stock ->
+                throw new ValidationException("Invalid instance", stock.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new PatientIdentifier(params)
+        def instance = new Stock(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class PatientIdentifierControllerSpec extends Specification implements Controlle
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientIdentifierService = Mock(PatientIdentifierService) {
-            1 * delete(2) >> new PatientIdentifier(id: 2)
+        controller.stockService = Mock(StockService) {
+            1 * delete(2) >> new Stock(id: 2)
         }
 
         when:

@@ -1,9 +1,9 @@
-package mz.org.fgh.sifmoz.backend.groupType
+package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
 import grails.rest.Resource
 
-@Resource(uri='/api/groupType')
-class GroupType {
+@Resource(uri='/api/province')
+class Province {
 
     String code
     String description

@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 import grails.gorm.services.Service
 
 @Service(PatientProgramIdentifier)
-interface PatientIdentifierService {
+interface PatientProgramIdentifierService {
 
     PatientProgramIdentifier get(Serializable id)
 
@@ -13,6 +13,6 @@ interface PatientIdentifierService {
 
     PatientProgramIdentifier delete(Serializable id)
 
-    PatientProgramIdentifier save(PatientProgramIdentifier patientIdentifier)
+    PatientProgramIdentifier save(PatientProgramIdentifier patientProgramIdentifier)
 
 }

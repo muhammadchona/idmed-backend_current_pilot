@@ -1,9 +1,9 @@
-package mz.org.fgh.sifmoz.backend.groupType
+package mz.org.fgh.sifmoz.backend.facilityType
 
 import grails.rest.Resource
 
-@Resource(uri='/api/groupType')
-class GroupType {
+@Resource(uri='/api/facilityType')
+class FacilityType {
 
     String code
     String description
