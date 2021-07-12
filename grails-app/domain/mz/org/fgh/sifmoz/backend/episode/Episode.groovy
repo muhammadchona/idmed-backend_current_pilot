@@ -5,6 +5,7 @@ import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.program.Program
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
@@ -19,6 +20,8 @@ class Episode {
     ClinicSector clinicSector
 
     static belongsTo = [patientProgramIdentifier: PatientProgramIdentifier]
+
+    static hasMany = [prescriptions: Prescription]
 
     static constraints = {
         startDate(nullable: false, blank: false, validator: { startDate, urc ->
