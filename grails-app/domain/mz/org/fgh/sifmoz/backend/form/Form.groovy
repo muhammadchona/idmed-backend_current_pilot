@@ -9,5 +9,7 @@ class Form {
     String description
 
     static constraints = {
+        code nullable: false, unique: true
+        description nullable: false, blank: false
     }
 }

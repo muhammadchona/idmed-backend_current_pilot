@@ -13,5 +13,6 @@ class PackagedDrug {
     int quantitySupplied
 
     static constraints = {
+        quantitySupplied(min: 1)
     }
 }
