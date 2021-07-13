@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class StockAdjustmentControllerSpec extends Specification implements ControllerUnitTest<StockAdjustmentController>, DomainUnitTest<StockAdjustment> {
+class StockReferenceAdjustmentControllerSpec extends Specification implements ControllerUnitTest<StockReferenceAdjustmentController>, DomainUnitTest<StockReferenceAdjustment> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the save action correctly persists"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * save(_ as StockAdjustment)
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * save(_ as StockReferenceAdjustment)
         }
 
         when:
@@ -61,7 +61,7 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new StockAdjustment(params)
+        request.json = new StockReferenceAdjustment(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * save(_ as StockAdjustment) >> { StockAdjustment stockAdjustment ->
-                throw new ValidationException("Invalid instance", stockAdjustment.errors)
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * save(_ as StockReferenceAdjustment) >> { StockReferenceAdjustment stockReferenceAdjustment ->
+                throw new ValidationException("Invalid instance", stockReferenceAdjustment.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new StockAdjustment(params)
+        request.json = new StockReferenceAdjustment(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the show action with a null id"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the show action with a valid id"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * get(2) >> new StockAdjustment()
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * get(2) >> new StockReferenceAdjustment()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the update action correctly persists"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * save(_ as StockAdjustment)
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * save(_ as StockReferenceAdjustment)
         }
 
         when:
@@ -138,7 +138,7 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new StockAdjustment(params)
+        def instance = new StockReferenceAdjustment(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * save(_ as StockAdjustment) >> { StockAdjustment stockAdjustment ->
-                throw new ValidationException("Invalid instance", stockAdjustment.errors)
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * save(_ as StockReferenceAdjustment) >> { StockReferenceAdjustment stockReferenceAdjustment ->
+                throw new ValidationException("Invalid instance", stockReferenceAdjustment.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new StockAdjustment(params)
+        def instance = new StockReferenceAdjustment(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class StockAdjustmentControllerSpec extends Specification implements ControllerU
 
     void "Test the delete action with an instance"() {
         given:
-        controller.stockAdjustmentService = Mock(IStockAdjustmentService) {
-            1 * delete(2) >> new StockAdjustment(id: 2)
+        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+            1 * delete(2) >> new StockReferenceAdjustment(id: 2)
         }
 
         when:

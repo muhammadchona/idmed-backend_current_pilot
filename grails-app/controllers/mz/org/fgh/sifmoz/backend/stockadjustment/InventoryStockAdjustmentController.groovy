@@ -10,69 +10,69 @@ import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 @ReadOnly
-class StockAdjustmentController {
+class InventoryStockAdjustmentController {
 
-    IStockAdjustmentService stockAdjustmentService
+    IInventoryStockAdjustmentService inventoryStockAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond stockAdjustmentService.list(params), model:[stockAdjustmentCount: stockAdjustmentService.count()]
+        respond inventoryStockAdjustmentService.list(params), model:[inventoryStockAdjustmentCount: inventoryStockAdjustmentService.count()]
     }
 
     def show(Long id) {
-        respond stockAdjustmentService.get(id)
+        respond inventoryStockAdjustmentService.get(id)
     }
 
     @Transactional
-    def save(StockAdjustment stockAdjustment) {
-        if (stockAdjustment == null) {
+    def save(InventoryStockAdjustment inventoryStockAdjustment) {
+        if (inventoryStockAdjustment == null) {
             render status: NOT_FOUND
             return
         }
-        if (stockAdjustment.hasErrors()) {
+        if (inventoryStockAdjustment.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond stockAdjustment.errors
+            respond inventoryStockAdjustment.errors
             return
         }
 
         try {
-            stockAdjustmentService.save(stockAdjustment)
+            inventoryStockAdjustmentService.save(inventoryStockAdjustment)
         } catch (ValidationException e) {
-            respond stockAdjustment.errors
+            respond inventoryStockAdjustment.errors
             return
         }
 
-        respond stockAdjustment, [status: CREATED, view:"show"]
+        respond inventoryStockAdjustment, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(StockAdjustment stockAdjustment) {
-        if (stockAdjustment == null) {
+    def update(InventoryStockAdjustment inventoryStockAdjustment) {
+        if (inventoryStockAdjustment == null) {
             render status: NOT_FOUND
             return
         }
-        if (stockAdjustment.hasErrors()) {
+        if (inventoryStockAdjustment.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond stockAdjustment.errors
+            respond inventoryStockAdjustment.errors
             return
         }
 
         try {
-            stockAdjustmentService.save(stockAdjustment)
+            inventoryStockAdjustmentService.save(inventoryStockAdjustment)
         } catch (ValidationException e) {
-            respond stockAdjustment.errors
+            respond inventoryStockAdjustment.errors
             return
         }
 
-        respond stockAdjustment, [status: OK, view:"show"]
+        respond inventoryStockAdjustment, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || stockAdjustmentService.delete(id) == null) {
+        if (id == null || inventoryStockAdjustmentService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

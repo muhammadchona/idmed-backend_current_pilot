@@ -3,24 +3,24 @@ package mz.org.fgh.sifmoz.backend.stockinventory
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.drug.DrugService
 import mz.org.fgh.sifmoz.backend.stock.IStockService
 import mz.org.fgh.sifmoz.backend.stock.Stock
-import mz.org.fgh.sifmoz.backend.stockadjustment.IStockAdjustmentService
+import mz.org.fgh.sifmoz.backend.stockadjustment.IInventoryStockAdjustmentService
+
+import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 
 @Transactional
 @Service(Inventory)
 abstract class InventoryService implements IInventoryService{
-
-    IStockAdjustmentService stockAdjustmentService
+    IInventoryStockAdjustmentService inventoryStockAdjustmentService
     IStockService stockService
 
     @Override
     void processInventoryAdjustments(Inventory inventory) {
 
         for (StockAdjustment adjustment : inventory.getAdjustments()) {
-            stockAdjustmentService.processAdjustment(adjustment)
+            inventoryStockAdjustmentService.processAdjustment(adjustment)
         }
     }
 
@@ -46,8 +46,8 @@ abstract class InventoryService implements IInventoryService{
     }
 
     private StockAdjustment initAdjustment(Inventory inventory, Stock stock) {
-        StockAdjustment adjustment = new StockAdjustment(inventory, stock)
-        stockAdjustmentService.save(adjustment)
+        StockAdjustment adjustment = new InventoryStockAdjustment(inventory, stock)
+        inventoryStockAdjustmentService.save(adjustment)
         return adjustment
     }
 }

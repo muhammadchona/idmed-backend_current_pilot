@@ -18,7 +18,8 @@ class Stock {
     boolean hasUnitsRemaining
     Drug drug
     StockCenter center
-    static belongsTo = [entrance : StockEntrance]
+    static hasOne = [entrance: StockEntrance]
+    //static belongsTo = [entrance : StockEntrance]
 
     static mapping = {
         version false

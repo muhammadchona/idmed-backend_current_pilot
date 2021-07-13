@@ -7,8 +7,8 @@ import mz.org.fgh.sifmoz.backend.stockinventory.Inventory
 import mz.org.fgh.sifmoz.backend.stockoperation.StockOperationType
 import mz.org.fgh.sifmoz.backend.stockrefered.ReferedStockMoviment
 
-@Resource(uri='/api/stockAdjustment')
-class StockAdjustment {
+
+abstract class StockAdjustment {
 
     Date captureDate
     String notes
@@ -17,18 +17,12 @@ class StockAdjustment {
     int finalised
     Stock adjustedStock
     StockOperationType operation
-    static belongsTo = [Inventory, ReferedStockMoviment, DestroyedStock]
-    Inventory inventory
-    ReferedStockMoviment referedStockMoviment
-    DestroyedStock destroyedStock
-    //static hasMany = [inventories: Inventory, stockReferences: ReferedStockMoviment, stckDestructions: DestroyedStock]
 
     StockAdjustment() {
     }
 
-    StockAdjustment(Inventory inventory, Stock adjustedStock) {
+    StockAdjustment(Stock adjustedStock) {
         this.adjustedStock = adjustedStock
-        this.inventory = inventory
     }
 
     static mapping = {
@@ -54,17 +48,5 @@ class StockAdjustment {
                 ", adjustedValue=" + adjustedValue +
                 ", finalised=" + finalised +
                 '}';
-    }
-
-    boolean isInventoryAdjustment() {
-        return this.getInventory() != null && this.getInventoryId() > 0
-    }
-
-    boolean isDestructionAdjustment() {
-        return this.getDestroyedStock()!= null && this.getDestroyedStockId() > 0
-    }
-
-    boolean isReferenceAdjustment() {
-        return this.getReferedStockMoviment()!= null && this.getReferedStockMovimentId() > 0
     }
 }
