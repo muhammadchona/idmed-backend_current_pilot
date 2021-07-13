@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.stockinventory
 
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
+import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 
 @Resource(uri='/api/stockInventory')
 class Inventory {
@@ -12,7 +12,7 @@ class Inventory {
     boolean open
     boolean generic
     int sequence
-    static hasMany = [adjustments : StockAdjustment]
+    static hasMany = [adjustments : InventoryStockAdjustment]
     static transients = ['inventoryDrugs']
     List<Drug> inventoryDrugs
     static mapping = {

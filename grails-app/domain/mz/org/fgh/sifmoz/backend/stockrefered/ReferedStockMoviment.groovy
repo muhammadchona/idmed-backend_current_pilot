@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.stockrefered
 
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
+import mz.org.fgh.sifmoz.backend.stockadjustment.StockReferenceAdjustment
 
 @Resource(uri='/api/referedStockMoviment')
 class ReferedStockMoviment {
@@ -11,7 +12,7 @@ class ReferedStockMoviment {
     String origin
     int quantity
     char updateStatus
-    static hasMany = [adjustments : StockAdjustment]
+    static hasMany = [adjustments : StockReferenceAdjustment]
 
     static mapping = {
         version false
