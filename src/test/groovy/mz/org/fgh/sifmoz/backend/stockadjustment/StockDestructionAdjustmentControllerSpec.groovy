@@ -27,7 +27,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the save action correctly persists"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * save(_ as StockDestructionAdjustment)
         }
 
@@ -71,7 +71,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * save(_ as StockDestructionAdjustment) >> { StockDestructionAdjustment stockDestructionAdjustment ->
                 throw new ValidationException("Invalid instance", stockDestructionAdjustment.errors)
             }
@@ -91,7 +91,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the show action with a null id"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the show action with a valid id"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * get(2) >> new StockDestructionAdjustment()
         }
 
@@ -129,7 +129,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the update action correctly persists"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * save(_ as StockDestructionAdjustment)
         }
 
@@ -150,7 +150,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * save(_ as StockDestructionAdjustment) >> { StockDestructionAdjustment stockDestructionAdjustment ->
                 throw new ValidationException("Invalid instance", stockDestructionAdjustment.errors)
             }
@@ -181,7 +181,7 @@ class StockDestructionAdjustmentControllerSpec extends Specification implements 
 
     void "Test the delete action with an instance"() {
         given:
-        controller.stockDestructionAdjustmentService = Mock(StockDestructionAdjustmentService) {
+        controller.stockDestructionAdjustmentService = Mock(IStockDestructionAdjustmentService) {
             1 * delete(2) >> new StockDestructionAdjustment(id: 2)
         }
 

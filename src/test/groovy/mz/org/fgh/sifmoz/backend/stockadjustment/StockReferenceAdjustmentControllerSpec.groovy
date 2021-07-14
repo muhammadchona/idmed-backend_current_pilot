@@ -27,7 +27,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the save action correctly persists"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * save(_ as StockReferenceAdjustment)
         }
 
@@ -71,7 +71,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * save(_ as StockReferenceAdjustment) >> { StockReferenceAdjustment stockReferenceAdjustment ->
                 throw new ValidationException("Invalid instance", stockReferenceAdjustment.errors)
             }
@@ -91,7 +91,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the show action with a null id"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the show action with a valid id"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * get(2) >> new StockReferenceAdjustment()
         }
 
@@ -129,7 +129,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the update action correctly persists"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * save(_ as StockReferenceAdjustment)
         }
 
@@ -150,7 +150,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * save(_ as StockReferenceAdjustment) >> { StockReferenceAdjustment stockReferenceAdjustment ->
                 throw new ValidationException("Invalid instance", stockReferenceAdjustment.errors)
             }
@@ -181,7 +181,7 @@ class StockReferenceAdjustmentControllerSpec extends Specification implements Co
 
     void "Test the delete action with an instance"() {
         given:
-        controller.stockReferenceAdjustmentService = Mock(StockReferenceAdjustmentService) {
+        controller.stockReferenceAdjustmentService = Mock(IStockReferenceAdjustmentService) {
             1 * delete(2) >> new StockReferenceAdjustment(id: 2)
         }
 
