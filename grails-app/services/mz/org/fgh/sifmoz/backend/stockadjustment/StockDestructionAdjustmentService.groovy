@@ -1,18 +1,13 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
+@Transactional
 @Service(StockDestructionAdjustment)
-interface StockDestructionAdjustmentService {
+abstract class StockDestructionAdjustmentService extends StockAdjustmentService implements IStockDestructionAdjustmentService{
 
-    StockDestructionAdjustment get(Serializable id)
+    def serviceMethod() {
 
-    List<StockDestructionAdjustment> list(Map args)
-
-    Long count()
-
-    StockDestructionAdjustment delete(Serializable id)
-
-    StockDestructionAdjustment save(StockDestructionAdjustment stockDestructionAdjustment)
-
+    }
 }

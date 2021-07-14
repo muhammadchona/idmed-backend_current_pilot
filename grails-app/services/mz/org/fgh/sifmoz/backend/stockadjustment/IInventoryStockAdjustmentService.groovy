@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.stockadjustment
 import grails.gorm.services.Service
 
 
-interface IInventoryStockAdjustmentService {
+interface IInventoryStockAdjustmentService extends IStockAdjustmentService{
 
     InventoryStockAdjustment get(Serializable id)
 

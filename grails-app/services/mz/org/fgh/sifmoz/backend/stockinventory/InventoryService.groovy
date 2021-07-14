@@ -13,14 +13,14 @@ import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 @Transactional
 @Service(Inventory)
 abstract class InventoryService implements IInventoryService{
-    IInventoryStockAdjustmentService inventoryStockAdjustmentService
+    IInventoryStockAdjustmentService adjustmentService
     IStockService stockService
 
     @Override
     void processInventoryAdjustments(Inventory inventory) {
 
         for (StockAdjustment adjustment : inventory.getAdjustments()) {
-            inventoryStockAdjustmentService.processAdjustment(adjustment)
+            adjustmentService.processAdjustment(adjustment)
         }
     }
 
@@ -37,17 +37,17 @@ abstract class InventoryService implements IInventoryService{
     }
 
     private void initInventoryAdjustments(Inventory inventory, List<Stock> stocks) {
-        List<StockAdjustment> adjustments = new ArrayList<>();
+        List<InventoryStockAdjustment> adjustments = new ArrayList<>();
 
         for(Stock stock : stocks){
             adjustments.add(initAdjustment(inventory, stock))
         }
-        inventory.setAdjustments(adjustments as Set<StockAdjustment>)
+        inventory.setAdjustments(adjustments as Set<InventoryStockAdjustment>)
     }
 
-    private StockAdjustment initAdjustment(Inventory inventory, Stock stock) {
+    private InventoryStockAdjustment initAdjustment(Inventory inventory, Stock stock) {
         StockAdjustment adjustment = new InventoryStockAdjustment(inventory, stock)
-        inventoryStockAdjustmentService.save(adjustment)
+        adjustmentService.save(adjustment)
         return adjustment
     }
 }

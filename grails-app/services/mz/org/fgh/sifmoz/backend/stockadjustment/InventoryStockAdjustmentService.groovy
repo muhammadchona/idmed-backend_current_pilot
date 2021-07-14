@@ -5,7 +5,7 @@ import grails.gorm.transactions.Transactional
 
 @Transactional
 @Service(InventoryStockAdjustment)
-abstract class InventoryStockAdjustmentService implements IInventoryStockAdjustmentService{
+abstract class InventoryStockAdjustmentService extends StockAdjustmentService implements IInventoryStockAdjustmentService{
 
 
 }
