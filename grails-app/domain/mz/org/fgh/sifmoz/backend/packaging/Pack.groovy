@@ -20,6 +20,7 @@ class Pack {
     int packageReturned
     String reasonForPackageReturn
     String uuid = UUID.randomUUID().toString()
+  //  PatientVisitDetails patientVisitDetails
    // static belongsTo = [patientVisitDetails: PatientVisitDetails]
 
     static constraints = {
