@@ -6,6 +6,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
+import mz.org.fgh.sifmoz.backend.patientProgram.PatientProgram
 
 @Resource(uri='/api/patient')
 class Patient {
@@ -24,7 +25,7 @@ class Patient {
     static belongsTo = [province: Province]
     static hasMany = [
             attributes: PatientAttribute,
-            identifiers: PatientProgramIdentifier,
+            identifiers: PatientProgram,
             appointments: Appointment,
             groups: GroupMember
     ]

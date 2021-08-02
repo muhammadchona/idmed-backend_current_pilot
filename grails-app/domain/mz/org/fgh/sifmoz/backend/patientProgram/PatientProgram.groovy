@@ -1,33 +1,32 @@
-package mz.org.fgh.sifmoz.backend.episode
+package mz.org.fgh.sifmoz.backend.patientProgram
 
 import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
+import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
-import mz.org.fgh.sifmoz.backend.patientProgram.PatientProgram
-import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.program.Program
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-@Resource(uri = '/api/episode')
-class Episode {
+@Resource(uri = '/api/patientProgram')
+class PatientProgram {
 
     Date startDate
     Date stopDate
+    Date reopenDate
     StartStopReason startReason
     StartStopReason stopReason
     String startNotes
     String stopNotes
-    EpisodeType episodeType
-    ClinicSector clinicSector
+    Program program
+    boolean prefered
 
-    static belongsTo = [patientProgram: PatientProgram]
 
-    static hasMany = [prescriptions: Prescription]
-
+    static belongsTo = [patient: Patient]
+    static hasMany = [
+            episodes: Episode,
+            identifiers: PatientProgramIdentifier
+    ]
     static constraints = {
-
         startReason nullable: false
         startNotes nullable: false
 
@@ -40,6 +39,5 @@ class Episode {
         stopDate(nullable: true, blank: true, validator: { stopDate, urc ->
             return stopDate != null ? startDate < stopDate : null
         })
-
     }
 }
