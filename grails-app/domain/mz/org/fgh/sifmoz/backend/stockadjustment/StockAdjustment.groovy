@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
-import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stockdestruction.DestroyedStock
 import mz.org.fgh.sifmoz.backend.stockinventory.Inventory
@@ -9,14 +9,15 @@ import mz.org.fgh.sifmoz.backend.stockrefered.ReferedStockMoviment
 
 
 abstract class StockAdjustment {
-
+    String id
     Date captureDate
     String notes
     int stockTake
     int adjustedValue
-    int finalised
+    boolean finalised
     Stock adjustedStock
     StockOperationType operation
+    Clinic clinic
 
     StockAdjustment() {
     }
@@ -26,7 +27,7 @@ abstract class StockAdjustment {
     }
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

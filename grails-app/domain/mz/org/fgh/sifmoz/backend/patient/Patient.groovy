@@ -1,15 +1,15 @@
 package mz.org.fgh.sifmoz.backend.patient
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.appointment.Appointment
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
-import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 
-@Resource(uri='/api/patient')
 class Patient {
-
+    String id
     String firstnames
     String lastname
     String gender
@@ -19,15 +19,20 @@ class Patient {
     String address
     String otherAddress
     boolean accountstatus
+    Clinic clinic
     String uuid = UUID.randomUUID().toString()
 
     static belongsTo = [province: Province]
     static hasMany = [
             attributes: PatientAttribute,
-            identifiers: PatientProgramIdentifier,
+            identifiers: PatientServiceIdentifier,
             appointments: Appointment,
             groups: GroupMember
     ]
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         dateofbirth(nullable: true, blank: true, validator: { dateofbirth, urc ->

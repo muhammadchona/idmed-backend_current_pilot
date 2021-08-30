@@ -1,14 +1,18 @@
 package mz.org.fgh.sifmoz.backend.attributeType
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
-@Resource(uri='/api/attributeType')
 class AttributeType {
-
+    String id
     String code
     String name
     String description
     String datatype
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         code nullable: false, unique: true

@@ -1,21 +1,24 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
+import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-@ReadOnly
-class PatientIdentifierController {
+class PatientIdentifierController extends RestfulController{
 
     PatientIdentifierService patientIdentifierService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    PatientIdentifierController() {
+        super(PatientServiceIdentifier)
+    }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -27,7 +30,7 @@ class PatientIdentifierController {
     }
 
     @Transactional
-    def save(PatientProgramIdentifier patientIdentifier) {
+    def save(PatientServiceIdentifier patientIdentifier) {
         if (patientIdentifier == null) {
             render status: NOT_FOUND
             return
@@ -49,7 +52,7 @@ class PatientIdentifierController {
     }
 
     @Transactional
-    def update(PatientProgramIdentifier patientIdentifier) {
+    def update(PatientServiceIdentifier patientIdentifier) {
         if (patientIdentifier == null) {
             render status: NOT_FOUND
             return

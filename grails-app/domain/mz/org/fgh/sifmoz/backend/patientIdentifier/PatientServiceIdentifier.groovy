@@ -1,24 +1,29 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
-import grails.rest.Resource
+
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.patient.Patient
-import mz.org.fgh.sifmoz.backend.program.Program
+import mz.org.fgh.sifmoz.backend.service.Service
 
-@Resource(uri='/api/patientProgramIdentifier')
-class PatientProgramIdentifier {
-
+class PatientServiceIdentifier {
+    String id
     Date startDate
     Date endDate
     Date reopenDate
     String value
     boolean prefered
     IdentifierType identifierType
-    Program program
+    Service service
+    Clinic clinic
 
     static belongsTo = [patient: Patient]
     static hasMany = [episodes: Episode]
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         startDate(nullable: true, blank: true, validator: { startDate, urc ->
@@ -30,6 +35,6 @@ class PatientProgramIdentifier {
         reopenDate(nullable: true, blank: true, validator: { reopenDate, urc ->
             return reopenDate != null ? endDate <= reopenDate : null
         })
-        value nullable: false, unique: ['program','identifierType']
+        value nullable: false, unique: ['service', 'identifierType']
     }
 }

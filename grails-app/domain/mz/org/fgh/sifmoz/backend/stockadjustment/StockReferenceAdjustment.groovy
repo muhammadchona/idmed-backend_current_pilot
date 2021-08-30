@@ -5,10 +5,8 @@ import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stockdestruction.DestroyedStock
 import mz.org.fgh.sifmoz.backend.stockrefered.ReferedStockMoviment
 
-@Resource(uri='/api/referenceAdjustment')
-
 class StockReferenceAdjustment extends StockAdjustment{
-
+    String id
     static hasOne = [reference: ReferedStockMoviment]
 
     StockReferenceAdjustment() {
@@ -18,6 +16,11 @@ class StockReferenceAdjustment extends StockAdjustment{
         super(adjustedStock)
         this.reference = reference
     }
+
+    static mapping = {
+        id generator: "uuid"
+    }
+
     static constraints = {
         reference nullable: false
     }
