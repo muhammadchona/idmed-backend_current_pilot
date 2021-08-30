@@ -1,79 +1,81 @@
-package mz.org.fgh.sifmoz.backend.stocktake
+package mz.org.fgh.sifmoz.backend.service
 
+import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-@ReadOnly
-class StockTakeController {
+class ServiceController extends RestfulController{
 
-    StockTakeService stockTakeService
+    ServiceService service
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    ServiceController() {
+        super(Service)
+    }
+
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond stockTakeService.list(params), model:[stockTakeCount: stockTakeService.count()]
+        respond service.list(params), model:[programCount: service.count()]
     }
 
     def show(Long id) {
-        respond stockTakeService.get(id)
+        respond service.get(id)
     }
 
     @Transactional
-    def save(StockTake stockTake) {
-        if (stockTake == null) {
+    def save(Service program) {
+        if (program == null) {
             render status: NOT_FOUND
             return
         }
-        if (stockTake.hasErrors()) {
+        if (program.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond stockTake.errors
+            respond program.errors
             return
         }
 
         try {
-            stockTakeService.save(stockTake)
+            service.save(program)
         } catch (ValidationException e) {
-            respond stockTake.errors
+            respond program.errors
             return
         }
 
-        respond stockTake, [status: CREATED, view:"show"]
+        respond program, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(StockTake stockTake) {
-        if (stockTake == null) {
+    def update(Service program) {
+        if (program == null) {
             render status: NOT_FOUND
             return
         }
-        if (stockTake.hasErrors()) {
+        if (program.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond stockTake.errors
+            respond program.errors
             return
         }
 
         try {
-            stockTakeService.save(stockTake)
+            service.save(program)
         } catch (ValidationException e) {
-            respond stockTake.errors
+            respond program.errors
             return
         }
 
-        respond stockTake, [status: OK, view:"show"]
+        respond program, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || stockTakeService.delete(id) == null) {
+        if (id == null || service.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

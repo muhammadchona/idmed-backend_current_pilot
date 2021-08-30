@@ -1,11 +1,11 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-@Resource(uri='/api/tbScreening')
 class TBScreening {
-
+    String id
     boolean parentTBTreatment
     boolean cough
     boolean fever
@@ -17,9 +17,10 @@ class TBScreening {
     boolean fatigueOrTirednessLastTwoWeeks
     boolean sweating
     PatientVisit visit
+    Clinic clinic
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

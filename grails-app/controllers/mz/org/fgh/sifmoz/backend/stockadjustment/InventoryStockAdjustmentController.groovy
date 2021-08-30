@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
-import grails.validation.ValidationException
+import grails.rest.RestfulController
+import org.grails.datastore.mapping.validation.ValidationException
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -9,13 +11,16 @@ import static org.springframework.http.HttpStatus.OK
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-@ReadOnly
-class InventoryStockAdjustmentController {
+class InventoryStockAdjustmentController extends RestfulController{
 
     IInventoryStockAdjustmentService inventoryStockAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    InventoryStockAdjustmentController() {
+        super(InventoryStockAdjustment)
+    }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)

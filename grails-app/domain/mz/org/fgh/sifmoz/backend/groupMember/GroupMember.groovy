@@ -1,17 +1,21 @@
 package mz.org.fgh.sifmoz.backend.groupMember
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.group.Group
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
-@Resource(uri='/api/groupMember')
 class GroupMember {
-
+    String id
     Date startDate
     Date endDate
     Group group
+    Clinic clinic
 
     static belongsTo = [patient: Patient]
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         patient nullable: false, unique: ['group','endDate']

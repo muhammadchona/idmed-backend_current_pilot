@@ -1,6 +1,6 @@
-package mz.org.fgh.sifmoz.backend.form
+package mz.org.fgh.sifmoz.backend.serviceAttributeType
 
-class Form {
+class ServiceAttributeType {
     String id
     String code
     String description
@@ -8,8 +8,9 @@ class Form {
     static mapping = {
         id generator: "uuid"
     }
+
     static constraints = {
         code nullable: false, unique: true
-        description nullable: false, blank: false
+        description nullable: false
     }
 }

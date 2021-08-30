@@ -5,9 +5,8 @@ import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.form.Form
 
-@Resource(uri='/api/drug')
 class Drug {
-
+    String id
     int packSize
     boolean sideTreatment
     String name
@@ -16,6 +15,9 @@ class Drug {
     String uuidOpenmrs = UUID.randomUUID().toString()
     static belongsTo = [form: Form]
 
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         name nullable: false, blank: false

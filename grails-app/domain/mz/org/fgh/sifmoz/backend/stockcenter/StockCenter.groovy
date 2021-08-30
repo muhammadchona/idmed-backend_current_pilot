@@ -1,13 +1,17 @@
 package mz.org.fgh.sifmoz.backend.stockcenter
 
-import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
-@Resource(uri='/api/stockCenter')
 class StockCenter {
-
+    String id
     String name
     boolean prefered
+    Clinic clinic
     String code
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         name(nullable: false, blank: false)

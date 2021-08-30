@@ -1,15 +1,12 @@
 package mz.org.fgh.sifmoz.backend.stockoperation
 
-import grails.rest.Resource
-
-@Resource(uri='/api/stockOperationType')
 class StockOperationType {
-
+    String id
     String description
     String code
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {
