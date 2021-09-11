@@ -10,14 +10,15 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 
 class Patient {
     String id
-    String firstnames
-    String lastname
+    String firstNames
+    String middleNames
+    String lastName
     String gender
-    Date dateofbirth
+    Date dateOfBirth
     String cellphone
     String alternativeCellphone
     String address
-    String otherAddress
+    String addressReference
     boolean accountstatus
     Clinic clinic
     String uuid = UUID.randomUUID().toString()
@@ -35,7 +36,7 @@ class Patient {
     }
 
     static constraints = {
-        dateofbirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
+        dateOfBirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
             return dateofbirth != null ? dateofbirth <= new Date() : null
         })
         cellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)

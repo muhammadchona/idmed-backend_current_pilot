@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.patient.Patient
-import mz.org.fgh.sifmoz.backend.service.Service
+import mz.org.fgh.sifmoz.backend.treatment.ClinicalTreatment
 
 class PatientServiceIdentifier {
     String id
@@ -15,7 +15,7 @@ class PatientServiceIdentifier {
     String value
     boolean prefered
     IdentifierType identifierType
-    Service service
+    ClinicalTreatment service
     Clinic clinic
 
     static belongsTo = [patient: Patient]
