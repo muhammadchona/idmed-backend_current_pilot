@@ -3,6 +3,8 @@ grails:
     profile: rest-api
     codegen:
         defaultPackage: sifmoz.backend
+    cors:
+        enabled: true
     gorm:
         reactor:
             # Whether to translate GORM events into Reactor events
@@ -13,6 +15,9 @@ info:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
+logging:
+    level:
+        root: ERROR
 spring:
     jmx:
         unique-names: true
@@ -86,7 +91,7 @@ dataSource:
 environments:
     development:
         dataSource:
-            dbCreate: update
+            dbCreate: create
             url: jdbc:postgresql://localhost:5432/sifmoz
     test:
         dataSource:

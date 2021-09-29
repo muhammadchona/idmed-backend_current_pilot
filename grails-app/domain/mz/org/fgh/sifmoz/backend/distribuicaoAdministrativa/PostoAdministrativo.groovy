@@ -1,13 +1,11 @@
 package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
-import grails.rest.Resource
-
-class Province {
+class PostoAdministrativo {
     String id
     String code
     String description
-
-    static hasMany = [districts: District]
+    static belongsTo = [district: District]
+    static hasMany = [localidades: Localidade]
 
     static mapping = {
         id generator: "uuid"

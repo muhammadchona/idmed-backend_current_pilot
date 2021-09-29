@@ -1,88 +1,82 @@
-package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
+package mz.org.fgh.sifmoz.backend.attributeType
 
-import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-class ProvinceController extends RestfulController{
 
-    ProvinceService provinceService
+class PatientAttributeTypeController extends RestfulController {
+
+    PatientAttributeTypeService attributeTypeService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    ProvinceController() {
-        super(Province)
+    PatientAttributeTypeController() {
+        super(PatientAttributeType)
     }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        JSON.use('deep'){
-            render provinceService.list(params) as JSON
-        }
+        respond attributeTypeService.list(params), model:[attributeTypeCount: attributeTypeService.count()]
     }
 
     def show(Long id) {
-        JSON.use('deep'){
-            render provinceService.get(id) as JSON
-        }
+        respond attributeTypeService.get(id)
     }
 
     @Transactional
-    def save(Province province) {
-        if (province == null) {
+    def save(PatientAttributeType attributeType) {
+        if (attributeType == null) {
             render status: NOT_FOUND
             return
         }
-        if (province.hasErrors()) {
+        if (attributeType.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond province.errors
+            respond attributeType.errors
             return
         }
 
         try {
-            provinceService.save(province)
+            attributeTypeService.save(attributeType)
         } catch (ValidationException e) {
-            respond province.errors
+            respond attributeType.errors
             return
         }
 
-        respond province, [status: CREATED, view:"show"]
+        respond attributeType, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(Province province) {
-        if (province == null) {
+    def update(PatientAttributeType attributeType) {
+        if (attributeType == null) {
             render status: NOT_FOUND
             return
         }
-        if (province.hasErrors()) {
+        if (attributeType.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond province.errors
+            respond attributeType.errors
             return
         }
 
         try {
-            provinceService.save(province)
+            attributeTypeService.save(attributeType)
         } catch (ValidationException e) {
-            respond province.errors
+            respond attributeType.errors
             return
         }
 
-        respond province, [status: OK, view:"show"]
+        respond attributeType, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || provinceService.delete(id) == null) {
+        if (id == null || attributeTypeService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

@@ -1,12 +1,12 @@
 package mz.org.fgh.sifmoz.backend.patientAttribute
 
-import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.attributeType.AttributeType
+
+import mz.org.fgh.sifmoz.backend.attributeType.PatientAttributeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
 class PatientAttribute {
     String id
-    AttributeType attributeType
+    PatientAttributeType attributeType
     String value
 
     static belongsTo = [patient: Patient]

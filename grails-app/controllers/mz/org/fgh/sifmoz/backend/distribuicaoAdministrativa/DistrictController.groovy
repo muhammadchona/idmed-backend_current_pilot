@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
@@ -24,11 +25,15 @@ class DistrictController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond districtService.list(params), model:[districtCount: districtService.count()]
+        JSON.use('deep'){
+            render districtService.list(params) as JSON
+        }
     }
 
-    def show(Long id) {
-        respond districtService.get(id)
+    def show(String id) {
+        JSON.use('deep'){
+            render districtService.get(id) as JSON
+        }
     }
 
     @Transactional

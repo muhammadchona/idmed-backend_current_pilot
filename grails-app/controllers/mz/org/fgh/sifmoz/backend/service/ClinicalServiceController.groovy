@@ -1,6 +1,5 @@
-package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
+package mz.org.fgh.sifmoz.backend.service
 
-import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
@@ -9,80 +8,74 @@ import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-class ProvinceController extends RestfulController{
+class ClinicalServiceController extends RestfulController{
 
-    ProvinceService provinceService
+    ClinicalServiceService clinicalServiceService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    ProvinceController() {
-        super(Province)
+    ClinicalServiceController () {
+        super(ClinicalService)
     }
-
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        JSON.use('deep'){
-            render provinceService.list(params) as JSON
-        }
+        respond clinicalServiceService.list(params), model:[clinicalServiceCount: clinicalServiceService.count()]
     }
 
     def show(Long id) {
-        JSON.use('deep'){
-            render provinceService.get(id) as JSON
-        }
+        respond clinicalServiceService.get(id)
     }
 
     @Transactional
-    def save(Province province) {
-        if (province == null) {
+    def save(ClinicalService clinicalService) {
+        if (clinicalService == null) {
             render status: NOT_FOUND
             return
         }
-        if (province.hasErrors()) {
+        if (clinicalService.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond province.errors
+            respond clinicalService.errors
             return
         }
 
         try {
-            provinceService.save(province)
+            clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
-            respond province.errors
+            respond clinicalService.errors
             return
         }
 
-        respond province, [status: CREATED, view:"show"]
+        respond clinicalService, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(Province province) {
-        if (province == null) {
+    def update(ClinicalService clinicalService) {
+        if (clinicalService == null) {
             render status: NOT_FOUND
             return
         }
-        if (province.hasErrors()) {
+        if (clinicalService.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond province.errors
+            respond clinicalService.errors
             return
         }
 
         try {
-            provinceService.save(province)
+            clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
-            respond province.errors
+            respond clinicalService.errors
             return
         }
 
-        respond province, [status: OK, view:"show"]
+        respond clinicalService, [status: OK, view:"show"]
     }
 
     @Transactional
     def delete(Long id) {
-        if (id == null || provinceService.delete(id) == null) {
+        if (id == null || clinicalServiceService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

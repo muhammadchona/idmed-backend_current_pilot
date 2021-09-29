@@ -4,7 +4,9 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
 class Prescription {
@@ -17,12 +19,13 @@ class Prescription {
     String notes
     String prescriptionSeq
     boolean modified
-    String uuid = UUID.randomUUID().toString()
     Clinic clinic
-   // Doctor doctor
-    //Episode episode
-    static belongsTo = [doctor : Doctor,episode:Episode]
+    Doctor doctor
+    PrescriptionDetail prescriptionDetail
 
+    static belongsTo = [patientVisitDetails : PatientVisitDetails]
+
+    static hasMany = [prescribedDrugs: PrescribedDrug]
 
     static mapping = {
         id generator: "uuid"

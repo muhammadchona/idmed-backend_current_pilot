@@ -1,13 +1,9 @@
-package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
+package mz.org.fgh.sifmoz.backend.serviceattributetype
 
-import grails.rest.Resource
-
-class Province {
+class ClinicalServiceAttributeType {
     String id
     String code
     String description
-
-    static hasMany = [districts: District]
 
     static mapping = {
         id generator: "uuid"

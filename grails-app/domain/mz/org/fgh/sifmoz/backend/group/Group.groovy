@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.group
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
+import mz.org.fgh.sifmoz.backend.patient.Patient
 
 class Group {
     String id
@@ -12,7 +13,7 @@ class Group {
     Date endDate
     Clinic clinic
 
-    static hasMany = [members: GroupMember]
+    static hasMany = [members: Patient]
     static mapping = {
         id generator: "uuid"
     }
