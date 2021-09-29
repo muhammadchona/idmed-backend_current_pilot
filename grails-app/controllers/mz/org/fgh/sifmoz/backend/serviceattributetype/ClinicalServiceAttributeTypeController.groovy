@@ -1,14 +1,12 @@
-package mz.org.fgh.sifmoz.backend.service.attribute.type
+package mz.org.fgh.sifmoz.backend.serviceattributetype
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
-
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 class ClinicalServiceAttributeTypeController extends RestfulController{

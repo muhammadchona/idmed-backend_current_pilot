@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.service.attribute
+package mz.org.fgh.sifmoz.backend.serviceattribute
 
 import grails.gorm.services.Service
 

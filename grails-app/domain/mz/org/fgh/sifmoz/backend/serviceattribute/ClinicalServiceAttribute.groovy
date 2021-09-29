@@ -1,7 +1,7 @@
-package mz.org.fgh.sifmoz.backend.service.attribute
+package mz.org.fgh.sifmoz.backend.serviceattribute
 
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
-import mz.org.fgh.sifmoz.backend.service.attribute.type.ClinicalServiceAttributeType
+import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeType
 
 class ClinicalServiceAttribute {
     String id
