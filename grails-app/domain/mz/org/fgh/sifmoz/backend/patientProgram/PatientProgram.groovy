@@ -7,7 +7,6 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
 import mz.org.fgh.sifmoz.backend.program.Program
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-@Resource(uri = '/api/patientProgram')
 class PatientProgram {
 
     Date startDate

@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.therapeuticLine
 
 import grails.rest.Resource
 
-@Resource(uri = '/api/therapeuticalLine')
+// @Resource(uri = '/api/therapeuticalLine')
 class TherapeuticLine {
 
     String code

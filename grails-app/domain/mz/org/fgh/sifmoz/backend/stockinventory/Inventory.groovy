@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 
-@Resource(uri='/api/stockInventory')
+// @Resource(uri='/api/stockInventory')
 class Inventory {
 
     Date startDate

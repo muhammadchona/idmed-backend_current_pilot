@@ -10,7 +10,7 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.program.Program
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-@Resource(uri = '/api/episode')
+// @Resource(uri = '/api/episode')
 class Episode {
 
     Date startDate

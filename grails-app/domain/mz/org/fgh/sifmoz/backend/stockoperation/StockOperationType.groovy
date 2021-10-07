@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.stockoperation
 
 import grails.rest.Resource
 
-@Resource(uri='/api/stockOperationType')
+// @Resource(uri='/api/stockOperationType')
 class StockOperationType {
 
     String description

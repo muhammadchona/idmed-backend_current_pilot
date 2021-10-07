@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 
-@Resource(uri = '/api/prescribedDrug')
+// @Resource(uri = '/api/prescribedDrug')
 class PrescribedDrug {
 
     double amtPerTime

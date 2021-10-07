@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
-@Resource(uri='/api/regimenDrug')
+// @Resource(uri='/api/regimenDrug')
 class RegimenDrug {
 
     double amPerTime

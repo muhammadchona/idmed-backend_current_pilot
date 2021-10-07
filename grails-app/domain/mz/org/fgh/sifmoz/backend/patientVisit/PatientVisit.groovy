@@ -7,7 +7,7 @@ import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
-@Resource(uri='/api/patientVisit')
+// @Resource(uri='/api/patientVisit')
 class PatientVisit {
 
     Date visitDate

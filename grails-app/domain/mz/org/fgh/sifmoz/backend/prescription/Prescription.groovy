@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
-@Resource(uri = '/api/prescription')
+// @Resource(uri = '/api/prescription')
 class Prescription {
 
     int id

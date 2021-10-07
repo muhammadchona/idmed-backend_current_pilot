@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.screening
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-@Resource(uri='/api/pregnancyScreening')
+// @Resource(uri='/api/pregnancyScreening')
 class PregnancyScreening {
 
     boolean pregnant;

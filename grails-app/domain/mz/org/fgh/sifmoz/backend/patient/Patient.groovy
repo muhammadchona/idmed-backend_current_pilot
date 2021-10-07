@@ -8,7 +8,7 @@ import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
 import mz.org.fgh.sifmoz.backend.patientProgram.PatientProgram
 
-@Resource(uri='/api/patient')
+// @Resource(uri='/api/patient')
 class Patient {
 
     String firstnames

@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.dispenseType
 
 import grails.rest.Resource
 
-@Resource(uri='/api/dispenseType')
+// @Resource(uri='/api/dispenseType')
 class DispenseType {
 
     String code

@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 
 
-@Resource(uri='/api/packagedDrug')
+// @Resource(uri='/api/packagedDrug')
 class PackagedDrug {
 
     Pack pack

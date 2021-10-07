@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
 import grails.rest.Resource
 
-@Resource(uri='/api/province')
+// @Resource(uri='/api/province')
 class Province {
 
     String code

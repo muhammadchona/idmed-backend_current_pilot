@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockDestructionAdjustment
 
-@Resource(uri='/api/destroyedStock')
+// @Resource(uri='/api/destroyedStock')
 class DestroyedStock {
 
     String notes

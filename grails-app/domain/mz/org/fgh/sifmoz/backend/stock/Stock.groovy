@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
-@Resource(uri='/api/stock')
+// @Resource(uri='/api/stock')
 class Stock {
 
     Date expireDate;

@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
 import grails.rest.Resource
 
-@Resource(uri='/api/district')
+// @Resource(uri='/api/district')
 class District {
 
     String code

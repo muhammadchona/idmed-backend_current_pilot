@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
 
-@Resource(uri='/api/pack')
+// @Resource(uri='/api/pack')
 class Pack {
 
     Date dateLeft

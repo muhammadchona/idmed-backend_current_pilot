@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.group
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 
-@Resource(uri='/api/group')
+// @Resource(uri='/api/group')
 class Group {
 
     String code

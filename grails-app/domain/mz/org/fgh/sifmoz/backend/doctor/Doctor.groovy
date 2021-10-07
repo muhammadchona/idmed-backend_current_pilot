@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-@Resource(uri='/api/doctor')
+// @Resource(uri='/api/doctor')
 class Doctor {
 
     String firstnames

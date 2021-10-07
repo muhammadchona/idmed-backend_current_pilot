@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.stocktake
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 
-@Resource(uri='/api/stockTake')
+// @Resource(uri='/api/stockTake')
 class StockTake {
 
     Date endDate

@@ -2,7 +2,7 @@ package mz.org.fgh.sifmoz.backend.stockcenter
 
 import grails.rest.Resource
 
-@Resource(uri='/api/stockCenter')
+// @Resource(uri='/api/stockCenter')
 class StockCenter {
 
     String name

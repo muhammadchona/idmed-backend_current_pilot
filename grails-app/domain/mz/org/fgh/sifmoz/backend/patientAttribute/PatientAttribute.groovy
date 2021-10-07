@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.attributeType.AttributeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
-@Resource(uri='/api/patientAttribute')
+// @Resource(uri='/api/patientAttribute')
 class PatientAttribute {
 
     AttributeType attributeType

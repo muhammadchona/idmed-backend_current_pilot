@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stockdestruction.DestroyedStock
 import mz.org.fgh.sifmoz.backend.stockrefered.ReferedStockMoviment
 
-@Resource(uri='/api/referenceAdjustment')
+// @Resource(uri='/api/referenceAdjustment')
 
 class StockReferenceAdjustment extends StockAdjustment{
 

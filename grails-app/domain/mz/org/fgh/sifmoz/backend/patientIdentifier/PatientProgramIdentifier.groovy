@@ -7,7 +7,6 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientProgram.PatientProgram
 import mz.org.fgh.sifmoz.backend.program.Program
 
-@Resource(uri='/api/patientProgramIdentifier')
 class PatientProgramIdentifier {
 
     Date startDate
@@ -24,6 +23,6 @@ class PatientProgramIdentifier {
         endDate(nullable: true, blank: true, validator: { endDate, urc ->
             return endDate != null ? startDate < endDate : null
         })
-        value nullable: false, unique: ['program','identifierType']
+        value nullable: false, unique: ['patientProgram','identifierType']
     }
 }

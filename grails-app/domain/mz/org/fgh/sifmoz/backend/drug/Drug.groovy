@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.form.Form
 
-@Resource(uri='/api/drug')
+// @Resource(uri='/api/drug')
 class Drug {
 
     int packSize

@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.stocklevel
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-@Resource(uri='/api/stockLevel')
+// @Resource(uri='/api/stockLevel')
 class StockLevel {
 
     int bacth

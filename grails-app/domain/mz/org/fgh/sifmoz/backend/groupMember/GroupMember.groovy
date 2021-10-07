@@ -4,7 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.group.Group
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
-@Resource(uri='/api/groupMember')
+// @Resource(uri='/api/groupMember')
 class GroupMember {
 
     Date startDate

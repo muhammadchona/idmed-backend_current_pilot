@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.screening
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-@Resource(uri='/api/adherenceScreening')
+// @Resource(uri='/api/adherenceScreening')
 class AdherenceScreening {
 
     boolean hasPatientCameCorrectDate

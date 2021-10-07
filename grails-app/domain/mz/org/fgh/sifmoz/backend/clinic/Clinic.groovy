@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 
-@Resource(uri='/api/clinic')
+// @Resource(uri='/api/clinic')
 class Clinic {
 
     String code
