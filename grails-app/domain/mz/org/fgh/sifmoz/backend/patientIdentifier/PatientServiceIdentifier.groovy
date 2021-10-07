@@ -35,6 +35,6 @@ class PatientServiceIdentifier {
         reopenDate(nullable: true, blank: true, validator: { reopenDate, urc ->
             return reopenDate != null ? endDate <= reopenDate : null
         })
-        value nullable: false, unique: ['service', 'identifierType']
+        value nullable: false, unique: ['clinicalService', 'identifierType']
     }
 }

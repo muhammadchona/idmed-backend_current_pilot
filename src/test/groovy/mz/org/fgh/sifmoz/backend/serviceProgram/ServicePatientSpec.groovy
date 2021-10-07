@@ -1,9 +1,9 @@
-package mz.org.fgh.sifmoz.backend.patientProgram
+package mz.org.fgh.sifmoz.backend.serviceProgram
 
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 
-class PatientProgramSpec extends Specification implements DomainUnitTest<PatientProgram> {
+class ServicePatientSpec extends Specification implements DomainUnitTest<ServicePatient> {
 
     def setup() {
     }

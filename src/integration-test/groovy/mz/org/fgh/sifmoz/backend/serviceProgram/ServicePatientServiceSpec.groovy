@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.patientProgram
+package mz.org.fgh.sifmoz.backend.serviceProgram
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class PatientProgramServiceSpec extends Specification {
+class ServicePatientServiceSpec extends Specification {
 
     PatientProgramService patientProgramService
     @Autowired Datastore datastore
@@ -39,7 +39,7 @@ class PatientProgramServiceSpec extends Specification {
         setupData()
 
         when:
-        List<PatientProgram> patientProgramList = patientProgramService.list(max: 2, offset: 2)
+        List<ServicePatient> patientProgramList = patientProgramService.list(max: 2, offset: 2)
 
         then:
         patientProgramList.size() == 2
@@ -70,7 +70,7 @@ class PatientProgramServiceSpec extends Specification {
     void "test save"() {
         when:
         assert false, "TODO: Provide a valid instance to save"
-        PatientProgram patientProgram = new PatientProgram()
+        ServicePatient patientProgram = new ServicePatient()
         patientProgramService.save(patientProgram)
 
         then:

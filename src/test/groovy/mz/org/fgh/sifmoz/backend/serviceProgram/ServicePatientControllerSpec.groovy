@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.patientProgram
+package mz.org.fgh.sifmoz.backend.serviceProgram
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class PatientProgramControllerSpec extends Specification implements ControllerUnitTest<PatientProgramController>, DomainUnitTest<PatientProgram> {
+class ServicePatientControllerSpec extends Specification implements ControllerUnitTest<PatientProgramController>, DomainUnitTest<ServicePatient> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -53,7 +53,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the save action correctly persists"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * save(_ as PatientProgram)
+            1 * save(_ as ServicePatient)
         }
 
         when:
@@ -61,7 +61,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientProgram(params)
+        request.json = new ServicePatient(params)
         controller.save()
 
         then:
@@ -72,7 +72,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the save action with an invalid instance"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * save(_ as PatientProgram) >> { PatientProgram patientProgram ->
+            1 * save(_ as ServicePatient) >> { ServicePatient patientProgram ->
                 throw new ValidationException("Invalid instance", patientProgram.errors)
             }
         }
@@ -81,7 +81,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientProgram(params)
+        request.json = new ServicePatient(params)
         controller.save()
 
         then:
@@ -105,7 +105,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the show action with a valid id"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * get(2) >> new PatientProgram()
+            1 * get(2) >> new ServicePatient()
         }
 
         when:"A domain instance is passed to the show action"
@@ -130,7 +130,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the update action correctly persists"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * save(_ as PatientProgram)
+            1 * save(_ as ServicePatient)
         }
 
         when:
@@ -138,7 +138,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new PatientProgram(params)
+        def instance = new ServicePatient(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -151,7 +151,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the update action with an invalid instance"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * save(_ as PatientProgram) >> { PatientProgram patientProgram ->
+            1 * save(_ as ServicePatient) >> { ServicePatient patientProgram ->
                 throw new ValidationException("Invalid instance", patientProgram.errors)
             }
         }
@@ -159,7 +159,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new PatientProgram(params)
+        def instance = new ServicePatient(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -182,7 +182,7 @@ class PatientProgramControllerSpec extends Specification implements ControllerUn
     void "Test the delete action with an instance"() {
         given:
         controller.patientProgramService = Mock(PatientProgramService) {
-            1 * delete(2) >> new PatientProgram(id: 2)
+            1 * delete(2) >> new ServicePatient(id: 2)
         }
 
         when:
