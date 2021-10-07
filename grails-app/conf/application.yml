@@ -87,7 +87,7 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: root
 environments:
     development:
         dataSource:
