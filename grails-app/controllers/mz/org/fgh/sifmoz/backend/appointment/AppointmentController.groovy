@@ -18,8 +18,8 @@ class AppointmentController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    AppointmentController(Class resource) {
-        super(resource)
+    AppointmentController() {
+        super(Appointment)
     }
 
     def index(Integer max) {

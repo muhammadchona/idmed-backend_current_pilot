@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class TherapeuticLineController extends RestfulController{
 
     TherapeuticLineService therapeuticLineService
@@ -19,8 +18,8 @@ class TherapeuticLineController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    TherapeuticLineController(Class resource) {
-        super(resource)
+    TherapeuticLineController() {
+        super(TherapeuticLine)
     }
 
     def index(Integer max) {

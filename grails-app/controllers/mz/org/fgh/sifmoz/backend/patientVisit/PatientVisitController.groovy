@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.OK
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class PatientVisitController extends RestfulController{
 
     PatientVisitService patientVisitService
@@ -19,8 +18,8 @@ class PatientVisitController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    PatientVisitController(Class resource) {
-        super(resource)
+    PatientVisitController() {
+        super(PatientVisit)
     }
 
     def index(Integer max) {

@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class StartStopReasonController extends RestfulController{
 
     StartStopReasonService startStopReasonService
@@ -19,8 +18,8 @@ class StartStopReasonController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    StartStopReasonController(Class resource) {
-        super(resource)
+    StartStopReasonController() {
+        super(StartStopReason)
     }
 
     def index(Integer max) {

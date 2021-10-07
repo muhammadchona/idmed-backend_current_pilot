@@ -6,9 +6,8 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 
-// @Resource(uri='/api/clinic')
 class Clinic {
-
+    String id
     String code
     String notes
     String telephone
@@ -21,6 +20,9 @@ class Clinic {
     static belongsTo = [nationalClinic: NationalClinic]
     static hasMany = [sectors: ClinicSector]
 
+    static mapping = {
+        id generator: "uuid"
+    }
     static constraints = {
         code nullable: true
         notes nullable: true, blank: true

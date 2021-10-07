@@ -10,7 +10,6 @@ import static org.springframework.http.HttpStatus.OK
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class InventoryController extends RestfulController{
 
     IInventoryService inventoryService
@@ -18,8 +17,8 @@ class InventoryController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [startNewInventory: "POST", update: "PUT", delete: "DELETE", close: "PUT"]
 
-    InventoryController(Class resource) {
-        super(resource)
+    InventoryController() {
+        super(Inventory)
     }
 
     def index(Integer max) {

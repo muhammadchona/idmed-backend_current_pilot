@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class StockCenterController extends RestfulController{
 
     StockCenterService stockCenterService
@@ -19,8 +18,8 @@ class StockCenterController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    StockCenterController(Class resource) {
-        super(resource)
+    StockCenterController() {
+        super(StockCenter)
     }
 
     def index(Integer max) {

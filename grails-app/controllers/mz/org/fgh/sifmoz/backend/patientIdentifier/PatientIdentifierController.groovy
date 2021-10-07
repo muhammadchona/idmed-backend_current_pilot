@@ -7,9 +7,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
-
 
 class PatientIdentifierController extends RestfulController{
 
@@ -18,8 +16,8 @@ class PatientIdentifierController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    PatientIdentifierController(Class resource) {
-        super(resource)
+    PatientIdentifierController() {
+        super(PatientServiceIdentifier)
     }
 
     def index(Integer max) {
@@ -32,7 +30,7 @@ class PatientIdentifierController extends RestfulController{
     }
 
     @Transactional
-    def save(PatientProgramIdentifier patientIdentifier) {
+    def save(PatientServiceIdentifier patientIdentifier) {
         if (patientIdentifier == null) {
             render status: NOT_FOUND
             return
@@ -54,7 +52,7 @@ class PatientIdentifierController extends RestfulController{
     }
 
     @Transactional
-    def update(PatientProgramIdentifier patientIdentifier) {
+    def update(PatientServiceIdentifier patientIdentifier) {
         if (patientIdentifier == null) {
             render status: NOT_FOUND
             return

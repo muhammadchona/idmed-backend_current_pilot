@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class GroupMemberController extends RestfulController{
 
     GroupMemberService groupMemberService
@@ -19,8 +18,8 @@ class GroupMemberController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    GroupMemberController(Class resource) {
-        super(resource)
+    GroupMemberController() {
+        super(GroupMember)
     }
 
     def index(Integer max) {

@@ -19,8 +19,8 @@ class FormController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    FormController(Class resource) {
-        super(resource)
+    FormController() {
+        super(Form)
     }
 
     def index(Integer max) {

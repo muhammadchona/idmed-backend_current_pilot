@@ -1,12 +1,12 @@
 package mz.org.fgh.sifmoz.backend.stockinventory
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 
-// @Resource(uri='/api/stockInventory')
 class Inventory {
-
+    String id
     Date startDate
     Date endDate
     boolean open
@@ -15,8 +15,9 @@ class Inventory {
     static hasMany = [adjustments : InventoryStockAdjustment]
     static transients = ['inventoryDrugs']
     List<Drug> inventoryDrugs
+    Clinic clinic
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

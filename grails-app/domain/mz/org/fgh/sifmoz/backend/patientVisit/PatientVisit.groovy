@@ -1,21 +1,29 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
 import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.appointment.Appointment
-import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
-import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
-import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.screening.AdherenceScreening
+import mz.org.fgh.sifmoz.backend.screening.PregnancyScreening
+import mz.org.fgh.sifmoz.backend.screening.RAMScreening
+import mz.org.fgh.sifmoz.backend.screening.TBScreening
+import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
 
-// @Resource(uri='/api/patientVisit')
 class PatientVisit {
-
+    String id
     Date visitDate
+    Clinic clinic
+    AdherenceScreening adherenceScreening
+    RAMScreening RAMScreenings
+    TBScreening TBScreenings
+    VitalSignsScreening vitalSignsScreenings
+    PregnancyScreening pregnancyScreenings
 
-
-
+    static hasMany = [patientVisitDetails: PatientVisitDetails]
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
-        visitDate(nullable: false, blank: false)
     }
 }

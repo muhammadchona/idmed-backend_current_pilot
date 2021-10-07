@@ -1,18 +1,17 @@
 package mz.org.fgh.sifmoz.backend.stockdestruction
 
-import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockDestructionAdjustment
 
-// @Resource(uri='/api/destroyedStock')
 class DestroyedStock {
-
+    String id
     String notes
     String updateStatus
+    Clinic clinic
     static hasMany = [adjustments : StockDestructionAdjustment]
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

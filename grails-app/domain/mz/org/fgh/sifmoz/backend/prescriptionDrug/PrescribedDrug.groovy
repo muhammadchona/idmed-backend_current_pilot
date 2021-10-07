@@ -1,18 +1,22 @@
 package mz.org.fgh.sifmoz.backend.prescriptionDrug
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 
-// @Resource(uri = '/api/prescribedDrug')
 class PrescribedDrug {
-
+    String id
     double amtPerTime
     int timesPerDay
     boolean modified
-    Prescription prescription
     Drug drug
-   // static belongsTo = [prescription: Prescription,drug: Drug]
+    Clinic clinic
+    static belongsTo = [prescription: Prescription]
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         amtPerTime(min: 1)

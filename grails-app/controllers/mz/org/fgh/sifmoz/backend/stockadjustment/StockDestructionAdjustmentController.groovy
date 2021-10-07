@@ -10,7 +10,6 @@ import static org.springframework.http.HttpStatus.OK
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class StockDestructionAdjustmentController extends RestfulController{
 
     IStockDestructionAdjustmentService stockDestructionAdjustmentService
@@ -18,8 +17,8 @@ class StockDestructionAdjustmentController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    StockDestructionAdjustmentController(Class resource) {
-        super(resource)
+    StockDestructionAdjustmentController() {
+        super(StockDestructionAdjustment)
     }
 
     def index(Integer max) {

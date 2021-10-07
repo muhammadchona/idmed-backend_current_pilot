@@ -19,8 +19,8 @@ class PackagedDrugController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    PackagedDrugController(Class resource) {
-        super(resource)
+    PackagedDrugController() {
+        super(PackagedDrug)
     }
 
     def index(Integer max) {

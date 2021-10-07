@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class IdentifierTypeController extends RestfulController{
 
     IdentifierTypeService identifierTypeService
@@ -19,8 +18,8 @@ class IdentifierTypeController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    IdentifierTypeController(Class resource) {
-        super(resource)
+    IdentifierTypeController() {
+        super(IdentifierType)
     }
 
     def index(Integer max) {

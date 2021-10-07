@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.utilities;
 
+import mz.org.fgh.sifmoz.backend.clinic.Clinic;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Utilities {
 
@@ -70,5 +73,13 @@ public class Utilities {
         } catch(NumberFormatException e){
             return false;
         }
+    }
+
+    public static String generateUUID () {
+        return UUID.randomUUID().toString();
+    }
+
+    public static String generateID (Clinic clinic) {
+        return clinic.getCode() +"-"+generateUUID();
     }
 }

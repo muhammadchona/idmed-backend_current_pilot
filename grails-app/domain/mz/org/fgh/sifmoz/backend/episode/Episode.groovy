@@ -1,39 +1,33 @@
 package mz.org.fgh.sifmoz.backend.episode
 
-import grails.rest.Resource
+
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
-import mz.org.fgh.sifmoz.backend.patient.Patient
-import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientProgramIdentifier
-import mz.org.fgh.sifmoz.backend.patientProgram.PatientProgram
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
-import mz.org.fgh.sifmoz.backend.program.Program
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-// @Resource(uri = '/api/episode')
 class Episode {
-
+    String id
     Date startDate
     Date stopDate
-    StartStopReason startReason
-    StartStopReason stopReason
-    String startNotes
-    String stopNotes
+    StartStopReason startStopReason
+    String notes
     EpisodeType episodeType
     ClinicSector clinicSector
+    Clinic clinic
 
-    static belongsTo = [patientProgram: PatientProgram]
+    static belongsTo = [patientServiceIdentifier: PatientServiceIdentifier]
 
-    static hasMany = [prescriptions: Prescription]
+    static hasMany = [patientVisitDetails: PatientVisitDetails]
 
+    static mapping = {
+        id generator: "uuid"
+    }
     static constraints = {
-
-        startReason nullable: false
-        startNotes nullable: false
-
-        stopReason nullable: true
-        stopNotes nullable: true
-
         startDate(nullable: false, blank: false, validator: { startDate, urc ->
             return startDate <= new Date()
         })

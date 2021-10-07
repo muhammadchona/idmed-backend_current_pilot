@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class AdherenceScreeningController extends RestfulController{
 
     AdherenceScreeningService adherenceScreeningService
@@ -19,8 +18,8 @@ class AdherenceScreeningController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    AdherenceScreeningController(Class resource) {
-        super(resource)
+    AdherenceScreeningController() {
+        super(AdherenceScreening)
     }
 
     def index(Integer max) {

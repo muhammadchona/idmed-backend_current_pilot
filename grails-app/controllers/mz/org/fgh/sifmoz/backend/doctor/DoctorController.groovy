@@ -19,8 +19,8 @@ class DoctorController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    DoctorController(Class resource) {
-        super(resource)
+    DoctorController() {
+        super(Doctor)
     }
 
     def index(Integer max) {

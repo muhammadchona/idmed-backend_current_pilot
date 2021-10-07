@@ -2,17 +2,17 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 
 import grails.gorm.services.Service
 
-@Service(PatientProgramIdentifier)
+@Service(PatientServiceIdentifier)
 interface PatientIdentifierService {
 
-    PatientProgramIdentifier get(Serializable id)
+    PatientServiceIdentifier get(Serializable id)
 
-    List<PatientProgramIdentifier> list(Map args)
+    List<PatientServiceIdentifier> list(Map args)
 
     Long count()
 
-    PatientProgramIdentifier delete(Serializable id)
+    PatientServiceIdentifier delete(Serializable id)
 
-    PatientProgramIdentifier save(PatientProgramIdentifier patientIdentifier)
+    PatientServiceIdentifier save(PatientServiceIdentifier patientIdentifier)
 
 }

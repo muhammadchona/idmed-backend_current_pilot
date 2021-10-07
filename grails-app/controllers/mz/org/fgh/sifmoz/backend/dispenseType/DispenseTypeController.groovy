@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class DispenseTypeController extends RestfulController{
 
     DispenseTypeService dispenseTypeService
@@ -19,8 +18,8 @@ class DispenseTypeController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    DispenseTypeController(Class resource) {
-        super(resource)
+    DispenseTypeController() {
+        super(DispenseType)
     }
 
     def index(Integer max) {

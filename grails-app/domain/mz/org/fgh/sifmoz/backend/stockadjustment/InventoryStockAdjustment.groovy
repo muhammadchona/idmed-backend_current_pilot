@@ -4,9 +4,13 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stockinventory.Inventory
 
-// @Resource(uri='/api/inventoryAdjustment')
 class InventoryStockAdjustment extends StockAdjustment{
+    String id
     static hasOne = [inventory: Inventory]
+
+    static mapping = {
+        id generator: "uuid"
+    }
 
     InventoryStockAdjustment() {
     }

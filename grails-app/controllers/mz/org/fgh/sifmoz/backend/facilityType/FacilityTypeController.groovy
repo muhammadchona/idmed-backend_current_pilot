@@ -11,7 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-
 class FacilityTypeController extends RestfulController{
 
     FacilityTypeService facilityTypeService
@@ -19,8 +18,8 @@ class FacilityTypeController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    FacilityTypeController(Class resource) {
-        super(resource)
+    FacilityTypeController() {
+        super(FacilityType)
     }
 
     def index(Integer max) {

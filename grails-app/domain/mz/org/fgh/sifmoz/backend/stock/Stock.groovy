@@ -1,13 +1,13 @@
 package mz.org.fgh.sifmoz.backend.stock
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
-// @Resource(uri='/api/stock')
 class Stock {
-
+    String id
     Date expireDate;
     boolean modified;
     String shelfNumber
@@ -18,11 +18,11 @@ class Stock {
     boolean hasUnitsRemaining
     Drug drug
     StockCenter center
+    Clinic clinic
     static hasOne = [entrance: StockEntrance]
-    //static belongsTo = [entrance : StockEntrance]
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

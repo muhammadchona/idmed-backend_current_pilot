@@ -1,20 +1,21 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-// @Resource(uri='/api/adherenceScreening')
 class AdherenceScreening {
-
+    String id
     boolean hasPatientCameCorrectDate
     int daysWithoutMedicine
     boolean patientForgotMedicine
     int lateDays
     String lateMotives
     PatientVisit visit
+    Clinic clinic
 
     static mapping = {
-        version false
+        id generator: "uuid"
     }
 
     static constraints = {

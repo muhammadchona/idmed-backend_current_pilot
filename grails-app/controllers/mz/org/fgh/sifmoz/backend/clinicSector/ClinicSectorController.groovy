@@ -19,8 +19,8 @@ class ClinicSectorController extends RestfulController{
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    ClinicSectorController(Class resource) {
-        super(resource)
+    ClinicSectorController() {
+        super(ClinicSector)
     }
 
     def index(Integer max) {
