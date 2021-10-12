@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class GroupMemberClinicalServiceSpec extends Specification {
+class GroupInfoMemberClinicalServiceSpec extends Specification {
 
     GroupMemberService groupMemberService
     @Autowired Datastore datastore

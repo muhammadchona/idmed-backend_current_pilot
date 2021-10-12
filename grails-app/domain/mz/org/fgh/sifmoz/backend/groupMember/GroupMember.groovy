@@ -1,15 +1,15 @@
 package mz.org.fgh.sifmoz.backend.groupMember
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.group.Group
+import mz.org.fgh.sifmoz.backend.group.GroupInfo
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
 class GroupMember {
     String id
     Date startDate
     Date endDate
-    Group group
+    GroupInfo group
     Clinic clinic
 
     static belongsTo = [patient: Patient]

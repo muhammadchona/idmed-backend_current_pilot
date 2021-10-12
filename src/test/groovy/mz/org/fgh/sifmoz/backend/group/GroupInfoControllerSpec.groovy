@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.patient
+package mz.org.fgh.sifmoz.backend.group
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class PatientControllerSpec extends Specification implements ControllerUnitTest<PatientController>, DomainUnitTest<Patient> {
+class GroupInfoControllerSpec extends Specification implements ControllerUnitTest<GroupController>, DomainUnitTest<GroupInfo> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientService = Mock(IPatientService) {
+        controller.groupService = Mock(GroupService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * save(_ as Patient)
+        controller.groupService = Mock(GroupService) {
+            1 * save(_ as GroupInfo)
         }
 
         when:
@@ -61,7 +61,7 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new Patient(params)
+        request.json = new GroupInfo(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * save(_ as Patient) >> { Patient patient ->
-                throw new ValidationException("Invalid instance", patient.errors)
+        controller.groupService = Mock(GroupService) {
+            1 * save(_ as GroupInfo) >> { GroupInfo group ->
+                throw new ValidationException("Invalid instance", group.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new Patient(params)
+        request.json = new GroupInfo(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientService = Mock(IPatientService) {
+        controller.groupService = Mock(GroupService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * get(2) >> new Patient()
+        controller.groupService = Mock(GroupService) {
+            1 * get(2) >> new GroupInfo()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * save(_ as Patient)
+        controller.groupService = Mock(GroupService) {
+            1 * save(_ as GroupInfo)
         }
 
         when:
@@ -138,7 +138,7 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new Patient(params)
+        def instance = new GroupInfo(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * save(_ as Patient) >> { Patient patient ->
-                throw new ValidationException("Invalid instance", patient.errors)
+        controller.groupService = Mock(GroupService) {
+            1 * save(_ as GroupInfo) >> { GroupInfo group ->
+                throw new ValidationException("Invalid instance", group.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new Patient(params)
+        def instance = new GroupInfo(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class PatientControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientService = Mock(IPatientService) {
-            1 * delete(2) >> new Patient(id: 2)
+        controller.groupService = Mock(GroupService) {
+            1 * delete(2) >> new GroupInfo(id: 2)
         }
 
         when:

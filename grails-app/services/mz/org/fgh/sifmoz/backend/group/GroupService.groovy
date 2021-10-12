@@ -2,17 +2,17 @@ package mz.org.fgh.sifmoz.backend.group
 
 import grails.gorm.services.Service
 
-@Service(Group)
+@Service(GroupInfo)
 interface GroupService {
 
-    Group get(Serializable id)
+    GroupInfo get(Serializable id)
 
-    List<Group> list(Map args)
+    List<GroupInfo> list(Map args)
 
     Long count()
 
-    Group delete(Serializable id)
+    GroupInfo delete(Serializable id)
 
-    Group save(Group group)
+    GroupInfo save(GroupInfo group)
 
 }

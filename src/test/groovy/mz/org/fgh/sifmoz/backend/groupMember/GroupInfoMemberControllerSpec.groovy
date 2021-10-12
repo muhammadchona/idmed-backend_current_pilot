@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.groupType
+package mz.org.fgh.sifmoz.backend.groupMember
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class GroupTypeControllerSpec extends Specification implements ControllerUnitTest<GroupTypeController>, DomainUnitTest<GroupType> {
+class GroupInfoMemberControllerSpec extends Specification implements ControllerUnitTest<GroupMemberController>, DomainUnitTest<GroupMember> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
+        controller.groupMemberService = Mock(GroupMemberService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action correctly persists"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * save(_ as GroupType)
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * save(_ as GroupMember)
         }
 
         when:
@@ -61,7 +61,7 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new GroupType(params)
+        request.json = new GroupMember(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * save(_ as GroupType) >> { GroupType groupType ->
-                throw new ValidationException("Invalid instance", groupType.errors)
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * save(_ as GroupMember) >> { GroupMember groupMember ->
+                throw new ValidationException("Invalid instance", groupMember.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new GroupType(params)
+        request.json = new GroupMember(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a null id"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
+        controller.groupMemberService = Mock(GroupMemberService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a valid id"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * get(2) >> new GroupType()
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * get(2) >> new GroupMember()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action correctly persists"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * save(_ as GroupType)
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * save(_ as GroupMember)
         }
 
         when:
@@ -138,7 +138,7 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new GroupType(params)
+        def instance = new GroupMember(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * save(_ as GroupType) >> { GroupType groupType ->
-                throw new ValidationException("Invalid instance", groupType.errors)
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * save(_ as GroupMember) >> { GroupMember groupMember ->
+                throw new ValidationException("Invalid instance", groupMember.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new GroupType(params)
+        def instance = new GroupMember(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class GroupTypeControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the delete action with an instance"() {
         given:
-        controller.groupTypeService = Mock(GroupTypeService) {
-            1 * delete(2) >> new GroupType(id: 2)
+        controller.groupMemberService = Mock(GroupMemberService) {
+            1 * delete(2) >> new GroupMember(id: 2)
         }
 
         when:
