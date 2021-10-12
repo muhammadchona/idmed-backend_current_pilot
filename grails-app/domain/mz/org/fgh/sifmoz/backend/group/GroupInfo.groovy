@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
-class Group {
+class GroupInfo {
     String id
     String code
     String name

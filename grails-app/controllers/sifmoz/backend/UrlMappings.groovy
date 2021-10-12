@@ -9,6 +9,8 @@ class UrlMappings {
         post "/$controller(.$format)?"(action:"save")
         put "/$controller/$id(.$format)?"(action:"update")
         patch "/$controller/$id(.$format)?"(action:"patch")
+        post "/patient/search(.$format)?"(controller:'patient', action:'search')
+        get "/patient/clinic/$clinicId(.$format)?"(controller:'patient', action:'getByClinicId')
 
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')

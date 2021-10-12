@@ -19,5 +19,8 @@ class ClinicalService {
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
+        attributes nullable: true
+        therapeuticRegimens nullable: true
+
     }
 }
