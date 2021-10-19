@@ -2,15 +2,12 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import org.springframework.web.bind.annotation.RestController
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 class PatientServiceIdentifierController extends RestfulController{
@@ -23,7 +20,7 @@ class PatientServiceIdentifierController extends RestfulController{
     PatientServiceIdentifierController () {
         super(PatientServiceIdentifier)
     }
-
+  
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond patientServiceIdentifierService.list(params), model:[patientServiceIdentifierCount: patientServiceIdentifierService.count()]
