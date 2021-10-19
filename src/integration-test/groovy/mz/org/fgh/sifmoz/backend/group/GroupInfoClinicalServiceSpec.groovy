@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.groupType
+package mz.org.fgh.sifmoz.backend.group
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
@@ -8,20 +8,20 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class GroupTypeClinicalServiceSpec extends Specification {
+class GroupInfoClinicalServiceSpec extends Specification {
 
-    GroupTypeService groupTypeService
+    GroupService groupService
     @Autowired Datastore datastore
 
     private Long setupData() {
         // TODO: Populate valid domain instances and return a valid ID
-        //new GroupType(...).save(flush: true, failOnError: true)
-        //new GroupType(...).save(flush: true, failOnError: true)
-        //GroupType groupType = new GroupType(...).save(flush: true, failOnError: true)
-        //new GroupType(...).save(flush: true, failOnError: true)
-        //new GroupType(...).save(flush: true, failOnError: true)
+        //new Group(...).save(flush: true, failOnError: true)
+        //new Group(...).save(flush: true, failOnError: true)
+        //Group group = new Group(...).save(flush: true, failOnError: true)
+        //new Group(...).save(flush: true, failOnError: true)
+        //new Group(...).save(flush: true, failOnError: true)
         assert false, "TODO: Provide a setupData() implementation for this generated test suite"
-        //groupType.id
+        //group.id
     }
 
     void cleanup() {
@@ -32,17 +32,17 @@ class GroupTypeClinicalServiceSpec extends Specification {
         setupData()
 
         expect:
-        groupTypeService.get(1) != null
+        groupService.get(1) != null
     }
 
     void "test list"() {
         setupData()
 
         when:
-        List<GroupType> groupTypeList = groupTypeService.list(max: 2, offset: 2)
+        List<GroupInfo> groupList = groupService.list(max: 2, offset: 2)
 
         then:
-        groupTypeList.size() == 2
+        groupList.size() == 2
         assert false, "TODO: Verify the correct instances are returned"
     }
 
@@ -50,30 +50,30 @@ class GroupTypeClinicalServiceSpec extends Specification {
         setupData()
 
         expect:
-        groupTypeService.count() == 5
+        groupService.count() == 5
     }
 
     void "test delete"() {
-        Long groupTypeId = setupData()
+        Long groupId = setupData()
 
         expect:
-        groupTypeService.count() == 5
+        groupService.count() == 5
 
         when:
-        groupTypeService.delete(groupTypeId)
+        groupService.delete(groupId)
         datastore.currentSession.flush()
 
         then:
-        groupTypeService.count() == 4
+        groupService.count() == 4
     }
 
     void "test save"() {
         when:
         assert false, "TODO: Provide a valid instance to save"
-        GroupType groupType = new GroupType()
-        groupTypeService.save(groupType)
+        GroupInfo group = new GroupInfo()
+        groupService.save(group)
 
         then:
-        groupType.id != null
+        group.id != null
     }
 }

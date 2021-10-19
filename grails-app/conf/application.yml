@@ -15,9 +15,6 @@ info:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
-logging:
-    level:
-        root: ERROR
 spring:
     jmx:
         unique-names: true
@@ -87,11 +84,11 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: root
+    password: postgres
 environments:
     development:
         dataSource:
-            dbCreate: create
+            dbCreate: update
             url: jdbc:postgresql://localhost:5432/sifmoz
     test:
         dataSource:

@@ -3,11 +3,11 @@ package mz.org.fgh.sifmoz.backend.patient
 
 import mz.org.fgh.sifmoz.backend.appointment.Appointment
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.PostoAdministrativo
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
-import mz.org.fgh.sifmoz.backend.group.Group
-import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
+import mz.org.fgh.sifmoz.backend.group.GroupInfo
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 
@@ -25,6 +25,7 @@ class Patient {
     boolean accountstatus
     Province province
     Localidade bairro
+    District district
     PostoAdministrativo postoAdministrativo
 
     static belongsTo = [clinic: Clinic]
@@ -32,7 +33,7 @@ class Patient {
             attributes: PatientAttribute,
             identifiers: PatientServiceIdentifier,
             appointments: Appointment,
-            groups: Group
+            groups: GroupInfo
     ]
 
     static mapping = {
@@ -45,5 +46,15 @@ class Patient {
         })
         cellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         alternativeCellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
+        address nullable: true
+        addressReference nullable: true
+        province nullable: false
+        bairro nullable: true
+        postoAdministrativo nullable: true
+        attributes nullable: true
+        identifiers nullable: true
+        appointments nullable: true
+        groups nullable: true
+        clinic nullable: false
     }
 }

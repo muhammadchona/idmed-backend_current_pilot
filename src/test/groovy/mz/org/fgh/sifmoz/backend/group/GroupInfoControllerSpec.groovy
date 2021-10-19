@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class GroupControllerSpec extends Specification implements ControllerUnitTest<GroupController>, DomainUnitTest<Group> {
+class GroupInfoControllerSpec extends Specification implements ControllerUnitTest<GroupController>, DomainUnitTest<GroupInfo> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -53,7 +53,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the save action correctly persists"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * save(_ as Group)
+            1 * save(_ as GroupInfo)
         }
 
         when:
@@ -61,7 +61,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new Group(params)
+        request.json = new GroupInfo(params)
         controller.save()
 
         then:
@@ -72,7 +72,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the save action with an invalid instance"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * save(_ as Group) >> { Group group ->
+            1 * save(_ as GroupInfo) >> { GroupInfo group ->
                 throw new ValidationException("Invalid instance", group.errors)
             }
         }
@@ -81,7 +81,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new Group(params)
+        request.json = new GroupInfo(params)
         controller.save()
 
         then:
@@ -105,7 +105,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the show action with a valid id"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * get(2) >> new Group()
+            1 * get(2) >> new GroupInfo()
         }
 
         when:"A domain instance is passed to the show action"
@@ -130,7 +130,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the update action correctly persists"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * save(_ as Group)
+            1 * save(_ as GroupInfo)
         }
 
         when:
@@ -138,7 +138,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new Group(params)
+        def instance = new GroupInfo(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -151,7 +151,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the update action with an invalid instance"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * save(_ as Group) >> { Group group ->
+            1 * save(_ as GroupInfo) >> { GroupInfo group ->
                 throw new ValidationException("Invalid instance", group.errors)
             }
         }
@@ -159,7 +159,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new Group(params)
+        def instance = new GroupInfo(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -182,7 +182,7 @@ class GroupControllerSpec extends Specification implements ControllerUnitTest<Gr
     void "Test the delete action with an instance"() {
         given:
         controller.groupService = Mock(GroupService) {
-            1 * delete(2) >> new Group(id: 2)
+            1 * delete(2) >> new GroupInfo(id: 2)
         }
 
         when:
