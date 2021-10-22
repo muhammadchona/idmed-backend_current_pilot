@@ -4,6 +4,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
 class Pack {
@@ -21,8 +22,9 @@ class Pack {
     Clinic clinic
     String uuid = UUID.randomUUID().toString()
   //  PatientVisitDetails patientVisitDetails
-   // static belongsTo = [patientVisitDetails: PatientVisitDetails]
+    static belongsTo = [patientVisitDetails: PatientVisitDetails]
 
+    static hasMany = [packagedDrugs: PackagedDrug]
     static mapping = {
         id generator: "uuid"
     }

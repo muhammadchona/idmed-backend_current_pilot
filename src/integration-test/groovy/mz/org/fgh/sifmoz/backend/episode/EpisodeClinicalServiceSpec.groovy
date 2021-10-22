@@ -10,7 +10,7 @@ import spock.lang.Specification
 @Rollback
 class EpisodeClinicalServiceSpec extends Specification {
 
-    EpisodeService episodeService
+    IEpisodeService episodeService
     @Autowired Datastore datastore
 
     private Long setupData() {

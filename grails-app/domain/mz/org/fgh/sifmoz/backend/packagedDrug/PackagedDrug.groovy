@@ -7,10 +7,11 @@ import mz.org.fgh.sifmoz.backend.packaging.Pack
 
 class PackagedDrug {
     String id
-    Pack pack
     Drug drug
     int quantitySupplied
     Clinic clinic
+
+    static belongsTo = [pack: Pack]
 
     static mapping = {
         id generator: "uuid"

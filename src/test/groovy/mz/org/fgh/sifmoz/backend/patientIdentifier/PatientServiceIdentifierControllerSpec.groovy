@@ -27,7 +27,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * save(_ as PatientServiceIdentifier)
         }
 
@@ -71,7 +71,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * save(_ as PatientServiceIdentifier) >> { PatientServiceIdentifier patientServiceIdentifier ->
                 throw new ValidationException("Invalid instance", patientServiceIdentifier.errors)
             }
@@ -91,7 +91,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * get(2) >> new PatientServiceIdentifier()
         }
 
@@ -129,7 +129,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * save(_ as PatientServiceIdentifier)
         }
 
@@ -150,7 +150,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * save(_ as PatientServiceIdentifier) >> { PatientServiceIdentifier patientServiceIdentifier ->
                 throw new ValidationException("Invalid instance", patientServiceIdentifier.errors)
             }
@@ -181,7 +181,7 @@ class PatientServiceIdentifierControllerSpec extends Specification implements Co
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientServiceIdentifierService = Mock(PatientServiceIdentifierService) {
+        controller.patientServiceIdentifierService = Mock(IPatientServiceIdentifierService) {
             1 * delete(2) >> new PatientServiceIdentifier(id: 2)
         }
 

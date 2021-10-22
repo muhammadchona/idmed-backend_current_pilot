@@ -26,8 +26,10 @@ class PatientController extends RestfulController{
         respond patientService.list(params), model:[patientCount: patientService.count()]
     }
 
-    def show(Long id) {
-        respond patientService.get(id)
+    def show(String id) {
+        JSON.use('deep'){
+            render patientService.get(id) as JSON
+        }
     }
 
     @Transactional
