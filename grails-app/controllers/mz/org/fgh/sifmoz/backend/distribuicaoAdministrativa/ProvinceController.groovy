@@ -26,11 +26,11 @@ class ProvinceController extends RestfulController{
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         JSON.use('deep'){
-            render provinceService.list(params) as JSON
+            respond provinceService.list(params) as JSON
         }
     }
 
-    def show(Long id) {
+    def show(String id) {
         JSON.use('deep'){
             render provinceService.get(id) as JSON
         }

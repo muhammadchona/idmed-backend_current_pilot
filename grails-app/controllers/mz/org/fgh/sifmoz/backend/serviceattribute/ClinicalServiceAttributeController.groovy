@@ -23,7 +23,7 @@ class ClinicalServiceAttributeController extends RestfulController{
         respond clinicalServiceAttributeService.list(params), model:[clinicalServiceAttributeCount: clinicalServiceAttributeService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond clinicalServiceAttributeService.get(id)
     }
 

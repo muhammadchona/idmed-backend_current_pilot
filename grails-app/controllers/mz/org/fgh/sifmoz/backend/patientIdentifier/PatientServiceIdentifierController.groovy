@@ -6,13 +6,12 @@ import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.Transactional
 
 class PatientServiceIdentifierController extends RestfulController{
 
-    PatientServiceIdentifierService patientServiceIdentifierService
+    IPatientServiceIdentifierService patientServiceIdentifierService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -20,13 +19,13 @@ class PatientServiceIdentifierController extends RestfulController{
     PatientServiceIdentifierController () {
         super(PatientServiceIdentifier)
     }
-  
+
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond patientServiceIdentifierService.list(params), model:[patientServiceIdentifierCount: patientServiceIdentifierService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond patientServiceIdentifierService.get(id)
     }
 
@@ -82,5 +81,9 @@ class PatientServiceIdentifierController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getByClinicId(String clinicId, int offset, int max) {
+        respond patientServiceIdentifierService.getAllByClinicId(clinicId, offset, max)
     }
 }

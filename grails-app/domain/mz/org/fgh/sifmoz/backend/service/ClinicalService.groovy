@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.service
 
 import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
@@ -9,6 +10,7 @@ class ClinicalService {
     String id
     String code
     String description
+    IdentifierType identifierType
 
     static hasMany = [attributes: ClinicalServiceAttribute,
                       therapeuticRegimens: TherapeuticRegimen]
