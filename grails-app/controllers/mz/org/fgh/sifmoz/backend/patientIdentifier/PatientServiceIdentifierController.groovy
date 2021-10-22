@@ -2,7 +2,6 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
