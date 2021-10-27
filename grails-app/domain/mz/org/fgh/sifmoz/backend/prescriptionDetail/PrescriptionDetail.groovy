@@ -14,12 +14,14 @@ class PrescriptionDetail {
     TherapeuticLine therapeuticLine
     TherapeuticRegimen therapeuticRegimen
     DispenseType dispenseType
-    static belongsTo=[prescription: Prescription]
+    //Prescription prescription
+    //static hasOne=[prescription: Prescription]
 
     static mapping = {
         id generator: "uuid"
     }
 
     static constraints = {
+        reasonForUpdate nullable: true
     }
 }

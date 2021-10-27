@@ -9,8 +9,7 @@ class RAMScreening {
     String adverseReaction
     boolean adverseReactionMedicine
     boolean referedToUSRam
-    PatientVisit visit
-    Clinic clinic
+    static belongsTo = [visit: PatientVisit]
 
     static mapping = {
         id generator: "uuid"

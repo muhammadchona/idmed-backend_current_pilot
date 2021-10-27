@@ -9,8 +9,7 @@ class PregnancyScreening {
     boolean pregnant;
     boolean menstruationLastTwoMonths
     Date childDeliveryPrevision
-    PatientVisit visit
-    Clinic clinic
+    static belongsTo = [visit: PatientVisit]
 
     static mapping = {
         id generator: "uuid"

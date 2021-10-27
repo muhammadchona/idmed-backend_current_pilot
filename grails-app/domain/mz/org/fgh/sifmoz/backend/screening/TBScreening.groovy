@@ -16,8 +16,8 @@ class TBScreening {
     Date startTreatmentDate
     boolean fatigueOrTirednessLastTwoWeeks
     boolean sweating
-    PatientVisit visit
-    Clinic clinic
+
+    static belongsTo = [visit: PatientVisit]
 
     static mapping = {
         id generator: "uuid"

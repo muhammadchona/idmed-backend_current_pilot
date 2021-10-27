@@ -13,6 +13,7 @@ class UrlMappings {
         get "/patient/clinic/$clinicId(.$format)?"(controller:'patient', action:'getByClinicId')
         get "/patientServiceIdentifier/clinic/$clinicId(.$format)?"(controller:'patientServiceIdentifier', action:'getByClinicId')
         get "/episode/clinic/$clinicId(.$format)?"(controller:'episode', action:'getByClinicId')
+        get "/doctor/clinic/$clinicId(.$format)?"(controller:'doctor', action:'getByClinicId')
 
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')

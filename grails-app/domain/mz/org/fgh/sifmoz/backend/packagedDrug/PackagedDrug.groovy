@@ -9,7 +9,8 @@ class PackagedDrug {
     String id
     Drug drug
     int quantitySupplied
-    Clinic clinic
+    Date nextPickUpDate
+    boolean toContinue
 
     static belongsTo = [pack: Pack]
 

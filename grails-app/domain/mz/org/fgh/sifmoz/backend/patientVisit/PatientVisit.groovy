@@ -13,13 +13,9 @@ class PatientVisit {
     String id
     Date visitDate
     Clinic clinic
-    AdherenceScreening adherenceScreening
-    RAMScreening RAMScreenings
-    TBScreening TBScreenings
-    VitalSignsScreening vitalSignsScreenings
-    PregnancyScreening pregnancyScreenings
 
     static hasMany = [patientVisitDetails: PatientVisitDetails]
+
     static mapping = {
         id generator: "uuid"
     }

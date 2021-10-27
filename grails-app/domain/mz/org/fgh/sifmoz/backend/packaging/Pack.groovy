@@ -20,9 +20,9 @@ class Pack {
     int packageReturned
     String reasonForPackageReturn
     Clinic clinic
-    String uuid = UUID.randomUUID().toString()
-  //  PatientVisitDetails patientVisitDetails
-    static belongsTo = [patientVisitDetails: PatientVisitDetails]
+    String dispenseMode
+    static hasOne = [patientVisitDetails: PatientVisitDetails]
+    //PatientVisitDetails patientVisitDetails
 
     static hasMany = [packagedDrugs: PackagedDrug]
     static mapping = {
@@ -30,12 +30,13 @@ class Pack {
     }
 
     static constraints = {
-        dateLeft(nullable: false, blank: false)
+        dateLeft(nullable: true)
         dateReceived(nullable: true, blank: true)
         packDate(nullable: true)
-        pickupDate(nullable: true)
+        pickupDate(nullable: false)
         weeksSupply(nullable: false)
         dateReturned(nullable: true)
         reasonForPackageReturn(nullable: true,maxSize: 500)
+        patientVisitDetails nullable: true
     }
 }
