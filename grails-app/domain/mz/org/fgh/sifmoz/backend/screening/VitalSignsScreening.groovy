@@ -11,9 +11,8 @@ class VitalSignsScreening {
     double weight;
     int systole;
     double height;
-    PatientVisit visit
-    Clinic clinic
 
+    static belongsTo = [visit: PatientVisit]
     static mapping = {
         id generator: "uuid"
     }

@@ -11,9 +11,8 @@ class AdherenceScreening {
     boolean patientForgotMedicine
     int lateDays
     String lateMotives
-    PatientVisit visit
-    Clinic clinic
 
+    static belongsTo = [visit: PatientVisit]
     static mapping = {
         id generator: "uuid"
     }

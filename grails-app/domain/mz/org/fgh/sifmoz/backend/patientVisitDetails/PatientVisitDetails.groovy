@@ -8,9 +8,10 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 class PatientVisitDetails {
 
     String id
-    Pack pack
     Episode episode
     Prescription prescription
+    Pack pack
+    //static hasOne = [prescription: Prescription, pack: Pack]
 
     static belongsTo = [patientVisit: PatientVisit]
 

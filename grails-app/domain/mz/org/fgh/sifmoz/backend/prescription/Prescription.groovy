@@ -18,12 +18,14 @@ class Prescription {
     boolean current
     String notes
     String prescriptionSeq
+    String patientType
+    String patientStatus
     boolean modified
     Clinic clinic
     Doctor doctor
     PrescriptionDetail prescriptionDetail
-
-    static belongsTo = [patientVisitDetails : PatientVisitDetails]
+    static hasOne = [patientVisitDetails: PatientVisitDetails]
+    //PatientVisitDetails patientVisitDetails
 
     static hasMany = [prescribedDrugs: PrescribedDrug]
 
@@ -35,7 +37,8 @@ class Prescription {
             return ((prescriptionDate <= new Date()))})
         expiryDate(nullable: true, blank: true)
         notes(nullable: true, maxSize: 500)
-        prescriptionSeq(nullable: false, blank: false,unique: true)
+        prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
+        patientVisitDetails nullable: true
     }
 }
