@@ -1,7 +1,6 @@
 package mz.org.fgh.sifmoz.backend.therapeuticRegimen
 
 import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.form.Form
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 class TherapeuticRegimen {
@@ -12,7 +11,7 @@ class TherapeuticRegimen {
   //  boolean pedhiatric
     String description
     static belongsTo = [clincalService: ClinicalService]
-    static hasMany = [drug: Drug]
+    static hasMany = [drugs: Drug]
 
     static mapping = {
         id generator: "uuid"
