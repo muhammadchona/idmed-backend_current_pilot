@@ -7,6 +7,7 @@ class HealthInformationSystem {
     String id
     String abbreviation
     String description
+    boolean active
 
     static hasMany = [interoperabilityAttributes: InteroperabilityAttribute]
 

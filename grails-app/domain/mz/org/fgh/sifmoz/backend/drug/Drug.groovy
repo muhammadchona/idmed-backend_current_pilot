@@ -10,7 +10,6 @@ import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 class Drug {
     String id
     int packSize
- //   boolean sideTreatment
     String name
     double defaultTreatment // numero de toma
     int defaultTimes// numero de vezes a tomar
@@ -18,13 +17,15 @@ class Drug {
     String fnmCode
     String uuidOpenmrs = UUID.randomUUID().toString()
     static belongsTo = [form: Form]
-  //  static hasMany = [therapeuticRegimen: TherapeuticRegimen]
+    boolean active
+  //  static hasMany = [therapeuticRegimens: TherapeuticRegimen]
     static mapping = {
         id generator: "uuid"
     }
 
     static constraints = {
         name nullable: false, blank: false
+        fnmCode nullable: false, unique: true
         packSize(min: 0)
      //   defaultTreatment(min: 1.00)
         defaultTimes(min:1)

@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.healthInformationSystem
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
@@ -22,11 +23,15 @@ class HealthInformationSystemController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond healthInformationSystemService.list(params), model:[healthInformationSystemCount: healthInformationSystemService.count()]
+        JSON.use('deep'){
+            render healthInformationSystemService.list(params) as JSON
+        }
     }
 
     def show(Long id) {
-        respond healthInformationSystemService.get(id)
+        JSON.use('deep'){
+            render healthInformationSystemService.get(id) as JSON
+        }
     }
 
     @Transactional
