@@ -21,8 +21,8 @@ class Pack {
     String reasonForPackageReturn
     Clinic clinic
     String dispenseMode
-    static hasOne = [patientVisitDetails: PatientVisitDetails]
-    //PatientVisitDetails patientVisitDetails
+
+    static belongsTo = [patientVisitDetails: PatientVisitDetails]
 
     static hasMany = [packagedDrugs: PackagedDrug]
     static mapping = {
@@ -37,6 +37,5 @@ class Pack {
         weeksSupply(nullable: false)
         dateReturned(nullable: true)
         reasonForPackageReturn(nullable: true,maxSize: 500)
-        patientVisitDetails nullable: true
     }
 }

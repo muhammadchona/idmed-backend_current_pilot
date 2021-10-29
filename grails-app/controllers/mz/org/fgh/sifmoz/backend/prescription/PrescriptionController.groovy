@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,10 +27,13 @@ class PrescriptionController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond prescriptionService.list(params), model:[prescriptionCount: prescriptionService.count()]
+        //respond prescriptionService.list(params), model:[prescriptionCount: prescriptionService.count()]
+        JSON.use('deep'){
+            render prescriptionService.list(params) as JSON
+        }
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond prescriptionService.get(id)
     }
 
@@ -44,6 +50,9 @@ class PrescriptionController extends RestfulController{
         }
 
         try {
+            if (!Utilities.stringHasValue(prescription.id)) {
+                prescription.generateNextSeq()
+            }
             prescriptionService.save(prescription)
         } catch (ValidationException e) {
             respond prescription.errors

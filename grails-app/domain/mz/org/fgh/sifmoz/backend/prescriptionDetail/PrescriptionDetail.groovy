@@ -15,7 +15,7 @@ class PrescriptionDetail {
     TherapeuticRegimen therapeuticRegimen
     DispenseType dispenseType
     //Prescription prescription
-    //static hasOne=[prescription: Prescription]
+    static belongsTo=[prescription: Prescription]
 
     static mapping = {
         id generator: "uuid"

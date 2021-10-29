@@ -20,5 +20,6 @@ class PackagedDrug {
 
     static constraints = {
         quantitySupplied(min: 1)
+        nextPickUpDate nullable: true
     }
 }
