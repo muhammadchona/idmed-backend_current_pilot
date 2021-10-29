@@ -82,4 +82,17 @@ public class Utilities {
     public static String generateID (Clinic clinic) {
         return clinic.getCode() +"-"+generateUUID();
     }
+
+    public static String garantirXCaracterOnNumber(long number, int x){
+        String formatedNumber = "";
+        int numberOfCharacterToIncrise = 0;
+
+        formatedNumber = number + "";
+
+        numberOfCharacterToIncrise = x - formatedNumber.length();
+
+        for(int i = 0; i < numberOfCharacterToIncrise; i++) formatedNumber = "0" + formatedNumber;
+
+        return formatedNumber;
+    }
 }

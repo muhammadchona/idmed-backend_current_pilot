@@ -27,7 +27,7 @@ class PatientVisitDetailsController extends RestfulController{
         respond patientVisitDetailsService.list(params), model:[patientVisitDetailsCount: patientVisitDetailsService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond patientVisitDetailsService.get(id)
     }
 

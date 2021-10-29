@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 class Prescription {
 
@@ -23,11 +24,10 @@ class Prescription {
     boolean modified
     Clinic clinic
     Doctor doctor
-    PrescriptionDetail prescriptionDetail
-    static hasOne = [patientVisitDetails: PatientVisitDetails]
-    //PatientVisitDetails patientVisitDetails
 
-    static hasMany = [prescribedDrugs: PrescribedDrug]
+    static belongsTo = [patientVisitDetails: PatientVisitDetails]
+
+    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
 
     static mapping = {
         id generator: "uuid"
@@ -40,5 +40,21 @@ class Prescription {
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
         patientVisitDetails nullable: true
+    }
+
+    public void generateNextSeq() {
+        long lastSeq = 0;
+        try{
+            if (Utilities.stringHasValue(this.prescriptionSeq)){
+                lastSeq = Long.parseLong(this.prescriptionSeq);
+            }else {
+                lastSeq = 0;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)));
     }
 }

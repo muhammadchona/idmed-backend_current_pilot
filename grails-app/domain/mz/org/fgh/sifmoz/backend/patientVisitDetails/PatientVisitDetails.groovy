@@ -9,10 +9,8 @@ class PatientVisitDetails {
 
     String id
     Episode episode
-    Prescription prescription
-    Pack pack
-    //static hasOne = [prescription: Prescription, pack: Pack]
 
+    static hasMany = [prescriptions: Prescription, packs: Pack]
     static belongsTo = [patientVisit: PatientVisit]
 
     static mapping = {
