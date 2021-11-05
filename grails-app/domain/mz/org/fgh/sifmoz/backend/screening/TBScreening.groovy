@@ -12,7 +12,7 @@ class TBScreening {
     boolean losingWeight
     boolean treatmentTB
     boolean treatmentTPI
-    boolean referedToUSTB
+  //  boolean referedToUSTB
     Date startTreatmentDate
     boolean fatigueOrTirednessLastTwoWeeks
     boolean sweating
@@ -24,6 +24,8 @@ class TBScreening {
     }
 
     static constraints = {
+        startTreatmentDate(nullable: true, blank: true)
+        visit(nullable: true, blank: true)
     }
 
     @Override

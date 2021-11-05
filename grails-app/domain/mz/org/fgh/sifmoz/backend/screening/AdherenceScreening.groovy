@@ -19,6 +19,8 @@ class AdherenceScreening {
 
     static constraints = {
         lateMotives(nullable: true, maxSize: 50)
+        daysWithoutMedicine(nullable: true,blank: true)
+        lateDays(nullable: true, blank: true)
     }
 
     @Override

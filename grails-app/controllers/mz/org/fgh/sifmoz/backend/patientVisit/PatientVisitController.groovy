@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 
@@ -86,5 +87,11 @@ class PatientVisitController extends RestfulController{
 
     def getAllByClinicId(String clinicId, int offset, int max) {
         respond patientVisitService.getAllByClinicId(clinicId, offset, max)
+    }
+
+    def getByPatientId(String patientId) {
+        JSON.use('deep') {
+            render patientVisitService.getAllByPatientId(patientId) as JSON
+        }
     }
 }

@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class PatientServiceIdentifierControllerSpec extends Specification implements ControllerUnitTest<PatientServiceIdentifierController>, DomainUnitTest<PatientServiceIdentifier> {
+class PatientVisitServiceIdentifierControllerSpec extends Specification implements ControllerUnitTest<PatientServiceIdentifierController>, DomainUnitTest<PatientServiceIdentifier> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))

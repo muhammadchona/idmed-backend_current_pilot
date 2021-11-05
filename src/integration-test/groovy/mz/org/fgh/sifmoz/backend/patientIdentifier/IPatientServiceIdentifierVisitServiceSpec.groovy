@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class IPatientServiceIdentifierServiceSpec extends Specification {
+class IPatientServiceIdentifierVisitServiceSpec extends Specification {
 
     IPatientServiceIdentifierService patientServiceIdentifierService
     @Autowired Datastore datastore

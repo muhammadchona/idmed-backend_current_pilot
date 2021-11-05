@@ -1,9 +1,9 @@
-package mz.org.fgh.sifmoz.backend.patientIdentifier
+package mz.org.fgh.sifmoz.backend.patient
 
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class PatientServiceIdentifierServiceSpec extends Specification implements ServiceUnitTest<PatientServiceIdentifierService>{
+class PatientVisitServiceSpec extends Specification implements ServiceUnitTest<PatientService>{
 
     def setup() {
     }
