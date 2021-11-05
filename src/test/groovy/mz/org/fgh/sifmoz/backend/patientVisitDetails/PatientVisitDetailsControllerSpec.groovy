@@ -27,7 +27,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * save(_ as PatientVisitDetails)
         }
 
@@ -71,7 +71,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * save(_ as PatientVisitDetails) >> { PatientVisitDetails patientVisitDetails ->
                 throw new ValidationException("Invalid instance", patientVisitDetails.errors)
             }
@@ -91,7 +91,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * get(2) >> new PatientVisitDetails()
         }
 
@@ -129,7 +129,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * save(_ as PatientVisitDetails)
         }
 
@@ -150,7 +150,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * save(_ as PatientVisitDetails) >> { PatientVisitDetails patientVisitDetails ->
                 throw new ValidationException("Invalid instance", patientVisitDetails.errors)
             }
@@ -181,7 +181,7 @@ class PatientVisitDetailsControllerSpec extends Specification implements Control
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientVisitDetailsService = Mock(PatientVisitDetailsService) {
+        controller.patientVisitDetailsService = Mock(IPatientVisitDetailsService) {
             1 * delete(2) >> new PatientVisitDetails(id: 2)
         }
 

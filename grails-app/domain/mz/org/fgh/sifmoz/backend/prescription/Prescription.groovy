@@ -1,19 +1,16 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
-import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
-import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.duration.Duration
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
-import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 class Prescription {
 
     String id
-    int duration
     Date prescriptionDate
     Date expiryDate
     boolean current
@@ -24,13 +21,16 @@ class Prescription {
     boolean modified
     Clinic clinic
     Doctor doctor
+    Duration duration
+    PatientVisitDetails patientVisitDetails
 
-    static belongsTo = [patientVisitDetails: PatientVisitDetails]
+    static belongsTo = [PatientVisitDetails]
 
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
 
     static mapping = {
         id generator: "uuid"
+        patientVisitDetails lazy: true
     }
     static constraints = {
         prescriptionDate(nullable: false, blank: false,  validator: { prescriptionDate, urc ->
@@ -53,8 +53,6 @@ class Prescription {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
         setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)));
     }
 }

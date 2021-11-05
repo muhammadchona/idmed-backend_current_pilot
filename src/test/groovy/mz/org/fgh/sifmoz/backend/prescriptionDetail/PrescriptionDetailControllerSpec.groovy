@@ -27,7 +27,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the save action correctly persists"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * save(_ as PrescriptionDetail)
         }
 
@@ -71,7 +71,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * save(_ as PrescriptionDetail) >> { PrescriptionDetail prescriptionDetail ->
                 throw new ValidationException("Invalid instance", prescriptionDetail.errors)
             }
@@ -91,7 +91,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the show action with a null id"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the show action with a valid id"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * get(2) >> new PrescriptionDetail()
         }
 
@@ -129,7 +129,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the update action correctly persists"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * save(_ as PrescriptionDetail)
         }
 
@@ -150,7 +150,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * save(_ as PrescriptionDetail) >> { PrescriptionDetail prescriptionDetail ->
                 throw new ValidationException("Invalid instance", prescriptionDetail.errors)
             }
@@ -181,7 +181,7 @@ class PrescriptionDetailControllerSpec extends Specification implements Controll
 
     void "Test the delete action with an instance"() {
         given:
-        controller.prescriptionDetailService = Mock(PrescriptionDetailService) {
+        controller.prescriptionDetailService = Mock(IPrescriptionDetailService) {
             1 * delete(2) >> new PrescriptionDetail(id: 2)
         }
 

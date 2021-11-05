@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
 import grails.gorm.services.Service
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 
 interface IPatientVisitService {
@@ -15,6 +17,6 @@ interface IPatientVisitService {
 
     PatientVisit save(PatientVisit visit)
 
-    List<PatientVisit> getAllByPatientId(String patientId)
+    List<PatientVisit> getAllByClinicId(String clinicId, int offset, int max)
 
 }

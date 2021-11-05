@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import grails.rest.Resource
 
 class District {
@@ -7,7 +8,10 @@ class District {
     String code
     String description
 
-    static belongsTo = [province: Province]
+    @JsonBackReference
+    Province province
+
+    static belongsTo = [Province]
 
     static mapping = {
         id generator: "uuid"

@@ -3,6 +3,8 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -27,9 +29,7 @@ class PatientController extends RestfulController{
     }
 
     def show(String id) {
-        JSON.use('deep'){
-            render patientService.get(id) as JSON
-        }
+        render Utilities.parseToJSON(patientService.get(id))
     }
 
     @Transactional

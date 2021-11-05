@@ -27,7 +27,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the save action correctly persists"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * save(_ as PrescribedDrug)
         }
 
@@ -71,7 +71,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * save(_ as PrescribedDrug) >> { PrescribedDrug prescribedDrug ->
                 throw new ValidationException("Invalid instance", prescribedDrug.errors)
             }
@@ -91,7 +91,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the show action with a null id"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the show action with a valid id"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * get(2) >> new PrescribedDrug()
         }
 
@@ -129,7 +129,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the update action correctly persists"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * save(_ as PrescribedDrug)
         }
 
@@ -150,7 +150,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * save(_ as PrescribedDrug) >> { PrescribedDrug prescribedDrug ->
                 throw new ValidationException("Invalid instance", prescribedDrug.errors)
             }
@@ -181,7 +181,7 @@ class PrescribedDrugControllerSpec extends Specification implements ControllerUn
 
     void "Test the delete action with an instance"() {
         given:
-        controller.prescribedDrugService = Mock(PrescribedDrugService) {
+        controller.prescribedDrugService = Mock(IPrescribedDrugService) {
             1 * delete(2) >> new PrescribedDrug(id: 2)
         }
 

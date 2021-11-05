@@ -1,7 +1,5 @@
 package mz.org.fgh.sifmoz.backend.prescriptionDrug
 
-import grails.rest.Resource
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 

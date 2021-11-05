@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
@@ -13,12 +13,16 @@ class PatientServiceIdentifier {
     Date endDate
     Date reopenDate
     String value
+    String state
     boolean prefered
     IdentifierType identifierType
     ClinicalService service
     Clinic clinic
 
+    @JsonManagedReference
     static belongsTo = [patient: Patient]
+
+    @JsonManagedReference
     static hasMany = [episodes: Episode]
 
     static mapping = {
@@ -29,11 +33,7 @@ class PatientServiceIdentifier {
         startDate(nullable: true, blank: true, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
-        endDate(nullable: true, blank: true, validator: { endDate, urc ->
-            return endDate != null ? startDate < endDate : null
-        })
-        reopenDate(nullable: true, blank: true, validator: { reopenDate, urc ->
-            return reopenDate != null ? endDate <= reopenDate : null
-        })
+        endDate nullable: true
+        reopenDate nullable: true
     }
 }
