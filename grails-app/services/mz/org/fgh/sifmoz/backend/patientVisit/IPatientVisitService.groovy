@@ -17,6 +17,8 @@ interface IPatientVisitService {
 
     PatientVisit save(PatientVisit visit)
 
+    List<PatientVisit> getAllByPatientId(String patientId)
+
     List<PatientVisit> getAllByClinicId(String clinicId, int offset, int max)
 
 }

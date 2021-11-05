@@ -11,6 +11,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.group.GroupInfo
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class Patient {
     String id
@@ -41,7 +42,8 @@ class Patient {
             attributes: PatientAttribute,
             identifiers: PatientServiceIdentifier,
             appointments: Appointment,
-            groups: GroupInfo
+            groups: GroupInfo,
+            patientVisits: PatientVisit
     ]
 
     static mapping = {
