@@ -8,12 +8,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 class PatientVisitController extends RestfulController{
 
-    PatientVisitService patientVisitService
+    IPatientVisitService patientVisitService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -83,5 +82,9 @@ class PatientVisitController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getAllByClinicId(String clinicId, int offset, int max) {
+        respond patientVisitService.getAllByClinicId(clinicId, offset, max)
     }
 }

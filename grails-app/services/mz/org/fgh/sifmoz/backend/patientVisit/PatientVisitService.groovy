@@ -1,19 +1,16 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
 import grails.gorm.services.Service
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import grails.gorm.transactions.Transactional
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.packaging.Pack
 
+@Transactional
 @Service(PatientVisit)
-interface PatientVisitService {
+abstract class PatientVisitService implements IPatientVisitService{
 
-    PatientVisit get(Serializable id)
-
-    List<PatientVisit> list(Map args)
-
-    Long count()
-
-    PatientVisit delete(Serializable id)
-
-    PatientVisit save(PatientVisit visit)
-
+    @Override
+    List<PatientVisit> getAllByClinicId(String clinicId, int offset, int max) {
+        return PatientVisit.findAllByClinic(Clinic.findById(clinicId),[offset: offset, max: max])
+    }
 }

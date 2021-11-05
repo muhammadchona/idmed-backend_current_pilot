@@ -1,11 +1,13 @@
 package mz.org.fgh.sifmoz.backend.clinic
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class Clinic {
     String id
     String code

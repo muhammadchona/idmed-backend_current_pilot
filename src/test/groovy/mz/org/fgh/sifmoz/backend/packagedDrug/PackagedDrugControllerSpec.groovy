@@ -27,7 +27,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the save action correctly persists"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * save(_ as PackagedDrug)
         }
 
@@ -71,7 +71,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * save(_ as PackagedDrug) >> { PackagedDrug packagedDrug ->
                 throw new ValidationException("Invalid instance", packagedDrug.errors)
             }
@@ -91,7 +91,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the show action with a null id"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the show action with a valid id"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * get(2) >> new PackagedDrug()
         }
 
@@ -129,7 +129,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the update action correctly persists"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * save(_ as PackagedDrug)
         }
 
@@ -150,7 +150,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * save(_ as PackagedDrug) >> { PackagedDrug packagedDrug ->
                 throw new ValidationException("Invalid instance", packagedDrug.errors)
             }
@@ -181,7 +181,7 @@ class PackagedDrugControllerSpec extends Specification implements ControllerUnit
 
     void "Test the delete action with an instance"() {
         given:
-        controller.packagedDrugService = Mock(PackagedDrugService) {
+        controller.packagedDrugService = Mock(IPackagedDrugService) {
             1 * delete(2) >> new PackagedDrug(id: 2)
         }
 

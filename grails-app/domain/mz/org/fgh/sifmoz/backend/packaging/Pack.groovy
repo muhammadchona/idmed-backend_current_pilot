@@ -1,9 +1,6 @@
 package mz.org.fgh.sifmoz.backend.packaging
 
-import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.doctor.Doctor
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
@@ -14,6 +11,7 @@ class Pack {
     boolean modified
     Date packDate
     Date pickupDate
+    Date nextPickUpDate
     int weeksSupply
     Date dateReturned
     int stockReturned
