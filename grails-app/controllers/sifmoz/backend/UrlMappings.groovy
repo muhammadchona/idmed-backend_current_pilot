@@ -14,6 +14,13 @@ class UrlMappings {
         get "/patientServiceIdentifier/clinic/$clinicId(.$format)?"(controller:'patientServiceIdentifier', action:'getByClinicId')
         get "/episode/clinic/$clinicId(.$format)?"(controller:'episode', action:'getByClinicId')
         get "/doctor/clinic/$clinicId(.$format)?"(controller:'doctor', action:'getByClinicId')
+        get "/patientVisit/clinic/$clinicId(.$format)?"(controller:'patientVisit', action:'getAllByClinicId')
+        get "/patientVisitDetails/clinic/$clinicId(.$format)?"(controller:'patientVisitDetails', action:'getAllByClinicId')
+        get "/prescription/clinic/$clinicId(.$format)?"(controller:'prescription', action:'getAllByClinicId')
+        get "/pack/clinic/$clinicId(.$format)?"(controller:'pack', action:'getAllByClinicId')
+        get "/packagedDrug/pack/$packId(.$format)?"(controller:'packagedDrug', action:'getAllByPackId')
+        get "/prescribedDrug/prescription/$prescriptionId(.$format)?"(controller:'prescribedDrug', action:'getAllByPrescriptionId')
+        get "/prescriptionDetail/prescription/$prescriptionId(.$format)?"(controller:'prescriptionDetail', action:'getAllByPrescriptionId')
 
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')

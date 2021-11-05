@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.therapeuticRegimen
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
@@ -10,6 +11,7 @@ class TherapeuticRegimen {
     String code
   //  boolean pedhiatric
     String description
+    @JsonBackReference
     static belongsTo = [clincalService: ClinicalService]
     static hasMany = [drugs: Drug]
 

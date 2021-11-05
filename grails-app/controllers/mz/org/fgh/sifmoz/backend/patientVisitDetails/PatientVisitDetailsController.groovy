@@ -2,18 +2,17 @@ package mz.org.fgh.sifmoz.backend.patientVisitDetails
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 class PatientVisitDetailsController extends RestfulController{
 
-    PatientVisitDetailsService patientVisitDetailsService
+    IPatientVisitDetailsService patientVisitDetailsService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -29,6 +28,8 @@ class PatientVisitDetailsController extends RestfulController{
 
     def show(String id) {
         respond patientVisitDetailsService.get(id)
+        /*PatientVisitDetails patientVisitDetails = patientVisitDetailsService.get(id)
+        render Utilities.parseToJSON(patientVisitDetails)*/
     }
 
     @Transactional
@@ -83,5 +84,9 @@ class PatientVisitDetailsController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getAllByClinicId(String clinicId, int offset, int max) {
+        respond patientVisitDetailsService.getAllByClinicId(clinicId, offset, max)
     }
 }

@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.patient
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.appointment.Appointment
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
@@ -23,12 +24,19 @@ class Patient {
     String address
     String addressReference
     boolean accountstatus
+    @JsonManagedReference
     Province province
+    @JsonManagedReference
     Localidade bairro
+    @JsonManagedReference
     District district
+    @JsonManagedReference
     PostoAdministrativo postoAdministrativo
 
+    @JsonManagedReference
     static belongsTo = [clinic: Clinic]
+
+    @JsonBackReference
     static hasMany = [
             attributes: PatientAttribute,
             identifiers: PatientServiceIdentifier,

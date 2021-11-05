@@ -1,6 +1,5 @@
 package mz.org.fgh.sifmoz.backend.episode
 
-
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
@@ -12,8 +11,8 @@ import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
 class Episode {
     String id
-    Date startDate
-    Date stopDate
+    Date episodeDate
+    Date creationDate
     StartStopReason startStopReason
     String notes
     EpisodeType episodeType
@@ -28,12 +27,8 @@ class Episode {
         id generator: "uuid"
     }
     static constraints = {
-        startDate(nullable: false, blank: false, validator: { startDate, urc ->
-            return startDate <= new Date()
+        episodeDate(nullable: false, blank: false, validator: { episodeDate, urc ->
+            return episodeDate <= new Date()
         })
-        stopDate(nullable: true, blank: true, validator: { stopDate, urc ->
-            return stopDate != null ? startDate < stopDate : null
-        })
-
     }
 }

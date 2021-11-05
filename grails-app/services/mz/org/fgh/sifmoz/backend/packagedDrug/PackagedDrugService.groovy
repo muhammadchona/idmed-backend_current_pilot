@@ -1,18 +1,15 @@
 package mz.org.fgh.sifmoz.backend.packagedDrug
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
+import mz.org.fgh.sifmoz.backend.packaging.Pack
 
+@Transactional
 @Service(PackagedDrug)
-interface PackagedDrugService {
+abstract class PackagedDrugService implements IPackagedDrugService{
 
-    PackagedDrug get(Serializable id)
-
-    List<PackagedDrug> list(Map args)
-
-    Long count()
-
-    PackagedDrug delete(Serializable id)
-
-    PackagedDrug save(PackagedDrug packagedDrug)
-
+    @Override
+    List<PackagedDrug> getAllByPackId(String packId) {
+        return PackagedDrug.findAllByPack(Pack.findById(packId))
+    }
 }

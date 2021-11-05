@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class PrescribedDrugServiceSpec extends Specification {
+class IPrescribedDrugServiceSpec extends Specification {
 
-    PrescribedDrugService prescribedDrugService
+    IPrescribedDrugService prescribedDrugService
     @Autowired Datastore datastore
 
     private Long setupData() {
