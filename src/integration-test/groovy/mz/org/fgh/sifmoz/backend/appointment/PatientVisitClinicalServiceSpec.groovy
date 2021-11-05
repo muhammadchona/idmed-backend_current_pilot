@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.appointment
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisitService
+import mz.org.fgh.sifmoz.backend.patientVisit.IPatientVisitService
 import org.grails.datastore.mapping.core.Datastore
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
@@ -12,7 +12,7 @@ import spock.lang.Specification
 @Rollback
 class PatientVisitClinicalServiceSpec extends Specification {
 
-    PatientVisitService patientVisitService
+    IPatientVisitService patientVisitService
     @Autowired Datastore datastore
 
     private Long setupData() {

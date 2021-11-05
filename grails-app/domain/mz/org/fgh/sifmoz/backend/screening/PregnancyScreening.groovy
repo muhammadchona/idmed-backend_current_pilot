@@ -6,9 +6,9 @@ import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class PregnancyScreening {
     String id
-    boolean pregnant;
+    boolean pregnant
     boolean menstruationLastTwoMonths
-    Date childDeliveryPrevision
+    Date lastMenstruation
     static belongsTo = [visit: PatientVisit]
 
     static mapping = {
@@ -16,6 +16,7 @@ class PregnancyScreening {
     }
 
     static constraints = {
+        lastMenstruation(nullable: true, blank: true)
     }
 
     @Override
@@ -23,7 +24,7 @@ class PregnancyScreening {
         return "PregnancyScreening{" +
                 "pregnant=" + pregnant +
                 ", menstruationLastTwoMonths=" + menstruationLastTwoMonths +
-                ", childDeliveryPrevision=" + childDeliveryPrevision +
+                ", childDeliveryPrevision=" + lastMenstruation +
                 '}';
     }
 }

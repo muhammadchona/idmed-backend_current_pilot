@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.serviceProgram
+package mz.org.fgh.sifmoz.backend.patientVisit
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
@@ -8,20 +8,20 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class ServiceIPatientServiceSpec extends Specification {
+class IPatientVisitServiceSpec extends Specification {
 
-    PatientProgramService patientProgramService
+    IPatientVisitService patientVisitService
     @Autowired Datastore datastore
 
     private Long setupData() {
         // TODO: Populate valid domain instances and return a valid ID
-        //new PatientProgram(...).save(flush: true, failOnError: true)
-        //new PatientProgram(...).save(flush: true, failOnError: true)
-        //PatientProgram patientProgram = new PatientProgram(...).save(flush: true, failOnError: true)
-        //new PatientProgram(...).save(flush: true, failOnError: true)
-        //new PatientProgram(...).save(flush: true, failOnError: true)
+        //new PatientVisit(...).save(flush: true, failOnError: true)
+        //new PatientVisit(...).save(flush: true, failOnError: true)
+        //PatientVisit patientVisit = new PatientVisit(...).save(flush: true, failOnError: true)
+        //new PatientVisit(...).save(flush: true, failOnError: true)
+        //new PatientVisit(...).save(flush: true, failOnError: true)
         assert false, "TODO: Provide a setupData() implementation for this generated test suite"
-        //patientProgram.id
+        //patientVisit.id
     }
 
     void cleanup() {
@@ -32,17 +32,17 @@ class ServiceIPatientServiceSpec extends Specification {
         setupData()
 
         expect:
-        patientProgramService.get(1) != null
+        patientVisitService.get(1) != null
     }
 
     void "test list"() {
         setupData()
 
         when:
-        List<ServicePatient> patientProgramList = patientProgramService.list(max: 2, offset: 2)
+        List<PatientVisit> patientVisitList = patientVisitService.list(max: 2, offset: 2)
 
         then:
-        patientProgramList.size() == 2
+        patientVisitList.size() == 2
         assert false, "TODO: Verify the correct instances are returned"
     }
 
@@ -50,30 +50,30 @@ class ServiceIPatientServiceSpec extends Specification {
         setupData()
 
         expect:
-        patientProgramService.count() == 5
+        patientVisitService.count() == 5
     }
 
     void "test delete"() {
-        Long patientProgramId = setupData()
+        Long patientVisitId = setupData()
 
         expect:
-        patientProgramService.count() == 5
+        patientVisitService.count() == 5
 
         when:
-        patientProgramService.delete(patientProgramId)
+        patientVisitService.delete(patientVisitId)
         datastore.currentSession.flush()
 
         then:
-        patientProgramService.count() == 4
+        patientVisitService.count() == 4
     }
 
     void "test save"() {
         when:
         assert false, "TODO: Provide a valid instance to save"
-        ServicePatient patientProgram = new ServicePatient()
-        patientProgramService.save(patientProgram)
+        PatientVisit patientVisit = new PatientVisit()
+        patientVisitService.save(patientVisit)
 
         then:
-        patientProgram.id != null
+        patientVisit.id != null
     }
 }

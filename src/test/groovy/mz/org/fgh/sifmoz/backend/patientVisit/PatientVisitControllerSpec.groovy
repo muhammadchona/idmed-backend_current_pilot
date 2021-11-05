@@ -27,7 +27,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * save(_ as PatientVisit)
         }
 
@@ -71,7 +71,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * save(_ as PatientVisit) >> { PatientVisit patientVisit ->
                 throw new ValidationException("Invalid instance", patientVisit.errors)
             }
@@ -91,7 +91,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * get(2) >> new PatientVisit()
         }
 
@@ -129,7 +129,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * save(_ as PatientVisit)
         }
 
@@ -150,7 +150,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * save(_ as PatientVisit) >> { PatientVisit patientVisit ->
                 throw new ValidationException("Invalid instance", patientVisit.errors)
             }
@@ -181,7 +181,7 @@ class PatientVisitControllerSpec extends Specification implements ControllerUnit
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientVisitService = Mock(PatientVisitService) {
+        controller.patientVisitService = Mock(IPatientVisitService) {
             1 * delete(2) >> new PatientVisit(id: 2)
         }
 

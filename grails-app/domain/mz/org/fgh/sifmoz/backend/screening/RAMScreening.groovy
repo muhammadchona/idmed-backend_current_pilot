@@ -8,7 +8,7 @@ class RAMScreening {
     String id
     String adverseReaction
     boolean adverseReactionMedicine
-    boolean referedToUSRam
+   // boolean referedToUSRam
     static belongsTo = [visit: PatientVisit]
 
     static mapping = {
@@ -16,6 +16,7 @@ class RAMScreening {
     }
 
     static constraints = {
+        adverseReaction(nullable: true, blank: true)
     }
 
     @Override

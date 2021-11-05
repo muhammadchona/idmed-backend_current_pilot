@@ -1,10 +1,9 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
 import grails.gorm.services.Service
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-@Service(PatientVisit)
-interface PatientVisitService {
+
+interface IPatientVisitService {
 
     PatientVisit get(Serializable id)
 
@@ -15,5 +14,7 @@ interface PatientVisitService {
     PatientVisit delete(Serializable id)
 
     PatientVisit save(PatientVisit visit)
+
+    List<PatientVisit> getAllByPatientId(String patientId)
 
 }
