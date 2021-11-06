@@ -66,5 +66,6 @@ class Patient {
         appointments nullable: true
         groups nullable: true
         clinic nullable: false
+        patientVisits nullable: true
     }
 }

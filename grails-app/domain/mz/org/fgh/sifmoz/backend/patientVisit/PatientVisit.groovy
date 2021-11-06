@@ -25,5 +25,11 @@ class PatientVisit {
     }
 
     static constraints = {
+        patientVisitDetails nullable: true
+        adherenceScreening nullable: true
+        vitalSigns nullable: true
+        pregnancyScreening nullable: true
+        tbScreening nullable: true
+        ramScreening nullable: true
     }
 }
