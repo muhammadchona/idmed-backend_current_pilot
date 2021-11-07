@@ -27,7 +27,7 @@ class PatientVisitController extends RestfulController{
         respond patientVisitService.list(params), model:[visitCount: patientVisitService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond patientVisitService.get(id)
     }
 
@@ -76,7 +76,7 @@ class PatientVisitController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || patientVisitService.delete(id) == null) {
             render status: NOT_FOUND
             return

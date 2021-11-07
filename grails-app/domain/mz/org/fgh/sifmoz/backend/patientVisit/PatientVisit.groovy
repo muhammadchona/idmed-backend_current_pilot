@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.screening.PregnancyScreening
 import mz.org.fgh.sifmoz.backend.screening.RAMScreening
 import mz.org.fgh.sifmoz.backend.screening.TBScreening
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
+import org.springframework.cglib.proxy.Mixin
 
 class PatientVisit {
     String id
@@ -23,6 +24,8 @@ class PatientVisit {
     static mapping = {
         id generator: "uuid"
     }
+
+
 
     static constraints = {
         patientVisitDetails nullable: true
