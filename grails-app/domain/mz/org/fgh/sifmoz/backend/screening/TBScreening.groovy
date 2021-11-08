@@ -37,7 +37,6 @@ class TBScreening {
                 ", losingWeight=" + losingWeight +
                 ", treatmentTB=" + treatmentTB +
                 ", treatmentTPI=" + treatmentTPI +
-                ", referedToUSTB=" + referedToUSTB +
                 ", startTreatmentDate=" + startTreatmentDate +
                 ", fatigueOrTirednessLastTwoWeeks=" + fatigueOrTirednessLastTwoWeeks +
                 ", sweating=" + sweating +

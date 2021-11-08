@@ -86,7 +86,12 @@ class PatientVisitController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId, int offset, int max) {
-        respond patientVisitService.getAllByClinicId(clinicId, offset, max)
+       // respond patientVisitService.getAllByClinicId(clinicId, offset, max)
+      JSON.use('deep') {
+          //  render patientVisitService.getAllByClinicId(clinicId, offset, max), [exclude:['patient']]as JSON
+              render patientVisitService.getAllByClinicId(clinicId, offset, max) as JSON
+        }
+
     }
 
     def getByPatientId(String patientId) {
