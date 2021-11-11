@@ -12,6 +12,7 @@ class ClinicalService {
     String code
     String description
     IdentifierType identifierType
+    boolean active
 
     @JsonManagedReference
     static hasMany = [attributes: ClinicalServiceAttribute,
