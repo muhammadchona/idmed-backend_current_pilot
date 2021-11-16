@@ -1,20 +1,19 @@
 package mz.org.fgh.sifmoz.backend.clinicSector
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 
 class ClinicSectorController extends RestfulController{
 
-    ClinicSectorService clinicSectorService
+    IClinicSectorService clinicSectorService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -84,5 +83,10 @@ class ClinicSectorController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getAllByClinicId(String clinicId, int offset, int max) {
+            render clinicSectorService.getAllByClinicId(clinicId, offset, max) as JSON
+
     }
 }

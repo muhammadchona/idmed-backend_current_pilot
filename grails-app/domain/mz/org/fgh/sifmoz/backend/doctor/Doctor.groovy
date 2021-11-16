@@ -14,7 +14,7 @@ class Doctor {
     String telephone
     String email
     Clinic clinic
-    int category
+    // int category
     boolean active
     static hasMany = [prescriptions: Prescription]
 
