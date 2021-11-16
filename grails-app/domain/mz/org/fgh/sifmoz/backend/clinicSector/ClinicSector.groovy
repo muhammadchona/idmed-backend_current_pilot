@@ -7,6 +7,7 @@ class ClinicSector {
     String id
     String code
     String description
+   boolean active
 
     static belongsTo = [clinic: Clinic]
 
