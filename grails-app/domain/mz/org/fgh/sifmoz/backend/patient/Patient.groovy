@@ -35,7 +35,8 @@ class Patient {
     PostoAdministrativo postoAdministrativo
 
     @JsonManagedReference
-    static belongsTo = [clinic: Clinic]
+    Clinic clinic
+    static belongsTo = [Clinic]
 
     @JsonBackReference
     static hasMany = [
@@ -67,5 +68,32 @@ class Patient {
         groups nullable: true
         clinic nullable: false
         patientVisits nullable: true
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "appointments=" + appointments +
+                ", identifiers=" + identifiers +
+                ", patientVisits=" + patientVisits +
+                ", groups=" + groups +
+                ", attributes=" + attributes +
+                ", clinic=" + clinic +
+                ", id='" + id + '\'' +
+                ", firstNames='" + firstNames + '\'' +
+                ", middleNames='" + middleNames + '\'' +
+                ", lastNames='" + lastNames + '\'' +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", cellphone='" + cellphone + '\'' +
+                ", alternativeCellphone='" + alternativeCellphone + '\'' +
+                ", address='" + address + '\'' +
+                ", addressReference='" + addressReference + '\'' +
+                ", accountstatus=" + accountstatus +
+                ", province=" + province +
+                ", bairro=" + bairro +
+                ", district=" + district +
+                ", postoAdministrativo=" + postoAdministrativo +
+                '}';
     }
 }

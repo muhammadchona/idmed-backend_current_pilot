@@ -3,6 +3,9 @@ package mz.org.fgh.sifmoz.backend.patientVisit
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.screening.TBScreening
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -28,7 +31,14 @@ class PatientVisitController extends RestfulController{
     }
 
     def show(String id) {
-        respond patientVisitService.get(id)
+        //respond patientVisitService.get(id)
+        PatientVisit patientVisit = patientVisitService.get(id)
+        for (PatientVisitDetails visitDetails : patientVisit.getPatientVisitDetails()) {
+            visitDetails.getPrescriptions().getAt(0).getDoctor().setPrescriptions(null)
+            visitDetails.getEpisode().setPatientVisitDetails(null)
+            visitDetails.getEpisode().setPatientServiceIdentifier(null)
+        }
+        render Utilities.parseToJSON(patientVisit)
     }
 
     @Transactional
@@ -86,17 +96,18 @@ class PatientVisitController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId, int offset, int max) {
-       // respond patientVisitService.getAllByClinicId(clinicId, offset, max)
-      JSON.use('deep') {
+       respond patientVisitService.getAllByClinicId(clinicId, offset, max)
+      /*JSON.use('deep') {
           //  render patientVisitService.getAllByClinicId(clinicId, offset, max), [exclude:['patient']]as JSON
               render patientVisitService.getAllByClinicId(clinicId, offset, max) as JSON
-        }
+        }*/
 
     }
 
     def getByPatientId(String patientId) {
-        JSON.use('deep') {
+        respond patientVisitService.getAllByPatientId(patientId)
+        /*JSON.use('deep') {
             render patientVisitService.getAllByPatientId(patientId) as JSON
-        }
+        }*/
     }
 }

@@ -33,7 +33,8 @@ class ProvinceController extends RestfulController{
     }
 
     def show(String id) {
-        render Utilities.parseToJSON(provinceService.get(id))
+        Province province = provinceService.get(id)
+        render Utilities.parseToJSON(province)
         /*render(contentType: "application/json") {
             (Utilities.parseToJSON(province))
         }*/

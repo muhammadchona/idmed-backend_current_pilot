@@ -12,6 +12,7 @@ class ClinicalService {
     String id
     String code
     String description
+    @JsonManagedReference
     IdentifierType identifierType
     boolean active
 

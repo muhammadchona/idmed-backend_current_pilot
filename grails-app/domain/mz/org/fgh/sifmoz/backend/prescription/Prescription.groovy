@@ -1,5 +1,8 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.duration.Duration
@@ -19,18 +22,26 @@ class Prescription {
     String patientType
     String patientStatus
     boolean modified
+    @JsonIgnore
     Clinic clinic
+    @JsonManagedReference
     Doctor doctor
+    @JsonManagedReference
     Duration duration
+    @JsonBackReference
     PatientVisitDetails patientVisitDetails
 
     static belongsTo = [PatientVisitDetails]
 
+    @JsonIgnore
+    @JsonManagedReference
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
 
     static mapping = {
         id generator: "uuid"
         patientVisitDetails lazy: true
+        prescribedDrugs lazy: true
+        prescriptionDetails lazy: true
     }
     static constraints = {
         prescriptionDate(nullable: false, blank: false,  validator: { prescriptionDate, urc ->

@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.utilities;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class Utilities {
 
     public static String parseToJSON(Object object) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper.writeValueAsString(object);
     }

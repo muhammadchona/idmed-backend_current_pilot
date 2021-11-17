@@ -1,7 +1,11 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -26,7 +30,17 @@ class PatientServiceIdentifierController extends RestfulController{
     }
 
     def show(String id) {
-        respond patientServiceIdentifierService.get(id)
+        PatientServiceIdentifier identifier = patientServiceIdentifierService.get(id)
+        identifier.getPatient().setClinic(null)
+        identifier.getPatient().setPatientVisits(null)
+        identifier.getPatient().setClinic(null)
+        identifier.getPatient().setIdentifiers(null)
+        identifier.getPatient().setAppointments(null)
+        for (Episode episode : identifier.episodes) {
+            episode.setPatientVisitDetails(null)
+            episode.setPatientServiceIdentifier(null)
+        }
+        render Utilities.parseToJSON(identifier)
     }
 
     @Transactional

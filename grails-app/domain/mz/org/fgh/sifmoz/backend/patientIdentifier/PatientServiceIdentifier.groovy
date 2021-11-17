@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
@@ -15,12 +16,16 @@ class PatientServiceIdentifier {
     String value
     String state
     boolean prefered
+    @JsonManagedReference
     IdentifierType identifierType
+    @JsonManagedReference
     ClinicalService service
+    @JsonIgnore
     Clinic clinic
 
     @JsonManagedReference
-    static belongsTo = [patient: Patient]
+    Patient patient
+    static belongsTo = [Patient]
 
     @JsonManagedReference
     static hasMany = [episodes: Episode]
@@ -35,5 +40,24 @@ class PatientServiceIdentifier {
         })
         endDate nullable: true
         reopenDate nullable: true
+    }
+
+
+    @Override
+    public String toString() {
+        return "PatientServiceIdentifier{" +
+                "patient=" + patient +
+                ", episodes=" + episodes +
+                ", id='" + id + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", reopenDate=" + reopenDate +
+                ", value='" + value + '\'' +
+                ", state='" + state + '\'' +
+                ", prefered=" + prefered +
+                ", identifierType=" + identifierType +
+                ", service=" + service +
+                ", clinic=" + clinic +
+                '}';
     }
 }
