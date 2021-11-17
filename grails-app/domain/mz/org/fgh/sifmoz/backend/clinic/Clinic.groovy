@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.clinic
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
@@ -14,7 +15,9 @@ class Clinic {
     String notes
     String telephone
     String clinicName
+    @JsonIgnore
     Province province
+    @JsonIgnore
     District district
     boolean mainClinic
     String uuid = UUID.randomUUID().toString()

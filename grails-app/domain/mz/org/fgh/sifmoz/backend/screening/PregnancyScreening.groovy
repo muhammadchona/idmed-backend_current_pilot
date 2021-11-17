@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.screening
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
@@ -9,7 +10,10 @@ class PregnancyScreening {
     boolean pregnant
     boolean menstruationLastTwoMonths
     Date lastMenstruation
-    static belongsTo = [visit: PatientVisit]
+    @JsonBackReference
+    PatientVisit visit
+
+    static belongsTo = [PatientVisit]
 
     static mapping = {
         id generator: "uuid"

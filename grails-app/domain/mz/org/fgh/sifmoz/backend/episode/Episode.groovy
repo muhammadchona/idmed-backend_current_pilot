@@ -1,5 +1,8 @@
 package mz.org.fgh.sifmoz.backend.episode
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
@@ -15,12 +18,19 @@ class Episode {
     Date creationDate
     StartStopReason startStopReason
     String notes
+    @JsonManagedReference
     EpisodeType episodeType
+    @JsonIgnore
     ClinicSector clinicSector
+    @JsonIgnore
     Clinic clinic
 
-    static belongsTo = [patientServiceIdentifier: PatientServiceIdentifier]
+    @JsonIgnore
+    @JsonBackReference
+    PatientServiceIdentifier patientServiceIdentifier
+    static belongsTo = [PatientServiceIdentifier]
 
+    @JsonBackReference
     static hasMany = [patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
@@ -30,5 +40,21 @@ class Episode {
         episodeDate(nullable: false, blank: false, validator: { episodeDate, urc ->
             return episodeDate <= new Date()
         })
+    }
+
+    @Override
+    public String toString() {
+        return "Episode{" +
+                "patientVisitDetails=" + patientVisitDetails +
+                ", patientServiceIdentifier=" + patientServiceIdentifier +
+                ", id='" + id + '\'' +
+                ", episodeDate=" + episodeDate +
+                ", creationDate=" + creationDate +
+                ", startStopReason=" + startStopReason +
+                ", notes='" + notes + '\'' +
+                ", episodeType=" + episodeType +
+                ", clinicSector=" + clinicSector +
+                ", clinic=" + clinic +
+                '}';
     }
 }

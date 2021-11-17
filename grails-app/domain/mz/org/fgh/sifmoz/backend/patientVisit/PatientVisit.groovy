@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.patientVisit
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
@@ -13,10 +15,14 @@ import org.springframework.cglib.proxy.Mixin
 class PatientVisit {
     String id
     Date visitDate
+    @JsonIgnore
     Clinic clinic
 
-    static belongsTo = [patient: Patient]
+    @JsonIgnore
+    Patient patient
+    static belongsTo = [Patient]
 
+    @JsonManagedReference
     static hasMany = [patientVisitDetails: PatientVisitDetails, adherenceScreening: AdherenceScreening, vitalSigns: VitalSignsScreening,
                       pregnancyScreening : PregnancyScreening, tbScreening: TBScreening, ramScreening: RAMScreening]
 

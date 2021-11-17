@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.drug
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
@@ -16,11 +17,14 @@ class Drug {
     String defaultPeriodTreatment //  periofo a tomar --commbo (dia , semana , mes, ano)
     String fnmCode
     String uuidOpenmrs = UUID.randomUUID().toString()
-    static belongsTo = [form: Form]
+    @JsonBackReference
+    Form form
+    static belongsTo = [Form]
     boolean active
   //  static hasMany = [therapeuticRegimens: TherapeuticRegimen]
     static mapping = {
         id generator: "uuid"
+        form lazy: true
     }
 
     static constraints = {

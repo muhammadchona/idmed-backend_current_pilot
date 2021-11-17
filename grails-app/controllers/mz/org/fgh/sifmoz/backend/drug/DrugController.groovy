@@ -27,8 +27,8 @@ class DrugController extends RestfulController{
         respond drugService.list(params), model:[drugCount: drugService.count()]
     }
 
-    def show(Long id) {
-        respond drugService.get(id)
+    def show(String id) {
+        respond Drug.findById(id)
     }
 
     @Transactional
