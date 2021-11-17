@@ -20,6 +20,7 @@ class Clinic {
     @JsonIgnore
     District district
     boolean mainClinic
+    boolean active
     String uuid = UUID.randomUUID().toString()
 
     static belongsTo = [nationalClinic: NationalClinic]
