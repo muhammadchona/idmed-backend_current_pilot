@@ -20,7 +20,7 @@ class Episode {
     String notes
     @JsonManagedReference
     EpisodeType episodeType
-    @JsonIgnore
+    @JsonManagedReference
     ClinicSector clinicSector
     @JsonIgnore
     Clinic clinic
