@@ -30,7 +30,7 @@ class DoctorController extends RestfulController{
         respond doctorService.list(params), model:[doctorCount: doctorService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond doctorService.get(id)
     }
 

@@ -30,7 +30,7 @@ class TherapeuticRegimenController extends RestfulController{
         }
     }
 
-    def show(Long id) {
+    def show(String id) {
         JSON.use('deep'){
             render therapeuticRegimenService.get(id) as JSON
         }
