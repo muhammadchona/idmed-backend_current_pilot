@@ -13,6 +13,7 @@ class HealthInformationSystem {
 
     static mapping = {
         id generator: "uuid"
+        interoperabilityAttributes (cascade: "all-delete-orphan")
     }
     static constraints = {
         abbreviation nullable: false, unique: true

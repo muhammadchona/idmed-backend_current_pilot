@@ -3,6 +3,8 @@ package mz.org.fgh.sifmoz.backend.healthInformationSystem
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttributeService
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -13,6 +15,8 @@ import grails.gorm.transactions.Transactional
 class HealthInformationSystemController extends RestfulController{
 
     HealthInformationSystemService healthInformationSystemService
+
+    InteroperabilityAttributeService interoperabilityAttributeService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -28,7 +32,7 @@ class HealthInformationSystemController extends RestfulController{
         }
     }
 
-    def show(Long id) {
+    def show(String id) {
         JSON.use('deep'){
             render healthInformationSystemService.get(id) as JSON
         }
@@ -47,6 +51,21 @@ class HealthInformationSystemController extends RestfulController{
         }
 
         try {
+        //    HealthInformationSystem hisBd = healthInformationSystemService.get(healthInformationSystem.getId())
+            /*   if(healthInformationSystem.getId() != null){
+                   hisBd.interoperabilityAttributes.clear();
+                   hisBd.setDescription(healthInformationSystem.getDescription())
+                   hisBd.setActive(healthInformationSystem.active)
+                   hisBd.setAbbreviation(healthInformationSystem.getAbbreviation())
+                   hisBd.setInteroperabilityAttributes(healthInformationSystem.interoperabilityAttributes)
+               }*/
+          //  healthInformationSystem.removeFromInteroperabilityAttributes(hisBd.interoperabilityAttributes)
+//            healthInformationSystem.interoperabilityAttributes.each{ key, value ->
+//                interoperabilityAttributeService.delete(key)
+//            }
+     //       for (item in  hisBd.interoperabilityAttributes){
+       //         interoperabilityAttributeService.delete(item.getId())
+        //    }
             healthInformationSystemService.save(healthInformationSystem)
         } catch (ValidationException e) {
             respond healthInformationSystem.errors
