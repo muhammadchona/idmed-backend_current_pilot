@@ -11,6 +11,7 @@ class NationalClinic {
     String facilityName
     String telephone
     FacilityType facilityType
+    boolean active
 
     static belongsTo = [province: Province]
     static hasMany = [clinics: Clinic]

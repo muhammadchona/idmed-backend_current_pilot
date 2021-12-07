@@ -28,7 +28,7 @@ class FormController extends RestfulController{
         respond formService.list(params), model:[formCount: formService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond formService.get(id)
     }
 
