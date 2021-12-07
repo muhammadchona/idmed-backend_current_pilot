@@ -27,7 +27,7 @@ class IdentifierTypeController extends RestfulController{
         respond identifierTypeService.list(params), model:[identifierTypeCount: identifierTypeService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond identifierTypeService.get(id)
     }
 

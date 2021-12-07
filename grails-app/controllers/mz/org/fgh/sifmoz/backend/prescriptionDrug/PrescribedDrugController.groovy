@@ -21,11 +21,11 @@ class PrescribedDrugController extends RestfulController{
     }
 
     def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 100, 100)
         respond prescribedDrugService.list(params), model:[prescribedDrugCount: prescribedDrugService.count()]
     }
 
-    def show(Long id) {
+    def show(String id) {
         respond prescribedDrugService.get(id)
     }
 
