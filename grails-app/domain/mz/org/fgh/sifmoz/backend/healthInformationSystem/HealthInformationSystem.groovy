@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.healthInformationSystem
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 
 class HealthInformationSystem {
@@ -9,6 +10,7 @@ class HealthInformationSystem {
     String description
     boolean active
 
+    @JsonManagedReference
     static hasMany = [interoperabilityAttributes: InteroperabilityAttribute]
 
     static mapping = {

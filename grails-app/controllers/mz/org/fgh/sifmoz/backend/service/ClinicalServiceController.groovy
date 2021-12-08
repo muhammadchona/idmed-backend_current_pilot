@@ -3,6 +3,10 @@ package mz.org.fgh.sifmoz.backend.service
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -29,7 +33,17 @@ class ClinicalServiceController extends RestfulController{
     }
 
     def show(String id) {
-        respond clinicalServiceService.get(id)
+        /*JSON.use('deep') {
+            respond clinicalServiceService.get(id)
+        }*/
+
+        ClinicalService clinicalService = clinicalServiceService.get(id)
+       /* for (PatientVisitDetails visitDetails : patientVisit.getPatientVisitDetails()) {
+            visitDetails.getPrescriptions().getAt(0).getDoctor().setPrescriptions(null)
+            visitDetails.getEpisode().setPatientVisitDetails(null)
+            visitDetails.getEpisode().setPatientServiceIdentifier(null)
+        }*/
+        render Utilities.parseToJSON(clinicalService)
     }
 
     @Transactional
