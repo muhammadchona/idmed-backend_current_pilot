@@ -38,11 +38,6 @@ class ClinicalServiceController extends RestfulController{
         }*/
 
         ClinicalService clinicalService = clinicalServiceService.get(id)
-       /* for (PatientVisitDetails visitDetails : patientVisit.getPatientVisitDetails()) {
-            visitDetails.getPrescriptions().getAt(0).getDoctor().setPrescriptions(null)
-            visitDetails.getEpisode().setPatientVisitDetails(null)
-            visitDetails.getEpisode().setPatientServiceIdentifier(null)
-        }*/
         render Utilities.parseToJSON(clinicalService)
     }
 

@@ -39,11 +39,6 @@ class HealthInformationSystemController extends RestfulController{
             render healthInformationSystemService.get(id) as JSON
         }*/
         HealthInformationSystem healthInformationSystem = healthInformationSystemService.get(id)
-        /* for (PatientVisitDetails visitDetails : patientVisit.getPatientVisitDetails()) {
-             visitDetails.getPrescriptions().getAt(0).getDoctor().setPrescriptions(null)
-             visitDetails.getEpisode().setPatientVisitDetails(null)
-             visitDetails.getEpisode().setPatientServiceIdentifier(null)
-         }*/
         render Utilities.parseToJSON(healthInformationSystem)
     }
 
@@ -60,21 +55,6 @@ class HealthInformationSystemController extends RestfulController{
         }
 
         try {
-        //    HealthInformationSystem hisBd = healthInformationSystemService.get(healthInformationSystem.getId())
-            /*   if(healthInformationSystem.getId() != null){
-                   hisBd.interoperabilityAttributes.clear();
-                   hisBd.setDescription(healthInformationSystem.getDescription())
-                   hisBd.setActive(healthInformationSystem.active)
-                   hisBd.setAbbreviation(healthInformationSystem.getAbbreviation())
-                   hisBd.setInteroperabilityAttributes(healthInformationSystem.interoperabilityAttributes)
-               }*/
-          //  healthInformationSystem.removeFromInteroperabilityAttributes(hisBd.interoperabilityAttributes)
-//            healthInformationSystem.interoperabilityAttributes.each{ key, value ->
-//                interoperabilityAttributeService.delete(key)
-//            }
-     //       for (item in  hisBd.interoperabilityAttributes){
-       //         interoperabilityAttributeService.delete(item.getId())
-        //    }
             healthInformationSystemService.save(healthInformationSystem)
         } catch (ValidationException e) {
             respond healthInformationSystem.errors
