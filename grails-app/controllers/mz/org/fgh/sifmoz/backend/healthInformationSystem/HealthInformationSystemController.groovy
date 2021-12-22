@@ -3,6 +3,10 @@ package mz.org.fgh.sifmoz.backend.healthInformationSystem
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttributeService
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -13,6 +17,8 @@ import grails.gorm.transactions.Transactional
 class HealthInformationSystemController extends RestfulController{
 
     HealthInformationSystemService healthInformationSystemService
+
+    InteroperabilityAttributeService interoperabilityAttributeService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -30,8 +36,8 @@ class HealthInformationSystemController extends RestfulController{
 
     def show(String id) {
         JSON.use('deep'){
-            render healthInformationSystemService.get(id) as JSON
-        }
+        HealthInformationSystem healthInformationSystem = healthInformationSystemService.get(id)
+        render Utilities.parseToJSON(healthInformationSystem)
     }
 
     @Transactional
