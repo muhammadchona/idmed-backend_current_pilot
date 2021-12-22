@@ -35,9 +35,7 @@ class HealthInformationSystemController extends RestfulController{
     }
 
     def show(String id) {
-        /*JSON.use('deep'){
-            render healthInformationSystemService.get(id) as JSON
-        }*/
+        JSON.use('deep'){
         HealthInformationSystem healthInformationSystem = healthInformationSystemService.get(id)
         render Utilities.parseToJSON(healthInformationSystem)
     }
@@ -87,7 +85,7 @@ class HealthInformationSystemController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || healthInformationSystemService.delete(id) == null) {
             render status: NOT_FOUND
             return

@@ -13,7 +13,7 @@ import grails.gorm.transactions.Transactional
 
 class InventoryStockAdjustmentController extends RestfulController{
 
-    IInventoryStockAdjustmentService inventoryStockAdjustmentService
+    InventoryStockAdjustmentService inventoryStockAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]

@@ -17,7 +17,6 @@ class Doctor {
     String email
     @JsonIgnore
     Clinic clinic
-    // int category
     boolean active
     @JsonIgnore
     static hasMany = [prescriptions: Prescription]

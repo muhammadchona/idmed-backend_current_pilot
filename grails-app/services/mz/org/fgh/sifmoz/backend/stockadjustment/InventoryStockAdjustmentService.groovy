@@ -1,11 +1,18 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
 import grails.gorm.services.Service
-import grails.gorm.transactions.Transactional
 
-@Transactional
 @Service(InventoryStockAdjustment)
-abstract class InventoryStockAdjustmentService extends StockAdjustmentService implements IInventoryStockAdjustmentService{
+interface InventoryStockAdjustmentService {
 
+    InventoryStockAdjustment get(Serializable id)
+
+    List<InventoryStockAdjustment> list(Map args)
+
+    Long count()
+
+    InventoryStockAdjustment delete(Serializable id)
+
+    InventoryStockAdjustment save(InventoryStockAdjustment inventoryStockAdjustment)
 
 }

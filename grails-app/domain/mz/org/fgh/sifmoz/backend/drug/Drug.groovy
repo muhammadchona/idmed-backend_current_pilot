@@ -16,7 +16,7 @@ class Drug {
     int defaultTimes// numero de vezes a tomar
     String defaultPeriodTreatment //  periofo a tomar --commbo (dia , semana , mes, ano)
     String fnmCode
-    String uuidOpenmrs = UUID.randomUUID().toString()
+    String uuidOpenmrs
     @JsonBackReference
     Form form
     static belongsTo = [Form]
@@ -31,6 +31,7 @@ class Drug {
         name nullable: false, blank: false
         fnmCode nullable: false, unique: true
         packSize(min: 0)
+        uuidOpenmrs nullable: true
      //   defaultTreatment(min: 1.00)
         defaultTimes(min:1)
     }
