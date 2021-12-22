@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
@@ -22,7 +23,8 @@ class Pack {
     String reasonForPackageReturn
     @JsonIgnore
     Clinic clinic
-    String dispenseMode
+    DispenseMode dispenseMode
+    char syncStatus = 'N'
 
     @JsonBackReference
     PatientVisitDetails patientVisitDetails
@@ -43,6 +45,8 @@ class Pack {
         pickupDate(nullable: false)
         weeksSupply(nullable: false)
         dateReturned(nullable: true)
+        syncStatus(nullable: true)
+        dispenseMode(nullable: true)
         reasonForPackageReturn(nullable: true,maxSize: 500)
     }
 }

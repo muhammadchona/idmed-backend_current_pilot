@@ -9,6 +9,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.PostoAdministrativo
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.group.GroupInfo
+import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
@@ -25,6 +26,10 @@ class Patient {
     String address
     String addressReference
     boolean accountstatus
+    String hisUuid
+    String hisLocation
+    String hisLocationName
+    HealthInformationSystem his
     @JsonManagedReference
     Province province
     @JsonManagedReference
@@ -52,6 +57,7 @@ class Patient {
     }
 
     static constraints = {
+        firstNames unique: ['middleNames', 'lastNames', 'gender', 'dateOfBirth', 'cellphone']
         dateOfBirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
             return dateofbirth != null ? dateofbirth <= new Date() : null
         })
@@ -68,6 +74,10 @@ class Patient {
         groups nullable: true
         clinic nullable: false
         patientVisits nullable: true
+        hisUuid nullable: true
+        his nullable: true
+        hisLocation nullable: true
+        hisLocationName nullable: true
     }
 
     @Override

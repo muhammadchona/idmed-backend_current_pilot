@@ -36,6 +36,18 @@ management:
     endpoints:
         enabled-by-default: false
 
+server:
+    port:
+        8884
+
+quartz:
+    autoStartup: true
+    jdbcStore: false
+
+environments:
+    test:
+    quartz:
+        autoStartup: false
 ---
 grails:
     mime:
@@ -71,7 +83,12 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
-
+---
+micronaut:
+    codec:
+        json:
+            additionalTypes:
+                - text/javascript
 ---
 hibernate:
     cache:
@@ -84,20 +101,20 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: root
 environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
             properties:
                 jmxEnabled: true
                 initialSize: 5

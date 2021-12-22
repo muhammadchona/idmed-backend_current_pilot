@@ -638,4 +638,13 @@ public class ConvertDateUtils {
         return ConvertDateUtils.dateDiff(ConvertDateUtils.getCurrentDate(), data, ConvertDateUtils.DAY_FORMAT) < 0;
     }
 
+    public static String castDateToString (java.sql.Date date ) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String strDate = dateFormat.format(date);
+
+        return strDate;
+    }
+
 }

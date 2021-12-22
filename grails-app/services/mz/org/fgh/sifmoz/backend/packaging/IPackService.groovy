@@ -17,4 +17,6 @@ interface IPackService {
 
     List<Pack> getAllByClinicId(String clinicId, int offset, int max)
 
+    List<Pack> getAllPacksReadyToSend(char status)
+
 }

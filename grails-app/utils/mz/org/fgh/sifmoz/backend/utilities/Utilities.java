@@ -106,4 +106,5 @@ public class Utilities {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper.writeValueAsString(object);
     }
+
 }
