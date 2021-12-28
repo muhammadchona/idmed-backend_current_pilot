@@ -2,6 +2,9 @@ package mz.org.fgh.sifmoz.backend.packaging
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -64,6 +67,9 @@ class PackController extends RestfulController{
         }
 
         try {
+            if (Utilities.stringHasValue(pack.id)) {
+                PackagedDrug.deleteAll(pack.packagedDrugs)
+            }
             packService.save(pack)
         } catch (ValidationException e) {
             respond pack.errors

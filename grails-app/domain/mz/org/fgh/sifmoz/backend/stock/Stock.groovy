@@ -19,7 +19,7 @@ class Stock {
     Drug drug
     StockCenter center
     Clinic clinic
-    static hasOne = [entrance: StockEntrance]
+    static belongsTo = [entrance: StockEntrance]
 
     static mapping = {
         id generator: "uuid"
@@ -31,6 +31,6 @@ class Stock {
         shelfNumber(nullable: true, maxSize: 10)
         unitsReceived(min: 1)
         stockMoviment(min: 0)
-        manufacture(nullable: false, maxSize: 20)
+        manufacture(nullable: true, maxSize: 20)
     }
 }

@@ -11,6 +11,8 @@ class UrlMappings {
         patch "/$controller/$id(.$format)?"(action:"patch")
         post "/patient/search(.$format)?"(controller:'patient', action:'search')
         get "/patient/clinic/$clinicId(.$format)?"(controller:'patient', action:'getByClinicId')
+        get "/stockEntrance/clinic/$clinicId(.$format)?"(controller:'stockEntrance', action:'getByClinicId')
+        get "/inventory/clinic/$clinicId(.$format)?"(controller:'inventory', action:'getByClinicId')
         get "/patientServiceIdentifier/clinic/$clinicId(.$format)?"(controller:'patientServiceIdentifier', action:'getByClinicId')
         get "/episode/clinic/$clinicId(.$format)?"(controller:'episode', action:'getByClinicId')
         get "/doctor/clinic/$clinicId(.$format)?"(controller:'doctor', action:'getByClinicId')

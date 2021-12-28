@@ -31,12 +31,9 @@ abstract class StockAdjustment {
     }
 
     static constraints = {
-        /*captureDate(nullable: false, blank: false, validator: { captureDate, urc ->
-            return ((captureDate <= new Date()))
-        })
-        notes(nullable: false, blank: false)*/
-        stockTake(min: 0)
+        notes(nullable: true)
         adjustedValue(min: 0)
+        operation nullable: true
     }
 
 

@@ -18,4 +18,6 @@ interface IInventoryService {
 
     void initInventory(Inventory inventory)
 
+    List<Inventory> getAllByClinicId(String clinicId, int offset, int max)
+
 }

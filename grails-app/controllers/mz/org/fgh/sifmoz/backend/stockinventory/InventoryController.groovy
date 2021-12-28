@@ -120,4 +120,8 @@ class InventoryController extends RestfulController{
 
         render status: NO_CONTENT
     }
+
+    def getByClinicId(String clinicId, int offset, int max) {
+        respond inventoryService.getAllByClinicId(clinicId, offset, max)
+    }
 }

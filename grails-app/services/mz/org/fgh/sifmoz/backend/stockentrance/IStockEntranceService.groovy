@@ -2,8 +2,8 @@ package mz.org.fgh.sifmoz.backend.stockentrance
 
 import grails.gorm.services.Service
 
-@Service(StockEntrance)
-interface StockEntranceService {
+
+interface IStockEntranceService {
 
     StockEntrance get(Serializable id)
 
@@ -14,5 +14,7 @@ interface StockEntranceService {
     StockEntrance delete(Serializable id)
 
     StockEntrance save(StockEntrance stockEntrance)
+
+    List<StockEntrance> getAllByClinicId(String clinicId, int offset, int max)
 
 }
