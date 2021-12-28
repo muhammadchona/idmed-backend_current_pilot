@@ -13,6 +13,7 @@ class TherapeuticRegimen {
     String code
   //  boolean pedhiatric
     String description
+    String openmrsUuid
     @JsonBackReference
     ClinicalService clincalService
     static belongsTo = [ClinicalService]
@@ -28,5 +29,6 @@ class TherapeuticRegimen {
         regimenScheme nullable: false
         description nullable: true
         clincalService nullable: true
+        openmrsUuid nullable: true
     }
 }

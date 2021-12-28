@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
+import grails.converters.JSON
 import grails.rest.RestfulController
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import org.grails.datastore.mapping.validation.ValidationException
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -13,7 +15,7 @@ import grails.gorm.transactions.Transactional
 
 class InventoryStockAdjustmentController extends RestfulController{
 
-    IInventoryStockAdjustmentService inventoryStockAdjustmentService
+    InventoryStockAdjustmentService inventoryStockAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -24,11 +26,11 @@ class InventoryStockAdjustmentController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond inventoryStockAdjustmentService.list(params), model:[inventoryStockAdjustmentCount: inventoryStockAdjustmentService.count()]
+        render JSONSerializer.setObjectListJsonResponse(inventoryStockAdjustmentService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond inventoryStockAdjustmentService.get(id)
+        render JSONSerializer.setJsonObjectResponse(inventoryStockAdjustmentService.get(id)) as JSON
     }
 
     @Transactional

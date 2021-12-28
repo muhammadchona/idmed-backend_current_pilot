@@ -3,9 +3,7 @@ package mz.org.fgh.sifmoz.backend.healthInformationSystem
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttributeService
-import mz.org.fgh.sifmoz.backend.service.ClinicalService
-import mz.org.fgh.sifmoz.backend.utilities.Utilities
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -18,8 +16,6 @@ class HealthInformationSystemController extends RestfulController{
 
     HealthInformationSystemService healthInformationSystemService
 
-    InteroperabilityAttributeService interoperabilityAttributeService
-
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -29,17 +25,11 @@ class HealthInformationSystemController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        JSON.use('deep'){
-            render healthInformationSystemService.list(params) as JSON
-        }
+            render JSONSerializer.setObjectListJsonResponse(healthInformationSystemService.list(params)) as JSON
     }
 
     def show(String id) {
-        /*JSON.use('deep'){
-            render healthInformationSystemService.get(id) as JSON
-        }*/
-        HealthInformationSystem healthInformationSystem = healthInformationSystemService.get(id)
-        render Utilities.parseToJSON(healthInformationSystem)
+            render JSONSerializer.setJsonObjectResponse(healthInformationSystemService.get(id)) as JSON
     }
 
     @Transactional
@@ -87,7 +77,7 @@ class HealthInformationSystemController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || healthInformationSystemService.delete(id) == null) {
             render status: NOT_FOUND
             return

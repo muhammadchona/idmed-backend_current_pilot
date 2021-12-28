@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.patientAttribute
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,11 +27,11 @@ class PatientAttributeController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond patientAttributeService.list(params), model:[patientAttributeCount: patientAttributeService.count()]
+        render JSONSerializer.setObjectListJsonResponse(patientAttributeService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond patientAttributeService.get(id)
+        render JSONSerializer.setJsonObjectResponse(patientAttributeService.get(id)) as JSON
     }
 
     @Transactional

@@ -1,7 +1,11 @@
 package mz.org.fgh.sifmoz.backend.packaging
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
@@ -14,7 +18,7 @@ import grails.gorm.transactions.Transactional
 
 class PackController extends RestfulController{
 
-    IPackService packService
+    PackService packService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -25,11 +29,11 @@ class PackController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond packService.list(params), model:[packCount: packService.count()]
+        render JSONSerializer.setObjectListJsonResponse(packService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond packService.get(id)
+        render JSONSerializer.setJsonObjectResponse(packService.get(id)) as JSON
     }
 
     @Transactional
@@ -89,7 +93,7 @@ class PackController extends RestfulController{
         render status: NO_CONTENT
     }
 
-    def getAllByClinicId(String clinicId, int offset, int max) {
-        respond packService.getAllByClinicId(clinicId, offset, max)
+    def getAllByClinicId(String clinicId) {
+        respond Pack.findAllByClinic(Clinic.get(clinicId))
     }
 }

@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.startStopReason
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,11 +27,11 @@ class StartStopReasonController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond startStopReasonService.list(params), model:[startStopReasonCount: startStopReasonService.count()]
+        render JSONSerializer.setObjectListJsonResponse(startStopReasonService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond startStopReasonService.get(id)
+        render JSONSerializer.setJsonObjectResponse(startStopReasonService.get(id)) as JSON
     }
 
     @Transactional

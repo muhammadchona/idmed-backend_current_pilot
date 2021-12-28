@@ -35,6 +35,7 @@ class PatientServiceIdentifier {
     }
 
     static constraints = {
+        value unique: ['patient', 'service']
         startDate(nullable: true, blank: true, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
@@ -43,21 +44,21 @@ class PatientServiceIdentifier {
     }
 
 
-    @Override
-    public String toString() {
-        return "PatientServiceIdentifier{" +
-                "patient=" + patient +
-                ", episodes=" + episodes +
-                ", id='" + id + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", reopenDate=" + reopenDate +
-                ", value='" + value + '\'' +
-                ", state='" + state + '\'' +
-                ", prefered=" + prefered +
-                ", identifierType=" + identifierType +
-                ", service=" + service +
-                ", clinic=" + clinic +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "PatientServiceIdentifier{" +
+//                "patient=" + patient +
+//                ", episodes=" + episodes +
+//                ", id='" + id + '\'' +
+//                ", startDate=" + startDate +
+//                ", endDate=" + endDate +
+//                ", reopenDate=" + reopenDate +
+//                ", value='" + value + '\'' +
+//                ", state='" + state + '\'' +
+//                ", prefered=" + prefered +
+//                ", identifierType=" + identifierType +
+//                ", service=" + service +
+//                ", clinic=" + clinic +
+//                '}';
+//    }
 }

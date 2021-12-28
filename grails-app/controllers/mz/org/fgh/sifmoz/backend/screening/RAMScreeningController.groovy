@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.screening
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,11 +27,11 @@ class RAMScreeningController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond RAMScreeningService.list(params), model:[RAMScreeningCount: RAMScreeningService.count()]
+        render JSONSerializer.setObjectListJsonResponse(RAMScreeningService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond RAMScreeningService.get(id)
+        render JSONSerializer.setJsonObjectResponse(RAMScreeningService.get(id)) as JSON
     }
 
     @Transactional

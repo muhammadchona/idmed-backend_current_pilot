@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.nationalClinic
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,11 +27,11 @@ class NationalClinicController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond nationalClinicService.list(params), model:[nationalClinicCount: nationalClinicService.count()]
+        render JSONSerializer.setObjectListJsonResponse(nationalClinicService.list(params)) as JSON
     }
 
     def show(String id) {
-        respond nationalClinicService.get(id)
+        render JSONSerializer.setJsonObjectResponse(nationalClinicService.get(id)) as JSON
     }
 
     @Transactional

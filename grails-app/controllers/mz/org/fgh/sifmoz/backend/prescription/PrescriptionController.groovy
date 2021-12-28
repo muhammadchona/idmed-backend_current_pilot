@@ -5,6 +5,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.doctor.DoctorService
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -29,20 +30,11 @@ class PrescriptionController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond prescriptionService.list(params), model:[prescriptionCount: prescriptionService.count()]
+        render JSONSerializer.setObjectListJsonResponse(prescriptionService.list(params)) as JSON
     }
 
     def show(String id) {
-
-        Prescription prescription
-        prescription = prescriptionService.get(id)
-        prescription.setDoctor(doctorService.get(prescription.getDoctor().getId()))
-        //render prescription as JSON
-
-        //render Utilities.parseToJSON(prescription)
-        JSON.use("deep") {
-            respond prescription, [includes: includeFields, excludes: ['class', 'errors', 'version']]
-        }
+        render JSONSerializer.setJsonObjectResponse(prescriptionService.get(id)) as JSON
     }
 
     private getIncludeFields() {
