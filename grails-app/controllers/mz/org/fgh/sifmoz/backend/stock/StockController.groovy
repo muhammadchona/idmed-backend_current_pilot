@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.stock
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -23,11 +26,11 @@ class StockController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond stockService.list(params), model:[stockCount: stockService.count()]
+        render JSONSerializer.setObjectListJsonResponse(stockService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond stockService.get(id)
+        render JSONSerializer.setJsonObjectResponse(stockService.get(id)) as JSON
     }
 
     @Transactional

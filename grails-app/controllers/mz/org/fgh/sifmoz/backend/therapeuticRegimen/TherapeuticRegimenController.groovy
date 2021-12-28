@@ -3,6 +3,8 @@ package mz.org.fgh.sifmoz.backend.therapeuticRegimen
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -25,15 +27,11 @@ class TherapeuticRegimenController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        JSON.use('deep'){
-            render therapeuticRegimenService.list(params) as JSON
-        }
+            render JSONSerializer.setObjectListJsonResponse(therapeuticRegimenService.list(params)) as JSON
     }
 
     def show(String id) {
-        JSON.use('deep'){
-            render therapeuticRegimenService.get(id) as JSON
-        }
+            render JSONSerializer.setJsonObjectResponse(therapeuticRegimenService.get(id)) as JSON
     }
 
     @Transactional

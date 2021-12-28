@@ -1,6 +1,9 @@
 package mz.org.fgh.sifmoz.backend.group
 
+import grails.converters.JSON
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -20,11 +23,11 @@ class GroupInfoController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond groupInfoService.list(params), model:[groupInfoCount: groupInfoService.count()]
+        render JSONSerializer.setObjectListJsonResponse(groupInfoService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond groupInfoService.get(id)
+        render JSONSerializer.setJsonObjectResponse(groupInfoService.get(id)) as JSON
     }
 
     @Transactional

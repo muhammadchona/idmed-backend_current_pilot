@@ -80,30 +80,31 @@ class Patient {
         hisLocationName nullable: true
     }
 
-    @Override
-    public String toString() {
-        return "Patient{" +
-                "appointments=" + appointments +
-                ", identifiers=" + identifiers +
-                ", patientVisits=" + patientVisits +
-                ", groups=" + groups +
-                ", attributes=" + attributes +
-                ", clinic=" + clinic +
-                ", id='" + id + '\'' +
-                ", firstNames='" + firstNames + '\'' +
-                ", middleNames='" + middleNames + '\'' +
-                ", lastNames='" + lastNames + '\'' +
-                ", gender='" + gender + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", cellphone='" + cellphone + '\'' +
-                ", alternativeCellphone='" + alternativeCellphone + '\'' +
-                ", address='" + address + '\'' +
-                ", addressReference='" + addressReference + '\'' +
-                ", accountstatus=" + accountstatus +
-                ", province=" + province +
-                ", bairro=" + bairro +
-                ", district=" + district +
-                ", postoAdministrativo=" + postoAdministrativo +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Patient{" +
+//                "appointments=" + appointments +
+//                ", identifiers=" + identifiers +
+//                ", patientVisits=" + patientVisits +
+//                ", groups=" + groups +
+//                ", attributes=" + attributes +
+//                ", clinic=" + clinic +
+//                ", id='" + id + '\'' +
+//                ", firstNames='" + firstNames + '\'' +
+//                ", middleNames='" + middleNames + '\'' +
+//                ", lastNames='" + lastNames + '\'' +
+//                ", gender='" + gender + '\'' +
+//                ", dateOfBirth=" + dateOfBirth +
+//                ", cellphone='" + cellphone + '\'' +
+//                ", alternativeCellphone='" + alternativeCellphone + '\'' +
+//                ", address='" + address + '\'' +
+//                ", addressReference='" + addressReference + '\'' +
+//                ", accountstatus=" + accountstatus +
+//                ", province=" + province +
+//                ", bairro=" + bairro +
+//                ", district=" + district +
+//                ", postoAdministrativo=" + postoAdministrativo +
+//                '}';
+//    }
+
 }

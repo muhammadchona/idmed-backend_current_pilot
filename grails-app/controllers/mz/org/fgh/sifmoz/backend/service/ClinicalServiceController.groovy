@@ -3,6 +3,8 @@ package mz.org.fgh.sifmoz.backend.service
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -22,14 +24,12 @@ class ClinicalServiceController extends RestfulController{
         super(ClinicalService)
     }
     def index(Integer max) {
-        JSON.use('deep'){
-            params.max = Math.min(max ?: 10, 100)
-            render clinicalServiceService.list(params) as JSON
-        }
+
+            render JSONSerializer.setObjectListJsonResponse(clinicalServiceService.list(params)) as JSON
     }
 
     def show(String id) {
-        respond clinicalServiceService.get(id)
+        render JSONSerializer.setJsonObjectResponse(clinicalServiceService.get(id)) as JSON
     }
 
     @Transactional

@@ -44,21 +44,21 @@ class PatientServiceIdentifier {
     }
 
 
-    @Override
-    public String toString() {
-        return "PatientServiceIdentifier{" +
-                "patient=" + patient +
-                ", episodes=" + episodes +
-                ", id='" + id + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", reopenDate=" + reopenDate +
-                ", value='" + value + '\'' +
-                ", state='" + state + '\'' +
-                ", prefered=" + prefered +
-                ", identifierType=" + identifierType +
-                ", service=" + service +
-                ", clinic=" + clinic +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "PatientServiceIdentifier{" +
+//                "patient=" + patient +
+//                ", episodes=" + episodes +
+//                ", id='" + id + '\'' +
+//                ", startDate=" + startDate +
+//                ", endDate=" + endDate +
+//                ", reopenDate=" + reopenDate +
+//                ", value='" + value + '\'' +
+//                ", state='" + state + '\'' +
+//                ", prefered=" + prefered +
+//                ", identifierType=" + identifierType +
+//                ", service=" + service +
+//                ", clinic=" + clinic +
+//                '}';
+//    }
 }

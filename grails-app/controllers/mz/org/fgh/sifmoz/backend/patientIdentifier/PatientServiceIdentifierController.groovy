@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -26,21 +27,11 @@ class PatientServiceIdentifierController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond patientServiceIdentifierService.list(params), model:[patientServiceIdentifierCount: patientServiceIdentifierService.count()]
+        render JSONSerializer.setObjectListJsonResponse(patientServiceIdentifierService.list(params)) as JSON
     }
 
     def show(String id) {
-        PatientServiceIdentifier identifier = patientServiceIdentifierService.get(id)
-        identifier.getPatient().setClinic(null)
-        identifier.getPatient().setPatientVisits(null)
-        identifier.getPatient().setClinic(null)
-        identifier.getPatient().setIdentifiers(null)
-        identifier.getPatient().setAppointments(null)
-        for (Episode episode : identifier.episodes) {
-            episode.setPatientVisitDetails(null)
-            episode.setPatientServiceIdentifier(null)
-        }
-        render Utilities.parseToJSON(identifier)
+        render JSONSerializer.setJsonObjectResponse(patientServiceIdentifierService.get(id)) as JSON
     }
 
     @Transactional

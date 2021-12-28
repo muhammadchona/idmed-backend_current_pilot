@@ -1,8 +1,10 @@
 package mz.org.fgh.sifmoz.backend.packaging
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -24,11 +26,11 @@ class PackController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond packService.list(params), model:[packCount: packService.count()]
+        render JSONSerializer.setObjectListJsonResponse(packService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond packService.get(id)
+        render JSONSerializer.setJsonObjectResponse(packService.get(id)) as JSON
     }
 
     @Transactional
