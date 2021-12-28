@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.screening
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,11 +27,11 @@ class AdherenceScreeningController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond adherenceScreeningService.list(params), model:[adherenceScreeningCount: adherenceScreeningService.count()]
+        render JSONSerializer.setObjectListJsonResponse(adherenceScreeningService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond adherenceScreeningService.get(id)
+        render JSONSerializer.setJsonObjectResponse(adherenceScreeningService.get(id)) as JSON
     }
 
     @Transactional

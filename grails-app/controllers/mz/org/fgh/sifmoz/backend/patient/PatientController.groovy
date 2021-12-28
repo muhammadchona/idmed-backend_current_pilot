@@ -3,7 +3,11 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
+import org.grails.web.json.JSONArray
+
+import java.nio.charset.StandardCharsets
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -12,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class PatientController extends RestfulController{
+class PatientController extends RestfulController {
 
     IPatientService patientService
 
@@ -25,74 +29,74 @@ class PatientController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond patientService.list(params), model:[patientCount: patientService.count()]
+        render JSONSerializer.setObjectListJsonResponse(patientService.list(params)) as JSON
     }
 
     def show(String id) {
-        render Utilities.parseToJSON(patientService.get(id))
+        render JSONSerializer.setJsonObjectResponse(patientService.get(id)) as JSON
     }
 
-    @Transactional
-    def save(Patient patient) {
-        if (patient == null) {
-            render status: NOT_FOUND
-            return
-        }
-        if (patient.hasErrors()) {
-            transactionStatus.setRollbackOnly()
-            respond patient.errors
-            return
-        }
+        @Transactional
+        def save(Patient patient) {
+            if (patient == null) {
+                render status: NOT_FOUND
+                return
+            }
+            if (patient.hasErrors()) {
+                transactionStatus.setRollbackOnly()
+                respond patient.errors
+                return
+            }
 
-        try {
-            patientService.save(patient)
-        } catch (ValidationException e) {
-            respond patient.errors
-            return
-        }
+            try {
+                patientService.save(patient)
+            } catch (ValidationException e) {
+                respond patient.errors
+                return
+            }
 
-        respond patient, [status: CREATED, view:"show"]
-    }
-
-    @Transactional
-    def update(Patient patient) {
-        if (patient == null) {
-            render status: NOT_FOUND
-            return
-        }
-        if (patient.hasErrors()) {
-            transactionStatus.setRollbackOnly()
-            respond patient.errors
-            return
+            respond patient, [status: CREATED, view: "show"]
         }
 
-        try {
-            patientService.save(patient)
-        } catch (ValidationException e) {
-            respond patient.errors
-            return
+        @Transactional
+        def update(Patient patient) {
+            if (patient == null) {
+                render status: NOT_FOUND
+                return
+            }
+            if (patient.hasErrors()) {
+                transactionStatus.setRollbackOnly()
+                respond patient.errors
+                return
+            }
+
+            try {
+                patientService.save(patient)
+            } catch (ValidationException e) {
+                respond patient.errors
+                return
+            }
+
+            respond patient, [status: OK, view: "show"]
         }
 
-        respond patient, [status: OK, view:"show"]
-    }
+        @Transactional
+        def delete(Long id) {
+            if (id == null || patientService.delete(id) == null) {
+                render status: NOT_FOUND
+                return
+            }
 
-    @Transactional
-    def delete(Long id) {
-        if (id == null || patientService.delete(id) == null) {
-            render status: NOT_FOUND
-            return
+            render status: NO_CONTENT
         }
 
-        render status: NO_CONTENT
-    }
-
-    def search(Patient patient) {
-        JSON.use('deep'){
-            render patientService.search(patient) as JSON
+        def search(Patient patient) {
+            JSON.use('deep') {
+                render patientService.search(patient) as JSON
+            }
         }
-    }
 
-    def getByClinicId(String clinicId, int offset, int max) {
-        respond patientService.getAllByClinicId(clinicId, offset, max)
-    }
+        def getByClinicId(String clinicId, int offset, int max) {
+            respond patientService.getAllByClinicId(clinicId, offset, max)
+        }
 }

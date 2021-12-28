@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -28,16 +29,11 @@ class ProvinceController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        //respond provinceService.list(params), model:[provinceCount: provinceService.count()]
-        render Utilities.parseToJSON(provinceService.list(params))
+        render JSONSerializer.setObjectListJsonResponse(provinceService.list(params)) as JSON
     }
 
     def show(String id) {
-        Province province = provinceService.get(id)
-        render Utilities.parseToJSON(province)
-        /*render(contentType: "application/json") {
-            (Utilities.parseToJSON(province))
-        }*/
+        render JSONSerializer.setJsonObjectResponse(provinceService.get(id)) as JSON
     }
 
     @Transactional

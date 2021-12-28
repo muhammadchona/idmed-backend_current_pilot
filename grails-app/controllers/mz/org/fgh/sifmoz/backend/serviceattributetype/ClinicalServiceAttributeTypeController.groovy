@@ -1,7 +1,9 @@
 package mz.org.fgh.sifmoz.backend.serviceattributetype
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -21,11 +23,11 @@ class ClinicalServiceAttributeTypeController extends RestfulController{
     }
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond clinicalServiceAttributeTypeService.list(params), model:[clinicalServiceAttributeTypeCount: clinicalServiceAttributeTypeService.count()]
+        render JSONSerializer.setObjectListJsonResponse(clinicalServiceAttributeTypeService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond clinicalServiceAttributeTypeService.get(id)
+        render JSONSerializer.setJsonObjectResponse(clinicalServiceAttributeTypeService.get(id)) as JSON
     }
 
     @Transactional

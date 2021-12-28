@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.packagedDrug
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -23,11 +26,11 @@ class PackagedDrugController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 100, 100)
-        respond packagedDrugService.list(params), model:[packagedDrugCount: packagedDrugService.count()]
+        render JSONSerializer.setObjectListJsonResponse(packagedDrugService.list(params)) as JSON
     }
 
     def show(String id) {
-        respond packagedDrugService.get(id)
+        render JSONSerializer.setJsonObjectResponse(packagedDrugService.get(id)) as JSON
     }
 
     @Transactional

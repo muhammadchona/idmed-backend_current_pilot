@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.prescriptionDrug
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -22,11 +25,11 @@ class PrescribedDrugController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 100, 100)
-        respond prescribedDrugService.list(params), model:[prescribedDrugCount: prescribedDrugService.count()]
+        render JSONSerializer.setObjectListJsonResponse(prescribedDrugService.list(params)) as JSON
     }
 
     def show(String id) {
-        respond prescribedDrugService.get(id)
+        render JSONSerializer.setJsonObjectResponse(prescribedDrugService.get(id)) as JSON
     }
 
     @Transactional

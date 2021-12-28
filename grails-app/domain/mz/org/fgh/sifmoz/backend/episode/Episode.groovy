@@ -42,19 +42,19 @@ class Episode {
         })
     }
 
-    @Override
-    public String toString() {
-        return "Episode{" +
-                "patientVisitDetails=" + patientVisitDetails +
-                ", patientServiceIdentifier=" + patientServiceIdentifier +
-                ", id='" + id + '\'' +
-                ", episodeDate=" + episodeDate +
-                ", creationDate=" + creationDate +
-                ", startStopReason=" + startStopReason +
-                ", notes='" + notes + '\'' +
-                ", episodeType=" + episodeType +
-                ", clinicSector=" + clinicSector +
-                ", clinic=" + clinic +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Episode{" +
+//                "patientVisitDetails=" + patientVisitDetails +
+//                ", patientServiceIdentifier=" + patientServiceIdentifier +
+//                ", id='" + id + '\'' +
+//                ", episodeDate=" + episodeDate +
+//                ", creationDate=" + creationDate +
+//                ", startStopReason=" + startStopReason +
+//                ", notes='" + notes + '\'' +
+//                ", episodeType=" + episodeType +
+//                ", clinicSector=" + clinicSector +
+//                ", clinic=" + clinic +
+//                '}';
+//    }
 }

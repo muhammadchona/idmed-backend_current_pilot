@@ -1,7 +1,10 @@
 package mz.org.fgh.sifmoz.backend.interoperabilityType
 
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -21,11 +24,11 @@ class InteroperabilityTypeController extends RestfulController{
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond interoperabilityTypeService.list(params), model:[interoperabilityTypeCount: interoperabilityTypeService.count()]
+        render JSONSerializer.setObjectListJsonResponse(interoperabilityTypeService.list(params)) as JSON
     }
 
     def show(Long id) {
-        respond interoperabilityTypeService.get(id)
+        render JSONSerializer.setJsonObjectResponse(interoperabilityTypeService.get(id)) as JSON
     }
 
     @Transactional

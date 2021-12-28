@@ -7,11 +7,7 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
-
 import java.nio.charset.StandardCharsets
-import java.sql.Timestamp
-
-import static mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils.formatToYYYYMMDD
 import static mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils.formatToYYYYMMDD
 
 class RestOpenMRSClient {
@@ -126,6 +122,44 @@ class RestOpenMRSClient {
 
             return inputAddPerson
         }
+    }
+
+    static def requestOpenMRSClient(String username, String password, String object, String urlBase, String urlPath, String method) {
+        String restUrl = urlBase.concat(urlPath)
+        String result = ""
+        int code = 200
+        try {
+            String userCredentials = new StringBuffer(username).append(":").append(password).toString()
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()))
+            println(restUrl)
+            println(basicAuth)
+            URL siteURL = new URL(restUrl)
+            HttpURLConnection connection = (HttpURLConnection) siteURL.openConnection()
+            connection.setRequestProperty("Authorization", basicAuth)
+            connection.setRequestMethod(method)
+            connection.setRequestProperty("Content-Type", "application/json; utf-8")
+            connection.setDoInput(true)
+            connection.setDoOutput(true);
+//            connection.setConnectTimeout(3000)
+            // Send post request
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream())
+            wr.writeBytes(object)
+            wr.flush()
+            wr.close()
+
+//            connection.connect()
+            code = connection.getResponseCode()
+            connection.disconnect()
+            if (code == 201) {
+                result = "-> Green <-\t" + "Code: " + code;
+            } else {
+                result = "-> Yellow <-\t" + "Code: " + code;
+            }
+        } catch (Exception e) {
+            result = "-> Red <-\t" + "Wrong domain - Exception: " + e.getMessage();
+        }
+        println(result)
+        return result
     }
 
 }
