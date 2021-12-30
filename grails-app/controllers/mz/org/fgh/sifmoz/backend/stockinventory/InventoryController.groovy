@@ -3,7 +3,9 @@ package mz.org.fgh.sifmoz.backend.stockinventory
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -34,18 +36,24 @@ class InventoryController extends RestfulController{
     }
 
     @Transactional
-    def close(Inventory inventory) {
+    def close(String id) {
+        Inventory inventory = inventoryService.get(id)
 
-        try {
-            inventory.close();
-            inventoryService.processInventoryAdjustments(inventory)
-            inventoryService.save(inventory)
-        } catch (ValidationException e) {
-            respond inventory.errors
-            return
+        if (!Utilities.listHasElements(inventory.adjustments as ArrayList<?>)) {
+            throw new RuntimeException("Não foram carregados os ajustes deste inventário, impossivel fechar!")
+        } else {
+            try {
+                inventory.close();
+                inventory.setEndDate(ConvertDateUtils.getCurrentDate())
+                inventoryService.processInventoryAdjustments(inventory)
+                inventoryService.save(inventory)
+            } catch (ValidationException e) {
+                respond inventory.errors
+                return
+            }
+
+            respond inventory, [status: OK, view: "show"]
         }
-
-        respond inventory, [status: OK, view:"show"]
     }
 
     @Transactional
@@ -69,28 +77,6 @@ class InventoryController extends RestfulController{
 
         respond inventory, [status: CREATED, view:"show"]
     }
-
-    /*@Transactional
-    def save(Inventory inventory) {
-        if (inventory == null) {
-            render status: NOT_FOUND
-            return
-        }
-        if (inventory.hasErrors()) {
-            transactionStatus.setRollbackOnly()
-            respond inventory.errors
-            return
-        }
-
-        try {
-            inventoryService.save(inventory)
-        } catch (ValidationException e) {
-            respond inventory.errors
-            return
-        }
-
-        respond inventory, [status: CREATED, view:"show"]
-    }*/
 
     @Transactional
     def update(Inventory inventory) {

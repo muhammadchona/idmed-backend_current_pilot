@@ -22,6 +22,7 @@ abstract class InventoryService implements IInventoryService{
     void processInventoryAdjustments(Inventory inventory) {
 
         for (StockAdjustment adjustment : inventory.getAdjustments()) {
+            adjustment.setFinalised(true)
             adjustmentService.processAdjustment(adjustment)
         }
     }
