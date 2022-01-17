@@ -15,7 +15,7 @@ import grails.gorm.transactions.Transactional
 
 class StockReferenceAdjustmentController extends RestfulController{
 
-    IStockReferenceAdjustmentService stockReferenceAdjustmentService
+    StockReferenceAdjustmentService stockReferenceAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]

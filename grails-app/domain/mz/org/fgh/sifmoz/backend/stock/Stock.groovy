@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.stock
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
@@ -19,7 +20,8 @@ class Stock {
     Drug drug
     StockCenter center
     Clinic clinic
-    static hasOne = [entrance: StockEntrance]
+    static hasMany = [packagedDrugs: PackagedDrug]
+    static belongsTo = [entrance: StockEntrance]
 
     static mapping = {
         id generator: "uuid"
@@ -31,6 +33,7 @@ class Stock {
         shelfNumber(nullable: true, maxSize: 10)
         unitsReceived(min: 1)
         stockMoviment(min: 0)
-        manufacture(nullable: false, maxSize: 20)
+        manufacture(nullable: true, maxSize: 20)
+        packagedDrugs nullable: true
     }
 }

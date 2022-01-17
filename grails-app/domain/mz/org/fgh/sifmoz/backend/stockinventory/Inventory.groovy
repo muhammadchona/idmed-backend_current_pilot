@@ -25,9 +25,8 @@ class Inventory {
             return ((startDate <= new Date() ))
         })
 
-        endDate(nullable: false, blank: false, validator: { endDate, urc ->
-            return ((urc.startDate < endDate))
-        })
+        endDate(nullable: true, blank: true)
+        adjustments( nulable: true)
     }
 
     public int  generateSequence(){

@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class StockEntranceServiceSpec extends Specification {
+class IStockEntranceServiceSpec extends Specification {
 
-    StockEntranceService stockEntranceService
+    IStockEntranceService stockEntranceService
     @Autowired Datastore datastore
 
     private Long setupData() {

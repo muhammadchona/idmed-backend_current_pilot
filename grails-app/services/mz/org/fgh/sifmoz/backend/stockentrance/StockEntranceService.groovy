@@ -1,18 +1,19 @@
 package mz.org.fgh.sifmoz.backend.stockentrance
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
+@Transactional
 @Service(StockEntrance)
-interface StockEntranceService {
+abstract class StockEntranceService implements IStockEntranceService{
 
-    StockEntrance get(Serializable id)
+    def serviceMethod() {
 
-    List<StockEntrance> list(Map args)
+    }
 
-    Long count()
-
-    StockEntrance delete(Serializable id)
-
-    StockEntrance save(StockEntrance stockEntrance)
-
+    @Override
+    List<StockEntrance> getAllByClinicId(String clinicId, int offset, int max) {
+        return StockEntrance.findAllByClinic(Clinic.findById(clinicId),[offset: offset, max: max])
+    }
 }

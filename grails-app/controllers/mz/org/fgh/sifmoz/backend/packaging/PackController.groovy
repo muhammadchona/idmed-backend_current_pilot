@@ -6,6 +6,9 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -29,7 +32,7 @@ class PackController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(packService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(packService.get(id)) as JSON
     }
 
@@ -68,6 +71,9 @@ class PackController extends RestfulController{
         }
 
         try {
+            if (Utilities.stringHasValue(pack.id)) {
+                PackagedDrug.deleteAll(pack.packagedDrugs)
+            }
             packService.save(pack)
         } catch (ValidationException e) {
             respond pack.errors
@@ -78,7 +84,7 @@ class PackController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || packService.delete(id) == null) {
             render status: NOT_FOUND
             return
@@ -88,7 +94,7 @@ class PackController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId) {
-        respond Pack.findAllByClinic(Clinic.get(clinicId))
+        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByClinic(Clinic.get(clinicId))) as JSON
+        //respond Pack.findAllByClinic(Clinic.get(clinicId))
     }
-
 }

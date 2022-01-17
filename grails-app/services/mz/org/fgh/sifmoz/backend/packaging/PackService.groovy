@@ -4,7 +4,6 @@ import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
-@Transactional
 @Service(Pack)
 interface PackService {
     Pack get(Serializable id)

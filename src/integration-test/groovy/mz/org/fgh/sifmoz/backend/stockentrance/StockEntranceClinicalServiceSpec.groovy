@@ -10,7 +10,7 @@ import spock.lang.Specification
 @Rollback
 class StockEntranceClinicalServiceSpec extends Specification {
 
-    StockEntranceService stockEntranceService
+    IStockEntranceService stockEntranceService
     @Autowired Datastore datastore
 
     private Long setupData() {
