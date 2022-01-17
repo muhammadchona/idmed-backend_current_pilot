@@ -99,7 +99,8 @@ class PrescriptionController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId, int offset, int max) {
-        respond prescriptionService.getAllByClinicId(clinicId, offset, max)
+        render JSONSerializer.setObjectListJsonResponse(prescriptionService.getAllByClinicId(clinicId, offset, max)) as JSON
+        // respond prescriptionService.getAllByClinicId(clinicId, offset, max)
         /*JSON.use('deep'){
             render prescriptionService.getAllByClinicId(clinicId, offset, max) as JSON
         }*/

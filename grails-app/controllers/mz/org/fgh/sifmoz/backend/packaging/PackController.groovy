@@ -32,7 +32,7 @@ class PackController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(packService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(packService.get(id)) as JSON
     }
 
@@ -84,7 +84,7 @@ class PackController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || packService.delete(id) == null) {
             render status: NOT_FOUND
             return
@@ -94,6 +94,7 @@ class PackController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId) {
-        respond Pack.findAllByClinic(Clinic.get(clinicId))
+        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByClinic(Clinic.get(clinicId))) as JSON
+        //respond Pack.findAllByClinic(Clinic.get(clinicId))
     }
 }

@@ -28,7 +28,7 @@ class PrescriptionDetailController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(prescriptionDetailService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(prescriptionDetailService.get(id)) as JSON
     }
 

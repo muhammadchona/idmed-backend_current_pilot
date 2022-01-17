@@ -15,7 +15,7 @@ import grails.gorm.transactions.Transactional
 
 class StockDestructionAdjustmentController extends RestfulController{
 
-    IStockDestructionAdjustmentService stockDestructionAdjustmentService
+    StockDestructionAdjustmentService stockDestructionAdjustmentService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
