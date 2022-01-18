@@ -6,16 +6,13 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stock.IStockService
 import mz.org.fgh.sifmoz.backend.stock.Stock
-import mz.org.fgh.sifmoz.backend.stockadjustment.IInventoryStockAdjustmentService
 
 import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
-import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
 @Transactional
 @Service(Inventory)
 abstract class InventoryService implements IInventoryService{
-    IInventoryStockAdjustmentService adjustmentService
     IStockService stockService
 
     @Override
@@ -23,13 +20,12 @@ abstract class InventoryService implements IInventoryService{
 
         for (StockAdjustment adjustment : inventory.getAdjustments()) {
             adjustment.setFinalised(true)
-            adjustmentService.processAdjustment(adjustment)
         }
     }
 
     @Override
     void initInventory(Inventory inventory) {
-        List<Stock> drugStocks = new ArrayList<>();
+        List<Stock> drugStocks = new ArrayList<>()
 
         for (Drug drug : inventory.getInventoryDrugs()) {
             drugStocks.addAll(stockService.findAllOnceReceivedByDrug(drug))
@@ -39,8 +35,8 @@ abstract class InventoryService implements IInventoryService{
 
     }
 
-    private void initInventoryAdjustments(Inventory inventory, List<Stock> stocks) {
-        List<InventoryStockAdjustment> adjustments = new ArrayList<>();
+    private static void initInventoryAdjustments(Inventory inventory, List<Stock> stocks) {
+        List<InventoryStockAdjustment> adjustments = new ArrayList<>()
 
         for(Stock stock : stocks){
             adjustments.add(initAdjustment(inventory, stock))
@@ -48,9 +44,8 @@ abstract class InventoryService implements IInventoryService{
         inventory.setAdjustments(adjustments as Set<InventoryStockAdjustment>)
     }
 
-    private InventoryStockAdjustment initAdjustment(Inventory inventory, Stock stock) {
+    private static InventoryStockAdjustment initAdjustment(Inventory inventory, Stock stock) {
         StockAdjustment adjustment = new InventoryStockAdjustment(inventory, stock)
-        adjustmentService.save(adjustment)
         return adjustment
     }
 
