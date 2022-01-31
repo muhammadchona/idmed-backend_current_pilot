@@ -14,6 +14,7 @@ abstract class StockAdjustment {
     String notes
     int stockTake
     int adjustedValue
+    int balance
     boolean finalised
     Stock adjustedStock
     StockOperationType operation
@@ -33,6 +34,7 @@ abstract class StockAdjustment {
     static constraints = {
         notes(nullable: true)
         adjustedValue(min: 0)
+        balance min: 0
         operation nullable: true
     }
 

@@ -31,7 +31,7 @@ class InventoryController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(inventoryService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(inventoryService.get(id)) as JSON
     }
 
