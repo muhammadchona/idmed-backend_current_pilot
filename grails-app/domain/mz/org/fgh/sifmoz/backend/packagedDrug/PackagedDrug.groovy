@@ -12,11 +12,12 @@ class PackagedDrug {
     Drug drug
     int quantitySupplied
     Date nextPickUpDate
-    Stock stock
     boolean toContinue
-    @JsonBackReference
+    Date creationDate
     Pack pack
     static belongsTo = [Pack]
+
+    static hasMany = [packagedDrugStocks: PackagedDrugStock]
 
     static mapping = {
         id generator: "uuid"
@@ -25,6 +26,6 @@ class PackagedDrug {
     static constraints = {
         quantitySupplied(min: 1)
         nextPickUpDate nullable: true
-        stock nullable: true
+        creationDate nullable: true
     }
 }

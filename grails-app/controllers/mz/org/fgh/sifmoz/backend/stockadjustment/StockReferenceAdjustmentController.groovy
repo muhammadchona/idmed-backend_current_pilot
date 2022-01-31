@@ -29,7 +29,7 @@ class StockReferenceAdjustmentController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(stockReferenceAdjustmentService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(stockReferenceAdjustmentService.get(id)) as JSON
     }
 
@@ -78,7 +78,7 @@ class StockReferenceAdjustmentController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || stockReferenceAdjustmentService.delete(id) == null) {
             render status: NOT_FOUND
             return
