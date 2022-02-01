@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.screening
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -86,5 +87,10 @@ class PregnancyScreeningController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getAllByPatientVisit(String patientVisitId, int offset, int max) {
+        System.out.println(patientVisitId)
+        render JSONSerializer.setObjectListJsonResponse(PregnancyScreening.findAllByVisit(PatientVisit.findById(patientVisitId))) as JSON
     }
 }

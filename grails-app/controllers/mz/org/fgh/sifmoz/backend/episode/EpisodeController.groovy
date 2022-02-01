@@ -89,4 +89,9 @@ class EpisodeController extends RestfulController{
     def getByClinicId(String clinicId, int offset, int max) {
         respond episodeService.getAllByClinicId(clinicId, offset, max)
     }
+
+    def getByIdentifierId(String identifierId, int offset, int max) {
+        // respond episodeService.getAllByIndentifier(identifierId, offset, max)
+        render JSONSerializer.setObjectListJsonResponse(episodeService.getAllByIndentifier(identifierId, offset, max)) as JSON
+    }
 }

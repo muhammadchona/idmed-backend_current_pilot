@@ -18,4 +18,6 @@ interface IPatientVisitDetailsService {
 
     List<PatientVisitDetails> getAllByClinicId(String clinicId, int offset, int max)
 
+    List<PatientVisitDetails> getAllByEpisodeId(String episodeId, int offset, int max)
+
 }
