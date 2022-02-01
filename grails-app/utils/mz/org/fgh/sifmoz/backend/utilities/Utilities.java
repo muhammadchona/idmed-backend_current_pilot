@@ -8,7 +8,9 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import org.grails.web.json.JSONArray;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -108,4 +110,14 @@ public class Utilities {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper.writeValueAsString(object);
     }
+
+    public static String formatToYYYYMMDD (Date date ) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String strDate = dateFormat.format(date);
+
+        return strDate;
+    }
+
 }
