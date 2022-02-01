@@ -3,6 +3,10 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
+import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
+import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
+import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.grails.web.json.JSONArray
@@ -99,4 +103,28 @@ class PatientController extends RestfulController {
         def getByClinicId(String clinicId, int offset, int max) {
             respond patientService.getAllByClinicId(clinicId, offset, max)
         }
+
+
+    def getOpenMRSSession(String interoperabilityId, String username, String password) {
+
+        HealthInformationSystem healthInformationSystem = HealthInformationSystem.get(interoperabilityId)
+        InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
+        InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
+
+       render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, "session", "GET")
+
+    }
+
+    def getOpenMRSPatient(String interoperabilityId, String nid, String username, String password) {
+
+        HealthInformationSystem healthInformationSystem = HealthInformationSystem.get(interoperabilityId)
+        InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
+        InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
+
+        String urlPath = "patient?q="+nid.replaceAll("-","/") + "&v=full&limit=1000"
+
+        render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, urlPath, "GET")
+
+    }
+
 }

@@ -32,7 +32,7 @@ class RestPackService {
     void schedulerRequestRunning() {
         Pack.withTransaction {
             String username = "admin"
-            String password = "eSaude123"
+            String password = "ESaudeMz321"
             List<Pack> packList = Pack.findAll().findAll {it.syncStatus == 'R'}
 
             for (Pack pack : packList) {
