@@ -91,4 +91,9 @@ class PatientServiceIdentifierController extends RestfulController{
     def getByClinicId(String clinicId, int offset, int max) {
         respond patientServiceIdentifierService.getAllByClinicId(clinicId, offset, max)
     }
+
+    def getByPatientId(String patientId, int offset, int max) {
+        // respond patientServiceIdentifierService.getAllByPatientId(patientId, offset, max)
+        render JSONSerializer.setObjectListJsonResponse(patientServiceIdentifierService.getAllByPatientId(patientId, offset, max)) as JSON
+    }
 }

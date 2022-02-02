@@ -18,4 +18,6 @@ interface IPrescriptionService {
 
     List<Prescription> getAllByClinicId(String clinicId, int offset, int max)
 
+    Prescription getByVisitIds(String pvdsId, int offset, int max)
+
 }

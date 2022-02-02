@@ -14,4 +14,6 @@ interface IEpisodeService {
 
     List<Episode> getAllByClinicId(String clinicId, int offset, int max)
 
+    List<Episode> getAllByIndentifier(String identifierId, int offset, int max)
+
 }
