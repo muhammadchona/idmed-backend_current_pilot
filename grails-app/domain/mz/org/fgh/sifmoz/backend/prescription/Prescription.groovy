@@ -42,6 +42,7 @@ class Prescription {
         notes(nullable: true, maxSize: 500)
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
+        patientType nullable: true
     }
 
     public void generateNextSeq() {
