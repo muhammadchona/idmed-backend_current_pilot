@@ -94,18 +94,4 @@ class PackController extends RestfulController{
 
         render status: NO_CONTENT
     }
-
-    def getAllByClinicId(String clinicId) {
-        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByClinic(Clinic.get(clinicId))) as JSON
-        //respond Pack.findAllByClinic(Clinic.get(clinicId))
-    }
-
-    def getAllByPatientVisitDetailsId(String patientVisitDetailsId) {
-        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByPatientVisitDetails(PatientVisitDetails.get(patientVisitDetailsId))) as JSON
-        //respond Pack.findAllByClinic(Clinic.get(clinicId))
-    }
-
-    def getAllByPrescriptionId(String prescriptionId) {
-        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByPrescription(Prescription.get(prescriptionId))) as JSON
-    }
 }

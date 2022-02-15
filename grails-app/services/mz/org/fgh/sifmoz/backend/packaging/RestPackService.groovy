@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.restUtils.RequestMethod
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat
 class RestPackService {
 
     PackService packService
+    IPatientVisitDetailsService visitDetailsService
     RestOpenMRSClient restOpenMRSClient = new RestOpenMRSClient()
     final String requestMethod_POST = "POST"
     final String requestMethod_PUT = "PUT"
@@ -40,7 +42,7 @@ class RestPackService {
 
                 try {
                     RestOpenMRSClient restPost = new RestOpenMRSClient()
-                    PatientVisitDetails patientVisitDetails = PatientVisitDetails.get(pack.patientVisitDetails.id)
+                    PatientVisitDetails patientVisitDetails = visitDetailsService.getByPack(pack)
                     PatientVisit patientVisit = PatientVisit.get(patientVisitDetails.patientVisit.id)
                     Patient patient = Patient.get(patientVisit.patient.id)
                     HealthInformationSystem his = HealthInformationSystem.get(patient.his.id)

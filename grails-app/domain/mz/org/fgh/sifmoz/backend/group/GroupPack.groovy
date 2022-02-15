@@ -4,8 +4,7 @@ import mz.org.fgh.sifmoz.backend.packaging.Pack
 
 class GroupPack {
     String id
-    Pack pack
-    static hasOne = [Pack]
+    static hasOne = [pack: Pack]
     static belongsTo = [header: GroupPackHeader]
 
     static mapping = {
