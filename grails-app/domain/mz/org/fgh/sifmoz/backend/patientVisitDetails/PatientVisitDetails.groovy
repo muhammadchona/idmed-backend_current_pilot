@@ -12,18 +12,13 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 class PatientVisitDetails {
 
     String id
-    @JsonManagedReference
     Episode episode
-    @JsonIgnore
     Clinic clinic
-
-    @JsonManagedReference
-    static hasMany = [prescriptions: Prescription, packs: Pack]
-
-    @JsonBackReference
+    Prescription prescription
+    Pack pack
     PatientVisit patientVisit
 
-    static belongsTo = [PatientVisit]
+    static belongsTo = [PatientVisit, Prescription, Pack]
 
     static mapping = {
         id generator: "uuid"

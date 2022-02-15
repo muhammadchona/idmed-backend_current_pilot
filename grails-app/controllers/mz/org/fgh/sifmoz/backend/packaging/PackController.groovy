@@ -5,6 +5,7 @@ import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
@@ -102,5 +103,9 @@ class PackController extends RestfulController{
     def getAllByPatientVisitDetailsId(String patientVisitDetailsId) {
         render JSONSerializer.setObjectListJsonResponse(Pack.findAllByPatientVisitDetails(PatientVisitDetails.get(patientVisitDetailsId))) as JSON
         //respond Pack.findAllByClinic(Clinic.get(clinicId))
+    }
+
+    def getAllByPrescriptionId(String prescriptionId) {
+        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByPrescription(Prescription.get(prescriptionId))) as JSON
     }
 }

@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class GroupInfoControllerSpec extends Specification implements ControllerUnitTest<GroupController>, DomainUnitTest<GroupInfo> {
+class GroupPackHeaderControllerSpec extends Specification implements ControllerUnitTest<GroupPackHeaderController>, DomainUnitTest<GroupPackHeader> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.groupService = Mock(IGroupService) {
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action correctly persists"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * save(_ as GroupInfo)
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * save(_ as GroupPackHeader)
         }
 
         when:
@@ -61,7 +61,7 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new GroupInfo(params)
+        request.json = new GroupPackHeader(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * save(_ as GroupInfo) >> { GroupInfo group ->
-                throw new ValidationException("Invalid instance", group.errors)
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * save(_ as GroupPackHeader) >> { GroupPackHeader groupPackHeader ->
+                throw new ValidationException("Invalid instance", groupPackHeader.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new GroupInfo(params)
+        request.json = new GroupPackHeader(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a null id"() {
         given:
-        controller.groupService = Mock(IGroupService) {
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the show action with a valid id"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * get(2) >> new GroupInfo()
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * get(2) >> new GroupPackHeader()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action correctly persists"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * save(_ as GroupInfo)
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * save(_ as GroupPackHeader)
         }
 
         when:
@@ -138,7 +138,7 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new GroupInfo(params)
+        def instance = new GroupPackHeader(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * save(_ as GroupInfo) >> { GroupInfo group ->
-                throw new ValidationException("Invalid instance", group.errors)
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * save(_ as GroupPackHeader) >> { GroupPackHeader groupPackHeader ->
+                throw new ValidationException("Invalid instance", groupPackHeader.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new GroupInfo(params)
+        def instance = new GroupPackHeader(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class GroupInfoControllerSpec extends Specification implements ControllerUnitTes
 
     void "Test the delete action with an instance"() {
         given:
-        controller.groupService = Mock(IGroupService) {
-            1 * delete(2) >> new GroupInfo(id: 2)
+        controller.groupPackHeaderService = Mock(IGroupPackHeaderService) {
+            1 * delete(2) >> new GroupPackHeader(id: 2)
         }
 
         when:

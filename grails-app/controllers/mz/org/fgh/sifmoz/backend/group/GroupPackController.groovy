@@ -1,9 +1,7 @@
 package mz.org.fgh.sifmoz.backend.group
 
-import grails.converters.JSON
+import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -13,70 +11,73 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-@ReadOnly
-class GroupInfoController {
+class GroupPackController extends RestfulController{
 
-    GroupInfoService groupInfoService
+    GroupPackService groupPackService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    GroupPackController() {
+        super(GroupPack)
+    }
+
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        render JSONSerializer.setObjectListJsonResponse(groupInfoService.list(params)) as JSON
+        respond groupPackService.list(params), model:[groupPackCount: groupPackService.count()]
     }
 
-    def show(Long id) {
-        render JSONSerializer.setJsonObjectResponse(groupInfoService.get(id)) as JSON
+    def show(String id) {
+        respond groupPackService.get(id)
     }
 
     @Transactional
-    def save(GroupInfo groupInfo) {
-        if (groupInfo == null) {
+    def save(GroupPack groupPack) {
+        if (groupPack == null) {
             render status: NOT_FOUND
             return
         }
-        if (groupInfo.hasErrors()) {
+        if (groupPack.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond groupInfo.errors
+            respond groupPack.errors
             return
         }
 
         try {
-            groupInfoService.save(groupInfo)
+            groupPackService.save(groupPack)
         } catch (ValidationException e) {
-            respond groupInfo.errors
+            respond groupPack.errors
             return
         }
 
-        respond groupInfo, [status: CREATED, view:"show"]
+        respond groupPack, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(GroupInfo groupInfo) {
-        if (groupInfo == null) {
+    def update(GroupPack groupPack) {
+        if (groupPack == null) {
             render status: NOT_FOUND
             return
         }
-        if (groupInfo.hasErrors()) {
+        if (groupPack.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond groupInfo.errors
+            respond groupPack.errors
             return
         }
 
         try {
-            groupInfoService.save(groupInfo)
+            groupPackService.save(groupPack)
         } catch (ValidationException e) {
-            respond groupInfo.errors
+            respond groupPack.errors
             return
         }
 
-        respond groupInfo, [status: OK, view:"show"]
+        respond groupPack, [status: OK, view:"show"]
     }
 
     @Transactional
-    def delete(Long id) {
-        if (id == null || groupInfoService.delete(id) == null) {
+    def delete(String id) {
+        if (id == null || groupPackService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }

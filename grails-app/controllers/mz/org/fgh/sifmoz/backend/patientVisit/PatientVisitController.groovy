@@ -106,4 +106,8 @@ class PatientVisitController extends RestfulController{
             render patientVisitService.getAllByPatientId(patientId) as JSON
         }*/
     }
+
+    def getLastVisitOfPatient(String patientId) {
+        render JSONSerializer.setJsonObjectResponse(patientVisitService.getLastVisitOfPatient(patientId)) as JSON
+    }
 }

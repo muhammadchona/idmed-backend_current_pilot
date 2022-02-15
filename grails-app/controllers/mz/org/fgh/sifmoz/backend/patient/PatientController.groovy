@@ -94,14 +94,9 @@ class PatientController extends RestfulController {
             render status: NO_CONTENT
         }
 
-        def search(Patient patient) {
-            JSON.use('deep') {
-                render patientService.search(patient) as JSON
-            }
-        }
-
         def getByClinicId(String clinicId, int offset, int max) {
-            respond patientService.getAllByClinicId(clinicId, offset, max)
+            render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
+            //respond patientService.getAllByClinicId(clinicId, offset, max)
         }
 
 

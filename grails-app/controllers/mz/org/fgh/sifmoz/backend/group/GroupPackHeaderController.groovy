@@ -1,10 +1,7 @@
 package mz.org.fgh.sifmoz.backend.group
 
-import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -12,82 +9,76 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class GroupController extends RestfulController{
+class GroupPackHeaderController extends RestfulController{
 
-    IGroupService groupService
+    IGroupPackHeaderService groupPackHeaderService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    GroupController() {
-        super(GroupInfo)
+    GroupPackHeaderController () {
+        super(GroupPackHeader)
     }
-
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        render JSONSerializer.setObjectListJsonResponse(groupService.list(params)) as JSON
+        respond groupPackHeaderService.list(params), model:[groupPackHeaderCount: groupPackHeaderService.count()]
     }
 
     def show(String id) {
-        render JSONSerializer.setJsonObjectResponse(groupService.get(id)) as JSON
+        respond groupPackHeaderService.get(id)
     }
 
     @Transactional
-    def save(GroupInfo group) {
-        if (group == null) {
+    def save(GroupPackHeader groupPackHeader) {
+        if (groupPackHeader == null) {
             render status: NOT_FOUND
             return
         }
-        if (group.hasErrors()) {
+        if (groupPackHeader.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond group.errors
+            respond groupPackHeader.errors
             return
         }
 
         try {
-            groupService.save(group)
+            groupPackHeaderService.save(groupPackHeader)
         } catch (ValidationException e) {
-            respond group.errors
+            respond groupPackHeader.errors
             return
         }
 
-        respond group, [status: CREATED, view:"show"]
+        respond groupPackHeader, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(GroupInfo group) {
-        if (group == null) {
+    def update(GroupPackHeader groupPackHeader) {
+        if (groupPackHeader == null) {
             render status: NOT_FOUND
             return
         }
-        if (group.hasErrors()) {
+        if (groupPackHeader.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond group.errors
+            respond groupPackHeader.errors
             return
         }
 
         try {
-            groupService.save(group)
+            groupPackHeaderService.save(groupPackHeader)
         } catch (ValidationException e) {
-            respond group.errors
+            respond groupPackHeader.errors
             return
         }
 
-        respond group, [status: OK, view:"show"]
+        respond groupPackHeader, [status: OK, view:"show"]
     }
 
     @Transactional
-    def delete(Long id) {
-        if (id == null || groupService.delete(id) == null) {
+    def delete(String id) {
+        if (id == null || groupPackHeaderService.delete(id) == null) {
             render status: NOT_FOUND
             return
         }
 
         render status: NO_CONTENT
-    }
-
-    def getByClinicId(String clinicId, int offset, int max) {
-        render JSONSerializer.setObjectListJsonResponse(groupService.getAllByClinicId(clinicId, offset, max)) as JSON
-        //respond patientService.getAllByClinicId(clinicId, offset, max)
     }
 }

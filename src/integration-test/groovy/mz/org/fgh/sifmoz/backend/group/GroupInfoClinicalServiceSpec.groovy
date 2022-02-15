@@ -10,7 +10,7 @@ import spock.lang.Specification
 @Rollback
 class GroupInfoClinicalServiceSpec extends Specification {
 
-    GroupService groupService
+    IGroupService groupService
     @Autowired Datastore datastore
 
     private Long setupData() {

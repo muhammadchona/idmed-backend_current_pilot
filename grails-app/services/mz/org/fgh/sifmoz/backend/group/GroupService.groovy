@@ -1,18 +1,15 @@
 package mz.org.fgh.sifmoz.backend.group
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
+@Transactional
 @Service(GroupInfo)
-interface GroupService {
+abstract class GroupService implements IGroupService{
 
-    GroupInfo get(Serializable id)
-
-    List<GroupInfo> list(Map args)
-
-    Long count()
-
-    GroupInfo delete(Serializable id)
-
-    GroupInfo save(GroupInfo group)
-
+    @Override
+    List<GroupInfo> getAllByClinicId(String clinicId, int offset, int max) {
+        return GroupInfo.findAllByClinic(Clinic.findById(clinicId),[offset: offset, max: max])
+    }
 }
