@@ -30,7 +30,7 @@ class GroupMemberController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(groupMemberService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(groupMemberService.get(id)) as JSON
     }
 

@@ -19,4 +19,10 @@ abstract class PatientVisitService implements IPatientVisitService{
     List<PatientVisit> getAllByClinicId(String clinicId, int offset, int max) {
         return PatientVisit.findAllByClinic(Clinic.findById(clinicId),[offset: offset, max: max])
     }
+
+    @Override
+    PatientVisit getLastVisitOfPatient(String patientId) {
+        List<PatientVisit> patientVisitList = PatientVisit.findAllByPatient(Patient.findById(patientId), [sort: ['visitDate': 'desc']])
+        return patientVisitList.get(0)
+    }
 }

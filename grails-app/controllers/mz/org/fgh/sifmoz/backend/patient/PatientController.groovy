@@ -6,6 +6,7 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
@@ -94,14 +95,9 @@ class PatientController extends RestfulController {
             render status: NO_CONTENT
         }
 
-        def search(Patient patient) {
-            JSON.use('deep') {
-                render patientService.search(patient) as JSON
-            }
-        }
-
         def getByClinicId(String clinicId, int offset, int max) {
-            respond patientService.getAllByClinicId(clinicId, offset, max)
+            render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
+            //respond patientService.getAllByClinicId(clinicId, offset, max)
         }
 
 

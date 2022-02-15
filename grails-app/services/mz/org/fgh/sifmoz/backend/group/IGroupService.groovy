@@ -2,8 +2,7 @@ package mz.org.fgh.sifmoz.backend.group
 
 import grails.gorm.services.Service
 
-@Service(GroupInfo)
-interface GroupInfoService {
+interface IGroupService {
 
     GroupInfo get(Serializable id)
 
@@ -13,6 +12,8 @@ interface GroupInfoService {
 
     GroupInfo delete(Serializable id)
 
-    GroupInfo save(GroupInfo groupInfo)
+    GroupInfo save(GroupInfo group)
+
+    List<GroupInfo> getAllByClinicId(String clinicId, int offset, int max)
 
 }

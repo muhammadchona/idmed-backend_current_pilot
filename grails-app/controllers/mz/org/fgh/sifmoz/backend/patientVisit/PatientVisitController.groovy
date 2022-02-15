@@ -90,20 +90,14 @@ class PatientVisitController extends RestfulController{
     }
 
     def getAllByClinicId(String clinicId, int offset, int max) {
-       //respond patientVisitService.getAllByClinicId(clinicId, offset, max)
         render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllByClinicId(clinicId, offset, max)) as JSON
-      /*JSON.use('deep') {
-          //  render patientVisitService.getAllByClinicId(clinicId, offset, max), [exclude:['patient']]as JSON
-              render patientVisitService.getAllByClinicId(clinicId, offset, max) as JSON
-        }*/
-
     }
 
     def getByPatientId(String patientId) {
-        //respond patientVisitService.getAllByPatientId(patientId)
         render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllByPatientId(patientId)) as JSON
-        /*JSON.use('deep') {
-            render patientVisitService.getAllByPatientId(patientId) as JSON
-        }*/
+    }
+
+    def getLastVisitOfPatient(String patientId) {
+        render JSONSerializer.setJsonObjectResponse(patientVisitService.getLastVisitOfPatient(patientId)) as JSON
     }
 }

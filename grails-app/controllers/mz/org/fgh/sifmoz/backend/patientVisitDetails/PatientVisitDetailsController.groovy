@@ -88,11 +88,9 @@ class PatientVisitDetailsController extends RestfulController{
 
     def getAllByClinicId(String clinicId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(patientVisitDetailsService.getAllByClinicId(clinicId, offset, max)) as JSON
-        //respond patientVisitDetailsService.getAllByClinicId(clinicId, offset, max)
     }
 
     def getAllByEpisodeId(String episodeId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(patientVisitDetailsService.getAllByEpisodeId(episodeId, offset, max)) as JSON
-        //respond patientVisitDetailsService.getAllByClinicId(clinicId, offset, max)
     }
 }

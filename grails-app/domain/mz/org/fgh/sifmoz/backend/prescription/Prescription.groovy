@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.duration.Duration
+import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
@@ -22,20 +23,11 @@ class Prescription {
     String patientType
     String patientStatus
     boolean modified
-    @JsonIgnore
     Clinic clinic
-    @JsonManagedReference
     Doctor doctor
-    @JsonManagedReference
     Duration duration
-    @JsonBackReference
-    PatientVisitDetails patientVisitDetails
 
-    static belongsTo = [PatientVisitDetails]
-
-    @JsonIgnore
-    @JsonManagedReference
-    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
+    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
         id generator: "uuid"
@@ -50,7 +42,6 @@ class Prescription {
         notes(nullable: true, maxSize: 500)
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
-        patientVisitDetails nullable: true
     }
 
     public void generateNextSeq() {

@@ -15,4 +15,14 @@ class GroupType {
         code nullable: false, unique: true
         description nullable: false
     }
+
+
+    @Override
+    public String toString() {
+        return "GroupType{" +
+                "id='" + id + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
