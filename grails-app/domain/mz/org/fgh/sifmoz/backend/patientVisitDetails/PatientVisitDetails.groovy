@@ -24,5 +24,6 @@ class PatientVisitDetails {
         id generator: "uuid"
     }
     static constraints = {
+        pack nullable: true
     }
 }
