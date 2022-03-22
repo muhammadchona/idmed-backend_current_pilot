@@ -23,8 +23,6 @@ class GroupMember {
         startDate(nullable: true, blank: true, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
-        endDate(nullable: true, blank: true, validator: { endDate, urc ->
-            return endDate != null ? startDate < endDate : null
-        })
+        endDate nullable: true
     }
 }

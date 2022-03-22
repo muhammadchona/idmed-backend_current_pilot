@@ -4,6 +4,7 @@ class IdentifierType {
     String id
     String code
     String description
+    String pattern
 
     static mapping = {
         id generator: "uuid"
@@ -12,5 +13,6 @@ class IdentifierType {
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
+        pattern nullable: true
     }
 }
