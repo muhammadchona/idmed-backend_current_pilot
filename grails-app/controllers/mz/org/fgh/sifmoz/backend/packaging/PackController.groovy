@@ -4,8 +4,13 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugService
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStockService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
+import mz.org.fgh.sifmoz.backend.stock.Stock
+import mz.org.fgh.sifmoz.backend.stock.StockService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
@@ -21,6 +26,9 @@ import grails.gorm.transactions.Transactional
 class PackController extends RestfulController{
 
     PackService packService
+    StockService stockService
+    PackagedDrugStockService packagedDrugStockService
+    PackagedDrugService packagedDrugService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -73,8 +81,15 @@ class PackController extends RestfulController{
         }
 
         try {
-            if (Utilities.stringHasValue(pack.id)) {
-                PackagedDrug.deleteAll(pack.packagedDrugs)
+            for (PackagedDrug packagedDrug : pack.packagedDrugs) {
+                List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrug)
+                for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
+                    Stock stock = Stock.findById(packagedDrugStock.stock.id)
+                    stock.stockMoviment = packagedDrugStock.quantitySupplied + stock.stockMoviment
+                    stockService.save(stock)
+                    packagedDrugStock.delete()
+                }
+                packagedDrug.delete()
             }
             packService.save(pack)
         } catch (ValidationException e) {
