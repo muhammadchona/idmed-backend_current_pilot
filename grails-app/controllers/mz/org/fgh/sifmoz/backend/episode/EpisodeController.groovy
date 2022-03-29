@@ -28,7 +28,7 @@ class EpisodeController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(episodeService.list(params)) as JSON
     }
 
-    def show(Long id) {
+    def show(String id) {
         render JSONSerializer.setJsonObjectResponse(episodeService.get(id)) as JSON
     }
 
@@ -77,7 +77,7 @@ class EpisodeController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || episodeService.delete(id) == null) {
             render status: NOT_FOUND
             return
