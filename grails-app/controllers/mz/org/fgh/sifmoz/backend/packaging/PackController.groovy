@@ -7,6 +7,7 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugService
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStockService
+import mz.org.fgh.sifmoz.backend.clinic.ClinicService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.stock.Stock
@@ -29,6 +30,7 @@ class PackController extends RestfulController{
     StockService stockService
     PackagedDrugStockService packagedDrugStockService
     PackagedDrugService packagedDrugService
+    ClinicService clinicService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -108,5 +110,10 @@ class PackController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def getAllByClinicId(String clinicId, int offset, int max) {
+        Clinic clinic = clinicService.get(clinicId)
+        render JSONSerializer.setObjectListJsonResponse(Pack.findAllByClinic(clinic, offset, max)) as JSON
     }
 }
