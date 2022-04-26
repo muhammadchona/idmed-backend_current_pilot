@@ -1,22 +1,28 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement
 
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
+import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 @ReadOnly
-class ReferredPatientsReportController {
+class ReferredPatientsReportReportController extends MultiThreadRestReportController{
 
     ReferredPatientsReportService referredPatientsReportService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    ReferredPatientsReportReportController() {
+        super(ReferredPatientsReport)
+    }
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -79,5 +85,34 @@ class ReferredPatientsReportController {
         }
 
         render status: NO_CONTENT
+    }
+
+    def initReportProcess (ReportSearchParams searchParams) {
+        super.initReportParams(searchParams)
+        render qtyToProcess: qtyRecordsToProcess
+        doProcessReport()
+    }
+
+    /**
+     * Implementa toda a logica de processamento da informação do relatório
+     */
+    @Override
+    void run() {
+
+    }
+
+    @Override
+    long getRecordsQtyToProcess() {
+        return 0
+    }
+
+    @Override
+    void getProcessedRecordsQty(String reportId) {
+
+    }
+
+    @Override
+    void printReport(String reportId, String fileType) {
+
     }
 }
