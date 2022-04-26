@@ -7,12 +7,8 @@ class ReferredPatientsReport {
     String pharmacyId
     String provinceId
     String districtId
+    String periodType
     String period
-    String month
-    String quarter
-    String semester
-    String annual
-    String year
     Date startDate
     Date endDate
     String nid
@@ -30,13 +26,9 @@ class ReferredPatientsReport {
         pharmacyId nullable: true
         provinceId nullable: true
         districtId nullable: true
-        period nullable: true
-        month nullable: true
-        quarter nullable: true
-        semester nullable: true
-        annual nullable: true
+        periodType nullable: false , inList: ['MONTH','QUARTER','SEMESTER','ANNUAL']
         startDate nullable: true
         endDate nullable: true
-        year nullable: true
+
     }
 }
