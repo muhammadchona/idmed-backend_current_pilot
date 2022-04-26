@@ -20,7 +20,7 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
 
     @Override
     List<PatientVisitDetails> getAllByEpisodeId(String episodeId, int offset, int max) {
-        def patientVisitDetails = PatientVisitDetails.findAllWhere(episode: Episode.findById(episodeId))
+        def patientVisitDetails = PatientVisitDetails.findAllByEpisode(Episode.findById(episodeId))
         return patientVisitDetails
     }
 

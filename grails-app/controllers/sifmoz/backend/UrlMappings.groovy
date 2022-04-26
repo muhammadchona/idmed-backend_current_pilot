@@ -37,6 +37,7 @@ class UrlMappings {
         get "/patientVisit/lastofPatient/$patientId(.$format)?"(controller:'patientVisit', action:'getLastVisitOfPatient')
         get "/pack/prescription/$prescriptionId(.$format)?"(controller:'pack', action:'getAllByPrescriptionId')
         get "/patient/reportActiveByServiceCode/"(controller:'patient', action:'getReportActiveByServiceCode')
+        post "/$controller/initReportProcess(.$format)?"(action:'initReportProcess')
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')
         "404"(view: '/notFound')
