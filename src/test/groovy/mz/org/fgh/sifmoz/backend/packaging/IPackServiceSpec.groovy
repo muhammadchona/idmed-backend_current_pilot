@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.packaging
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class PackServiceSpec extends Specification implements ServiceUnitTest<PackService>{
+class IPackServiceSpec extends Specification implements ServiceUnitTest<IPackService>{
 
     def setup() {
     }
