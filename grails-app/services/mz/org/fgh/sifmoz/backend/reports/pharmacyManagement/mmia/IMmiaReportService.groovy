@@ -1,9 +1,10 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 
 import grails.gorm.services.Service
+import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 
-@Service(MmiaReport)
-interface MmiaReportService {
+
+interface IMmiaReportService {
 
     MmiaReport get(Serializable id)
 
@@ -14,4 +15,6 @@ interface MmiaReportService {
     MmiaReport delete(Serializable id)
 
     MmiaReport save(MmiaReport mmiaReport)
+
+    void processReport(ReportSearchParams searchParams, MmiaReport curMmiaReport)
 }

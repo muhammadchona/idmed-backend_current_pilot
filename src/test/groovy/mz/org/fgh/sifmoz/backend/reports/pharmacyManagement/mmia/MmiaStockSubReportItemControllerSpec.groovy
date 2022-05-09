@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class MmiaStockSubReportControllerSpec extends Specification implements ControllerUnitTest<MmiaStockSubReportController>, DomainUnitTest<MmiaStockSubReport> {
+class MmiaStockSubReportItemControllerSpec extends Specification implements ControllerUnitTest<MmiaStockSubReportController>, DomainUnitTest<MmiaStockSubReportItem> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the save action correctly persists"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * save(_ as MmiaStockSubReport)
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * save(_ as MmiaStockSubReportItem)
         }
 
         when:
@@ -61,7 +61,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new MmiaStockSubReport(params)
+        request.json = new MmiaStockSubReportItem(params)
         controller.save()
 
         then:
@@ -71,8 +71,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * save(_ as MmiaStockSubReport) >> { MmiaStockSubReport mmiaStockSubReport ->
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * save(_ as MmiaStockSubReportItem) >> { MmiaStockSubReportItem mmiaStockSubReport ->
                 throw new ValidationException("Invalid instance", mmiaStockSubReport.errors)
             }
         }
@@ -81,7 +81,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new MmiaStockSubReport(params)
+        request.json = new MmiaStockSubReportItem(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the show action with a null id"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the show action with a valid id"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * get(2) >> new MmiaStockSubReport()
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * get(2) >> new MmiaStockSubReportItem()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the update action correctly persists"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * save(_ as MmiaStockSubReport)
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * save(_ as MmiaStockSubReportItem)
         }
 
         when:
@@ -138,7 +138,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new MmiaStockSubReport(params)
+        def instance = new MmiaStockSubReportItem(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,8 +150,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * save(_ as MmiaStockSubReport) >> { MmiaStockSubReport mmiaStockSubReport ->
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * save(_ as MmiaStockSubReportItem) >> { MmiaStockSubReportItem mmiaStockSubReport ->
                 throw new ValidationException("Invalid instance", mmiaStockSubReport.errors)
             }
         }
@@ -159,7 +159,7 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new MmiaStockSubReport(params)
+        def instance = new MmiaStockSubReportItem(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class MmiaStockSubReportControllerSpec extends Specification implements Controll
 
     void "Test the delete action with an instance"() {
         given:
-        controller.mmiaStockSubReportService = Mock(MmiaStockSubReportService) {
-            1 * delete(2) >> new MmiaStockSubReport(id: 2)
+        controller.mmiaStockSubReportService = Mock(IMmiaStockSubReportService) {
+            1 * delete(2) >> new MmiaStockSubReportItem(id: 2)
         }
 
         when:

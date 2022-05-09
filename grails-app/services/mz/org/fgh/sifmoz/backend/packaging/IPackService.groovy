@@ -22,4 +22,6 @@ interface IPackService {
 
     List<Pack> getPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate)
 
+    int countPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate)
+
 }

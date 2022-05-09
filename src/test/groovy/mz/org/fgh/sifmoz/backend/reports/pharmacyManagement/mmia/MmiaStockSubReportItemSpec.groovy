@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 
-class MmiaStockSubReportSpec extends Specification implements DomainUnitTest<MmiaStockSubReport> {
+class MmiaStockSubReportItemSpec extends Specification implements DomainUnitTest<MmiaStockSubReportItem> {
 
     def setup() {
     }

@@ -98,13 +98,18 @@ class StockReportController extends MultiThreadRestReportController {
      * process report
      */
     @Override
-    long getRecordsQtyToProcess() {
+    protected int countProcessedRecs() {
         return 0
     }
 
     @Override
-    void getProcessedRecordsQty(String reportId) {
+    int countRecordsToProcess() {
+        return 0
+    }
 
+    @Override
+    protected String getProcessingStatusMsg() {
+        return null
     }
 
     @Override
