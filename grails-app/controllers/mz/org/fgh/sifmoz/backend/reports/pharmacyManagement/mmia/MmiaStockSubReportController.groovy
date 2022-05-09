@@ -7,31 +7,34 @@ import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
-@ReadOnly
-class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaStockSubReport>{
+class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaStockSubReportItem>{
 
-    MmiaStockSubReportService mmiaStockSubReportService
+    IMmiaStockSubReportService mmiaStockSubReportService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    MmiaStockSubReportController(Class<MmiaStockSubReport> resource) {
+    MmiaStockSubReportController(Class<MmiaStockSubReportItem> resource) {
         super(resource)
     }
 
     @Override
-    long getRecordsQtyToProcess() {
+    protected int countProcessedRecs() {
         return 0
     }
 
     @Override
-    void getProcessedRecordsQty(String reportId) {
+    int countRecordsToProcess() {
+        return 0
+    }
 
+    @Override
+    protected String getProcessingStatusMsg() {
+        return null
     }
 
     @Override
@@ -49,7 +52,7 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
     }
 
     @Transactional
-    def save(MmiaStockSubReport mmiaStockSubReport) {
+    def save(MmiaStockSubReportItem mmiaStockSubReport) {
         if (mmiaStockSubReport == null) {
             render status: NOT_FOUND
             return
@@ -71,7 +74,7 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
     }
 
     @Transactional
-    def update(MmiaStockSubReport mmiaStockSubReport) {
+    def update(MmiaStockSubReportItem mmiaStockSubReport) {
         if (mmiaStockSubReport == null) {
             render status: NOT_FOUND
             return

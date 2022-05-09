@@ -1,10 +1,9 @@
-package sifmoz.backend
+package mz.org.fgh.sifmoz.backend.packaging
 
 import grails.testing.services.ServiceUnitTest
-import mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia.MmiaReportService
 import spock.lang.Specification
 
-class MmiaReportServiceSpec extends Specification implements ServiceUnitTest<MmiaReportService>{
+class RestIPackServiceSpec extends Specification implements ServiceUnitTest<RestPackService>{
 
     def setup() {
     }
