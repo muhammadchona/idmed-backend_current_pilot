@@ -165,6 +165,21 @@ public class ConvertDateUtils {
         }
     }
 
+    public static double calculaIdade(Date dataMenor) throws ParseException {
+
+       // String dataMaior = formatToDDMMYYYY(getCurrentDate());
+       // String dataMaior = formatToDDMMYYYY(getCurrentDate());
+
+        try {
+          //  Date dataMenorAux = createDate(dataMenor, "dd-MM-yyyy");
+          //  Date dataMaiorAux = createDate(dataMaior, "dd-MM-yyyy");
+
+            return dateDiff(getCurrentDate(), dataMenor, ConvertDateUtils.YEAR_FORMAT);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
 
     public static String formatToDDMMYYYY(String date) throws IllegalArgumentException {
         if (date == null) return null;
