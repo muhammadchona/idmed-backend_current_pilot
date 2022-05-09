@@ -20,20 +20,25 @@ public class ReportSearchParams implements Validateable {
     public static final String PERIOD_TYPE_SEMESTER = "SEMESTER";
     public static final String PERIOD_TYPE_ANNUAL = "ANNUAL";
 
-    private String reportId;
-    private String pharmacyId;
+    private String id;
+    private String clinicId;
     private String provinceId;
     private String districtId;
     private String periodType;
     private String period;
-    private String serviceCode;
+    private String clinicalService;
     private int year;
     private Date startDate;
     private Date endDate;
+    private String startDateParam;
+    private String endDateParam;
+    private String reportType;
 
     public void determineStartEndDate() {
         switch (getPeriodType()) {
             case PERIOD_TYPE_SPECIFIC:
+               setStartDate(ConvertDateUtils.createDate(getStartDateParam(),"dd-MM-yyyy"));
+                setEndDate(ConvertDateUtils.createDate(getEndDateParam(),"dd-MM-yyyy"));
                 break;
             case PERIOD_TYPE_MONTH:
                 int month = Integer.parseInt(getPeriod());
@@ -78,20 +83,24 @@ public class ReportSearchParams implements Validateable {
         }
     }
 
-    public String getReportId() {
-        return reportId;
+    public String getId() {
+        return id;
     }
 
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getPharmacyId() {
-        return pharmacyId;
+    public String getClinicalService() {
+        return clinicalService;
     }
 
-    public void setPharmacyId(String pharmacyId) {
-        this.pharmacyId = pharmacyId;
+    public void setClinicalService(String clinicalService) {
+        this.clinicalService = clinicalService;
+    }
+
+    public void setClinicId(String clinicId) {
+        this.clinicId = clinicId;
     }
 
     public String getProvinceId() {
@@ -150,16 +159,32 @@ public class ReportSearchParams implements Validateable {
         this.endDate = endDate;
     }
 
-    public String getServiceCode() {
-        return serviceCode;
-    }
-
-    public void setServiceCode(String serviceCode) {
-        this.serviceCode = serviceCode;
-    }
-
     public String getClinicId() {
-        return pharmacyId;
+        return clinicId;
+    }
+
+    public String getStartDateParam() {
+        return startDateParam;
+    }
+
+    public void setStartDateParam(String startDateParam) {
+        this.startDateParam = startDateParam;
+    }
+
+    public String getEndDateParam() {
+        return endDateParam;
+    }
+
+    public void setEndDateParam(String endDateParam) {
+        this.endDateParam = endDateParam;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
     }
 
     @Override
