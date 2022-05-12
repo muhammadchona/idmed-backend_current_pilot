@@ -15,6 +15,8 @@ import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import mz.org.fgh.sifmoz.report.ReportGenerator
 import org.grails.web.json.JSONArray
+import org.hibernate.SessionFactory
+import org.springframework.orm.hibernate5.SessionFactoryUtils
 
 import java.nio.charset.StandardCharsets
 
@@ -28,6 +30,8 @@ import grails.gorm.transactions.Transactional
 class PatientController extends RestfulController {
 
     IPatientService patientService
+
+    def SessionFactory sessionFactory
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -131,7 +135,7 @@ class PatientController extends RestfulController {
 
         Clinic clinic = Clinic.findById("ff8081817c668dcc017c66dc3d330002")
         ClinicalService clinicalService = ClinicalService.findByCode("TARV")
-        // SessionFactoryUtils.getDataSource(sessionFactory).getConnection()
+        SessionFactoryUtils.getDataSource(sessionFactory).getConnection()
         List<PatientServiceIdentifier> patients =   PatientServiceIdentifier.findAllByStartDateIsNotNullAndEndDateIsNullAndClinicAndService(clinic,clinicalService)
 
         Map<String, Object> map = new HashMap<>()

@@ -5,15 +5,21 @@ public class ReportProcessStatus {
     private String msg;
     private int processedRecs;
     private int qtyToProcess;
+    private ReportSearchParams searchParams;
 
     public ReportProcessStatus() {
     }
 
-    public ReportProcessStatus(String reportId, String msg, int processedRecs, int qtyToProcess) {
+    public ReportProcessStatus(String reportId, String msg, int processedRecs, int qtyToProcess, ReportSearchParams searchParams) {
         this.reportId = reportId;
         this.msg = msg;
         this.processedRecs = processedRecs;
         this.qtyToProcess = qtyToProcess;
+        this.searchParams = searchParams;
+    }
+
+    public ReportSearchParams getSearchParams() {
+        return searchParams;
     }
 
     public String getReportId() {

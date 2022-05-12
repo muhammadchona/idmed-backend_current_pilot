@@ -3,18 +3,16 @@ package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 import grails.converters.JSON
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
-import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
-import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.drug.IDrugService
+import mz.org.fgh.sifmoz.backend.drug.DrugService
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
+import mz.org.fgh.sifmoz.backend.multithread.ReportProcessStatus
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
-import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.stock.IStockService
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
+import mz.org.fgh.sifmoz.report.ReportGenerator
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -29,7 +27,7 @@ class MmiaReportController extends MultiThreadRestReportController{
     List<Pack> packList
     MmiaReport curMmiaReport
     IPackService packService
-    IDrugService drugService
+    DrugService drugService
     IStockService stockService
     IMmiaStockSubReportService mmiaStockSubReportService
     private int qtyProcessed
@@ -51,11 +49,11 @@ class MmiaReportController extends MultiThreadRestReportController{
 
     @Override
     int countRecordsToProcess() {
-        if (this.processStage == PROCESS_STATUS_PROCESSING_STOCK) {
+        /*if (this.processStage == PROCESS_STATUS_PROCESSING_STOCK) {
             return 0
         } else if (this.processStage == PROCESS_STATUS_PROCESSING_PACKS) {
-            return packService.countPacksByServiceOnPeriod(ClinicalService.findByCode(getSearchParams().getServiceCode()), Clinic.findById(getSearchParams().getClinicId()), getSearchParams().getStartDate(), getSearchParams().getEndDate())
-        }
+            return packService.countPacksByServiceOnPeriod(ClinicalService.findByCode(getSearchParams().getClinicalService()), Clinic.findById(getSearchParams().getClinicId()), getSearchParams().getStartDate(), getSearchParams().getEndDate())
+        }*/
         return 0
     }
 
@@ -65,9 +63,9 @@ class MmiaReportController extends MultiThreadRestReportController{
         return processStage
     }
 
-    @Override
-    void printReport(String reportId, String fileType) {
-
+    def printReport(String reportId, String fileType) {
+        byte [] report = super.printReport(reportId, fileType, "/home/voloide/projects/dev/workspaces/JWORKSPACE/SIFMOZ-Backend/src/main/webapp/reports/pharmacyManagement", "MmiaReport.jrxml")
+        render(file: report, contentType: 'application/pdf')
     }
 
     def index(Integer max) {
@@ -123,8 +121,8 @@ class MmiaReportController extends MultiThreadRestReportController{
         respond mmiaReport, [status: OK, view:"show"]
     }
 
-    def getProcessingStatus() {
-        render getProcessStatus()
+    def getProcessingStatus(String reportId) {
+        render ((ReportProcessStatus) getSession().getAttribute(reportId)) as JSON
     }
 
     @Transactional
@@ -139,7 +137,9 @@ class MmiaReportController extends MultiThreadRestReportController{
 
     def initReportProcess (ReportSearchParams searchParams) {
         super.initReportParams(searchParams)
-        render getProcessStatus() as JSON
+        try {
+            render ((ReportProcessStatus) getSession().getAttribute(getSearchParams().getId())) as JSON
+        } catch (Exception e) {}
         doProcessReport()
     }
 
@@ -164,14 +164,12 @@ class MmiaReportController extends MultiThreadRestReportController{
 
     private void initMmiaReportRecord() {
         this.curMmiaReport = new MmiaReport()
-        this.curMmiaReport.setReportId(getSearchParams().getReportId())
+        this.curMmiaReport.setReportId(getSearchParams().getId())
         this.curMmiaReport.setClinicId(getSearchParams().getClinicId())
         this.curMmiaReport.setPeriodType(getSearchParams().getPeriodType())
         this.curMmiaReport.setPeriod(Integer.valueOf(getSearchParams().getPeriod()))
         this.curMmiaReport.setYear(getSearchParams().getYear())
-    }
-
-    void updateProcessedRecs(int counter) {
-        qtyProcessed = counter + 1
+        this.curMmiaReport.setStartDate(getSearchParams().getStartDate())
+        this.curMmiaReport.setEndDate(getSearchParams().getEndDate())
     }
 }
