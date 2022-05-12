@@ -39,7 +39,7 @@ class UrlMappings {
         get "/patient/reportActiveByServiceCode/"(controller:'patient', action:'getReportActiveByServiceCode')
         post "/$controller/initReportProcess(.$format)?"(action:'initReportProcess')
         get "/$controller/printReport/$reportId/$fileType(.$format)?"(action:'printReport')
-        get "/$controller/getProcessingStatus(.$format)?"(action:'getProcessingStatus')
+        get "/$controller/getProcessingStatus/$reportId(.$format)?"(action:'getProcessingStatus')
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')
         "404"(view: '/notFound')

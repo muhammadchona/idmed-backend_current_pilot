@@ -112,8 +112,8 @@ class StockReportController extends MultiThreadRestReportController {
         return null
     }
 
-    @Override
-    void printReport(String reportId, String fileType) {
+
+    def printReport(String reportId, String fileType) {
 
     }
 

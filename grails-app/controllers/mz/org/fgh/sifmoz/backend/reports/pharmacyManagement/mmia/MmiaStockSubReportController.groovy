@@ -37,8 +37,8 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
         return null
     }
 
-    @Override
-    void printReport(String reportId, String fileType) {
+
+    def printReport(String reportId, String fileType) {
 
     }
 
