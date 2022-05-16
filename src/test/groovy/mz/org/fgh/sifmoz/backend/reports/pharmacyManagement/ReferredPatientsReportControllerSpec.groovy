@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement
 
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReportController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -11,7 +13,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class ReferredPatientsReportReportControllerSpec extends Specification implements ControllerUnitTest<ReferredPatientsReportReportController>, DomainUnitTest<ReferredPatientsReport> {
+class ReferredPatientsReportControllerSpec extends Specification implements ControllerUnitTest<ReferredPatientsReportController>, DomainUnitTest<ReferredPatientsReport> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +29,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +54,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the save action correctly persists"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * save(_ as ReferredPatientsReport)
         }
 
@@ -71,7 +73,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * save(_ as ReferredPatientsReport) >> { ReferredPatientsReport referredPatientsReport ->
                 throw new ValidationException("Invalid instance", referredPatientsReport.errors)
             }
@@ -91,7 +93,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the show action with a null id"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +106,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the show action with a valid id"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * get(2) >> new ReferredPatientsReport()
         }
 
@@ -129,7 +131,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the update action correctly persists"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * save(_ as ReferredPatientsReport)
         }
 
@@ -150,7 +152,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * save(_ as ReferredPatientsReport) >> { ReferredPatientsReport referredPatientsReport ->
                 throw new ValidationException("Invalid instance", referredPatientsReport.errors)
             }
@@ -181,7 +183,7 @@ class ReferredPatientsReportReportControllerSpec extends Specification implement
 
     void "Test the delete action with an instance"() {
         given:
-        controller.referredPatientsReportService = Mock(ReferredPatientsReportService) {
+        controller.referredPatientsReportService = Mock(IReferredPatientsReportService) {
             1 * delete(2) >> new ReferredPatientsReport(id: 2)
         }
 

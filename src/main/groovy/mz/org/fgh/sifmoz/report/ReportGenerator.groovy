@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
 import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.JasperReport
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource
 import net.sf.jasperreports.engine.export.JRXlsExporter
 import net.sf.jasperreports.export.ExporterInput
@@ -28,6 +29,20 @@ class ReportGenerator {
             //     response.setContentType("application/pdf")  //<-- you'll have to handle this dynamically at some point
             //    response.setHeader("Content-disposition", "attachment;filename=${11}")
             //   response.outputStream <<  byteArrayOutputStream.toByteArray()
+        } catch (Exception e) {
+            throw new RuntimeException("It's not possible to generate the pdf report.", e);
+        }
+    }
+
+    static byte[] generateReport(Map<String, Object> parameters, List objects, String reportPath, String report ) {
+        try {
+            JRBeanCollectionDataSource mapCollectionDataSource = new JRBeanCollectionDataSource(objects)
+           // String reportUri = reportPath+"/"+report
+            JasperReport jasperReport = JasperCompileManager.compileReport(report)
+            def jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, mapCollectionDataSource)
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+            JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream)
+            return byteArrayOutputStream.toByteArray()
         } catch (Exception e) {
             throw new RuntimeException("It's not possible to generate the pdf report.", e);
         }
