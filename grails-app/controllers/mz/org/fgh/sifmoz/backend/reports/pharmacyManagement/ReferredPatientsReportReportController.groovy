@@ -104,16 +104,6 @@ class ReferredPatientsReportReportController extends MultiThreadRestReportContro
     }
 
     @Override
-    protected int countProcessedRecs() {
-        return 0
-    }
-
-    @Override
-    int countRecordsToProcess() {
-        return 0
-    }
-
-    @Override
     protected String getProcessingStatusMsg() {
         return null
     }
