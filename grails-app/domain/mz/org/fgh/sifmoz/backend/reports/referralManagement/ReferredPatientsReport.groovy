@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement
+package mz.org.fgh.sifmoz.backend.reports.referralManagement
 
 class ReferredPatientsReport {
 

@@ -3,32 +3,23 @@ package mz.org.fgh.sifmoz.backend.reports.referralManagement
 
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
-import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
-import mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.ReferredPatientsReport
-import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
 import mz.org.fgh.sifmoz.report.ReportGenerator
-import net.sf.jasperreports.engine.JRException
-import net.sf.jasperreports.engine.JasperReport
-import net.sf.jasperreports.engine.util.JRLoader
 import org.apache.commons.lang3.ArrayUtils
-
-import java.sql.Ref
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 
 class ReferredPatientsReportController extends MultiThreadRestReportController{
 
     IReferredPatientsReportService referredPatientsReportService
+    public static final String PROCESS_STATUS_PROCESSING_PACKS = "A processar pacientes"
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -150,7 +141,7 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
            map.put("path", path)
             map.put("mainfacilityname", referredPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(referredPatientsReports.get(0).getPharmacyId()).getClinicName())
             map.put("dateEnd", referredPatientsReports.get(0).getEndDate())
-            map.put("start", referredPatientsReports.get(0).getStartDate())
+            map.put("date", referredPatientsReports.get(0).getStartDate())
 
             if(reportType.equals("HISTORICO_LEVANTAMENTO_PACIENTES_REFERIDOS")) {
                 reportPathFile = path+"/HistoricoLevantamentosReferidosDe.jrxml"

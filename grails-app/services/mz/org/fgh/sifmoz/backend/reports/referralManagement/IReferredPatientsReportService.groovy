@@ -1,9 +1,7 @@
 package mz.org.fgh.sifmoz.backend.reports.referralManagement
 
-import grails.gorm.services.Service
-import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
-import mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.ReferredPatientsReport
 
+import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 
 interface IReferredPatientsReportService {
 
@@ -17,7 +15,7 @@ interface IReferredPatientsReportService {
 
     ReferredPatientsReport save(ReferredPatientsReport referredPatientsReport)
 
-    int processReferredAndBackReferredReportRecords(ReportSearchParams searchParams)
+    void processReferredAndBackReferredReportRecords(ReportSearchParams searchParams)
 
     void processReportReferredDispenseRecords(ReportSearchParams searchParams)
 

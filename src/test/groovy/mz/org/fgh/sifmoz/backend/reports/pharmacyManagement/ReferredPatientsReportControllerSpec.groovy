@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement
 
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReportController
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK

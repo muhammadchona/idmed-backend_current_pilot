@@ -314,9 +314,9 @@ ao TARV
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<line>
-				<reportElement key="line-6" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="1" height="22" forecolor="#000000" backcolor="#FFFFFF" uuid="c921bdb8-651b-4288-a29b-5ccc35e9d89b">
+				<reportElement key="line-6" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="c921bdb8-651b-4288-a29b-5ccc35e9d89b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement fill="Solid">
@@ -332,7 +332,7 @@ ao TARV
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" stretchType="ContainerHeight" mode="Opaque" x="194" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="a520e24a-d7d4-40f9-bf10-7a1d4b610df9">
+				<reportElement key="line-9" stretchType="RelativeToTallestObject" mode="Opaque" x="194" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="a520e24a-d7d4-40f9-bf10-7a1d4b610df9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -342,7 +342,7 @@ ao TARV
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-12" stretchType="ContainerHeight" mode="Opaque" x="658" y="0" width="1" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="02d69593-2c01-4ae2-b113-ae6a2c01607c">
+				<reportElement key="line-12" stretchType="RelativeToTallestObject" mode="Opaque" x="658" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="02d69593-2c01-4ae2-b113-ae6a2c01607c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement fill="Solid">
@@ -350,31 +350,16 @@ ao TARV
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-13" positionType="FixRelativeToBottom" mode="Opaque" x="0" y="21" width="658" height="1" forecolor="#000000" backcolor="#FFFFFF" uuid="700329ba-1b1b-4611-a51d-2fc600a3b788"/>
-				<graphicElement fill="Solid">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement key="line-16" stretchType="RelativeToBandHeight" mode="Opaque" x="380" y="0" width="1" height="21" forecolor="#000000" backcolor="#FFFFFF" uuid="61b8f8f4-a93c-4559-a028-3f36e7bfd544">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<reportElement key="line-13" positionType="FixRelativeToBottom" mode="Opaque" x="1" y="21" width="658" height="1" forecolor="#000000" backcolor="#FFFFFF" uuid="700329ba-1b1b-4611-a51d-2fc600a3b788">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<graphicElement fill="Solid">
 					<pen lineWidth="0.25" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-29" stretchType="RelativeToBandHeight" mode="Opaque" x="475" y="0" width="1" height="22" forecolor="#000000" backcolor="#FFFFFF" uuid="0b0687d7-a7c5-4e0b-9265-fc405cbad854">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement fill="Solid">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement key="line-32" stretchType="RelativeToBandHeight" mode="Opaque" x="288" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="ecc8928d-e497-4d7a-b42a-420caaeb76d4">
+				<reportElement key="line-16" stretchType="RelativeToTallestObject" mode="Opaque" x="380" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="61b8f8f4-a93c-4559-a028-3f36e7bfd544">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -383,7 +368,25 @@ ao TARV
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-29" stretchType="RelativeToBandHeight" mode="Opaque" x="567" y="0" width="1" height="22" forecolor="#000000" backcolor="#FFFFFF" uuid="ffa899b8-a3d9-4ebc-ab77-c2541ab6330c">
+				<reportElement key="line-29" stretchType="RelativeToTallestObject" mode="Opaque" x="475" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="0b0687d7-a7c5-4e0b-9265-fc405cbad854">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-32" stretchType="RelativeToTallestObject" mode="Opaque" x="288" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="ecc8928d-e497-4d7a-b42a-420caaeb76d4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line-29" stretchType="RelativeToTallestObject" mode="Opaque" x="567" y="0" width="1" height="23" forecolor="#000000" backcolor="#FFFFFF" uuid="ffa899b8-a3d9-4ebc-ab77-c2541ab6330c">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -458,7 +461,7 @@ ao TARV
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="1" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">

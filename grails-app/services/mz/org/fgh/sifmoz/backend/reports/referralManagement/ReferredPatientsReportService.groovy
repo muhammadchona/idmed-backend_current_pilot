@@ -13,6 +13,7 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescription.PrescriptionService
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 @Transactional
@@ -25,11 +26,11 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
     EpisodeService episodeService
 
     @Override
-    int processReferredAndBackReferredReportRecords(ReportSearchParams searchParams) {
+    void processReferredAndBackReferredReportRecords(ReportSearchParams searchParams) {
 
         Clinic clinic = Clinic.findById(searchParams.clinicId)
         ClinicalService clinicalService = ClinicalService.findById(searchParams.clinicalService)
-        Map<String , Prescription> prescriptionMap= prescriptionService.getLastPrescriptionsByClinicAndClinicalService(clinic,clinicalService)
+        Map<String , Prescription> prescriptionMap= prescriptionService.getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(clinic,clinicalService,searchParams.endDate)
         List<Episode> episodes = episodeService.getEpisodeOfReferralOrBackReferral(clinic,clinicalService,searchParams.reportType,searchParams.startDate,searchParams.endDate)
         println(episodes)
         List<ReferredPatientsReport> referencesToCreate = new ArrayList<>()
@@ -53,13 +54,11 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
             referencesToCreate.add(referredPatient)
             save(referredPatient)
         }
-        return episodes.size()
     }
 
     void processReportReferredDispenseRecords(ReportSearchParams searchParams) {
         Clinic clinic = Clinic.findById(searchParams.clinicId)
         ClinicalService clinicalService = ClinicalService.findById(searchParams.clinicalService)
-        //     Map<String , Prescription> prescriptionMap= prescriptionService.getLastPrescriptionsByClinicAndClinicalService(clinic,clinicalService)
         List<Pack> packs = packService.getPacksOfReferredPatientsByClinicalServiceAndClinicOnPeriod(clinicalService,clinic,searchParams.startDate,searchParams.endDate)
 
         for (Pack pack:packs) {
@@ -80,19 +79,27 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
     void processReportAbsentReferredDispenseRecords(ReportSearchParams searchParams) {
         Clinic clinic = Clinic.findById(searchParams.clinicId)
         ClinicalService clinicalService = ClinicalService.findById(searchParams.clinicalService)
-        List<Pack> packs = packService.getAbsentReferredPatientsByClinicalServiceAndClinicOnPeriod(clinicalService,clinic,searchParams.startDate,searchParams.endDate)
+        List absentReferredPatients = packService.getAbsentReferredPatientsByClinicalServiceAndClinicOnPeriod(clinicalService,clinic,searchParams.startDate,searchParams.endDate)
 
-        for (Pack pack:packs) {
-            Prescription prescription = pack.patientVisitDetails.getAt(0).prescription
-            PrescriptionDetail prescriptionDetail = prescription.prescriptionDetails.getAt(0)
-            Episode episode = pack.patientVisitDetails.getAt(0).episode
-
+        for (int i = 0; i < absentReferredPatients.size(); i ++) {
+            Object item = absentReferredPatients[0]
+            Episode episode = (Episode) item[0]
             ReferredPatientsReport referredPatientAbsent = setGenericInfo(searchParams,clinic,episode)
-            referredPatientAbsent.setDateMissedPickUp(pack.nextPickUpDate)
-            referredPatientAbsent.setDateIdentifiedAbandonment(ConvertDateUtils.addDaysDate(pack.nextPickUpDate,60))
-            referredPatientAbsent.setContact(episode.patientServiceIdentifier.patient.cellphone)
+
+            referredPatientAbsent.setDateMissedPickUp(item[1] as Date)
+            Date abandonmentDate = ConvertDateUtils.addDaysDate(referredPatientAbsent.dateMissedPickUp,60)
+            if(searchParams.endDate.after(abandonmentDate)) {
+                referredPatientAbsent.setDateIdentifiedAbandonment(abandonmentDate)
+            }
+            if(item[2] != null){
+                referredPatientAbsent.setContact(String.valueOf(item[2]))
+            }
+            if(item[3] != null) {
+                referredPatientAbsent.setReturnedPickUp(item[3] as Date)
+            }
             save(referredPatientAbsent)
         }
+
     }
 
     private ReferredPatientsReport setGenericInfo(ReportSearchParams searchParams,Clinic clinic,Episode episode) {

@@ -98,9 +98,19 @@ abstract class PackService implements IPackService{
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate])
     }
 
-    List<Pack> getAbsentReferredPatientsByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService,Clinic clinic,Date startDate, Date endDate){
+    List getAbsentReferredPatientsByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService, Clinic clinic, Date startDate, Date endDate){
 
-        return  Pack.executeQuery("select pk from Pack pk " +
+        def list = Pack.executeQuery("select ep as episode," +
+                "pk.nextPickUpDate as dateMissedPickUp, " +
+                "p.cellphone as contact, " +
+                "(select pk4.pickupDate from Pack pk4 " +
+                "inner join pk4.patientVisitDetails as pvd2 " +
+                "inner join pvd2.patientVisit as pv2 " +
+                "inner join pvd2.episode as ep3 " +
+                "inner join ep3.patientServiceIdentifier as psi3 " +
+                "inner join psi3.service as s3 " +
+                "where psi.patient = psi3.patient and s3.code = :serviceCode and pk4.pickupDate > pk.nextPickUpDate and pk4.pickupDate <= :endDate) as returnedPickUp " +
+                "from Pack pk " +
                 "inner join pk.patientVisitDetails as pvd " +
                 "inner join pvd.patientVisit as pv " +
                 "inner join pvd.episode as ep " +
@@ -121,7 +131,9 @@ abstract class PackService implements IPackService{
                 "inner join pvd2.episode as ep3 " +
                 "inner join ep3.patientServiceIdentifier as psi3 " +
                 "inner join psi3.service as s3 " +
-                "where psi.patient = psi3.patient and s3.code = :serviceCode and pk2.nextPickUpDate  >= :startDate and pk2.nextPickUpDate <= :endDate) ",
+                "where psi.patient = psi3.patient and s3.code = :serviceCode and pk2.nextPickUpDate  >= :startDate and pk2.nextPickUpDate <= :endDate)",
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate,days: 3])
+
+       return list
     }
 }

@@ -50,7 +50,7 @@ abstract class PrescriptionService implements IPrescriptionService{
         return map
     }
 
-    Map<String ,Prescription> getLastPrescriptionsByClinicAndClinicalServiceAndStartDateAndEndDate(Clinic clinic, ClinicalService clinicalService, Date startDate, Date endDate) {
+    Map<String ,Prescription> getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(Clinic clinic, ClinicalService clinicalService, Date endDate) {
         List<Prescription> prescriptions = Prescription.executeQuery("select pk from Prescription pk " +
                 "inner join pk.patientVisitDetails as pvd " +
                 "inner join pvd.patientVisit as pv " +
