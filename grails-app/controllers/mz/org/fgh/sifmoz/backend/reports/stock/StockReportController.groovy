@@ -94,18 +94,6 @@ class StockReportController extends MultiThreadRestReportController {
         render qtyToProcess: qtyRecordsToProcess
         doProcessReport()
     }
-    /**
-     * process report
-     */
-    @Override
-    protected int countProcessedRecs() {
-        return 0
-    }
-
-    @Override
-    int countRecordsToProcess() {
-        return 0
-    }
 
     @Override
     protected String getProcessingStatusMsg() {
