@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
 import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.JasperReport
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
 import net.sf.jasperreports.export.Exporter
@@ -28,8 +29,8 @@ class ReportGenerator {
         try {
             def jasperPrint
             JasperReport jasperReport = JasperCompileManager.compileReport(reportPath)
-            if (Utilities.listHasElements(reportObjects as ArrayList<?>)) {
-                JRMapCollectionDataSource mapCollectionDataSource = new JRMapCollectionDataSource(reportObjects)
+            if (Utilities.listHasElements(reportObjects)) {
+                JRBeanCollectionDataSource mapCollectionDataSource = new JRBeanCollectionDataSource(reportObjects)
                 jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, mapCollectionDataSource)
             } else {
                 jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection)
