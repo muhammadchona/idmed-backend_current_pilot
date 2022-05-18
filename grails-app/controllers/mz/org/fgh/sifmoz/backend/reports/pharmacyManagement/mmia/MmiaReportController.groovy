@@ -36,7 +36,8 @@ class MmiaReportController extends MultiThreadRestReportController{
     }
 
     def printReport(String reportId, String fileType) {
-        byte[] report = super.printReport(reportId, fileType, "/home/voloide/projects/dev/workspaces/JWORKSPACE/SIFMOZ-Backend/src/main/webapp/reports/pharmacyManagement", "MmiaReport.jrxml")
+        Map<String, Object> params = new HashMap<>()
+        byte[] report = super.printReport(reportId, fileType, getReportsPath()+"pharmacyManagement/MmiaReport.jrxml", params)
         render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
     }
 
