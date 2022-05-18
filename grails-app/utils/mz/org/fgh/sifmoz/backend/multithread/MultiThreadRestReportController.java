@@ -54,6 +54,7 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
 
     }
 
+
     /**
      * Processa o relatório
      */
