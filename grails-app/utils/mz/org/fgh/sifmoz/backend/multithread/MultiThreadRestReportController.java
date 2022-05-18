@@ -85,7 +85,6 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
     }
 
     protected byte[] printReport(String reportId, String fileType, String report, Map<String, Object> params, Collection reportObjects) throws SQLException {
-
         params.put("path", getReportsPath());
         params.put("reportId", reportId);
         params.put("username", "Test_user");

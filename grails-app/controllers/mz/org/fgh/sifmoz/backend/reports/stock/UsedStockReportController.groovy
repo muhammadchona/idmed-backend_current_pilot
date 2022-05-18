@@ -14,6 +14,7 @@ import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.*
 
+
 class UsedStockReportController extends MultiThreadRestReportController {
 
 

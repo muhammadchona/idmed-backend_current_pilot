@@ -109,6 +109,7 @@ class ReceivedStockReportController extends MultiThreadRestReportController {
            byte[] report = super.printReport(reportId, fileType, getReportsPath()+"stock/ReceivedStockReport.jrxml", map,itemsReport)
            render(file: report, contentType: 'application/'+fileType.equalsIgnoreCase("PDF")? 'pdf' : 'xls')
        }
+
    }
 
 

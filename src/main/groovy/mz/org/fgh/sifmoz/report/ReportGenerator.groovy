@@ -62,17 +62,4 @@ class ReportGenerator {
         }
     }
 
-    static byte[] generateReport(Map<String, Object> parameters, String reportPath, String report, Connection connection) {
-        try {
-            String reportUri = reportPath+"/"+report
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportUri)
-            def jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection)
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
-            JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream)
-            return byteArrayOutputStream.toByteArray()
-        } catch (Exception e) {
-            throw new RuntimeException("It's not possible to generate the pdf report.", e);
-        }
-
-    }
 }
