@@ -133,19 +133,16 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
 
     def printReport(String reportId, String reportType,String fileType) {
 
-         String path = getReportsPath()+"referralManagement"
-       // File file = grails.util.BuildSettings.BASE_DIR
-       // println(file)
-        println(path)
-        String reportPathFile = ""
+        String path = getReportsPath()+"referralManagement"
         List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
         Map<String, Object> map = new HashMap<>()
         if (ArrayUtils.isNotEmpty(referredPatientsReports)) {
-           map.put("path", path)
+            map.put("path", path)
             map.put("mainfacilityname", referredPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(referredPatientsReports.get(0).getPharmacyId()).getClinicName())
             map.put("dateEnd", referredPatientsReports.get(0).getEndDate())
             map.put("date", referredPatientsReports.get(0).getStartDate())
 
+            String reportPathFile = null
             if(reportType.equals("HISTORICO_LEVANTAMENTO_PACIENTES_REFERIDOS")) {
                 reportPathFile = path+"/HistoricoLevantamentosReferidosDe.jrxml"
             } else if (reportType.equals("REFERIDOS_FALTOSOS_AO_LEVANTAMENTO")) {
@@ -155,17 +152,8 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
             } else {
                 reportPathFile = path+"/PacientesReferidosPara.jrxml"
             }
-            File initialFile = new File(reportPathFile);
-            InputStream targetStream = new FileInputStream(initialFile);
-           // JasperReport subJasperReport = (JasperReport) JRLoader.loadObject(targetStream);
-            if(fileType.equals('PDF')) {
-                byte[] report = ReportGenerator.generateReport(map, referredPatientsReports, path, reportPathFile)
-                render(file: report, contentType: 'application/pdf')
-            } else {
-                byte[] report = ReportGenerator.generateReportExcel(map, referredPatientsReports, path, reportPathFile)
-                render(file: report, contentType: 'application/xls')
-            }
-
+            byte[] report = super.printReport(reportId, fileType, reportPathFile, map, referredPatientsReports as List<Map<String, Object>>)
+            render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
         }
     }
 

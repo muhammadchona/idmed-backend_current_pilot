@@ -6,6 +6,7 @@ import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils;
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor;
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService;
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport;
+import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 import mz.org.fgh.sifmoz.report.ReportGenerator;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,19 +82,24 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
 
     protected abstract String getProcessingStatusMsg();
 
-    protected byte[] printReport(String reportId, String fileType, String path, String report) throws SQLException {
-        Map<String, Object> map = new HashMap<>();
-        Connection connection = SessionFactoryUtils.getDataSource(sessionFactory).getConnection();
-
-        map.put("path", path);
-        map.put("reportId", reportId);
-        map.put("username", "Test_user");
-        map.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
-
-        return ReportGenerator.generateReport(map,path, report, connection);
+    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params) throws SQLException {
+        return this.printReport(reportId, fileType, path, params, null);
     }
 
-    public String getReportsPath () throws IOException {
+    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params, List<Map<String, Object>> reportObjects) throws SQLException {
+
+        params.put("reportId", reportId);
+        params.put("username", "Test_user");
+        params.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
+
+        if (Utilities.listHasElements((ArrayList<?>) reportObjects)) {
+            return ReportGenerator.generateReport(params, fileType, reportObjects, path);
+        } else {
+            return ReportGenerator.generateReport(path, params, fileType, SessionFactoryUtils.getDataSource(sessionFactory).getConnection());
+        }
+    }
+
+    protected String getReportsPath () throws IOException {
         return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
     }
 }
