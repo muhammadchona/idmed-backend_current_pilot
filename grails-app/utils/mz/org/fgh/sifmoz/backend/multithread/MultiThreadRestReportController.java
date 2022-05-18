@@ -35,7 +35,6 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
     public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado";
     @Autowired
     protected IReportProcessMonitorService reportProcessMonitorService;
-    // File file = grails.util.BuildSettings.BASE_DIR;
 
     public MultiThreadRestReportController(Class<T> resource) {
         super(resource);
@@ -83,24 +82,30 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
 
     protected abstract String getProcessingStatusMsg();
 
-    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params) throws SQLException {
-        return this.printReport(reportId, fileType, path, params, null);
+    protected byte[] printReport(String reportId, String fileType, String report, Map<String, Object> params) throws SQLException {
+        return this.printReport(reportId, fileType, report, params, null);
     }
 
-    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params, List<Map<String, Object>> reportObjects) throws SQLException {
+    protected byte[] printReport(String reportId, String fileType, String report, Map<String, Object> params, List<Map<String, Object>> reportObjects) throws SQLException {
 
+        params.put("path", getReportsPath());
         params.put("reportId", reportId);
         params.put("username", "Test_user");
         params.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
 
         if (Utilities.listHasElements((ArrayList<?>) reportObjects)) {
-            return ReportGenerator.generateReport(params, fileType, reportObjects, path);
+            return ReportGenerator.generateReport(params, fileType, reportObjects, report);
         } else {
-            return ReportGenerator.generateReport(path, params, fileType, SessionFactoryUtils.getDataSource(sessionFactory).getConnection());
+            return ReportGenerator.generateReport(report, params, fileType, SessionFactoryUtils.getDataSource(sessionFactory).getConnection());
         }
     }
 
-    protected String getReportsPath () throws IOException {
-        return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
+    protected String getReportsPath (){
+        try {
+            return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
