@@ -17,6 +17,7 @@ import mz.org.fgh.sifmoz.backend.prescription.PrescriptionService
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
@@ -96,7 +97,7 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
         List absentReferredPatients = packService.getAbsentReferredPatientsByClinicalServiceAndClinicOnPeriod(clinicalService,clinic,searchParams.startDate,searchParams.endDate)
         double percentageUnit = 100/absentReferredPatients.size()
         for (int i = 0; i < absentReferredPatients.size(); i ++) {
-            Object item = absentReferredPatients[0]
+            Object item = absentReferredPatients[i]
             Episode episode = (Episode) item[0]
             ReferredPatientsReport referredPatientAbsent = setGenericInfo(searchParams,clinic,episode)
 
@@ -134,4 +135,5 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
         referredPatient.setReferralPharmacy(episode.referralClinic.clinicName)
         return referredPatient
     }
+
 }
