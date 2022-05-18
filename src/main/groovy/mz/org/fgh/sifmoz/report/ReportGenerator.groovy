@@ -8,10 +8,13 @@ import net.sf.jasperreports.engine.JasperReport
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource
 import net.sf.jasperreports.engine.export.JRXlsExporter
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
+import net.sf.jasperreports.export.Exporter
 import net.sf.jasperreports.export.ExporterInput
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration
 
 import java.sql.Connection
 
@@ -48,29 +51,35 @@ class ReportGenerator {
         }
     }
 
-    static byte[] generateReport(Map<String, Object> parameters, String reportPath, String report, Connection connection) {
+    static byte[] generateReport(Map<String, Object> parameters, String reportPath, String report, String fileType, Connection connection) {
         try {
-            String reportUri = reportPath+"/"+report
+            String reportUri = reportPath + "/" + report
             JasperReport jasperReport = JasperCompileManager.compileReport(reportUri)
             def jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection)
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
-            JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream)
+            if (fileType.equals("PDF")) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+                JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream)
+                return byteArrayOutputStream.toByteArray()
+            } else {
+                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+                configuration.setOnePagePerSheet(true);
+                configuration.setIgnoreGraphics(false);
 
-           /* JRXlsExporter xlsExporter = new JRXlsExporter();
-            xlsExporter.setExporterInput(new SimpleExporterInput(xlsPrint));
-            xlsExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outXlsName));
-            SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
-            xlsReportConfiguration.setOnePagePerSheet(false);
-            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
-            xlsReportConfiguration.setDetectCellType(false);
-            xlsReportConfiguration.setWhitePageBackground(false);
-            xlsExporter.setConfiguration(xlsReportConfiguration);
+                File outputFile = new File("output.xlsx");
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+                OutputStream fileOutputStream = new FileOutputStream(outputFile)
+                Exporter exporter = new JRXlsxExporter();
+                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+                exporter.setConfiguration(configuration);
+                exporter.exportReport();
+                byteArrayOutputStream.writeTo(fileOutputStream);
 
-            xlsExporter.exportReport();*/
-
-            return byteArrayOutputStream.toByteArray()
+                return byteArrayOutputStream.toByteArray()
+            }
         } catch (Exception e) {
             throw new RuntimeException("It's not possible to generate the pdf report.", e);
         }
     }
+
 }

@@ -77,6 +77,6 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         map.put("username", "Test_user");
         map.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
 
-        return ReportGenerator.generateReport(map,path, report, connection);
+        return ReportGenerator.generateReport(map,path, report, fileType, connection);
     }
 }
