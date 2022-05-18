@@ -6,6 +6,7 @@ import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils;
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor;
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService;
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport;
+import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 import mz.org.fgh.sifmoz.report.ReportGenerator;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,6 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
     public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado";
     @Autowired
     protected IReportProcessMonitorService reportProcessMonitorService;
-    // File file = grails.util.BuildSettings.BASE_DIR;
 
     public MultiThreadRestReportController(Class<T> resource) {
         super(resource);
@@ -52,6 +53,7 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         reportProcessMonitorService.save(this.processStatus);
 
     }
+
 
     /**
      * Processa o relatório
@@ -80,19 +82,30 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
 
     protected abstract String getProcessingStatusMsg();
 
-    protected byte[] printReport(String reportId, String fileType, String path, String report) throws SQLException {
-        Map<String, Object> map = new HashMap<>();
-        Connection connection = SessionFactoryUtils.getDataSource(sessionFactory).getConnection();
-
-        map.put("path", path);
-        map.put("reportId", reportId);
-        map.put("username", "Test_user");
-        map.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
-
-        return ReportGenerator.generateReport(map,path, report, connection);
+    protected byte[] printReport(String reportId, String fileType, String report, Map<String, Object> params) throws SQLException {
+        return this.printReport(reportId, fileType, report, params, null);
     }
 
-    public String getReportsPath () throws IOException {
-        return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
+    protected byte[] printReport(String reportId, String fileType, String report, Map<String, Object> params, List<Map<String, Object>> reportObjects) throws SQLException {
+
+        params.put("path", getReportsPath());
+        params.put("reportId", reportId);
+        params.put("username", "Test_user");
+        params.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
+
+        if (Utilities.listHasElements((ArrayList<?>) reportObjects)) {
+            return ReportGenerator.generateReport(params, fileType, reportObjects, report);
+        } else {
+            return ReportGenerator.generateReport(report, params, fileType, SessionFactoryUtils.getDataSource(sessionFactory).getConnection());
+        }
+    }
+
+    protected String getReportsPath (){
+        try {
+            return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

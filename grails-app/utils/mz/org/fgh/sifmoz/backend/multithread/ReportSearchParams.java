@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.multithread;
 
+
 import grails.validation.Validateable;
 import groovy.lang.Closure;
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils;
@@ -37,7 +38,7 @@ public class ReportSearchParams implements Validateable {
     public void determineStartEndDate() {
         switch (getPeriodType()) {
             case PERIOD_TYPE_SPECIFIC:
-               setStartDate(ConvertDateUtils.createDate(getStartDateParam(),"dd-MM-yyyy"));
+                setStartDate(ConvertDateUtils.createDate(getStartDateParam(),"dd-MM-yyyy"));
                 setEndDate(ConvertDateUtils.createDate(getEndDateParam(),"dd-MM-yyyy"));
                 break;
             case PERIOD_TYPE_MONTH:
@@ -45,7 +46,7 @@ public class ReportSearchParams implements Validateable {
                 Date startDateTemp = DateUtils.addMonths(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, month, getYear()), -1);
                 int yearStartDate = DateUtils.toCalendar(startDateTemp).get(Calendar.YEAR);
                 int monthStartDate = DateUtils.toCalendar(startDateTemp).get(Calendar.MONTH);
-                setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, monthStartDate, yearStartDate));
+                setStartDate(startDateTemp);
                 setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, month, getYear()));
                 break;
             case PERIOD_TYPE_QUARTER:
