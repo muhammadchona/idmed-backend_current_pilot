@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
@@ -92,25 +93,29 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
                 "           ))) as saldo" +
                 " from Drug dr " +
                 " where  dr.active = true " +
+//                "       and dr.clinicalService = :clinicalService" +
                 "       and exists (select s " +
                 "                   from Stock s inner join s.entrance se " +
                 "                   where s.drug = dr and s.clinic = :clinic)",
                 [startDate: searchParams.getStartDate(), endDate: searchParams.getEndDate(), clinic: clinic])
 
-        double percUnit = 35/list.size()
-        for (int i = 0; i < list.size() - 1; i ++) {
+        if (Utilities.listHasElements(list as ArrayList<?>)) {
+            double percUnit = 35 / list.size()
+            for (int i = 0; i < list.size() - 1; i++) {
 
-            generateAndSaveMmiaStockSubReport(list[i], mmiaStockSubReportItems, searchParams.getId())
-            processMonitor.setProgress(processMonitor.getProgress() + percUnit)
-            reportProcessMonitorService.save(processMonitor)
+                generateAndSaveMmiaStockSubReport(list[i], mmiaStockSubReportItems, searchParams.getId())
+                processMonitor.setProgress(processMonitor.getProgress() + percUnit)
+                reportProcessMonitorService.save(processMonitor)
+            }
+
+
+            processMonitor.setProgress(100);
+            processMonitor.setMsg("Processamento terminado")
+            reportProcessMonitorService.save(processMonitor);
+
+            return mmiaStockSubReportItems
         }
-
-
-        processMonitor.setProgress(100);
-        processMonitor.setMsg("Processamento terminado")
-        reportProcessMonitorService.save(processMonitor);
-
-        return mmiaStockSubReportItems
+        else return null
     }
 
     void generateAndSaveMmiaStockSubReport(Object item, List<MmiaStockSubReportItem> mmiaStockSubReportItems, String reportId) {
