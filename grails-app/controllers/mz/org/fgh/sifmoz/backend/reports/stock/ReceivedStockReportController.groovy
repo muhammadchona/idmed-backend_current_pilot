@@ -117,7 +117,7 @@ class ReceivedStockReportController extends MultiThreadRestReportController {
            map.put("startDate", itemsReport.get(0).getStartDate())
            map.put("province", itemsReport.get(0).getProvinceId()==null? "": Province.findById(itemsReport.get(0).getProvinceId()).getDescription())
            map.put("district", itemsReport.get(0).getDistrictId()==null? "":District.findById(itemsReport.get(0).getDistrictId()).getDescription())
-           byte[] report = ReportGenerator.generateReport(map, itemsReport, "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/stock/ReceivedStockReport.jrxml")
+           byte[] report = ReportGenerator.generateReport(map, fileType,itemsReport, "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/stock/ReceivedStockReport.jrxml")
            render(file: report, contentType: 'application/pdf')
        }
    }

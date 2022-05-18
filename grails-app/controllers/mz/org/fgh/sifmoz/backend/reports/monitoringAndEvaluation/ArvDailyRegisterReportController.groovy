@@ -119,7 +119,7 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
         map.put("path", "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/")
         byte[] report = ReportGenerator.generateReport(map,
                 "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/monitoring/",
-                "LivroRegistoDiarioARV.jrxml", connection)
+                "LivroRegistoDiarioARV.jrxml",fileType, connection)
         render(file: report, contentType: 'application/pdf')
     }
 

@@ -24,7 +24,7 @@ class ReportGenerator {
         return generateReport(parameters, reportPath, fileType, connection, null)
     }
 
-    static byte[] generateReport(Map<String, Object> parameters, String reportPath, String fileType, Connection connection, List<Map<String, Object>> reportObjects) {
+    static byte[] generateReport(Map<String, Object> parameters, String reportPath, String fileType, Connection connection, Collection reportObjects) {
         try {
             def jasperPrint
             JasperReport jasperReport = JasperCompileManager.compileReport(reportPath)

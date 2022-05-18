@@ -117,7 +117,7 @@ class UsedStockReportController extends MultiThreadRestReportController {
             map.put("startDate", headerObj.getStartDate())
             map.put("province", headerObj.getProvinceId() == null ? "" : Province.findById(headerObj.getProvinceId()).getDescription())
             map.put("district", headerObj.getDistrictId() == null ? "" : District.findById(headerObj.getDistrictId()).getDescription())
-            byte[] report = ReportGenerator.generateReport(map, itemsReport, "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/stock/UsedStockReport.jrxml")
+            byte[] report = ReportGenerator.generateReport(map, fileType,itemsReport, "/home/erciliofrancisco/Documents/local/dev/idmed/SIFMOZ-Backend/src/main/webapp/reports/stock/UsedStockReport.jrxml")
             render(file: report, contentType: 'application/pdf')
         }
     }
