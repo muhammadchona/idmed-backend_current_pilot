@@ -19,11 +19,7 @@ abstract class StockAdjustment {
     boolean finalised
     Stock adjustedStock
     StockOperationType operation
-    Inventory inventory
-    //StockDestructionAdjustment destruction
     Clinic clinic
-    String hasMany = [destructions: DestroyedStock]
-   // static transients = ['destructions']
 
     StockAdjustment() {
     }
