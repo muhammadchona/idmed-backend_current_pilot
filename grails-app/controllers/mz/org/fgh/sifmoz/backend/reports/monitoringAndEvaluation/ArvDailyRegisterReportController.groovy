@@ -130,12 +130,10 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
 
     }
 
-    @Override
     protected int countProcessedRecs() {
         return 0
     }
 
-    @Override
     protected int countRecordsToProcess() {
         return 0
     }
