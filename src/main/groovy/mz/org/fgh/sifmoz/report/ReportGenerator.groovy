@@ -34,11 +34,11 @@ class ReportGenerator {
             } else {
                 jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection)
             }
-            if (fileType.equals("PDF")) {
+            if (fileType.equalsIgnoreCase("PDF")) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
                 JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream)
                 return byteArrayOutputStream.toByteArray()
-            } else if (fileType.equals("XLS")) {
+            } else if (fileType.equalsIgnoreCase("XLS")) {
                 SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                 configuration.setOnePagePerSheet(true);
                 configuration.setIgnoreGraphics(false);
