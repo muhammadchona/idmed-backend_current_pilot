@@ -1,10 +1,12 @@
 package mz.org.fgh.sifmoz.backend.reports.referralManagement
 
-
+import grails.converters.JSON
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import mz.org.fgh.sifmoz.report.ReportGenerator
 import org.apache.commons.lang3.ArrayUtils
 
@@ -94,6 +96,7 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
     def initReportProcess (ReportSearchParams searchParams) {
         super.initReportParams(searchParams)
        // render qtyToProcess: qtyRecordsToProcess
+        render JSONSerializer.setJsonObjectResponse(this.processStatus) as JSON
         doProcessReport()
     }
 
@@ -103,27 +106,37 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
     @Override
     void run() {
         if(searchParams.reportType.equals("HISTORICO_LEVANTAMENTO_PACIENTES_REFERIDOS")) {
-            referredPatientsReportService.processReportReferredDispenseRecords(searchParams)
+            referredPatientsReportService.processReportReferredDispenseRecords(searchParams,this.processStatus)
         } else if (searchParams.reportType.equals("REFERIDOS_FALTOSOS_AO_LEVANTAMENTO")) {
-            referredPatientsReportService.processReportAbsentReferredDispenseRecords(searchParams)
+            referredPatientsReportService.processReportAbsentReferredDispenseRecords(searchParams,this.processStatus)
         }  else {
-            referredPatientsReportService.processReferredAndBackReferredReportRecords(searchParams)
+            referredPatientsReportService.processReferredAndBackReferredReportRecords(searchParams,this.processStatus)
         }
     }
 
     @Override
     protected String getProcessingStatusMsg() {
-        return ""
+        if (!Utilities.stringHasValue(processStage)) processStage = PROCESS_STATUS_INITIATING
+        return processStage
     }
 
 
     def getProcessingStatus() {
-        return getProcessingStatusMsg()
+        render JSONSerializer.setJsonObjectResponse(reportProcessMonitorService.getByReportId(searchParams.id)) as JSON
+    }
+
+    def deleteByReportId(String reportId) {
+            List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
+        ReferredPatientsReport.deleteAll(referredPatientsReports)
+        render status: NO_CONTENT
     }
 
     def printReport(String reportId, String reportType,String fileType) {
 
-         String path = "/home/muhammad/IdeaProjects/SIFMOZ-Backend-New/src/main/webapp/reports/referralManagement"
+         String path = getReportsPath()+"referralManagement"
+       // File file = grails.util.BuildSettings.BASE_DIR
+       // println(file)
+        println(path)
         String reportPathFile = ""
         List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
         Map<String, Object> map = new HashMap<>()
@@ -145,8 +158,14 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
             File initialFile = new File(reportPathFile);
             InputStream targetStream = new FileInputStream(initialFile);
            // JasperReport subJasperReport = (JasperReport) JRLoader.loadObject(targetStream);
-            byte[] report = ReportGenerator.generateReport(map, referredPatientsReports, path, reportPathFile)
-            render(file: report, contentType: 'application/pdf')
+            if(fileType.equals('PDF')) {
+                byte[] report = ReportGenerator.generateReport(map, referredPatientsReports, path, reportPathFile)
+                render(file: report, contentType: 'application/pdf')
+            } else {
+                byte[] report = ReportGenerator.generateReportExcel(map, referredPatientsReports, path, reportPathFile)
+                render(file: report, contentType: 'application/xls')
+            }
+
         }
     }
 

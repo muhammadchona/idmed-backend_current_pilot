@@ -5,16 +5,22 @@ import grails.rest.RestfulController;
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils;
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor;
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService;
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport;
 import mz.org.fgh.sifmoz.report.ReportGenerator;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 public abstract class MultiThreadRestReportController<T> extends RestfulController<T> implements ReportExecutor {
     protected ReportSearchParams searchParams;
@@ -27,6 +33,7 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
     public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado";
     @Autowired
     protected IReportProcessMonitorService reportProcessMonitorService;
+    // File file = grails.util.BuildSettings.BASE_DIR;
 
     public MultiThreadRestReportController(Class<T> resource) {
         super(resource);
@@ -61,6 +68,11 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         reportProcessMonitorService.save(this.processStatus);
     }
 
+  /*  protected void deleteByReportId(String reportId) {
+        List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
+        ReferredPatientsReport.deleteAll(referredPatientsReports)
+        render status: NO_CONTENT
+    }*/
 
     public ReportProcessMonitor getProcessStatus() {
         return processStatus;
@@ -78,5 +90,9 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         map.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
 
         return ReportGenerator.generateReport(map,path, report, fileType, connection);
+    }
+
+    public String getReportsPath () throws IOException {
+        return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
     }
 }
