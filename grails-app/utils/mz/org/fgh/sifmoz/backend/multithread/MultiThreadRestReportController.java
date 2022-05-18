@@ -47,6 +47,7 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         getSession().setAttribute(getSearchParams().getId(), this.processStatus);
     }
 
+
     /**
      * Processa o relatório
      */
