@@ -40,4 +40,5 @@ class Drug {
         defaultTimes(min:1)
         stockList nullable: true
     }
+
 }
