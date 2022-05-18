@@ -8,9 +8,10 @@ import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
-import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,13 +22,18 @@ import org.springframework.beans.factory.annotation.Autowired
 abstract class MmiaReportService implements IMmiaReportService {
     @Autowired
     IPackService packService
+    @Autowired
+    IReportProcessMonitorService reportProcessMonitorService
 
     @Override
-    void processReport(ReportSearchParams searchParams, MmiaReport curMmiaReport) {
+    void processReport(ReportSearchParams searchParams, MmiaReport curMmiaReport, ReportProcessMonitor processMonitor) {
         List<Pack> packList = packService.getPacksByServiceOnPeriod(ClinicalService.findById(searchParams.getClinicalService()), Clinic.findById(searchParams.getClinicId()), searchParams.getStartDate(), searchParams.getEndDate())
 
         if (Utilities.listHasElements(packList as ArrayList<?>)) {
             List<MmiaRegimenSubReport> regimenSubReportList = new ArrayList<>()
+
+            int counter = 0
+            double percentageUnit = 65/packList.size()
 
             for (Pack pack : packList) {
                 if (ConvertDateUtils.getAge(pack.getPatientVisitDetails().getAt(0).getPatientVisit().getPatient().getDateOfBirth()) >= 18) {
@@ -64,7 +70,6 @@ abstract class MmiaReportService implements IMmiaReportService {
                     initNewMmiaRegimenRecord(detail, regimenSubReportList, searchParams, pack.getPatientVisitDetails().getAt(0).getEpisode().getStartStopReason().isTransferido())
                 }
 
-                saveMmiaRegimenItems(regimenSubReportList)
 
                 if (pack.getPatientVisitDetails().getAt(0).getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDM()) {
                     curMmiaReport.addTotalDM()
@@ -74,6 +79,8 @@ abstract class MmiaReportService implements IMmiaReportService {
                     curMmiaReport.addTotalDsM0()
                 }
 
+                processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
+                reportProcessMonitorService.save(processMonitor)
             }
             curMmiaReport.setDsM1(countPacks(DispenseType.DS, determineDate(searchParams.getStartDate(), -1), determineDate(searchParams.getEndDate(), -1), searchParams))
             curMmiaReport.setDsM2(countPacks(DispenseType.DS, determineDate(searchParams.getStartDate(), -2), determineDate(searchParams.getEndDate(), -2), searchParams))
@@ -84,6 +91,8 @@ abstract class MmiaReportService implements IMmiaReportService {
             curMmiaReport.setDtM1(countPacks(DispenseType.DT, determineDate(searchParams.getStartDate(), -1), determineDate(searchParams.getEndDate(), -1), searchParams))
             curMmiaReport.setDtM2(countPacks(DispenseType.DT, determineDate(searchParams.getStartDate(), -2), determineDate(searchParams.getEndDate(), -2), searchParams))
             save(curMmiaReport)
+
+            saveMmiaRegimenItems(regimenSubReportList)
         }
     }
 

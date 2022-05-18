@@ -1,18 +1,13 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 
 import grails.converters.JSON
+import grails.util.BuildSettings
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.drug.DrugService
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
-import mz.org.fgh.sifmoz.backend.multithread.ReportProcessStatus
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
-import mz.org.fgh.sifmoz.backend.packaging.IPackService
-import mz.org.fgh.sifmoz.backend.packaging.Pack
-import mz.org.fgh.sifmoz.backend.service.ClinicalService
-import mz.org.fgh.sifmoz.backend.stock.IStockService
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
-import mz.org.fgh.sifmoz.report.ReportGenerator
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -24,16 +19,8 @@ import grails.gorm.transactions.Transactional
 class MmiaReportController extends MultiThreadRestReportController{
 
     IMmiaReportService mmiaReportService
-    List<Pack> packList
     MmiaReport curMmiaReport
-    IPackService packService
-    DrugService drugService
-    IStockService stockService
     IMmiaStockSubReportService mmiaStockSubReportService
-    private int qtyProcessed
-    List<MmiaRegimenSubReport> regimenSubReportList
-    public static final String PROCESS_STATUS_PROCESSING_PACKS = "A processar dispensas"
-    public static final String PROCESS_STATUS_PROCESSING_STOCK = "A processar stock"
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -43,29 +30,15 @@ class MmiaReportController extends MultiThreadRestReportController{
     }
 
     @Override
-    protected int countProcessedRecs() {
-        return qtyProcessed
-    }
-
-    @Override
-    int countRecordsToProcess() {
-        /*if (this.processStage == PROCESS_STATUS_PROCESSING_STOCK) {
-            return 0
-        } else if (this.processStage == PROCESS_STATUS_PROCESSING_PACKS) {
-            return packService.countPacksByServiceOnPeriod(ClinicalService.findByCode(getSearchParams().getClinicalService()), Clinic.findById(getSearchParams().getClinicId()), getSearchParams().getStartDate(), getSearchParams().getEndDate())
-        }*/
-        return 0
-    }
-
-    @Override
     protected String getProcessingStatusMsg() {
         if (!Utilities.stringHasValue(processStage)) processStage = PROCESS_STATUS_INITIATING
         return processStage
     }
 
     def printReport(String reportId, String fileType) {
-        byte [] report = super.printReport(reportId, fileType, "/home/voloide/projects/dev/workspaces/JWORKSPACE/SIFMOZ-Backend/src/main/webapp/reports/pharmacyManagement", "MmiaReport.jrxml")
-        render(file: report, contentType: 'application/pdf')
+        Map<String, Object> params = new HashMap<>()
+        byte[] report = super.printReport(reportId, fileType, getReportsPath()+"pharmacyManagement/MmiaReport.jrxml", params)
+        render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
     }
 
     def index(Integer max) {
@@ -122,7 +95,7 @@ class MmiaReportController extends MultiThreadRestReportController{
     }
 
     def getProcessingStatus(String reportId) {
-        render ((ReportProcessStatus) getSession().getAttribute(reportId)) as JSON
+        render JSONSerializer.setJsonObjectResponse(reportProcessMonitorService.getByReportId(reportId)) as JSON
     }
 
     @Transactional
@@ -137,29 +110,23 @@ class MmiaReportController extends MultiThreadRestReportController{
 
     def initReportProcess (ReportSearchParams searchParams) {
         super.initReportParams(searchParams)
-        try {
-            render ((ReportProcessStatus) getSession().getAttribute(getSearchParams().getId())) as JSON
-        } catch (Exception e) {}
+        render JSONSerializer.setJsonObjectResponse(this.processStatus) as JSON
         doProcessReport()
     }
 
     @Override
     void run() {
         initMmiaReportRecord()
-        processStage = PROCESS_STATUS_PROCESSING_PACKS
-        updateProcessingStatus()
         searchAndProcessPacks()
-        processStage = PROCESS_STATUS_PROCESSING_STOCK
-        updateProcessingStatus()
         processMmiaStock()
     }
 
     void processMmiaStock() {
-        mmiaStockSubReportService.generateMmiaStockSubReport(getSearchParams())
+        mmiaStockSubReportService.generateMmiaStockSubReport(getSearchParams(), this.processStatus)
     }
 
     void searchAndProcessPacks() {
-        mmiaReportService.processReport(getSearchParams(), this.curMmiaReport)
+        mmiaReportService.processReport(getSearchParams(), this.curMmiaReport, this.processStatus)
     }
 
     private void initMmiaReportRecord() {

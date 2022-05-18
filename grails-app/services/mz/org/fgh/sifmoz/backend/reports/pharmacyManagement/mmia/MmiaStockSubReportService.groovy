@@ -5,14 +5,20 @@ import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(MmiaStockSubReportItem)
 abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
 
+    @Autowired
+    IReportProcessMonitorService reportProcessMonitorService
+
     @Override
-    List<MmiaStockSubReportItem> generateMmiaStockSubReport(ReportSearchParams searchParams) {
+    List<MmiaStockSubReportItem> generateMmiaStockSubReport(ReportSearchParams searchParams, ReportProcessMonitor processMonitor) {
         ClinicalService service = ClinicalService.findById(searchParams.getClinicalService())
         Clinic clinic = Clinic.findById(searchParams.getClinicId())
 
@@ -91,9 +97,19 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
                 "                   where s.drug = dr and s.clinic = :clinic)",
                 [startDate: searchParams.getStartDate(), endDate: searchParams.getEndDate(), clinic: clinic])
 
+        double percUnit = 35/list.size()
         for (int i = 0; i < list.size() - 1; i ++) {
+
             generateAndSaveMmiaStockSubReport(list[i], mmiaStockSubReportItems, searchParams.getId())
+            processMonitor.setProgress(processMonitor.getProgress() + percUnit)
+            reportProcessMonitorService.save(processMonitor)
         }
+
+
+        processMonitor.setProgress(100);
+        processMonitor.setMsg("Processamento terminado")
+        reportProcessMonitorService.save(processMonitor);
+
         return mmiaStockSubReportItems
     }
 

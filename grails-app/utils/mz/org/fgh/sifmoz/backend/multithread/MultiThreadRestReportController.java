@@ -1,24 +1,28 @@
 package mz.org.fgh.sifmoz.backend.multithread;
 
+import grails.gorm.transactions.Transactional;
 import grails.rest.RestfulController;
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils;
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor;
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService;
+import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport;
+import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 import mz.org.fgh.sifmoz.report.ReportGenerator;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 public abstract class MultiThreadRestReportController<T> extends RestfulController<T> implements ReportExecutor {
     protected ReportSearchParams searchParams;
@@ -26,9 +30,12 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
     protected String processStage;
     @Autowired
     protected SessionFactory sessionFactory;
-    protected ReportProcessStatus processStatus;
+    protected ReportProcessMonitor processStatus;
     public static final String PROCESS_STATUS_INITIATING = "Iniciando processamento";
     public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado";
+    @Autowired
+    protected IReportProcessMonitorService reportProcessMonitorService;
+    // File file = grails.util.BuildSettings.BASE_DIR;
 
     public MultiThreadRestReportController(Class<T> resource) {
         super(resource);
@@ -39,12 +46,13 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
         return searchParams;
     }
 
+    @Transactional
     protected void initReportParams(ReportSearchParams searchParams) {
         this.searchParams = searchParams;
         this.searchParams.determineStartEndDate();
-        this.processStatus = new ReportProcessStatus(getSearchParams().getId(), getProcessingStatusMsg(), 0, countRecordsToProcess(), this.searchParams);
+        this.processStatus = new ReportProcessMonitor(getSearchParams().getId(), getProcessingStatusMsg(), 0);
+        reportProcessMonitorService.save(this.processStatus);
 
-        getSession().setAttribute(getSearchParams().getId(), this.processStatus);
     }
 
 
@@ -53,47 +61,46 @@ public abstract class MultiThreadRestReportController<T> extends RestfulControll
      */
     protected void doProcessReport() {
         executor.execute(this);
-        processStage = PROCESS_STATUS_PROCESSING_FINISHED;
-        updateProcessingStatus();
+        this.processStage = PROCESS_STATUS_PROCESSING_FINISHED;
+        this.processStatus.setProgress(100);
+        reportProcessMonitorService.save(this.processStatus);
     }
 
     protected void updateProcessingStatus() {
-        this.processStatus.setProcessedRecs(countProcessedRecs());
-        this.processStatus.setMsg(getProcessingStatusMsg());
-        //getSession().setAttribute(getSearchParams().getId(), this.processStatus);
+        this.processStatus.setProgress(100);
+        reportProcessMonitorService.save(this.processStatus);
     }
 
-    public ReportProcessStatus getProcessStatus() {
+  /*  protected void deleteByReportId(String reportId) {
+        List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
+        ReferredPatientsReport.deleteAll(referredPatientsReports)
+        render status: NO_CONTENT
+    }*/
+
+    public ReportProcessMonitor getProcessStatus() {
         return processStatus;
     }
 
-    protected abstract int countProcessedRecs();
-
-    protected abstract int countRecordsToProcess();
-
     protected abstract String getProcessingStatusMsg();
 
-    protected byte[] printReport(String reportId, String fileType, String path, String report) throws SQLException {
-        Map<String, Object> map = new HashMap<>();
-        Connection connection = SessionFactoryUtils.getDataSource(sessionFactory).getConnection();
+    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params) throws SQLException {
+        return this.printReport(reportId, fileType, path, params, null);
+    }
 
-        //InputStream subInputStream = getClass().getResourceAsStream(path+"/MmiaRegimesReport.jasper");
-        File initialFile = new File(path+"/StockInfo.jasper");
-        try {
+    protected byte[] printReport(String reportId, String fileType, String path, Map<String, Object> params, List<Map<String, Object>> reportObjects) throws SQLException {
 
-            InputStream targetStream = new FileInputStream(initialFile);
-            JasperReport subJasperReport = (JasperReport) JRLoader.loadObject(targetStream);
+        params.put("reportId", reportId);
+        params.put("username", "Test_user");
+        params.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
 
-
-        map.put("path", path);
-        map.put("reportId", reportId);
-        map.put("regimenSubReport", subJasperReport);
-        map.put("username", "Test_user");
-        map.put("dataelaboracao", ConvertDateUtils.getCurrentDate());
-        } catch (JRException | FileNotFoundException e) {
-            e.printStackTrace();
+        if (Utilities.listHasElements((ArrayList<?>) reportObjects)) {
+            return ReportGenerator.generateReport(params, fileType, reportObjects, path);
+        } else {
+            return ReportGenerator.generateReport(path, params, fileType, SessionFactoryUtils.getDataSource(sessionFactory).getConnection());
         }
+    }
 
-        return ReportGenerator.generateReport(map,path, report, connection);
+    protected String getReportsPath () throws IOException {
+        return grails.util.BuildSettings.BASE_DIR.getCanonicalPath()+"/"+"src/main/webapp/reports/";
     }
 }

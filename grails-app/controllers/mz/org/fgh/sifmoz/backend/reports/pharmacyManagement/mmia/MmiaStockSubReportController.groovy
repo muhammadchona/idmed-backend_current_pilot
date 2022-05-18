@@ -23,20 +23,9 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
     }
 
     @Override
-    protected int countProcessedRecs() {
-        return 0
-    }
-
-    @Override
-    int countRecordsToProcess() {
-        return 0
-    }
-
-    @Override
     protected String getProcessingStatusMsg() {
         return null
     }
-
 
     def printReport(String reportId, String fileType) {
 
