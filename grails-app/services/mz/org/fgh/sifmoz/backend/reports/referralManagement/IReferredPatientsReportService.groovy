@@ -21,6 +21,5 @@ interface IReferredPatientsReportService {
 
     void processReportAbsentReferredDispenseRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor)
 
-    void processReportAbsentDispenseRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor)
 
 }
