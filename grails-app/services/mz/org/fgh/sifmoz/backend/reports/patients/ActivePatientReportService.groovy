@@ -22,7 +22,7 @@ abstract class ActivePatientReportService implements IActivePatientReportService
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy")
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 
     @Override
     ActivePatientReport get(Serializable id) {
