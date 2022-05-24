@@ -89,9 +89,6 @@ class ActivePatientReportController extends MultiThreadRestReportController {
 
     def initReportProcess (ReportSearchParams searchParams) {
         super.initReportParams(searchParams)
-        System.out.println(searchParams.startDate.toString())
-        System.out.println(searchParams.endDate.toString())
-        System.out.println(searchParams.id)
         render getProcessStatus() as JSON
         doProcessReport()
     }
@@ -107,7 +104,6 @@ class ActivePatientReportController extends MultiThreadRestReportController {
     def printReport(String reportId, String fileType) {
         List<ActivePatientReport> reportObjects = activePatientReportService.getReportDataByReportId(reportId)
         ActivePatientReport activePatientReport = reportObjects[0]
-        System.out.println(activePatientReport.toString())
 //        String jrxmlFilePath = System.getProperty("user.home")+ File.separator + "PacientesActivos.jrxml"
         String jrxmlFilePath = getReportsPath()+"patient/PacientesActivos.jrxml"
         Map<String, Object> map = new HashMap<>()
