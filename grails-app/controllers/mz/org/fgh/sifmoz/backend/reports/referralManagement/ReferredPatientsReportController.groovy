@@ -95,7 +95,7 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
 
     def initReportProcess (ReportSearchParams searchParams) {
         super.initReportParams(searchParams)
-       // render qtyToProcess: qtyRecordsToProcess
+        // render qtyToProcess: qtyRecordsToProcess
         render JSONSerializer.setJsonObjectResponse(this.processStatus) as JSON
         doProcessReport()
     }
@@ -121,12 +121,12 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
     }
 
 
-    def getProcessingStatus() {
-        render JSONSerializer.setJsonObjectResponse(reportProcessMonitorService.getByReportId(searchParams.id)) as JSON
+    def getProcessingStatus(String reportId) {
+        render JSONSerializer.setJsonObjectResponse(reportProcessMonitorService.getByReportId(reportId)) as JSON
     }
 
     def deleteByReportId(String reportId) {
-            List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
+        List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
         ReferredPatientsReport.deleteAll(referredPatientsReports)
         render status: NO_CONTENT
     }
@@ -136,7 +136,7 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
         String path = getReportsPath()+"referralManagement"
         List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
         Map<String, Object> map = new HashMap<>()
-        if (ArrayUtils.isNotEmpty(referredPatientsReports)) {
+        if (referredPatientsReports.size() > 0) {
             map.put("path", getReportsPath())
             map.put("mainfacilityname", referredPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(referredPatientsReports.get(0).getPharmacyId()).getClinicName())
             map.put("dateEnd", referredPatientsReports.get(0).getEndDate())
@@ -154,6 +154,8 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
             }
             byte[] report = super.printReport(reportId, fileType, reportPathFile, map, referredPatientsReports)
             render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
+        } else {
+            render status: NO_CONTENT
         }
     }
 }
