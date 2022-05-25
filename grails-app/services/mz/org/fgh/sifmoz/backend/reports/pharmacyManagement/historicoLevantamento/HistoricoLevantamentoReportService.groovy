@@ -52,8 +52,6 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
     @Override
     List<HistoricoLevantamentoReport> processamentoDados(ReportSearchParams reportSearchParams, ReportProcessMonitor processMonitor) {
         Clinic clinic = Clinic.findById(reportSearchParams.clinicId)
-        println(reportSearchParams.startDate.toString())
-        println(reportSearchParams.endDate.toString())
         def result = Pack.executeQuery(
                 "SELECT " +
                         "pat.id, " +
@@ -100,17 +98,13 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
                 [stDate: reportSearchParams.startDate, endDate: reportSearchParams.endDate]
         )
 
-        println(result.size())
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
 
             for (item in result) {
                 HistoricoLevantamentoReport historicoLevantamentoReport = setGenericInfo(reportSearchParams, clinic, item[13] as Date)
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
-                println(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
-                println("Percentage Unit: "+percUnit)
-                println("Percentage Unit: "+processMonitor.getProgress())
                 generateAndSaveHistory(item as List, reportSearchParams, historicoLevantamentoReport)
             }
 

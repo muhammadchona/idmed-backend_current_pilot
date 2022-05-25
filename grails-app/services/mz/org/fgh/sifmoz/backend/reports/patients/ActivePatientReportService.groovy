@@ -22,7 +22,7 @@ abstract class ActivePatientReportService implements IActivePatientReportService
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy")
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 
     @Override
     ActivePatientReport get(Serializable id) {
@@ -64,10 +64,8 @@ abstract class ActivePatientReportService implements IActivePatientReportService
         String reportId = reportSearchParams.getId()
         //---------------
         String clinicalService = ClinicalService.findById(reportSearchParams.getClinicalService()).code
-        println("Clinical Service: "+clinicalService)
         Clinic clinic = Clinic.findById(reportSearchParams.clinicId)
         String province_id = clinic.province.id
-        println("Province: "+province_id)
         //---------------
 
         def result = Patient.executeQuery(
@@ -117,18 +115,14 @@ abstract class ActivePatientReportService implements IActivePatientReportService
                 [clinic_id: clinic.id, clinicalService: clinicalService, province_id: province_id, endDate: reportSearchParams.endDate, days: 59]
         )
 
-        println("TOTAL: "+ result.size())
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
 
             for (item in result) {
-                println(item.toString())
                 ActivePatientReport activePatientReport = setGenericInfo(reportSearchParams, clinic, item[14] as Date)
-                println(processMonitor.getProgress())
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
                 generateAndSaveActivePacient(item as List, reportSearchParams, activePatientReport, reportId)
-//                println(processMonitor.getProgress() + percUnit)
                 resultList.add(activePatientReport)
             }
 
