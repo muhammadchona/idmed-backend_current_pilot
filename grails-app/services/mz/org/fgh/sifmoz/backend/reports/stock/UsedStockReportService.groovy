@@ -5,13 +5,23 @@ import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.stock.StockService
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(UsedStockReportTemp)
 abstract class UsedStockReportService implements IUsedStockReportService {
 
     StockService stockService
+    @Autowired
+    IReportProcessMonitorService reportProcessMonitorService
+
+    double percentageUnit
+
+
+    public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado"
 
 /**
  * get report data for received stock report
@@ -23,7 +33,7 @@ abstract class UsedStockReportService implements IUsedStockReportService {
         return UsedStockReportTemp.findAllByReportId(reportId)
     }
 
-    void processReportUsedStockRecords(ReportSearchParams searchParams) {
+    void processReportUsedStockRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor) {
         Clinic clinic = Clinic.findById(searchParams.getClinicId())
 
         def list = Drug.executeQuery("select    dr.packSize as packSize, " +
@@ -99,20 +109,28 @@ abstract class UsedStockReportService implements IUsedStockReportService {
                 "           ))) as saldo" +
                 " from Drug dr " +
                 " where dr.active = true And" +
-                //"       dr.clinicalService.id=: clinicalService and" +
+              //  "       dr.clinicalService.id=: clinicalService and" +
                 "        exists (select s " +
                 "                   from Stock s inner join s.entrance se " +
                 "                   where s.drug = dr and s.clinic = :clinic)",
                 [startDate: searchParams.getStartDate(), endDate: searchParams.getEndDate(), clinic: clinic])
-      //  clinicalService: searchParams.getClinicalService()
+        //,clinicalService: searchParams.getClinicalService()
 
-        for (int i = 0; i < list.size() - 1; i++) {
-            generateAndSaveUsedStockSubReport(list[i], searchParams)
+
+        if (list.size() == 0) {
+            setProcessMonitor(processMonitor)
+            reportProcessMonitorService.save(processMonitor)
+        }  else{
+            percentageUnit = 100/list.size()
+        }
+
+        for (int i = 0; i < list.size() ; i++) {
+            generateAndSaveUsedStockSubReport(list[i], searchParams,processMonitor)
         }
 
     }
 
-    void generateAndSaveUsedStockSubReport(Object item, ReportSearchParams searchParams) {
+    void generateAndSaveUsedStockSubReport(Object item, ReportSearchParams searchParams,ReportProcessMonitor processMonitor) {
         UsedStockReportTemp reportTemp = new UsedStockReportTemp()
         reportTemp.setReportId(searchParams.getId())
         reportTemp.setYear(searchParams.getYear())
@@ -134,8 +152,19 @@ abstract class UsedStockReportService implements IUsedStockReportService {
         reportTemp.setActualStock(Integer.valueOf(String.valueOf(item[7]))) //inventario
         reportTemp.setDestroyedStock(Long.valueOf(item[8])) //ver
         reportTemp.setBalance(Integer.valueOf(String.valueOf(item[10])))
-        save(reportTemp)
 
+        processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
+        if (100 == processMonitor.progress.intValue() || 99 == processMonitor.progress.intValue()) {
+            setProcessMonitor(processMonitor)
+        }
+
+        reportProcessMonitorService.save(processMonitor)
+        save(reportTemp)
+    }
+
+    private ReportProcessMonitor setProcessMonitor(ReportProcessMonitor processMonitor) {
+        processMonitor.setProgress(100)
+        processMonitor.setMsg(PROCESS_STATUS_PROCESSING_FINISHED)
     }
 
 

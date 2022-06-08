@@ -125,7 +125,8 @@ class UsedStockReportController extends MultiThreadRestReportController {
 
     @Override
     void run() {
-        usedStockReportService.processReportUsedStockRecords(searchParams)
+        usedStockReportService.processReportUsedStockRecords(searchParams,this.processStatus)
+
     }
 
     protected int countProcessedRecs() {

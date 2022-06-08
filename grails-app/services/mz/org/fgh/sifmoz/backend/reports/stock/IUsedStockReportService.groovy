@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.reports.stock
 
 
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 
 interface IUsedStockReportService {
 
@@ -15,7 +16,7 @@ interface IUsedStockReportService {
 
     UsedStockReportTemp save(UsedStockReportTemp usedStockReport)
 
-    void processReportUsedStockRecords(ReportSearchParams searchParams)
+    void processReportUsedStockRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor)
 
     List<UsedStockReportTemp> getReportDataByReportId(String reportId)
 }

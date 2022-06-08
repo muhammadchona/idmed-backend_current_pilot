@@ -128,7 +128,7 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
 
     @Override
     void run() {
-        arvDailyRegisterReportService.processReportRecords(searchParams)
+        arvDailyRegisterReportService.processReportRecords(searchParams,this.processStatus)
 
     }
 

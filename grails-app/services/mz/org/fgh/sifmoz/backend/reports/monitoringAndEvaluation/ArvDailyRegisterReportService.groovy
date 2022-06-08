@@ -8,19 +8,35 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(ArvDailyRegisterReportTemp)
 abstract class ArvDailyRegisterReportService implements IArvDailyRegisterReportService {
 
     PatientVisitDetailsService patientVisitDetailsService
+    @Autowired
+    IReportProcessMonitorService reportProcessMonitorService
+
+
+    public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado"
 
 
     @Override
-    void processReportRecords(ReportSearchParams searchParams) {
+    void processReportRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor) {
         List<PatientVisitDetails> patientVisitDetailsList = patientVisitDetailsService.getARVDailyReport(searchParams.getClinicId(),
                 searchParams.getStartDate(),
                 searchParams.getEndDate(), searchParams.getClinicalService())
+        double percentageUnit = 0
+        if (patientVisitDetailsList.size() == 0) {
+            setProcessMonitor(processMonitor)
+            reportProcessMonitorService.save(processMonitor)
+        } else {
+            percentageUnit = 100 / patientVisitDetailsList.size()
+        }
+
         int i = 1
         for (PatientVisitDetails item : patientVisitDetailsList) {
             Patient patient = item.getEpisode().getPatientServiceIdentifier().getPatient()
@@ -59,12 +75,24 @@ abstract class ArvDailyRegisterReportService implements IArvDailyRegisterReportS
                 prod.setArvDailyRegisterReportTemp(reportTemp)
                 save(prod)
             }
+
+            processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
+            if (100 == processMonitor.progress.intValue() || 99 == processMonitor.progress.intValue()) {
+                setProcessMonitor(processMonitor)
+            }
+            reportProcessMonitorService.save(processMonitor)
         }
     }
 
     @Override
     List<ArvDailyRegisterReportTemp> getReportDataByReportId(String reportId) {
         return ArvDailyRegisterReportTemp.findAllByReportId(reportId)
+    }
+
+
+    private ReportProcessMonitor setProcessMonitor(ReportProcessMonitor processMonitor) {
+        processMonitor.setProgress(100)
+        processMonitor.setMsg(PROCESS_STATUS_PROCESSING_FINISHED)
     }
 
 
