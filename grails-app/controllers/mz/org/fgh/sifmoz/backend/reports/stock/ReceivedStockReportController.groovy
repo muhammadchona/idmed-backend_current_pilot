@@ -100,7 +100,7 @@ class ReceivedStockReportController extends MultiThreadRestReportController {
    def printReport(String reportId, String fileType) {
        List<StockReportTemp> itemsReport = stockReportService.getReportDataByReportId(reportId)
        Map<String, Object> map = new HashMap<>()
-       if (ArrayUtils.isNotEmpty(itemsReport)) {
+       if (ArrayUtils.isNotEmpty(itemsReport) &&  itemsReport.size()>0) {
            map.put("facilityName", itemsReport.get(0).getPharmacyId()==null? "":Clinic.findById(itemsReport.get(0).getPharmacyId()).getClinicName())
            map.put("endDate", itemsReport.get(0).getEndDate())
            map.put("startDate", itemsReport.get(0).getStartDate())
@@ -115,7 +115,7 @@ class ReceivedStockReportController extends MultiThreadRestReportController {
 
     @Override
     void run() {
-        stockReportService.processReportRecords(searchParams)
+        stockReportService.processReportRecords(searchParams,this.processStatus)
 
     }
 

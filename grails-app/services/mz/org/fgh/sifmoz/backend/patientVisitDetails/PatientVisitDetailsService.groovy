@@ -41,10 +41,11 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
                 " inner join prd.therapeuticRegimen tr" +
                 " inner join prd.therapeuticLine tl" +
                 " where p.pickupDate BETWEEN  :startDate AND :endDate  AND " +
-                " p.clinic.id =:clinicId",
+                " p.clinic.id =:clinicId ",
+               // " AND psi.service.id =:clincalServiceId ",
                 [startDate: startDate, endDate: endDate, clinicId: clinicId]);
-        // AND"+
-        // " psi.service.id =:clincalServiceId
+        //clincalServiceId:clincalServiceId
+
         return list
     }
 
