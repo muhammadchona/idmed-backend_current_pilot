@@ -131,29 +131,11 @@ class ReferredPatientsReportController extends MultiThreadRestReportController{
         render status: NO_CONTENT
     }
 
-    def printReport(String reportId, String reportType,String fileType) {
+    def printReport(String reportId) {
 
-        String path = getReportsPath()+"referralManagement"
         List<ReferredPatientsReport> referredPatientsReports = ReferredPatientsReport.findAllByReportId(reportId)
-        Map<String, Object> map = new HashMap<>()
         if (referredPatientsReports.size() > 0) {
-            map.put("path", getReportsPath())
-            map.put("mainfacilityname", referredPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(referredPatientsReports.get(0).getPharmacyId()).getClinicName())
-            map.put("dateEnd", referredPatientsReports.get(0).getEndDate())
-            map.put("date", referredPatientsReports.get(0).getStartDate())
-
-            String reportPathFile = null
-            if(reportType.equals("HISTORICO_LEVANTAMENTO_PACIENTES_REFERIDOS")) {
-                reportPathFile = path+"/HistoricoLevantamentosReferidosDe.jrxml"
-            } else if (reportType.equals("REFERIDOS_FALTOSOS_AO_LEVANTAMENTO")) {
-                reportPathFile = path+"/RelatorioAbandonosFaltososPersonalizadoReferido.jrxml"
-            }  else if (reportType.equals("VOLTOU_REFERENCIA")) {
-                reportPathFile = path+"/PacientesReferidosDeVolta.jrxml"
-            } else {
-                reportPathFile = path+"/PacientesReferidosPara.jrxml"
-            }
-            byte[] report = super.printReport(reportId, fileType, reportPathFile, map, referredPatientsReports)
-            render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
+            render JSONSerializer.setObjectListJsonResponse(referredPatientsReports) as JSON
         } else {
             render status: NO_CONTENT
         }
