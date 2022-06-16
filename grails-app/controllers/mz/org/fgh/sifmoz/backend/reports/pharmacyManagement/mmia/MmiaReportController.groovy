@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 import grails.converters.JSON
 import grails.util.BuildSettings
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
@@ -47,7 +48,11 @@ class MmiaReportController extends MultiThreadRestReportController{
     }
 
     def show(String id) {
-        respond mmiaReportService.get(id)
+        MmiaReport mmiaReport = MmiaReport.findByReportId(id)
+        mmiaReport.setMmiaRegimenSubReportList(MmiaRegimenSubReport.findAllByReportId(id) as Set<MmiaRegimenSubReport>)
+        mmiaReport.setMmiaStockSubReportItemList(MmiaStockSubReportItem.findAllByReportId(id) as Set<MmiaStockSubReportItem>)
+        mmiaReport.setClinic(Clinic.findById(mmiaReport.clinicId) as Set<Clinic>)
+        render JSONSerializer.setJsonObjectResponse(mmiaReport) as JSON
     }
 
     @Transactional
