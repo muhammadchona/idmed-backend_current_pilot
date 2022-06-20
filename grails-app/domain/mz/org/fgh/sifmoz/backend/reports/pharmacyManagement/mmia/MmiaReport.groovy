@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+
 class MmiaReport {
 
     String id
@@ -48,6 +50,7 @@ class MmiaReport {
 
     int dM
 
+    static hasMany = [mmiaRegimenSubReportList: MmiaRegimenSubReport, mmiaStockSubReportItemList: MmiaStockSubReportItem, clinic: Clinic]
 
     static mapping = {
         id generator: "uuid"
@@ -55,6 +58,9 @@ class MmiaReport {
 
     static constraints = {
         periodType nullable: false , inList: ['MONTH']
+        mmiaRegimenSubReportList nullable: true
+        mmiaStockSubReportItemList nullable: true
+        clinic nullable: true
     }
 
     void addTotalPacientesInicio() {
