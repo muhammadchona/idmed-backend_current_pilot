@@ -5,6 +5,7 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.historicoLevantamento.HistoricoLevantamentoReport
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.ReferredPatientsReport
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
@@ -122,19 +123,22 @@ class AbsentPatientsReportController extends MultiThreadRestReportController{
 
     def printReport(String reportId,String fileType) {
 
-        String reportPathFile = getReportsPath()+"pharmacyManagement/RelatorioAbandonosFaltososPersonalizado.jrxml"
-        List<AbsentPatientsReport> absentPatientsReports = AbsentPatientsReport.findAllByReportId(reportId)
-        Map<String, Object> map = new HashMap<>()
-        if (absentPatientsReports.size() > 0) {
-            // map.put("path", getReportsPath())
-            map.put("mainfacilityname", absentPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(absentPatientsReports.get(0).getPharmacyId()).getClinicName())
-            map.put("dateEnd", absentPatientsReports.get(0).getEndDate())
-            map.put("date", absentPatientsReports.get(0).getStartDate())
-
-            byte[] report = super.printReport(reportId, fileType, reportPathFile, map, absentPatientsReports)
-            render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
-        } else {
-            render status: NO_CONTENT
-        }
+//        String reportPathFile = getReportsPath()+"pharmacyManagement/RelatorioAbandonosFaltososPersonalizado.jrxml"
+//        List<AbsentPatientsReport> absentPatientsReports = AbsentPatientsReport.findAllByReportId(reportId)
+        List<AbsentPatientsReport> absentPatientsReports = absentPatientsReportService.getReportDataByReportId(reportId)
+//        Map<String, Object> map = new HashMap<>()
+//        if (absentPatientsReports.size() > 0) {
+//            // map.put("path", getReportsPath())
+//            map.put("mainfacilityname", absentPatientsReports.get(0).getPharmacyId().isEmpty() ? "" : Clinic.findById(absentPatientsReports.get(0).getPharmacyId()).getClinicName())
+//            map.put("dateEnd", absentPatientsReports.get(0).getEndDate())
+//            map.put("date", absentPatientsReports.get(0).getStartDate())
+//
+//            byte[] report = super.printReport(reportId, fileType, reportPathFile, map, absentPatientsReports)
+//            render(file: report, contentType: 'application/'+fileType.equals("PDF")? 'pdf' : 'xls')
+//        } else {
+//            render status: NO_CONTENT
+//        }
+        println(absentPatientsReports.size())
+        render absentPatientsReports as JSON
     }
 }
