@@ -12,8 +12,6 @@ import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import org.springframework.beans.factory.annotation.Autowired
 
-import java.math.RoundingMode
-
 @Transactional
 @Service(AbsentPatientsReport)
 abstract class AbsentPatientsReportService implements IAbsentPatientsReportService{
@@ -23,6 +21,12 @@ abstract class AbsentPatientsReportService implements IAbsentPatientsReportServi
     IReportProcessMonitorService reportProcessMonitorService
 
     public static final String PROCESS_STATUS_PROCESSING_FINISHED = "Processamento terminado"
+
+    @Override
+    List<AbsentPatientsReport> getReportDataByReportId(String reportId) {
+        return AbsentPatientsReport.findAllByReportId(reportId)
+    }
+
     @Override
     void processReportAbsentDispenseRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor) {
         Clinic clinic = Clinic.findById(searchParams.clinicId)
@@ -41,7 +45,7 @@ abstract class AbsentPatientsReportService implements IAbsentPatientsReportServi
             Object item = absentReferredPatients[i]
             Episode episode = (Episode) item[0]
             AbsentPatientsReport absentPatient = new AbsentPatientsReport()
-            absentPatient.setPharmacyId(clinic.id)
+            absentPatient.setClinic(clinic.clinicName)
             absentPatient.setStartDate(searchParams.startDate)
             absentPatient.setEndDate(searchParams.endDate)
             absentPatient.setClinicalServiceId(episode.patientServiceIdentifier.service.code)
