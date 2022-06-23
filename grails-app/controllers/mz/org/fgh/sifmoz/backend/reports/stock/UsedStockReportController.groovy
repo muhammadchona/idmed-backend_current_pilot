@@ -3,17 +3,12 @@ package mz.org.fgh.sifmoz.backend.reports.stock
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 import grails.validation.ValidationException
-import io.micronaut.core.util.ArrayUtils
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
-import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.*
-
 
 class UsedStockReportController extends MultiThreadRestReportController {
 
@@ -109,17 +104,7 @@ class UsedStockReportController extends MultiThreadRestReportController {
 
     def printReport(String reportId, String fileType) {
         List<StockReportTemp> itemsReport = usedStockReportService.getReportDataByReportId(reportId)
-        Map<String, Object> map = new HashMap<>()
-        if (ArrayUtils.isNotEmpty(itemsReport)) {
-            map.put("facilityName", itemsReport.get(0).getPharmacyId()==null? "":Clinic.findById(itemsReport.get(0).getPharmacyId()).getClinicName())
-            map.put("endDate", itemsReport.get(0).getEndDate())
-            map.put("startDate", itemsReport.get(0).getStartDate())
-            map.put("province", itemsReport.get(0).getProvinceId()==null? "": Province.findById(itemsReport.get(0).getProvinceId()).getDescription())
-            map.put("district", itemsReport.get(0).getDistrictId()==null? "":District.findById(itemsReport.get(0).getDistrictId()).getDescription())
-            byte[] report = super.printReport(reportId, fileType, getReportsPath()+"stock/UsedStockReport.jrxml", map,itemsReport)
-            render(file: report, contentType: 'application/'+fileType.equalsIgnoreCase("PDF")? 'pdf' : 'xls')
-        }
-
+        render itemsReport as JSON
     }
 
 

@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+
 class DrugQuantityTemp {
     String id
     String drugName
