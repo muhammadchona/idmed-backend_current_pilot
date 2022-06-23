@@ -89,6 +89,14 @@ abstract class ArvDailyRegisterReportService implements IArvDailyRegisterReportS
         return ArvDailyRegisterReportTemp.findAllByReportId(reportId)
     }
 
+    @Override
+    List<DrugQuantityTemp> getSubReportDataById(String id) {
+        ArvDailyRegisterReportTemp arvDailyRegisterReportTemp = ArvDailyRegisterReportTemp.findById(id)
+            List<DrugQuantityTemp> list = DrugQuantityTemp.executeQuery("select  s from DrugQuantityTemp  s "  +
+                    " where s.arvDailyRegisterReportTemp =:arvDailyRegisterReportTemp ",
+                    [arvDailyRegisterReportTemp: arvDailyRegisterReportTemp]);
+            return list
+    }
 
     private ReportProcessMonitor setProcessMonitor(ReportProcessMonitor processMonitor) {
         processMonitor.setProgress(100)

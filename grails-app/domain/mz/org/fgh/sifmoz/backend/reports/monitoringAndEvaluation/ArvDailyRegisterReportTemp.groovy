@@ -36,6 +36,7 @@ class ArvDailyRegisterReportTemp {
     String ppe
     static hasMany = ['drugQuantityTemps': DrugQuantityTemp]
 
+
     static constraints = {
         id generator: "uuid"
         pharmacyId nullable: true
@@ -58,7 +59,9 @@ class ArvDailyRegisterReportTemp {
         packId nullable: true
 
     }
-
+    void setDrugQuantityTemps(List<DrugQuantityTemp> items){
+        this.drugQuantityTemps= items;
+    }
 
     @Override
     public String toString() {

@@ -21,5 +21,7 @@ interface IArvDailyRegisterReportService {
 
     List<ArvDailyRegisterReportTemp> getReportDataByReportId(String reportId)
 
+    List<DrugQuantityTemp> getSubReportDataById(String id)
+
 
 }

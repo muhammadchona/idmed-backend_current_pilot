@@ -115,16 +115,11 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
 
     def printReport(String reportId, String fileType) {
         List<ArvDailyRegisterReportTemp> itemsReport = arvDailyRegisterReportService.getReportDataByReportId(reportId)
-        Map<String, Object> map = new HashMap<>()
-        map.put("facilityName", itemsReport.get(0).getPharmacyId() == null ? "" : Clinic.findById(itemsReport.get(0).getPharmacyId()).getClinicName())
-        map.put("endDate", itemsReport.get(0).getEndDate())
-        map.put("startDate", itemsReport.get(0).getStartDate())
-        map.put("province", itemsReport.get(0).getProvinceId() == null ? "" : Province.findById(itemsReport.get(0).getProvinceId()).getDescription())
-        map.put("district", itemsReport.get(0).getDistrictId() == null ? "" : District.findById(itemsReport.get(0).getDistrictId()).getDescription())
-        byte[] report = super.printReport(reportId, fileType, getReportsPath() + "monitoring/LivroRegistoDiarioARV.jrxml", map, null)
-        render(file: report, contentType: 'application/' + fileType.equalsIgnoreCase("PDF") ? 'pdf' : 'xls')
+        for (ArvDailyRegisterReportTemp item: itemsReport){
+            item.setDrugQuantityTemps( arvDailyRegisterReportService.getSubReportDataById(item.getId()))
+        }
+        render JSONSerializer.setObjectListJsonResponse(itemsReport) as JSON
     }
-
 
     @Override
     void run() {
