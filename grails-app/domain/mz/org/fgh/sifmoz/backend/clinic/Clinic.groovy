@@ -6,6 +6,7 @@ import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
+import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,6 +20,7 @@ class Clinic {
     Province province
     @JsonIgnore
     District district
+    FacilityType facilityType
     boolean mainClinic
     boolean active
     String uuid = UUID.randomUUID().toString()
@@ -37,6 +39,7 @@ class Clinic {
         clinicName nullable: false, unique: ['province']
         sectors nullable: true
         nationalClinic nullable: true
+        facilityType nullable: true
     }
 
     boolean equals(o) {
@@ -50,13 +53,5 @@ class Clinic {
         if (id != clinic.id) return false
 
         return true
-    }
-
-    int hashCode() {
-        int result
-        result = id.hashCode()
-        result = 31 * result + code.hashCode()
-        result = 31 * result + clinicName.hashCode()
-        return result
     }
 }
