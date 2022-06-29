@@ -118,7 +118,7 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
         for (ArvDailyRegisterReportTemp item : itemsReport) {
             item.setDrugQuantityTemps(arvDailyRegisterReportService.getSubReportDataById(item.getId()))
         }
-        if (itemsReport.size() > 0) {
+        if (Utilities.listHasElements(itemsReport)) { 
           render  JSONSerializer.setObjectListJsonResponse(itemsReport) as JSON
         } else {
             render status: NO_CONTENT

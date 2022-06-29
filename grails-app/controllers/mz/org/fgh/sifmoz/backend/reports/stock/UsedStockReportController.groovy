@@ -103,13 +103,12 @@ class UsedStockReportController extends MultiThreadRestReportController {
     }
 
     def printReport(String reportId, String fileType) {
-        List<StockReportTemp> itemsReport = usedStockReportService.getReportDataByReportId(reportId)
-        if (itemsReport.size() > 0) {
+        List<StockReportTemp> itemsReport = usedStockReportService.getReportDataByReportId(reportId) 
+        if (Utilities.listHasElements(itemsReport)) { 
             render itemsReport as JSON
         } else {
             render status: NO_CONTENT
-        }
-
+        } 
     }
 
 

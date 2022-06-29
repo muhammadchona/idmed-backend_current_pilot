@@ -3,7 +3,7 @@ package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement
 class AbsentPatientsReport {
     String id //ReportId
     String reportId
-    String pharmacyId
+    String clinic
     String clinicalServiceId
     String provinceId
     String districtId
@@ -21,7 +21,7 @@ class AbsentPatientsReport {
 
     static constraints = {
         id generator: "uuid"
-        pharmacyId nullable: true
+        clinic nullable: true
         provinceId nullable: true
         districtId nullable: true
         periodType nullable: false , inList: ['SPECIFIC','MONTH','QUARTER','SEMESTER','ANNUAL']

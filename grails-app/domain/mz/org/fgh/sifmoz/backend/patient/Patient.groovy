@@ -1,7 +1,5 @@
 package mz.org.fgh.sifmoz.backend.patient
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.appointment.Appointment
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
@@ -13,7 +11,7 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
-import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import sifmoz.backend.tansreference.PatientTransReference
 
 class Patient {
     String id
@@ -31,26 +29,21 @@ class Patient {
     String hisLocation
     String hisLocationName
     HealthInformationSystem his
-    @JsonManagedReference
     Province province
-    @JsonManagedReference
     Localidade bairro
-    @JsonManagedReference
     District district
-    @JsonManagedReference
     PostoAdministrativo postoAdministrativo
 
-    @JsonManagedReference
     Clinic clinic
     static belongsTo = [Clinic]
 
-    @JsonBackReference
     static hasMany = [
             attributes: PatientAttribute,
             identifiers: PatientServiceIdentifier,
             appointments: Appointment,
             groups: GroupInfo,
-            patientVisits: PatientVisit
+            patientVisits: PatientVisit,
+            patientTransReference: PatientTransReference
     ]
 
     static mapping = {

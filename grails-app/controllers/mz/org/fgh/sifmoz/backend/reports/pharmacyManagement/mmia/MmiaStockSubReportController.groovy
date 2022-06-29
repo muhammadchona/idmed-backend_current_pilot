@@ -1,7 +1,9 @@
 package mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia
 
+import grails.converters.JSON
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.multithread.MultiThreadRestReportController
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -18,8 +20,8 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    MmiaStockSubReportController(Class<MmiaStockSubReportItem> resource) {
-        super(resource)
+    MmiaStockSubReportController() {
+        super(MmiaStockSubReportItem)
     }
 
     @Override
@@ -36,8 +38,8 @@ class MmiaStockSubReportController extends MultiThreadRestReportController<MmiaS
         respond mmiaStockSubReportService.list(params), model:[mmiaStockSubReportCount: mmiaStockSubReportService.count()]
     }
 
-    def show(Long id) {
-        respond mmiaStockSubReportService.get(id)
+    def show(String id) {
+        render JSONSerializer.setJsonObjectResponse(MmiaStockSubReportItem.findByReportId(id)) as JSON
     }
 
     @Transactional
