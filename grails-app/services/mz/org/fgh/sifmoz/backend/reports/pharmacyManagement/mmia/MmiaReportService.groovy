@@ -28,12 +28,12 @@ abstract class MmiaReportService implements IMmiaReportService {
     @Override
     void processReport(ReportSearchParams searchParams, MmiaReport curMmiaReport, ReportProcessMonitor processMonitor) {
         List<Pack> packList = packService.getPacksByServiceOnPeriod(ClinicalService.findById(searchParams.getClinicalService()), Clinic.findById(searchParams.getClinicId()), searchParams.getStartDate(), searchParams.getEndDate())
-
+        double percentageUnit = 0
         if (Utilities.listHasElements(packList as ArrayList<?>)) {
             List<MmiaRegimenSubReport> regimenSubReportList = new ArrayList<>()
 
             int counter = 0
-            double percentageUnit = 65/packList.size()
+            percentageUnit = 65/packList.size()
 
             for (Pack pack : packList) {
                 if (ConvertDateUtils.getAge(pack.getPatientVisitDetails().getAt(0).getPatientVisit().getPatient().getDateOfBirth()) >= 18) {
@@ -93,6 +93,10 @@ abstract class MmiaReportService implements IMmiaReportService {
             save(curMmiaReport)
 
             saveMmiaRegimenItems(regimenSubReportList)
+        }
+        else {
+            processMonitor.setProgress(100)
+            reportProcessMonitorService.save(processMonitor)
         }
     }
 

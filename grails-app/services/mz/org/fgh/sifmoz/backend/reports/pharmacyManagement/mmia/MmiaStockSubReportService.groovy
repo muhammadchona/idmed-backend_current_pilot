@@ -115,7 +115,10 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
 
             return mmiaStockSubReportItems
         }
-        else return null
+        else {
+            percUnit = 35
+            return null
+        }
     }
 
     void generateAndSaveMmiaStockSubReport(Object item, List<MmiaStockSubReportItem> mmiaStockSubReportItems, String reportId) {
