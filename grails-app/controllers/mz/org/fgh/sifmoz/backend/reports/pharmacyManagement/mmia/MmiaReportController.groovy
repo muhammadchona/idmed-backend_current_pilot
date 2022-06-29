@@ -49,10 +49,14 @@ class MmiaReportController extends MultiThreadRestReportController{
 
     def show(String id) {
         MmiaReport mmiaReport = MmiaReport.findByReportId(id)
-        mmiaReport.setMmiaRegimenSubReportList(MmiaRegimenSubReport.findAllByReportId(id) as Set<MmiaRegimenSubReport>)
-        mmiaReport.setMmiaStockSubReportItemList(MmiaStockSubReportItem.findAllByReportId(id) as Set<MmiaStockSubReportItem>)
-        mmiaReport.setClinic(Clinic.findById(mmiaReport.clinicId) as Set<Clinic>)
-        render JSONSerializer.setJsonObjectResponse(mmiaReport) as JSON
+        if (mmiaReport != null) {
+            mmiaReport.setMmiaRegimenSubReportList(MmiaRegimenSubReport.findAllByReportId(id) as Set<MmiaRegimenSubReport>)
+            mmiaReport.setMmiaStockSubReportItemList(MmiaStockSubReportItem.findAllByReportId(id) as Set<MmiaStockSubReportItem>)
+            mmiaReport.setClinic(Clinic.findById(mmiaReport.clinicId) as Set<Clinic>)
+            render JSONSerializer.setJsonObjectResponse(mmiaReport) as JSON
+        }  else {
+            render status: NO_CONTENT
+        }
     }
 
     @Transactional
