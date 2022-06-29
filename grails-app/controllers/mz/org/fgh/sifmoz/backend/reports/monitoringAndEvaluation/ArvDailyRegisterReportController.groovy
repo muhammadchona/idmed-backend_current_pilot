@@ -115,15 +115,19 @@ class ArvDailyRegisterReportController extends MultiThreadRestReportController {
 
     def printReport(String reportId, String fileType) {
         List<ArvDailyRegisterReportTemp> itemsReport = arvDailyRegisterReportService.getReportDataByReportId(reportId)
-        for (ArvDailyRegisterReportTemp item: itemsReport){
-            item.setDrugQuantityTemps( arvDailyRegisterReportService.getSubReportDataById(item.getId()))
+        for (ArvDailyRegisterReportTemp item : itemsReport) {
+            item.setDrugQuantityTemps(arvDailyRegisterReportService.getSubReportDataById(item.getId()))
         }
-        render JSONSerializer.setObjectListJsonResponse(itemsReport) as JSON
+        if (itemsReport.size() > 0) {
+          render  JSONSerializer.setObjectListJsonResponse(itemsReport) as JSON
+        } else {
+            render status: NO_CONTENT
+        }
     }
 
     @Override
     void run() {
-        arvDailyRegisterReportService.processReportRecords(searchParams,this.processStatus)
+        arvDailyRegisterReportService.processReportRecords(searchParams, this.processStatus)
 
     }
 

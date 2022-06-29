@@ -95,7 +95,11 @@ class ReceivedStockReportController extends MultiThreadRestReportController {
 
    def printReport(String reportId, String fileType) {
        List<StockReportTemp> itemsReport = stockReportService.getReportDataByReportId(reportId)
-        render itemsReport as JSON
+       if (itemsReport.size() > 0) {
+           render itemsReport as JSON
+       } else {
+           render status: NO_CONTENT
+       }
    }
 
 
