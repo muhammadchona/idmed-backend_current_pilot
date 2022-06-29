@@ -10,6 +10,7 @@ import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+import mz.org.fgh.sifmoz.backend.reports.patients.ActivePatientReport
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -113,7 +114,12 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
             reportProcessMonitorService.save(processMonitor)
 
             return result
-        } else return null
+        } else {
+            processMonitor.setProgress(100)
+            processMonitor.setMsg("Processamento terminado")
+            reportProcessMonitorService.save(processMonitor)
+            return new ArrayList<ActivePatientReport>()
+        }
 
     }
 
