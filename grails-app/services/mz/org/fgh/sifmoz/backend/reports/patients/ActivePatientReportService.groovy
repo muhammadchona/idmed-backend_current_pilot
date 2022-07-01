@@ -128,10 +128,15 @@ abstract class ActivePatientReportService implements IActivePatientReportService
 
             processMonitor.setProgress(100)
             processMonitor.setMsg("Processamento terminado")
-            reportProcessMonitorService.save(processMonitor);
+            reportProcessMonitorService.save(processMonitor)
 
             return resultList
-        } else return null
+        } else {
+            processMonitor.setProgress(100)
+            processMonitor.setMsg("Processamento terminado")
+            reportProcessMonitorService.save(processMonitor)
+            return new ArrayList<ActivePatientReport>()
+        }
     }
 
 
