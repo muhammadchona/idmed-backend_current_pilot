@@ -20,7 +20,7 @@ class GroupMember {
 
     static constraints = {
         patient nullable: false, unique: ['group','endDate']
-        startDate(nullable: true, blank: true, validator: { startDate, urc ->
+        startDate(nullable: false, blank: false, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
         endDate nullable: true

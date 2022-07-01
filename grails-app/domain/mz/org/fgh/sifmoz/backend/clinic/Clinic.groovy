@@ -34,12 +34,10 @@ class Clinic {
     static constraints = {
         code nullable: false
         notes nullable: true, blank: true
-        district nullable: true
         telephone nullable: true, matches: /\d+/, maxSize: 12, minSize: 9
         clinicName nullable: false, unique: ['province']
         sectors nullable: true
         nationalClinic nullable: true
-        facilityType nullable: true
     }
 
     boolean equals(o) {

@@ -26,7 +26,7 @@ class GroupInfo {
     static constraints = {
         code nullable: false, unique: true
         name nullable: false
-        startDate(nullable: true, blank: true, validator: { startDate, urc ->
+        startDate(nullable: false, blank: false, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
         endDate(nullable: true, blank: true)
