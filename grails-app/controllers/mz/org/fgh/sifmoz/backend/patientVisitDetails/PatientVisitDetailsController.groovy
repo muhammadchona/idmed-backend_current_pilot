@@ -77,7 +77,7 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || patientVisitDetailsService.delete(id) == null) {
             render status: NOT_FOUND
             return

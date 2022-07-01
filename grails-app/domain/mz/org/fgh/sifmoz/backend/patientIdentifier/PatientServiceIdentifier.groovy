@@ -29,7 +29,7 @@ class PatientServiceIdentifier {
 
     static constraints = {
         value(unique: ['patient', 'service'], nullable: true)
-        startDate(nullable: true, blank: true, validator: { startDate, urc ->
+        startDate(nullable: false, blank: false, validator: { startDate, urc ->
             return startDate != null ? startDate <= new Date() : null
         })
         endDate nullable: true
