@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.episode
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
@@ -55,6 +56,16 @@ abstract class EpisodeService implements IEpisodeService{
                 "where psi = :patientServiceIdentifier and stp.code = 'REFERIDO_PARA' and ep.episodeDate <= :episodeDate order by ep.episodeDate desc", [patientServiceIdentifier:patientServiceIdentifier, episodeDate:episodeDate])
 
         return episodes.get(0)
+    }
+
+    @Override
+    Episode getLastInitialEpisodeByIdentifier(String identifierId) {
+       EpisodeType episodeType = EpisodeType.findByCode("INICIO")
+
+        def episode = Episode.findByPatientServiceIdentifierAndEpisodeType(PatientServiceIdentifier.findById(identifierId),
+                episodeType, [sort: ['episodeDate': 'desc']])
+
+        return episode
     }
 
 }

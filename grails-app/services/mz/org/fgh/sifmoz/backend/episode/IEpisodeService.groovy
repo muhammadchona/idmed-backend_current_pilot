@@ -23,4 +23,6 @@ interface IEpisodeService {
     List<Episode> getEpisodeOfReferralOrBackReferral(Clinic clinic, ClinicalService clinicalServiceId, String startStopReasonCode, Date startDate, Date endDate)
 
     Episode getEpisodeOfReferralByPatientServiceIdentfierAndBelowEpisodeDate(PatientServiceIdentifier patientServiceIdentifier, Date episodeDate)
+
+    Episode getLastInitialEpisodeByIdentifier(String identifierId)
 }

@@ -3,12 +3,14 @@ package mz.org.fgh.sifmoz.backend.clinicSector
 import com.fasterxml.jackson.annotation.JsonIgnore
 import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 
 class ClinicSector {
     String id
     String code
     String description
     boolean active
+    ClinicSectorType clinicSectorType
 
     @JsonIgnore
     Clinic clinic

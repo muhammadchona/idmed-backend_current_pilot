@@ -10,7 +10,7 @@ import mz.org.fgh.sifmoz.backend.stock.Stock
 
 @Transactional
 @Service(PatientVisitDetails)
-abstract class PatientVisitDetailsService implements IPatientVisitDetailsService {
+abstract class PatientVisitDetailsService implements IPatientVisitDetailsService{
     @Override
     List<PatientVisitDetails> getAllByClinicId(String clinicId, int offset, int max) {
         return PatientVisitDetails.findAllByClinic(Clinic.findById(clinicId), [offset: offset, max: max])
@@ -69,6 +69,12 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
             listDrugTemp.add(new DrugQuantityTemp(String.valueOf(drugName), Long.valueOf(quantity)))
         }
         return listDrugTemp
+    }
+
+    @Override
+    PatientVisitDetails getLastVisitByEpisodeId(String episodeId) {
+        def patientVisitDetails = PatientVisitDetails.findAllByEpisode(Episode.findById(episodeId), [sort: ['patientVisit.visitDate': 'desc']])
+        return patientVisitDetails.get(0)
     }
 
 
