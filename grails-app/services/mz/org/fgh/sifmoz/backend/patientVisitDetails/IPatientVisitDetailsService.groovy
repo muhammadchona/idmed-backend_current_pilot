@@ -4,7 +4,7 @@ package mz.org.fgh.sifmoz.backend.patientVisitDetails
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation.DrugQuantityTemp
 
-interface IPatientVisitDetailsService {
+interface IPatientVisitDetailsService{
 
     PatientVisitDetails get(Serializable id)
 
@@ -25,5 +25,7 @@ interface IPatientVisitDetailsService {
     List<PatientVisitDetails> getARVDailyReport(String clinicId, Date startDate, Date endDate, String clinicalServiceId)
 
     List<DrugQuantityTemp> getProducts(String patientVisitDetailId, String clinicId, Date startDate, Date endDate)
+
+    PatientVisitDetails getLastVisitByEpisodeId(String episodeId)
 
 }
