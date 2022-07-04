@@ -101,20 +101,20 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: admin
+    password: postgres
 environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmed
+            url: jdbc:postgresql://localhost:5432/sifmoz
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmed
+            url: jdbc:postgresql://localhost:5432/sifmoz
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmed
+            url: jdbc:postgresql://localhost:5432/sifmoz
             properties:
                 jmxEnabled: true
                 initialSize: 5
