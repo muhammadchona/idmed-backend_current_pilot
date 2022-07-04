@@ -101,7 +101,7 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: admin
+    password: root
 environments:
     development:
         dataSource:
@@ -114,7 +114,7 @@ environments:
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmed
+            url: jdbc:postgresql://db:5432/idmed
             properties:
                 jmxEnabled: true
                 initialSize: 5
