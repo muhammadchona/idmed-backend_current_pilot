@@ -9,6 +9,7 @@ class ClinicSector {
     String id
     String code
     String description
+    String uuid
     boolean active
     ClinicSectorType clinicSectorType
 
@@ -23,5 +24,6 @@ class ClinicSector {
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
+        uuid unique: true
     }
 }
