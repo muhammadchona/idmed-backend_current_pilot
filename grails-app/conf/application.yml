@@ -61,14 +61,14 @@ grails:
                         - Trident
         types:
             json:
-              - application/json
-              - text/json
+                - application/json
+                - text/json
             hal:
-              - application/hal+json
-              - application/hal+xml
+                - application/hal+json
+                - application/hal+xml
             xml:
-              - text/xml
-              - application/xml
+                - text/xml
+                - application/xml
             atom: application/atom+xml
             css: text/css
             csv: text/csv
@@ -101,20 +101,20 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: admin
 environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/sifmoz
+            url: jdbc:postgresql://localhost:5432/idmed
             properties:
                 jmxEnabled: true
                 initialSize: 5
