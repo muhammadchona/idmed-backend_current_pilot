@@ -1,8 +1,9 @@
 package mz.org.fgh.sifmoz.backend.stockcenter
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
-class StockCenter {
+class StockCenter extends BaseEntity {
     String id
     String name
     boolean prefered

@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.reports.common
 
-class ReportProcessMonitor {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class ReportProcessMonitor extends BaseEntity {
 
     String id
     String reportId

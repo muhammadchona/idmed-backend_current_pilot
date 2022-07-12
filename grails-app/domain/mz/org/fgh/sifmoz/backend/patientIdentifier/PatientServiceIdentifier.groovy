@@ -1,12 +1,13 @@
 package mz.org.fgh.sifmoz.backend.patientIdentifier
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
-class PatientServiceIdentifier {
+class PatientServiceIdentifier extends BaseEntity {
     String id
     Date startDate
     Date endDate

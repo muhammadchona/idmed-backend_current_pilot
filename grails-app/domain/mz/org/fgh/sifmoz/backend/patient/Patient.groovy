@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.patient
 
 import mz.org.fgh.sifmoz.backend.appointment.Appointment
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
@@ -11,9 +12,9 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
-import sifmoz.backend.tansreference.PatientTransReference
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
 
-class Patient {
+class Patient extends BaseEntity {
     String id
     String firstNames
     String middleNames

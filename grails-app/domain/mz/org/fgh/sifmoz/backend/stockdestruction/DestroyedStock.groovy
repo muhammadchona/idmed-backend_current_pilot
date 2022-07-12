@@ -1,9 +1,10 @@
 package mz.org.fgh.sifmoz.backend.stockdestruction
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockDestructionAdjustment
 
-class DestroyedStock {
+class DestroyedStock extends BaseEntity {
     String id
     String notes
     String updateStatus

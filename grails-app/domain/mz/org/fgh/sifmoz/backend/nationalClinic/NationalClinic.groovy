@@ -1,11 +1,12 @@
 package mz.org.fgh.sifmoz.backend.nationalClinic
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 
-class NationalClinic {
+class NationalClinic extends BaseEntity {
     String id
     String code
     String facilityName

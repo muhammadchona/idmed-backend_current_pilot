@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.dispenseMode
 
-class DispenseMode {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class DispenseMode extends BaseEntity {
     String id
     String code
     String description

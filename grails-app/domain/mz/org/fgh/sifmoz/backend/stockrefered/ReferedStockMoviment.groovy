@@ -1,11 +1,12 @@
 package mz.org.fgh.sifmoz.backend.stockrefered
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockReferenceAdjustment
 
-class ReferedStockMoviment {
+class ReferedStockMoviment extends BaseEntity {
     String id
     Date date
     String orderNumber

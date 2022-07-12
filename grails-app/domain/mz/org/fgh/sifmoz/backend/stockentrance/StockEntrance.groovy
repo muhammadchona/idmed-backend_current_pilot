@@ -1,10 +1,10 @@
 package mz.org.fgh.sifmoz.backend.stockentrance
 
-
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-class StockEntrance {
+class StockEntrance extends BaseEntity {
     String id
     String orderNumber
     Date dateReceived

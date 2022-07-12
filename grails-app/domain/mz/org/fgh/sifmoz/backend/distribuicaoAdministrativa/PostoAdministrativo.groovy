@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
-class PostoAdministrativo {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class PostoAdministrativo extends BaseEntity {
     String id
     String code
     String description

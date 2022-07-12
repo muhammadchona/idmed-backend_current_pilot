@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.patientVisit
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
@@ -12,7 +13,7 @@ import mz.org.fgh.sifmoz.backend.screening.TBScreening
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
 import org.springframework.cglib.proxy.Mixin
 
-class PatientVisit {
+class PatientVisit extends BaseEntity {
     String id
     Date visitDate
     @JsonIgnore

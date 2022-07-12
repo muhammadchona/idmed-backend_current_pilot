@@ -1,9 +1,10 @@
 package mz.org.fgh.sifmoz.backend.attributeType
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
-class PatientAttributeType {
+class PatientAttributeType extends BaseEntity {
     String id
     String code
     String name

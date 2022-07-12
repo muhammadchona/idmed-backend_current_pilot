@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.interoperabilityType
 
-class InteroperabilityType {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class InteroperabilityType extends BaseEntity {
 
     String code
     String description

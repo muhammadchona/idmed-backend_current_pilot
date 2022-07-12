@@ -1,9 +1,10 @@
 package mz.org.fgh.sifmoz.backend.packagedDrug
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-class PackagedDrugStock {
+class PackagedDrugStock extends BaseEntity {
     String id
     Drug drug
     int quantitySupplied

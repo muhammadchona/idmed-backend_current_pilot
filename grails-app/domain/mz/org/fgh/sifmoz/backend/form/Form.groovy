@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.form
 
-class Form {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class Form extends BaseEntity {
     String id
     String code
     String description

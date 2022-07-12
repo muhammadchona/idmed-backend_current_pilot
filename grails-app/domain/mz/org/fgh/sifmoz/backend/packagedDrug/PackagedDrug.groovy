@@ -2,11 +2,12 @@ package mz.org.fgh.sifmoz.backend.packagedDrug
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-class PackagedDrug {
+class PackagedDrug extends BaseEntity {
     String id
     @JsonManagedReference
     Drug drug

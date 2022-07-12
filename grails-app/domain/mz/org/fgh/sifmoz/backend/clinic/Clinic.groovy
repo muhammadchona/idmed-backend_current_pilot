@@ -1,12 +1,13 @@
 package mz.org.fgh.sifmoz.backend.clinic
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 
-class Clinic {
+class Clinic extends BaseEntity {
     String id
     String code
     String notes

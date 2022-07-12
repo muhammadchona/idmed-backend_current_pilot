@@ -1,6 +1,8 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.tansreference
 
-class PatientTransReferenceType {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class PatientTransReferenceType extends BaseEntity {
 
     String id
     String description

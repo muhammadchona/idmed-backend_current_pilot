@@ -1,12 +1,13 @@
 package mz.org.fgh.sifmoz.backend.packaging
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.group.GroupPack
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 
-class Pack {
+class Pack extends BaseEntity {
     String id
     Date dateLeft
     Date dateReceived

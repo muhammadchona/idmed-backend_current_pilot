@@ -1,4 +1,4 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.converters.JSON
 import grails.rest.RestfulController

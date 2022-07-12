@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.identifierType
 
-class IdentifierType {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class IdentifierType extends BaseEntity {
     String id
     String code
     String description

@@ -1,10 +1,9 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.prescription
 
 import grails.testing.gorm.DomainUnitTest
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
 import spock.lang.Specification
 
-class PatientTransReferenceSpec extends Specification implements DomainUnitTest<PatientTransReference> {
+class SpetialPrescriptionMotiveSpec extends Specification implements DomainUnitTest<SpetialPrescriptionMotive> {
 
     def setup() {
     }

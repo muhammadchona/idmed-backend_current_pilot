@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.startStopReason
 
-class StartStopReason {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class StartStopReason extends BaseEntity {
     public static final String TERMINO_DO_TRATAMENTO = "TERMINO_DO_TRATAMENTO"
     public static final String TRANSFERIDO_DE = "TRANSFERIDO_DE"
     public static final String REINICIO_TRATAMETO = "REINICIO_TRATAMETO"
