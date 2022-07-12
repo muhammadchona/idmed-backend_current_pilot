@@ -35,6 +35,10 @@ class PatientVisitController extends RestfulController{
         render JSONSerializer.setJsonObjectResponse(patientVisitService.get(id)) as JSON
     }
 
+    def saveRecord(PatientVisit visit){
+        render JSONSerializer.setJsonObjectResponse(visit) as JSON
+    }
+
     @Transactional
     def save(PatientVisit visit) {
         if (visit == null) {

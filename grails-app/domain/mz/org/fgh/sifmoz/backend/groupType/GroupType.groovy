@@ -1,8 +1,9 @@
 package mz.org.fgh.sifmoz.backend.groupType
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
-class GroupType {
+class GroupType extends BaseEntity {
     String id
     String code
     String description

@@ -2,10 +2,11 @@ package mz.org.fgh.sifmoz.backend.screening
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
-class PregnancyScreening {
+class PregnancyScreening extends BaseEntity {
     String id
     boolean pregnant
     boolean menstruationLastTwoMonths

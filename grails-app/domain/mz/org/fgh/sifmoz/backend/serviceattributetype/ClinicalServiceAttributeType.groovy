@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.serviceattributetype
 
-class ClinicalServiceAttributeType {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class ClinicalServiceAttributeType extends BaseEntity {
     String id
     String code
     String description

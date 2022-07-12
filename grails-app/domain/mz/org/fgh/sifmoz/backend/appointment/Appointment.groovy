@@ -1,10 +1,11 @@
 package mz.org.fgh.sifmoz.backend.appointment
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 
-class Appointment {
+class Appointment extends BaseEntity{
     String id
     Date appointmentDate
     Date visitDate

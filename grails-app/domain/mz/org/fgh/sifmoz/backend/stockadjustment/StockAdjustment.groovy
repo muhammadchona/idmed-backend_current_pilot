@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.stock.Stock
@@ -9,7 +10,7 @@ import mz.org.fgh.sifmoz.backend.stockoperation.StockOperationType
 import mz.org.fgh.sifmoz.backend.stockrefered.ReferedStockMoviment
 
 
-abstract class StockAdjustment {
+abstract class StockAdjustment extends BaseEntity {
     String id
     Date captureDate
     String notes
@@ -37,7 +38,6 @@ abstract class StockAdjustment {
         adjustedValue(min: 0)
         balance min: 0
         operation nullable: true
-        destructions nullable: true
     }
 
 

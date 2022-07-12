@@ -1,8 +1,9 @@
 package mz.org.fgh.sifmoz.backend.group
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.duration.Duration
 
-class GroupPackHeader {
+class GroupPackHeader extends BaseEntity {
 
     String id
     Date packDate

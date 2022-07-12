@@ -3,9 +3,10 @@ package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class Province {
+class Province extends BaseEntity {
     String id
     String code
     String description

@@ -1,6 +1,7 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.services.Service
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
 
 @Service(PatientTransReference)
 interface PatientTransReferenceService {

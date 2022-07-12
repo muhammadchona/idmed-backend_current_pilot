@@ -1,13 +1,14 @@
 package mz.org.fgh.sifmoz.backend.group
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.groupType.GroupType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
-class GroupInfo {
+class GroupInfo extends BaseEntity {
     String id
     String code
     String name

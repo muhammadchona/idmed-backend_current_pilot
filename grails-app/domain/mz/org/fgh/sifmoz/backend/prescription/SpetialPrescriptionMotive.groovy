@@ -1,13 +1,12 @@
-package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
+package mz.org.fgh.sifmoz.backend.prescription
 
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
-class Localidade extends BaseEntity {
+class SpetialPrescriptionMotive extends BaseEntity {
+
     String id
     String code
     String description
-
-    static belongsTo = [postoAdministrativo: PostoAdministrativo]
 
     static mapping = {
         id generator: "uuid"

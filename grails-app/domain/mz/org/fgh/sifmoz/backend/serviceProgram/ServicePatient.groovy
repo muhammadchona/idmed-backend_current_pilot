@@ -1,13 +1,13 @@
 package mz.org.fgh.sifmoz.backend.serviceProgram
 
-
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-class ServicePatient {
+class ServicePatient extends BaseEntity {
 
     Date startDate
     Date stopDate

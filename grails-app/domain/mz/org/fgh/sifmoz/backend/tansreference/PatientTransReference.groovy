@@ -1,10 +1,12 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.tansreference
 
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 
-class PatientTransReference {
+class PatientTransReference extends BaseEntity{
 
     String id
     Clinic origin

@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stock
 
-
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
@@ -8,7 +8,7 @@ import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 
-class Stock {
+class Stock extends BaseEntity {
     String id
     Date expireDate
     boolean modified

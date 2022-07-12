@@ -2,8 +2,9 @@ package mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
-class District {
+class District extends BaseEntity {
     String id
     String code
     String description

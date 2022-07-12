@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.duration
 
-class Duration {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class Duration extends BaseEntity {
 
     String id
     int weeks

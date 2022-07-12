@@ -1,10 +1,11 @@
 package mz.org.fgh.sifmoz.backend.stocklevel
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stock.Stock
 
-class StockLevel {
+class StockLevel extends BaseEntity {
     String id
     int bacth
     int fullContainerRemaining

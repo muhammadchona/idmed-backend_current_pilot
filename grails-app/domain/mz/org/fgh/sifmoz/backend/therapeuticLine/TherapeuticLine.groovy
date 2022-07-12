@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.therapeuticLine
 
-class TherapeuticLine {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class TherapeuticLine extends BaseEntity {
     String id
     String code
     String description

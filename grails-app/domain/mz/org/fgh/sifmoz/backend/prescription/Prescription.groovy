@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.prescription
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.duration.Duration
@@ -12,7 +13,7 @@ import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
-class Prescription {
+class Prescription extends BaseEntity{
 
     String id
     Date prescriptionDate

@@ -1,11 +1,12 @@
 package mz.org.fgh.sifmoz.backend.stockinventory
 
 import grails.rest.Resource
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.stockadjustment.InventoryStockAdjustment
 
-class Inventory {
+class Inventory extends BaseEntity {
     String id
     Date startDate
     Date endDate

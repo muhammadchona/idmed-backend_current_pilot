@@ -1,6 +1,8 @@
 package mz.org.fgh.sifmoz.backend.stockoperation
 
-class StockOperationType {
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
+
+class StockOperationType extends BaseEntity {
     String id
     String description
     String code
