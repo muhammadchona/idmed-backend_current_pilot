@@ -1,4 +1,4 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.prescription
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
@@ -11,7 +11,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.testing.gorm.DomainUnitTest
 import grails.plugin.json.view.JsonViewGrailsPlugin
 
-class PatientTransReferenceControllerSpec extends Specification implements ControllerUnitTest<PatientTransReferenceController>, DomainUnitTest<PatientTransReference> {
+class SpetialPrescriptionMotiveControllerSpec extends Specification implements ControllerUnitTest<SpetialPrescriptionMotiveController>, DomainUnitTest<SpetialPrescriptionMotive> {
 
     void setupSpec() {
         defineBeans(new JsonViewGrailsPlugin(applicationContext: applicationContext))
@@ -27,7 +27,7 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,8 +52,8 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the save action correctly persists"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * save(_ as PatientTransReference)
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * save(_ as SpetialPrescriptionMotive)
         }
 
         when:
@@ -61,7 +61,7 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientTransReference(params)
+        request.json = new SpetialPrescriptionMotive(params)
         controller.save()
 
         then:
@@ -71,9 +71,9 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * save(_ as PatientTransReference) >> { PatientTransReference patientTransReference ->
-                throw new ValidationException("Invalid instance", patientTransReference.errors)
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * save(_ as SpetialPrescriptionMotive) >> { SpetialPrescriptionMotive spetialPrescriptionMotive ->
+                throw new ValidationException("Invalid instance", spetialPrescriptionMotive.errors)
             }
         }
 
@@ -81,7 +81,7 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        request.json = new PatientTransReference(params)
+        request.json = new SpetialPrescriptionMotive(params)
         controller.save()
 
         then:
@@ -91,7 +91,7 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the show action with a null id"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
             1 * get(null) >> null
         }
 
@@ -104,8 +104,8 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the show action with a valid id"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * get(2) >> new PatientTransReference()
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * get(2) >> new SpetialPrescriptionMotive()
         }
 
         when:"A domain instance is passed to the show action"
@@ -129,8 +129,8 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the update action correctly persists"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * save(_ as PatientTransReference)
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * save(_ as SpetialPrescriptionMotive)
         }
 
         when:
@@ -138,7 +138,7 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def instance = new PatientTransReference(params)
+        def instance = new SpetialPrescriptionMotive(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -150,16 +150,16 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * save(_ as PatientTransReference) >> { PatientTransReference patientTransReference ->
-                throw new ValidationException("Invalid instance", patientTransReference.errors)
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * save(_ as SpetialPrescriptionMotive) >> { SpetialPrescriptionMotive spetialPrescriptionMotive ->
+                throw new ValidationException("Invalid instance", spetialPrescriptionMotive.errors)
             }
         }
 
         when:
         request.contentType = JSON_CONTENT_TYPE
         request.method = 'PUT'
-        def instance = new PatientTransReference(params)
+        def instance = new SpetialPrescriptionMotive(params)
         instance.id = 1
         instance.version = 0
         controller.update(instance)
@@ -181,8 +181,8 @@ class PatientTransReferenceControllerSpec extends Specification implements Contr
 
     void "Test the delete action with an instance"() {
         given:
-        controller.patientTransReferenceService = Mock(PatientTransReferenceService) {
-            1 * delete(2) >> new PatientTransReference(id: 2)
+        controller.spetialPrescriptionMotiveService = Mock(SpetialPrescriptionMotiveService) {
+            1 * delete(2) >> new SpetialPrescriptionMotive(id: 2)
         }
 
         when:
