@@ -10,7 +10,7 @@ class ClinicSector extends BaseEntity {
     String id
     String code
     String description
-    String uuid
+    String uuid = UUID.randomUUID().toString()
     boolean active
     ClinicSectorType clinicSectorType
 
