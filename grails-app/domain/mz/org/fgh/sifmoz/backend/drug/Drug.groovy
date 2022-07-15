@@ -21,11 +21,10 @@ class Drug extends BaseEntity {
     String fnmCode
     String uuidOpenmrs
     ClinicalService clinicalService
-    @JsonBackReference
     Form form
-    static belongsTo = [Form]
+    static belongsTo = [Form, TherapeuticRegimen]
     boolean active
-    static hasMany = [stockList: Stock]
+    static hasMany = [stockList: Stock, therapeuticRegimenList: TherapeuticRegimen]
     static mapping = {
         id generator: "uuid"
         form lazy: true
@@ -40,6 +39,7 @@ class Drug extends BaseEntity {
      //   defaultTreatment(min: 1.00)
         defaultTimes(min:1)
         stockList nullable: true
+        therapeuticRegimenList nullable: true
     }
 
 }
