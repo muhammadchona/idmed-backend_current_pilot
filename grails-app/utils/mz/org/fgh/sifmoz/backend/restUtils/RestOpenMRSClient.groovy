@@ -125,13 +125,13 @@ class RestOpenMRSClient {
         }
     }
 
-    static def requestOpenMRSClient(String username, String password, String object, String urlBase, String urlPath, String method) {
+    static def requestOpenMRSClient(String base64code, String object, String urlBase, String urlPath, String method) {
         String restUrl = urlBase.concat(urlPath)
         String result = ""
         int code = 200
         try {
-            String userCredentials = new StringBuffer(username).append(":").append(password).toString()
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()))
+            String userCredentials = base64code
+            String basicAuth = "Basic " + base64code
             println(restUrl)
             println(basicAuth)
             URL siteURL = new URL(restUrl)

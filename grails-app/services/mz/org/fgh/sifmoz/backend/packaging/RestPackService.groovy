@@ -49,7 +49,7 @@ class RestPackService {
                     String convertToJson = restPost.createOpenMRSFILA(pack, patient)
                     println(urlBase)
                     println(convertToJson)
-                    String responsePost = restOpenMRSClient.requestOpenMRSClient(username, password, convertToJson, urlBase,"encounter", requestMethod_POST)
+                    String responsePost = restOpenMRSClient.requestOpenMRSClient(pack.providerUuid, convertToJson, urlBase,"encounter", requestMethod_POST)
                     if (responsePost.contains('Green')){
                         pack.setSyncStatus('S' as char)
                         pack.save()

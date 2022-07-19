@@ -24,6 +24,7 @@ class Pack extends BaseEntity {
     DispenseMode dispenseMode
     GroupPack groupPack
     char syncStatus = 'N'
+    String providerUuid
 
     static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
     static mapping = {
@@ -37,6 +38,7 @@ class Pack extends BaseEntity {
         pickupDate(nullable: false)
         weeksSupply(nullable: false)
         dateReturned(nullable: true)
+        providerUuid(nullable: true)
         syncStatus(nullable: true)
         dispenseMode(nullable: false)
         groupPack nullable: true
