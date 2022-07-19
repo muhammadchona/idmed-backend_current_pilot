@@ -19,7 +19,7 @@ class InventoryController extends RestfulController{
     IInventoryService inventoryService
 
     static responseFormats = ['json', 'xml']
-    static allowedMethods = [startNewInventory: "POST", update: "PUT", delete: "DELETE", close: "PUT"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     InventoryController() {
         super(Inventory)
@@ -56,7 +56,7 @@ class InventoryController extends RestfulController{
     }
 
     @Transactional
-    def startNewInventory(Inventory inventory) {
+    def save(Inventory inventory) {
         if (inventory == null) {
             render status: NOT_FOUND
             return
