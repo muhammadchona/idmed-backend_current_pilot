@@ -19,6 +19,7 @@ class RestOpenMRSClient {
 
     String createOpenMRSFILA(Pack pack, Patient patient) {
 
+
         String inputAddPerson = "{}"
         String customizedDosage = ""
         String obsGroupsJson = null
@@ -36,7 +37,7 @@ class RestOpenMRSClient {
                 String dispensedAmountUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSED_AMOUNT_CONCEPT" }.value
                 String dosageUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DOSAGE_CONCEPT_UUID" }.value
                 String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_NEXT_VISIT_CONCEPT_UUID" }.value
-                String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findByPatientVisitDetails(pack.patientVisitDetails)).therapeuticRegimen.openmrsUuid
+                String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
 
                 for (PackagedDrug pd : pack.packagedDrugs) {
                     String formulationString = "{\"" +
