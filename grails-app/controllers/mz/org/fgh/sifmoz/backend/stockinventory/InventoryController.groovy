@@ -68,7 +68,7 @@ class InventoryController extends RestfulController{
         }
 
         try {
-            inventoryService.initInventory(inventory)
+            inventoryService.save(inventory)
         } catch (ValidationException e) {
             respond inventory.errors
             return
