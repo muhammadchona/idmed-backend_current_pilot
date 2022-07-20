@@ -1,9 +1,9 @@
-package sifmoz.backend.tansreference
+package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import mz.org.fgh.sifmoz.backend.Task.ISynchronizerTask
-import mz.org.fgh.sifmoz.backend.Task.SynchronizerTask
+import mz.org.fgh.sifmoz.backend.task.ISynchronizerTask
+import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils

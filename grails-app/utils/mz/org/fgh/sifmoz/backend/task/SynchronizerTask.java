@@ -1,12 +1,8 @@
-package mz.org.fgh.sifmoz.backend.Task;
+package mz.org.fgh.sifmoz.backend.task;
 
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService;
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs;
-import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import java.util.*;
 
 public abstract class SynchronizerTask {
 

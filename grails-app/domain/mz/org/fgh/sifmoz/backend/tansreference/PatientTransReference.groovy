@@ -16,10 +16,12 @@ class PatientTransReference extends BaseEntity{
     PatientTransReferenceType operationType
     Date operationDate
     Date creationDate
+    Long matchId
 
     static belongsTo = [patient: Patient]
     static mapping = {
         id generator: "uuid"
+        matchId generator: "increment"
     }
 
     static constraints = {
