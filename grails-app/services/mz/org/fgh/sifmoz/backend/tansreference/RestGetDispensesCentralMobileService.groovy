@@ -32,16 +32,12 @@ import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.restUtils.RestProvincialServerMobileClient
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceService
 import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
-import org.apache.commons.logging.LogFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
-
 
 @Transactional
 @EnableScheduling
@@ -60,7 +56,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask implements I
     IPackService packService
     IPackagedDrugService packagedDrugService
     @Autowired
-    PatientTransReferenceService patientTransReferenceService
+    IPatientTransReferenceService patientTransReferenceService
     RestProvincialServerMobileClient restProvincialServerClient = new RestProvincialServerMobileClient()
 
     private static final Logger LOGGER = LoggerFactory

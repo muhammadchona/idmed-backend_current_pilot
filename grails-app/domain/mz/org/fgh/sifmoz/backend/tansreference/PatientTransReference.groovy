@@ -21,9 +21,15 @@ class PatientTransReference extends BaseEntity{
     static belongsTo = [patient: Patient]
     static mapping = {
         id generator: "uuid"
-        matchId generator: "increment"
     }
 
     static constraints = {
+        matchId nullable: true
+    }
+
+    def beforeInsert() {
+        if (matchId == null) {
+            matchId = PatientTransReference.findAll( [sort: ['matchId': 'desc']]).get(0).matchId++
+        }
     }
 }

@@ -10,22 +10,17 @@ import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
-import mz.org.fgh.sifmoz.backend.patient.IPatientService
 import mz.org.fgh.sifmoz.backend.patient.Patient
-import mz.org.fgh.sifmoz.backend.patientIdentifier.IPatientServiceIdentifierService
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.restUtils.RestProvincialServerMobileClient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceService
-import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -36,7 +31,7 @@ class RestGetEpisodeCentralMobileService extends SynchronizerTask implements ISy
     IPatientVisitDetailsService visitDetailsService
     IEpisodeService episodeService
     @Autowired
-    PatientTransReferenceService patientTransReferenceService
+    IPatientTransReferenceService patientTransReferenceService
     RestProvincialServerMobileClient restProvincialServerClient = new RestProvincialServerMobileClient()
 
     static lazyInit = false

@@ -7,34 +7,20 @@ import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
-import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
-import mz.org.fgh.sifmoz.backend.doctor.Doctor
-import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.duration.Duration
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
-import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
-import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.IPatientService
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.IPatientServiceIdentifierService
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
-import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
-import mz.org.fgh.sifmoz.backend.prescription.Prescription
-import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
-import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.restUtils.RestProvincialServerMobileClient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceService
-import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
-import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,7 +38,7 @@ class RestGetPatientMobileCentralService extends SynchronizerTask implements ISy
     IPatientService patientService
     IPatientServiceIdentifierService patientServiceIdentifierService
     @Autowired
-    PatientTransReferenceService patientTransReferenceService
+    IPatientTransReferenceService patientTransReferenceService
     RestProvincialServerMobileClient restProvincialServerClient = new RestProvincialServerMobileClient()
 
     static lazyInit = false

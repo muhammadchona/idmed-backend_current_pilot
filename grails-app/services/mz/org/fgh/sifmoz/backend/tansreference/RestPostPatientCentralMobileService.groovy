@@ -2,7 +2,6 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import mz.org.fgh.sifmoz.backend.tansreference.SyncTempPatient
 import mz.org.fgh.sifmoz.backend.task.ISynchronizerTask
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
@@ -15,7 +14,6 @@ import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.restUtils.RestProvincialServerMobileClient
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +30,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask implements IS
     IPatientVisitDetailsService visitDetailsService
     IEpisodeService episodeService
     @Autowired
-    PatientTransReferenceService patientTransReferenceService
+    IPatientTransReferenceService patientTransReferenceService
     RestProvincialServerMobileClient restProvincialServerClient = new RestProvincialServerMobileClient()
 
     static lazyInit = false
