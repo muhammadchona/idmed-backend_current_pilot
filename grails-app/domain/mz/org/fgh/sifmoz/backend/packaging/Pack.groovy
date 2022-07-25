@@ -24,6 +24,7 @@ class Pack extends BaseEntity {
     DispenseMode dispenseMode
     GroupPack groupPack
     char syncStatus = 'N'
+    String providerUuid
 
     static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
     static mapping = {
@@ -37,30 +38,10 @@ class Pack extends BaseEntity {
         pickupDate(nullable: false)
         weeksSupply(nullable: false)
         dateReturned(nullable: true)
+        providerUuid(nullable: true)
         syncStatus(nullable: true)
         dispenseMode(nullable: false)
         groupPack nullable: true
         reasonForPackageReturn(nullable: true,maxSize: 500)
-    }
-
-    @Override
-    String toString() {
-        return "Pack{" +
-                "id='" + id + '\'' +
-                ", dateLeft=" + dateLeft +
-                ", dateReceived=" + dateReceived +
-                ", modified=" + modified +
-                ", packDate=" + packDate +
-                ", pickupDate=" + pickupDate +
-                ", nextPickUpDate=" + nextPickUpDate +
-                ", weeksSupply=" + weeksSupply +
-                ", dateReturned=" + dateReturned +
-                ", stockReturned=" + stockReturned +
-                ", packageReturned=" + packageReturned +
-                ", reasonForPackageReturn='" + reasonForPackageReturn + '\'' +
-                ", clinic=" + clinic +
-                ", dispenseMode=" + dispenseMode +
-                ", syncStatus=" + syncStatus +
-                '}'
     }
 }
