@@ -1,6 +1,7 @@
 package sifmoz.backend
 
 import grails.testing.gorm.DomainUnitTest
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 import spock.lang.Specification
 
 class PatientTransReferenceTypeSpec extends Specification implements DomainUnitTest<PatientTransReferenceType> {

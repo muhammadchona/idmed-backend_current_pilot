@@ -1,6 +1,7 @@
 package sifmoz.backend.tansreference
 
 import grails.testing.services.ServiceUnitTest
+import mz.org.fgh.sifmoz.backend.tansreference.RestGetPatientMobileCentralService
 import spock.lang.Specification
 
 class RestGetPatientMobileCentralServiceSpec extends Specification implements ServiceUnitTest<RestGetPatientMobileCentralService>{
