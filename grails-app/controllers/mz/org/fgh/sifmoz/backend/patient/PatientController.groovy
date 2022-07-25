@@ -125,7 +125,7 @@ class PatientController extends RestfulController {
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
         InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
 
-        String urlPath = "patient?q="+nid.replaceAll("-","/") + "&v=full&limit=1000"
+        String urlPath = "patient?q="+nid.replaceAll("-","/") + "&v=full&limit=100"
 
         render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, urlPath, "GET")
 
