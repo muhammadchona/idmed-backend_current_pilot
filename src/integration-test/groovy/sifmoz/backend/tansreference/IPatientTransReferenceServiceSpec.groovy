@@ -3,16 +3,16 @@ package sifmoz.backend.tansreference
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceService
+import mz.org.fgh.sifmoz.backend.tansreference.IPatientTransReferenceService
 import org.grails.datastore.mapping.core.Datastore
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 @Integration
 @Rollback
-class PatientTransReferenceServiceSpec extends Specification {
+class IPatientTransReferenceServiceSpec extends Specification {
 
-    PatientTransReferenceService patientTransReferenceService
+    IPatientTransReferenceService patientTransReferenceService
     @Autowired Datastore datastore
 
     private Long setupData() {
