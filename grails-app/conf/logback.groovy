@@ -1,3 +1,4 @@
+import ch.qos.logback.classic.Level
 import grails.util.BuildSettings
 import grails.util.Environment
 import org.springframework.boot.logging.logback.ColorConverter
@@ -21,8 +22,81 @@ appender('STDOUT', ConsoleAppender) {
                         '%m%n%wex' // Message
     }
 }
-
 def targetDir = BuildSettings.TARGET_DIR
+    appender("RestSendMobileDataGetDispense", FileAppender) {
+            file = "${targetDir}/RestSendMobileDataGetDispense.log"
+            encoder(PatternLayoutEncoder) {
+                charset = StandardCharsets.UTF_8
+                pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                        '%clr(%5p) ' + // Log level
+                        '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                        '%m%n%wex' // Message
+            }
+    }
+    logger("RestSendMobileDataGetDispense", INFO, ['RestSendMobileDataGetDispense'], false)
+
+
+appender("RestMobileDataGetEpisode", FileAppender) {
+    file = "${targetDir}/RestMobileDataGetEpisode.log"
+    encoder(PatternLayoutEncoder) {
+        charset = StandardCharsets.UTF_8
+        pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                '%clr(%5p) ' + // Log level
+                '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                '%m%n%wex' // Message
+    }
+}
+logger("RestMobileDataGetEpisode", INFO, ['RestMobileDataGetEpisode'], false)
+
+appender("RestMobileDataGetEpisodeCorrection", FileAppender) {
+    file = "${targetDir}/RestMobileDataGetEpisodeCorrection.log"
+    encoder(PatternLayoutEncoder) {
+        charset = StandardCharsets.UTF_8
+        pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                '%clr(%5p) ' + // Log level
+                '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                '%m%n%wex' // Message
+    }
+}
+logger("RestMobileDataGetEpisodeCorrection", INFO, ['RestMobileDataGetEpisodeCorrection'], false)
+
+appender("RestMobileDataGetNewPatient", FileAppender) {
+    file = "${targetDir}/RestMobileDataGetNewPatient.log"
+    encoder(PatternLayoutEncoder) {
+        charset = StandardCharsets.UTF_8
+        pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                '%clr(%5p) ' + // Log level
+                '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                '%m%n%wex' // Message
+    }
+}
+logger("RestMobileDataGetNewPatient", INFO, ['RestMobileDataGetNewPatient'], false)
+
+appender("RestMobileDataPostPatient", FileAppender) {
+    file = "${targetDir}/RestMobileDataPostPatient.log"
+    encoder(PatternLayoutEncoder) {
+        charset = StandardCharsets.UTF_8
+        pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                '%clr(%5p) ' + // Log level
+                '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                '%m%n%wex' // Message
+    }
+}
+logger("RestMobileDataPostPatient", INFO, ['RestMobileDataPostPatient'], false)
+
+appender("RestMobileDataPostEpisode", FileAppender) {
+    file = "${targetDir}/RestMobileDataPostEpisode.log"
+    encoder(PatternLayoutEncoder) {
+        charset = StandardCharsets.UTF_8
+        pattern = '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) ' + // Date
+                '%clr(%5p) ' + // Log level
+                '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
+                '%m%n%wex' // Message
+    }
+}
+logger("RestMobileDataPostEpisode", INFO, ['RestMobileDataPostEpisode'], false)
+
+
 if (Environment.isDevelopmentMode() && targetDir != null) {
     appender("FULL_STACKTRACE", FileAppender) {
         file = "${targetDir}/stacktrace.log"
@@ -35,3 +109,4 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
 root(ERROR, ['STDOUT'])
+
