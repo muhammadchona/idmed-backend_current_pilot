@@ -1,13 +1,16 @@
 package mz.org.fgh.sifmoz.migration.entity.patient;
 
+import mz.org.fgh.sifmoz.backend.patient.Patient;
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PatientIdentifierMigrationRecord extends AbstractMigrationRecord {
+public class PatientServiceIdentifierMigrationRecord extends AbstractMigrationRecord {
 
 
     private Integer id;
@@ -58,7 +61,8 @@ public class PatientIdentifierMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public List<AbstractMigrationLog> migrate() {
-        return null;
+        List<AbstractMigrationLog> logs = new ArrayList<>();
+        return logs;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class PatientIdentifierMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public String getEntityName() {
-        return null;
+        return "PatientServiceIdentifier";
     }
 
     @Override
@@ -83,6 +87,12 @@ public class PatientIdentifierMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public MigratedRecord initMigratedRecord() {
-        return null;
+        return new PatientServiceIdentifier();
     }
+
+    @Override
+    public PatientServiceIdentifier getMigratedRecord() {
+        return (PatientServiceIdentifier) super.getMigratedRecord();
+    }
+
 }

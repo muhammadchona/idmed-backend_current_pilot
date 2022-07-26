@@ -15,4 +15,6 @@ interface ProvinceService {
 
     Province save(Province province)
 
+    Province findProvinceByDescription(String description)
+
 }

@@ -1,17 +1,26 @@
 package mz.org.fgh.sifmoz.migration.entity.patient;
 
+import mz.org.fgh.sifmoz.backend.clinic.Clinic;
+import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province;
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 public class PatientMigrationRecord extends AbstractMigrationRecord {
 
+    ClinicService clinicService;
+
+    ProvinceService provinceService;
     private Integer id;
     private Boolean accountStatus;
     private Boolean isPatientEmTransito = Boolean.FALSE;
@@ -209,7 +218,20 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public List<AbstractMigrationLog> migrate() {
-        return null;
+        List<AbstractMigrationLog> logs = new ArrayList<>();
+        getMigratedRecord().setAddress(this.getAddress1());
+        getMigratedRecord().setAccountstatus(this.getAccountStatus());
+        getMigratedRecord().setFirstNames(this.getFirstNames());
+        getMigratedRecord().setId(this.getUuidopenmrs());
+        getMigratedRecord().setCellphone(this.getCellphone());
+        getMigratedRecord().setDateOfBirth(this.getDateOfBirth());
+        setClinicToMigratedRecord(logs, this.clinic.getCode());
+        setProvinceToMigratedRecord(logs, this.province);
+        getMigratedRecord().setMiddleNames("-");
+        getMigratedRecord().setLastNames(this.getLastname());
+        getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
+       // getMigratedRecord().setAlternativeCellphone("");
+        return logs;
     }
 
     @Override
@@ -250,5 +272,23 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     @Override
     public Patient getMigratedRecord() {
         return (Patient) super.getMigratedRecord();
+    }
+
+    void setClinicToMigratedRecord(List<AbstractMigrationLog> logs, String clinicCode) {
+        Clinic clinic = clinicService.findClinicByCode(clinicCode);
+        if (clinic != null) {
+            getMigratedRecord().setClinic(clinic);
+        } else {
+            logs.add(new AbstractMigrationLog("", "200", String.format("A clinica com code: {0} no IDART, nao existe no IDMED", this.clinic.getCode())));
+        }
+    }
+
+    void setProvinceToMigratedRecord(List<AbstractMigrationLog> logs, String provinceName) {
+        Province province = provinceService.findProvinceByDescription(provinceName);
+        if (province != null) {
+            getMigratedRecord().setProvince(province);
+        } else {
+            logs.add(new AbstractMigrationLog("", "200", String.format("A Provincia com description: {0} do IDART, nao existe no IDMED", this.province)));
+        }
     }
 }

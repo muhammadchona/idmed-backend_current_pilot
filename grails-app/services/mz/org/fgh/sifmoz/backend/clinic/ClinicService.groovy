@@ -15,4 +15,8 @@ interface ClinicService {
 
     Clinic save(Clinic clinic)
 
+    Clinic findClinicByCode(String code)
+
+
+
 }

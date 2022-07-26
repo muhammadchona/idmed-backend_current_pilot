@@ -87,7 +87,7 @@ public class PatientVisitDetailsMigrationRecord extends AbstractMigrationRecord 
 
     @Override
     public String getEntityName() {
-        return null;
+        return "PatientVisitDetails";
     }
 
     @Override
