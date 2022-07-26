@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.migration.entity.stock;
 
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord
+import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord
 
 class StockTakeMigrationRecord extends AbstractMigrationRecord {
@@ -42,5 +43,10 @@ class StockTakeMigrationRecord extends AbstractMigrationRecord {
     @Override
     void generateUnknowMigrationLog(MigrationRecord record, String message) {
 
+    }
+
+    @Override
+    MigratedRecord initMigratedRecord() {
+        return null
     }
 }

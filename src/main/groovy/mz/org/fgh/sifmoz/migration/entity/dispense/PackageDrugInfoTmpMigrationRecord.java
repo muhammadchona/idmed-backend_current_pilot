@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.migration.entity.dispense;
 
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
+import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 
 import java.util.Date;
@@ -83,5 +84,10 @@ public class PackageDrugInfoTmpMigrationRecord extends AbstractMigrationRecord {
     @Override
     public void generateUnknowMigrationLog(MigrationRecord record, String message) {
 
+    }
+
+    @Override
+    public MigratedRecord initMigratedRecord() {
+        return null;
     }
 }

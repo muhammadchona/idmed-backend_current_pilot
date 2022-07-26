@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.migration.entity.patient;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
+import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 
 import java.util.Date;
@@ -241,5 +242,13 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     }
 
+    @Override
+    public MigratedRecord initMigratedRecord() {
+        return new Patient();
+    }
 
+    @Override
+    public Patient getMigratedRecord() {
+        return (Patient) super.getMigratedRecord();
+    }
 }

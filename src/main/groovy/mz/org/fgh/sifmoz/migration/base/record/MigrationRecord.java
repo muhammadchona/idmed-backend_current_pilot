@@ -20,4 +20,6 @@ public interface MigrationRecord {
 
     void generateUnknowMigrationLog(MigrationRecord record, String message);
 
+    MigratedRecord initMigratedRecord();
+
 }
