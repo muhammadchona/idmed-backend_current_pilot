@@ -1,10 +1,8 @@
 package mz.org.fgh.sifmoz.migration.base.search;
 
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
-import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
-import mz.org.fgh.sifmoz.migration.base.search.params.AbstractSearchParams;
+import mz.org.fgh.sifmoz.migration.base.search.params.AbstractMigrationSearchParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchEngine<T extends AbstractMigrationRecord>{
@@ -20,9 +18,9 @@ public class SearchEngine<T extends AbstractMigrationRecord>{
     public static final String SEARCH_FINISHED = "SEARCH_FINISHED";
 
 
-    protected AbstractSearchParams<T> searchParams;
+    protected AbstractMigrationSearchParams<T> searchParams;
 
-    public SearchEngine(AbstractSearchParams<T> searchParams) {
+    public SearchEngine(AbstractMigrationSearchParams<T> searchParams) {
         this.searchParams = searchParams;
     }
 
@@ -30,7 +28,7 @@ public class SearchEngine<T extends AbstractMigrationRecord>{
         return searchParams.doSearch(RECORDS_PER_SEARCH);
     }
 
-    public AbstractSearchParams<T> getSearchParams() {
+    public AbstractMigrationSearchParams<T> getSearchParams() {
         return searchParams;
     }
 }

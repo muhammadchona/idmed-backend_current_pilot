@@ -2,28 +2,32 @@ package mz.org.fgh.sifmoz.backend.migration.stage
 
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.migration.base.engine.MigrationEngine
+import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.migration.base.engine.MigrationEngineImpl
+import mz.org.fgh.sifmoz.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.migration.params.PatientMigrationMigrationSearchParams
+
+import java.util.concurrent.ExecutorService
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 
 class MigrationController extends RestfulController{
 
     MigrationStageService migrationStageService
     MigrationEngineImpl migrationEngine
+    private static ExecutorService executor;
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     MigrationController() {
         super(MigrationStage.class)
+        executor = ExecutorThreadProvider.getInstance().getExecutorService();
     }
 
     def index(Integer max) {
@@ -37,6 +41,12 @@ class MigrationController extends RestfulController{
 
     def startMigration() {
 
+    }
+
+    private void initPatientMigrationEngine() {
+        PatientMigrationMigrationSearchParams params = new PatientMigrationMigrationSearchParams()
+        MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params)
+        executor.execute(patientMigrationEngine)
     }
 
     @Transactional

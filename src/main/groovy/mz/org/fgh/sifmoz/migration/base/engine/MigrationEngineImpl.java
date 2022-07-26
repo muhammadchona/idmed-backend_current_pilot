@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.search.SearchEngine;
 import mz.org.fgh.sifmoz.backend.utilities.Utilities;
-import mz.org.fgh.sifmoz.migration.base.search.params.AbstractSearchParams;
+import mz.org.fgh.sifmoz.migration.base.search.params.AbstractMigrationSearchParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     public static final String STOCK_MIGRATION_STAGE = "STOCK_MIGRATION_STAGE";
     public static final String PATIENT_MIGRATION_STAGE = "PATIENT_MIGRATION_STAGE";
 
-    public MigrationEngineImpl(AbstractSearchParams<T> searchParams) {
+    public MigrationEngineImpl(AbstractMigrationSearchParams<T> searchParams) {
         this.searchEngine = this.initSearchEngine(searchParams);
     }
 
@@ -53,7 +53,7 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     }
 
     @Override
-    public SearchEngine<T> initSearchEngine(AbstractSearchParams<T> searchParams) {
+    public SearchEngine<T> initSearchEngine(AbstractMigrationSearchParams<T> searchParams) {
         return new SearchEngine<>(searchParams);
     }
 
