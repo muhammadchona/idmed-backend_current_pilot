@@ -5,7 +5,7 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.migration.entity.patient.PatientMigrationRecord
-import mz.org.fgh.sifmoz.migration.params.PatientMigrationMigrationSearchParams
+import mz.org.fgh.sifmoz.migration.params.PatientMigrationSearchParams
 
 import java.util.concurrent.ExecutorService
 
@@ -44,7 +44,7 @@ class MigrationController extends RestfulController{
     }
 
     private void initPatientMigrationEngine() {
-        PatientMigrationMigrationSearchParams params = new PatientMigrationMigrationSearchParams()
+        PatientMigrationSearchParams params = new PatientMigrationSearchParams()
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params)
         executor.execute(patientMigrationEngine)
     }

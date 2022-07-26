@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.migration.entity.patient.PatientMigrationRecord;
 
 import java.util.List;
 
-public class PatientMigrationMigrationSearchParams extends AbstractMigrationSearchParams<PatientMigrationRecord> {
+public class PatientMigrationSearchParams extends AbstractMigrationSearchParams<PatientMigrationRecord> {
 
 
     @Override

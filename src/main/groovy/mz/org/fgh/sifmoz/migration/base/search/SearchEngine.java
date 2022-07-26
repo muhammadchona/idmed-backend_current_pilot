@@ -5,7 +5,7 @@ import mz.org.fgh.sifmoz.migration.base.search.params.AbstractMigrationSearchPar
 
 import java.util.List;
 
-public class SearchEngine<T extends AbstractMigrationRecord>{
+public class SearchEngine<T extends AbstractMigrationRecord> {
 
     public static final long RECORDS_PER_SEARCH = 100;
 
@@ -16,7 +16,6 @@ public class SearchEngine<T extends AbstractMigrationRecord>{
     public static final String LOADING_MORE_RECORDS = "LOADING_MORE_RECORDS";
 
     public static final String SEARCH_FINISHED = "SEARCH_FINISHED";
-
 
     protected AbstractMigrationSearchParams<T> searchParams;
 
