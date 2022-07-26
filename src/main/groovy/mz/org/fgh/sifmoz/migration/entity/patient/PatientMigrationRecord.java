@@ -209,6 +209,8 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public List<AbstractMigrationLog> migrate() {
+        getMigratedRecord().setFirstNames(this.firstNames);
+        getMigratedRecord().setLastNames(this.lastname);
         return null;
     }
 

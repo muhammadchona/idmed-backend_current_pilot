@@ -31,8 +31,9 @@ class MigrationController extends RestfulController{
     }
 
     def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
+        initPatientMigrationEngine()
+        //params.max = Math.min(max ?: 10, 100)
+        //respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
     }
 
     def show(String id) {
@@ -43,7 +44,7 @@ class MigrationController extends RestfulController{
 
     }
 
-    private void initPatientMigrationEngine() {
+    private static void initPatientMigrationEngine() {
         PatientMigrationSearchParams params = new PatientMigrationSearchParams()
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params)
         executor.execute(patientMigrationEngine)

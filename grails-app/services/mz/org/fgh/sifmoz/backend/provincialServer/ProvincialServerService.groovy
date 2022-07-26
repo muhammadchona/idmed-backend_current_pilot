@@ -5,8 +5,9 @@ import grails.gorm.transactions.Transactional
 
 @Transactional
 @Service(ProvincialServer)
-abstract class ProvincialServerService {
+abstract class ProvincialServerService implements IProvincialServerService{
 
+    @Override
     ProvincialServer getByCodeAndDestination(String code, String destination) {
         return ProvincialServer.findByCodeAndDestination(code, destination)
     }
