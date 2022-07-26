@@ -101,5 +101,4 @@ class Patient extends BaseEntity {
 //                ", postoAdministrativo=" + postoAdministrativo +
 //                '}';
 //    }
-
 }

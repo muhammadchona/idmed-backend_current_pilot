@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.migration.entity.patient;
 
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
+import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 
 import java.util.List;
@@ -147,5 +148,10 @@ public class ClinicMigrationRecord extends AbstractMigrationRecord {
     @Override
     public void generateUnknowMigrationLog(MigrationRecord record, String message) {
 
+    }
+
+    @Override
+    public MigratedRecord initMigratedRecord() {
+        return null;
     }
 }

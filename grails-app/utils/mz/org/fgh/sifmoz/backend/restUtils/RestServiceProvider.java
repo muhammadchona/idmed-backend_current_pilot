@@ -56,7 +56,6 @@ public final class RestServiceProvider {
         return null;
     }
 
-
     public int patch(String uri, String object) {
         try {
             CloseableHttpClient client =  HttpClients.createDefault();

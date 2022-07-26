@@ -7,7 +7,7 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
-class ServicePatient extends BaseEntity {
+class ServicePatient {
 
     Date startDate
     Date stopDate

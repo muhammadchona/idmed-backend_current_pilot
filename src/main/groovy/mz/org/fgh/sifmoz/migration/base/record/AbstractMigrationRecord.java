@@ -5,6 +5,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
     protected MigratedRecord migratedRecord;
 
     public AbstractMigrationRecord() {
+        this.migratedRecord = initMigratedRecord();
     }
 
     @Override
