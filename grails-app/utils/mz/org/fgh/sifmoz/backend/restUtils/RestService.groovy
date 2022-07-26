@@ -1,34 +1,34 @@
-package mz.org.fgh.sifmoz.backend.restUtils;
+package mz.org.fgh.sifmoz.backend.restUtils
 
-import groovy.transform.CompileStatic;
-import mz.org.fgh.sifmoz.backend.provincialServer.IProvincialServerService;
-import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer;
-import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServerService;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.grails.web.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import mz.org.fgh.sifmoz.backend.provincialServer.IProvincialServerService
+import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
+import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServerService
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.methods.HttpPatch
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.methods.HttpRequestBase
+import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.util.EntityUtils
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.grails.web.json.JSONArray
+import org.springframework.beans.factory.annotation.Autowired
 
-import java.net.HttpURLConnection;
+class RestService {
 
-@CompileStatic
-public class RestServiceProvider {
-
-    private final ProvincialServer provincialServer;
-    private final String baseUrl;
+    private ProvincialServer provincialServer;
+    private String baseUrl;
     static Logger logger = LogManager.getLogger(RestServiceProvider.class);
 
-    ProvincialServerService provincialServerService;
+    @Autowired
+    IProvincialServerService provincialServerService;
 
-    public RestServiceProvider(String serverCode, String serverDestination) {
-        this.provincialServer = provincialServerService.getByCodeAndDestination(serverCode, serverDestination);
+    public RestService(String serverCode, String serverDestination) {
+        this.provincialServer = ProvincialServer.findByCodeAndDestination(serverCode, serverDestination);
+        if (this.provincialServer == null) throw new RuntimeException("Unable to find provincial server settings.")
         this.baseUrl =  provincialServer.getUrlPath()+provincialServer.getPort();
     }
 
@@ -40,7 +40,6 @@ public class RestServiceProvider {
     }
 
     public JSONArray get(String uri) {
-        String result = "";
         try {
             CloseableHttpClient client =  HttpClients.createDefault();
             HttpGet request = new HttpGet(this.baseUrl+uri);

@@ -1,5 +1,7 @@
 package mz.org.fgh.sifmoz.migration.base.search.params;
 
+import com.google.gson.Gson;
+import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 import mz.org.fgh.sifmoz.backend.restUtils.RestServiceProvider;
@@ -16,17 +18,19 @@ public abstract class AbstractMigrationSearchParams<T extends AbstractMigrationR
     protected String migrationStatus;
     protected String searchCondition;
     protected String migrationUrl;
-    protected RestServiceProvider restServiceProvider;
+    protected RestService restServiceProvider;
+    protected Gson gson;
 
 
     public AbstractMigrationSearchParams() {
         this.searchResults = new ArrayList<>();
-        this.restServiceProvider = new RestServiceProvider("", "");
+        this.gson = new Gson();
+        this.restServiceProvider = new RestService("MIGRATION", "IDART");
     }
 
     public abstract List<T> doSearch(long limit);
 
-    public RestServiceProvider getRestServiceProvider() {
+    public RestService getRestServiceProvider() {
         return restServiceProvider;
     }
 }
