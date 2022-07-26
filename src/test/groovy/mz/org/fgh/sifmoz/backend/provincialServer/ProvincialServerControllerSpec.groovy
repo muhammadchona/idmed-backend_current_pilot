@@ -27,7 +27,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the index action returns the correct response"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -52,7 +52,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the save action correctly persists"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * save(_ as ProvincialServer)
         }
 
@@ -71,7 +71,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the save action with an invalid instance"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * save(_ as ProvincialServer) >> { ProvincialServer provincialServer ->
                 throw new ValidationException("Invalid instance", provincialServer.errors)
             }
@@ -91,7 +91,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the show action with a null id"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * get(null) >> null
         }
 
@@ -104,7 +104,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the show action with a valid id"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * get(2) >> new ProvincialServer()
         }
 
@@ -129,7 +129,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the update action correctly persists"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * save(_ as ProvincialServer)
         }
 
@@ -150,7 +150,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * save(_ as ProvincialServer) >> { ProvincialServer provincialServer ->
                 throw new ValidationException("Invalid instance", provincialServer.errors)
             }
@@ -181,7 +181,7 @@ class ProvincialServerControllerSpec extends Specification implements Controller
 
     void "Test the delete action with an instance"() {
         given:
-        controller.provincialServerService = Mock(ProvincialServerService) {
+        controller.provincialServerService = Mock(IProvincialServerService) {
             1 * delete(2) >> new ProvincialServer(id: 2)
         }
 
