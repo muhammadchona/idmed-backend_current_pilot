@@ -1,7 +1,7 @@
 package mz.org.fgh.sifmoz.backend.restUtils;
 
+import mz.org.fgh.sifmoz.backend.provincialServer.IProvincialServerService;
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer;
-import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServerService;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -21,7 +21,7 @@ public final class RestServiceProvider {
     static Logger logger = LogManager.getLogger(RestServiceProvider.class);
 
     @Autowired
-    private ProvincialServerService provincialServerService;
+    private IProvincialServerService provincialServerService;
 
     public RestServiceProvider(String serverCode, String serverDestination) {
         this.provincialServer = provincialServerService.getByCodeAndDestination(serverCode, serverDestination);

@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class ProvincialServerServiceSpec extends Specification {
+class IProvincialServerServiceSpec extends Specification {
 
-    ProvincialServerService provincialServerService
+    IProvincialServerService provincialServerService
     @Autowired Datastore datastore
 
     private Long setupData() {
