@@ -19,15 +19,4 @@ class ProvincialServer {
         username(nullable: false,blank: false)
         password(nullable: false,blank: false)
     }
-
-    @Override
-    public String toString() {
-        return "ProvincialServer{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", urlPath='" + urlPath + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

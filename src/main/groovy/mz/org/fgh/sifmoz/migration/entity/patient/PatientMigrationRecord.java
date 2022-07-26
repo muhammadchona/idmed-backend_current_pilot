@@ -217,7 +217,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public List<AbstractMigrationLog> migrate() {
+    public List<AbstractMigrationLog> migrate() { 
         List<AbstractMigrationLog> logs = new ArrayList<>();
         getMigratedRecord().setAddress(this.getAddress1());
         getMigratedRecord().setAccountstatus(this.getAccountStatus());
@@ -231,7 +231,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setLastNames(this.getLastname());
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
        // getMigratedRecord().setAlternativeCellphone("");
-        return logs;
+        return logs; 
     }
 
     @Override
