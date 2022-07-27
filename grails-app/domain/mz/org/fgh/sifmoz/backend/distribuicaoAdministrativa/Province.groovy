@@ -14,7 +14,13 @@ class Province extends BaseEntity {
     @JsonManagedReference
     static hasMany = [districts: District]
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!this.id) {
+            this.id = UUID.randomUUID()
+        }
     }
     static constraints = {
         code nullable: false, unique: true

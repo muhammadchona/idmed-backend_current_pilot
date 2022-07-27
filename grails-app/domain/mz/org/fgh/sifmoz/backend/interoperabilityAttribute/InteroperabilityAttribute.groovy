@@ -9,6 +9,7 @@ import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class InteroperabilityAttribute extends BaseEntity {
 
+    String id
     @JsonManagedReference
     InteroperabilityType interoperabilityType
     String value
@@ -17,6 +18,16 @@ class InteroperabilityAttribute extends BaseEntity {
     HealthInformationSystem healthInformationSystem
 
     static belongsTo = [healthInformationSystem : HealthInformationSystem]
+
+    static mapping = {
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
 
     static constraints = {
         value nullable: false, blank: false, unique: ['healthInformationSystem','interoperabilityType']

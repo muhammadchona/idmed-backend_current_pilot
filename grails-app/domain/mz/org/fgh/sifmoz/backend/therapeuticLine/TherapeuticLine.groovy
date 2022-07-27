@@ -9,9 +9,16 @@ class TherapeuticLine extends BaseEntity {
     String uuid = UUID.randomUUID().toString()
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     static constraints = {
+        code unique: true
     }
 }
