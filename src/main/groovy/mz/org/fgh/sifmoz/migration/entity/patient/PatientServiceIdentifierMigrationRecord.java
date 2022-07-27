@@ -1,8 +1,7 @@
 package mz.org.fgh.sifmoz.migration.entity.patient;
 
-import mz.org.fgh.sifmoz.backend.patient.Patient;
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier;
-import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
@@ -60,8 +59,8 @@ public class PatientServiceIdentifierMigrationRecord extends AbstractMigrationRe
     }
 
     @Override
-    public List<AbstractMigrationLog> migrate() {
-        List<AbstractMigrationLog> logs = new ArrayList<>();
+    public List<MigrationLog> migrate() {
+        List<MigrationLog> logs = new ArrayList<>();
         return logs;
     }
 
