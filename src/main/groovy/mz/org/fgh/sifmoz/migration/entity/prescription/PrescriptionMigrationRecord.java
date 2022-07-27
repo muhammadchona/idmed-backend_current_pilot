@@ -1,10 +1,15 @@
 package mz.org.fgh.sifmoz.migration.entity.prescription;
 
+import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType;
+import mz.org.fgh.sifmoz.backend.identifierType.IdentifierTypeService;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
+import mz.org.fgh.sifmoz.backend.patient.Patient;
+import mz.org.fgh.sifmoz.backend.patient.PatientService;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
+import mz.org.fgh.sifmoz.migration.common.MigrationError;
 import mz.org.fgh.sifmoz.migration.entity.patient.DoctorMigrationRecord;
 import mz.org.fgh.sifmoz.migration.entity.patient.PatientMigrationRecord;
 
@@ -12,6 +17,11 @@ import java.util.Date;
 import java.util.List;
 
 public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
+
+
+    private PatientService patientService;
+
+    private IdentifierTypeService identifierTypeService;
 
     private Integer id;
 
@@ -421,7 +431,7 @@ public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public String getEntityName() {
-        return null;
+        return "Prescription";
     }
 
     @Override

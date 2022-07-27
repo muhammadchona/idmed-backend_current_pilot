@@ -15,4 +15,6 @@ interface IdentifierTypeService {
 
     IdentifierType save(IdentifierType identifierType)
 
+    IdentifierType getIdentifierTypeByCode(String code)
+
 }

@@ -6,6 +6,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
+import mz.org.fgh.sifmoz.backend.patient.PatientService;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
@@ -20,6 +21,8 @@ import java.util.List;
 public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     ClinicService clinicService;
+
+    PatientService patientService;
 
     ProvinceService provinceService;
     private Integer id;
@@ -249,7 +252,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setMiddleNames("-");
         getMigratedRecord().setLastNames(this.getLastname());
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
-       // getMigratedRecord().setAlternativeCellphone("");
+        patientService.save(getMigratedRecord());
         return logs; 
     }
 
