@@ -29,7 +29,9 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     private String address3;
     private String cellphone;
     private Date dateOfBirth;
-    private ClinicMigrationRecord clinic;
+    private int clinicid;
+    private String clinicname;
+    private String clinicuuid;
     private String nextOfKinName;
     private String nextOfKinPhone;
     private String firstNames;
@@ -104,12 +106,28 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public ClinicMigrationRecord getClinic() {
-        return clinic;
+    public int getClinicid() {
+        return clinicid;
     }
 
-    public void setClinic(ClinicMigrationRecord clinic) {
-        this.clinic = clinic;
+    public void setClinicid(int clinicid) {
+        this.clinicid = clinicid;
+    }
+
+    public String getClinicname() {
+        return clinicname;
+    }
+
+    public void setClinicname(String clinicname) {
+        this.clinicname = clinicname;
+    }
+
+    public String getClinicuuid() {
+        return clinicuuid;
+    }
+
+    public void setClinicuuid(String clinicuuid) {
+        this.clinicuuid = clinicuuid;
     }
 
     public String getNextOfKinName() {
@@ -225,7 +243,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setId(this.getUuidopenmrs());
         getMigratedRecord().setCellphone(this.getCellphone());
         getMigratedRecord().setDateOfBirth(this.getDateOfBirth());
-        setClinicToMigratedRecord(logs, this.clinic.getCode());
+        //setClinicToMigratedRecord(logs, this.clinic.getCode());
         setProvinceToMigratedRecord(logs, this.province);
         getMigratedRecord().setMiddleNames("-");
         getMigratedRecord().setLastNames(this.getLastname());
@@ -279,7 +297,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic);
         } else {
-            logs.add(new AbstractMigrationLog("", "200", String.format("A clinica com code: {0} no IDART, nao existe no IDMED", this.clinic.getCode())));
+            //logs.add(new AbstractMigrationLog("", "200", String.format("A clinica com code: {0} no IDART, nao existe no IDMED", this.clinic.getCode())));
         }
     }
 

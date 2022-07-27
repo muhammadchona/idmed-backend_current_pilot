@@ -11,6 +11,7 @@ import org.grails.web.json.JSONArray;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PatientMigrationSearchParams extends AbstractMigrationSearchParams<PatientMigrationRecord> {
@@ -19,9 +20,12 @@ public class PatientMigrationSearchParams extends AbstractMigrationSearchParams<
     static Logger logger = LogManager.getLogger(PatientMigrationSearchParams.class);
     @Override
     public List<PatientMigrationRecord> doSearch(long limit) {
-        JSONArray jsonArray = getRestServiceProvider().get("/patient?limit=15");
+        JSONArray jsonArray = getRestServiceProvider().get("/patient_migration_vw?limit=15");
+        this.searchResults.clear();
         PatientMigrationRecord[] patientMigrationRecords = gson.fromJson(jsonArray.toString(), PatientMigrationRecord[].class);
-        logger.info(jsonArray.toString());
-        return null;
+        if (patientMigrationRecords != null && patientMigrationRecords.length > 0) {
+            this.searchResults.addAll(Arrays.asList(patientMigrationRecords));
+        }
+        return this.searchResults;
     }
 }
