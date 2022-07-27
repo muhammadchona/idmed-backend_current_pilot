@@ -425,18 +425,13 @@ public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return 0;
     }
 
     @Override
     public String getEntityName() {
         return "Prescription";
-    }
-
-    @Override
-    public void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
     }
 
     @Override

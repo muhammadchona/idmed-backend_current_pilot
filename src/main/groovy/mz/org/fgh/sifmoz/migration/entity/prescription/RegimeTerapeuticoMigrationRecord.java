@@ -84,18 +84,13 @@ public class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return 0;
     }
 
     @Override
     public String getEntityName() {
         return null;
-    }
-
-    @Override
-    public void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
     }
 
     @Override

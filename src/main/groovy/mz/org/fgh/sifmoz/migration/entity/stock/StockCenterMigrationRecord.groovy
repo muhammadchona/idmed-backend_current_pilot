@@ -29,7 +29,7 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    long getId() {
+    int getId() {
         return 0
     }
 
@@ -37,12 +37,6 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
     String getEntityName() {
         return null
     }
-
-    @Override
-    void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
-    }
-
     @Override
     MigratedRecord initMigratedRecord() {
         return null

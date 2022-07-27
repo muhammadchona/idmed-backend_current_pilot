@@ -14,7 +14,7 @@ public abstract class AbstractMigrationSearchParams<T extends AbstractMigrationR
     public static final String MIGRATION_STATUS_REJECTED = "REJECTED";
     public static final String MIGRATION_STATUS_CORRECTED = "CORRECTED";
 
-    protected List<MigrationRecord> searchResults;
+    protected List<T> searchResults;
     protected String migrationStatus;
     protected String searchCondition;
     protected String migrationUrl;
@@ -32,5 +32,9 @@ public abstract class AbstractMigrationSearchParams<T extends AbstractMigrationR
 
     public RestService getRestServiceProvider() {
         return restServiceProvider;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 }
