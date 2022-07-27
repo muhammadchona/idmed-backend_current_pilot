@@ -4,12 +4,13 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService;
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
-import org.springframework.beans.factory.annotation.Autowired;
+import mz.org.fgh.sifmoz.migration.common.MigrationError;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -235,8 +236,8 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public List<AbstractMigrationLog> migrate() { 
-        List<AbstractMigrationLog> logs = new ArrayList<>();
+    public List<MigrationLog> migrate() {
+        List<MigrationLog> logs = new ArrayList<>();
         getMigratedRecord().setAddress(this.getAddress1());
         getMigratedRecord().setAccountstatus(this.getAccountStatus());
         getMigratedRecord().setFirstNames(this.getFirstNames());
@@ -292,21 +293,22 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         return (Patient) super.getMigratedRecord();
     }
 
-    void setClinicToMigratedRecord(List<AbstractMigrationLog> logs, String clinicCode) {
+    void setClinicToMigratedRecord(List<MigrationLog> logs, String clinicCode) {
         Clinic clinic = clinicService.findClinicByCode(clinicCode);
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic);
         } else {
-            //logs.add(new AbstractMigrationLog("", "200", String.format("A clinica com code: {0} no IDART, nao existe no IDMED", this.clinic.getCode())));
+            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinic.getCode()),getMigratedRecord().getId(), getEntityName()));
         }
     }
 
-    void setProvinceToMigratedRecord(List<AbstractMigrationLog> logs, String provinceName) {
+    void setProvinceToMigratedRecord(List<MigrationLog> logs, String provinceName) {
         Province province = provinceService.findProvinceByDescription(provinceName);
         if (province != null) {
             getMigratedRecord().setProvince(province);
         } else {
-            logs.add(new AbstractMigrationLog("", "200", String.format("A Provincia com description: {0} do IDART, nao existe no IDMED", this.province)));
+            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province),getMigratedRecord().getId(), getEntityName()));
+
         }
     }
 }
