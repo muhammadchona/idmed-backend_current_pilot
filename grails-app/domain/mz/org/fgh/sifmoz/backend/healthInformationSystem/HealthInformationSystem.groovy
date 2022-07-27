@@ -15,8 +15,14 @@ class HealthInformationSystem extends BaseEntity {
     static hasMany = [interoperabilityAttributes: InteroperabilityAttribute]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
         interoperabilityAttributes (cascade: "all-delete-orphan")
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
     static constraints = {
         abbreviation nullable: false, unique: true

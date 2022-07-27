@@ -14,8 +14,15 @@ class DispenseType extends BaseEntity {
     String description
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
     static constraints = {
         code nullable: false, unique: true
         description nullable: false, blank: false
