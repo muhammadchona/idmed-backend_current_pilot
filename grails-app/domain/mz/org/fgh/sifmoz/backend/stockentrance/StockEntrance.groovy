@@ -16,7 +16,7 @@ class StockEntrance extends BaseEntity {
     }
 
     static constraints = {
-        orderNumber(nullable: false, blank: false, unique: true)
+        orderNumber(nullable: false, blank: false, unique: ['dateReceived'])
         dateReceived(nullable: false, blank: false, validator: { dateReceived, urc ->
             return ((dateReceived <= new Date()))
         })

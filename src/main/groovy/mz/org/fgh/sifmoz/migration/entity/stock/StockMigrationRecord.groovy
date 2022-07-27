@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.migration.entity.stock
 
-
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
@@ -11,25 +11,25 @@ class StockMigrationRecord extends AbstractMigrationRecord {
 
     private Integer id;
 
-    private String batchNumber;
+    private String batchnumber;
 
-    private Date dateReceived;
+    private Date datereceived;
 
-    private Date expiryDate;
+    private Date expirydate;
 
     private char modified;
 
-    private String shelfNumber;
+    private String shelfnumber;
 
-    private String numeroGuia;
+    private String numeroguia;
 
-    private int unitsReceived;
+    private int unitsreceived;
 
     private String manufacturer;
 
-    private char hasUnitsRemaining;
+    private char hasunitsremaining;
 
-    private BigDecimal unitPrice;
+    private BigDecimal unitprice;
 
     private StockCenterMigrationRecord stockCenterMigrationRecord;
 
@@ -42,7 +42,7 @@ class StockMigrationRecord extends AbstractMigrationRecord {
     //----------------------------------------------------
 
     @Override
-    List<AbstractMigrationLog> migrate() {
+    List<MigrationLog> migrate() {
         return null;
     }
 
