@@ -1,5 +1,6 @@
 package mz.org.fgh.sifmoz.migration.entity.dispense;
 
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
@@ -62,7 +63,7 @@ public class PackageDrugInfoTmpMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public List<AbstractMigrationLog> migrate() {
+    public List<MigrationLog> migrate() {
         return null;
     }
 

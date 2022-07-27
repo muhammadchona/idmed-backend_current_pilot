@@ -5,6 +5,10 @@ public class AbstractMigrationLog {
     private String errorCode;
     private String description;
 
+    private String originEntityId;
+
+    private String entityName;
+
     public AbstractMigrationLog(String id, String errorCode, String description) {
         this.id = id;
         this.errorCode = errorCode;
@@ -33,5 +37,21 @@ public class AbstractMigrationLog {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOriginEntityId() {
+        return originEntityId;
+    }
+
+    public void setOriginEntityId(String originEntityId) {
+        this.originEntityId = originEntityId;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 }
