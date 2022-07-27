@@ -5,7 +5,9 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.migration.params.PatientMigrationSearchParams
+import mz.org.fgh.sifmoz.migration.params.stock.StockMigrationSearchParams
 
 import java.util.concurrent.ExecutorService
 
@@ -31,9 +33,10 @@ class MigrationController extends RestfulController{
     }
 
     def index(Integer max) {
-        initPatientMigrationEngine()
+      //  initPatientMigrationEngine()
         //params.max = Math.min(max ?: 10, 100)
         //respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
+        initStockMigrationEngine()
     }
 
     def show(String id) {
@@ -49,6 +52,13 @@ class MigrationController extends RestfulController{
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params)
         executor.execute(patientMigrationEngine)
     }
+
+    private static void initStockMigrationEngine() {
+        StockMigrationSearchParams params = new StockMigrationSearchParams()
+        MigrationEngineImpl<StockMigrationRecord> stockMigrationEngine = new MigrationEngineImpl<>(params)
+        executor.execute(stockMigrationEngine)
+    }
+
 
     @Transactional
     def save(MigrationStage migrationStage) {
