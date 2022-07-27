@@ -52,18 +52,13 @@ class StockMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    long getId() {
+    int getId() {
         return 0;
     }
 
     @Override
     String getEntityName() {
         return null;
-    }
-
-    @Override
-    void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
     }
 
     @Override

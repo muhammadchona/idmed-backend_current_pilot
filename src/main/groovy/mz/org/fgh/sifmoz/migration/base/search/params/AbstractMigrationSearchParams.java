@@ -33,4 +33,8 @@ public abstract class AbstractMigrationSearchParams<T extends AbstractMigrationR
     public RestService getRestServiceProvider() {
         return restServiceProvider;
     }
+
+    public Gson getGson() {
+        return gson;
+    }
 }

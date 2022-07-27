@@ -82,7 +82,7 @@ public class PatientVisitDetailsMigrationRecord extends AbstractMigrationRecord 
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return 0;
     }
 
@@ -91,10 +91,6 @@ public class PatientVisitDetailsMigrationRecord extends AbstractMigrationRecord 
         return "PatientVisitDetails";
     }
 
-    @Override
-    public void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
-    }
 
     @Override
     public MigratedRecord initMigratedRecord() {

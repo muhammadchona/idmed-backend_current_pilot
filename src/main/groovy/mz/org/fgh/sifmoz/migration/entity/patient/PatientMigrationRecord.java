@@ -7,10 +7,9 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
 import mz.org.fgh.sifmoz.backend.patient.PatientService;
-import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
+import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
-import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord;
 import mz.org.fgh.sifmoz.migration.common.MigrationError;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     PatientService patientService;
 
     ProvinceService provinceService;
-    private Integer id;
+    private int id;
     private Boolean accountStatus;
     private Boolean isPatientEmTransito = Boolean.FALSE;
     private String address1;
@@ -257,33 +256,18 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public void setAsMigratedSuccessfully() {
-
-    }
-
-    @Override
-    public void setAsRejectedForMigration() {
-
-    }
-
-    @Override
     public void updateIDMEDInfo() {
 
     }
 
     @Override
-    public long getId() {
-        return 0;
+    public int getId() {
+        return this.id;
     }
 
     @Override
     public String getEntityName() {
         return "Patient";
-    }
-
-    @Override
-    public void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
     }
 
     @Override
@@ -301,7 +285,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic);
         } else {
-            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinic.getCode()),getMigratedRecord().getId(), getEntityName()));
+            //logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinic.getCode()),getMigratedRecord().getId(), getEntityName()));
         }
     }
 
@@ -310,7 +294,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (province != null) {
             getMigratedRecord().setProvince(province);
         } else {
-            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province),getMigratedRecord().getId(), getEntityName()));
+            //logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province),getMigratedRecord().getId(), getEntityName()));
 
         }
     }

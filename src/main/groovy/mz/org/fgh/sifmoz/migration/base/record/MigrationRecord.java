@@ -1,7 +1,7 @@
 package mz.org.fgh.sifmoz.migration.base.record;
 
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
-import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog;
+import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 
 import java.util.List;
 
@@ -9,18 +9,21 @@ public interface MigrationRecord {
 
     List<MigrationLog> migrate();
 
-    void setAsMigratedSuccessfully();
+    void setAsMigratedSuccessfully(RestService restServiceProvider);
 
-    void setAsRejectedForMigration();
+    void setAsRejectedForMigration(RestService restServiceProvider);
 
     void updateIDMEDInfo();
 
-    long getId();
+    int getId();
 
     String getEntityName();
 
-    void generateUnknowMigrationLog(MigrationRecord record, String message);
+    List<MigrationLog> generateUnknowMigrationLog(MigrationRecord record, String message);
 
     MigratedRecord initMigratedRecord();
 
+    void saveMigrationLogs(List<MigrationLog> migrationLogs);
+
+    MigratedRecord getMigratedRecord();
 }
