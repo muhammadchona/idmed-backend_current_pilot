@@ -42,6 +42,7 @@ class RestPackService {
                     System.out.println('Packing details ' + patientVisitDetails)
                     PatientVisit patientVisit = PatientVisit.get(patientVisitDetails.patientVisit.id)
                     Patient patient = Patient.get(patientVisit.patient.id)
+                    if (patient.his == null ) return
                     HealthInformationSystem his = HealthInformationSystem.get(patient.his.id)
                     String urlBase = his.interoperabilityAttributes.find { it.interoperabilityType.code == "URL_BASE" }.value
                     String convertToJson = restPost.createOpenMRSFILA(pack, patient)
