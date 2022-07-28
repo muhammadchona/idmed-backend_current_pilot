@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 
 import java.util.List;
 
-public interface MigrationRecord extends Validateable {
+public interface MigrationRecord {
 
     List<MigrationLog> migrate();
 
