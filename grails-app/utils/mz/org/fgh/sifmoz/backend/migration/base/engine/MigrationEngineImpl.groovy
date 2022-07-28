@@ -91,7 +91,9 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     }
 
     private boolean stopRequested() {
-        this.engineConfig = SystemConfigs.findByKey(this.engineType);
+        SystemConfigs.withTransaction {
+            this.engineConfig = SystemConfigs.findByKey(this.engineType);
+        }
         if (engineConfig == null) throw new RuntimeException("Não foram encontradas as configurações desta migração.");
         if (engineConfig.getValue().equals(MIGRATION_OFF)) return true;
         return false;

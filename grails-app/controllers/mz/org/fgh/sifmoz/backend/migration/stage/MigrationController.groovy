@@ -5,7 +5,7 @@ import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
-import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecordOld
+import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
@@ -55,7 +55,7 @@ class MigrationController extends RestfulController{
 
     private void initPatientMigrationEngine() {
         PatientMigrationSearchParams params = new PatientMigrationSearchParams()
-        MigrationEngineImpl<PatientMigrationRecordOld> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE, systemConfigs)
+        MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         executor.execute(patientMigrationEngine)
     }
 

@@ -1,10 +1,10 @@
 package mz.org.fgh.sifmoz.backend.migration.entity.episode;
 
+import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.ClinicMigrationRecord;
-import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecordOld;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,7 @@ public class EpisodeMigrationRecord extends AbstractMigrationRecord {
 
     private Integer id ;
 
-    private PatientMigrationRecordOld patient;
+    private PatientMigrationRecord patient;
 
     private ClinicMigrationRecord clinic;
 
@@ -33,11 +33,11 @@ public class EpisodeMigrationRecord extends AbstractMigrationRecord {
         this.id = id;
     }
 
-    public PatientMigrationRecordOld getPatient() {
+    public PatientMigrationRecord getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientMigrationRecordOld patient) {
+    public void setPatient(PatientMigrationRecord patient) {
         this.patient = patient;
     }
 

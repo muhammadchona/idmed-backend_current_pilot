@@ -1,7 +1,7 @@
 package mz.org.fgh.sifmoz.backend.migration.common;
 
 public enum MigrationError {
-    CLINIC_NOT_FOUND("E001", "A clinica com code: {0} no IDART, nao existe no IDMED"),
+    CLINIC_NOT_FOUND("E001", "A clinica com uuid: {0} no IDART, nao existe no IDMED"),
     PROVINCE_NOT_FOUND("E002", "A Provincia com description: {0} do IDART, nao existe no IDMED"),
     PATIENT_NOT_FOUND("E003", "O paciente com patient_id: {0} do IDART, nao existe no IDMED"),
 
