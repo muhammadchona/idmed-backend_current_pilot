@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.base;
 
-import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord;
+import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord;
 
 public abstract class BaseEntity implements MigratedRecord {
 
