@@ -26,7 +26,7 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     protected List<T> recordList;
     protected AbstractMigrationSearchParams<T> searchParams;
     private String engineType;
-    private List<SystemConfigs> systemConfigs;
+    private SystemConfigs engineConfig;
     @Autowired
     private ISystemConfigsService systemConfigsService;
 
@@ -41,23 +41,12 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     public static final String STOCK_MIGRATION_ENGINE = "STOCK_MIGRATION_ENGINE";
     public static final String PARAMS_MIGRATION_ENGINE = "PARAMS_MIGRATION_ENGINE";
 
-    public MigrationEngineImpl(AbstractMigrationSearchParams<T> searchParams, String engineType, List<SystemConfigs> systemConfigs) {
+    public MigrationEngineImpl(AbstractMigrationSearchParams<T> searchParams, String engineType) {
         this.searchParams = searchParams;
         this.searchEngine = this.initSearchEngine(searchParams);
         this.engineType = engineType;
-        this.systemConfigs = systemConfigs;
-        updateConfig()
     }
 
-    @Transactional
-    void updateConfig()
-    {
-        /*SystemConfigs systemConfig = SystemConfigs.findByKey(engineType)
-        systemConfig.value = MIGRATION_OFF
-        SystemConfigs.withTransaction {
-            systemConfig.save(flush: true)
-        }*/
-    }
     public void doMigration() {
         this.searchRecords();
 
@@ -102,8 +91,9 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     }
 
     private boolean stopRequested() {
-        if (getEngineConfig() == null) throw new RuntimeException("Não foram encontradas as configurações desta migração.");
-        if (getEngineConfig().getValue().equals(MIGRATION_OFF)) return true;
+        this.engineConfig = SystemConfigs.findByKey(this.engineType);
+        if (engineConfig == null) throw new RuntimeException("Não foram encontradas as configurações desta migração.");
+        if (engineConfig.getValue().equals(MIGRATION_OFF)) return true;
         return false;
     }
 

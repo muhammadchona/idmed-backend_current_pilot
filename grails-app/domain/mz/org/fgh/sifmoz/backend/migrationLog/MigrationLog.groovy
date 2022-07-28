@@ -13,7 +13,7 @@ class MigrationLog extends BaseEntity{
     String sourceEntity;
     String iDMEDId;
     String iDMEDEntity;
-    Date creationDate;
+    Date creationDate = new Date()
 
     static constraints = {
         iDMEDId nullable: true
@@ -37,6 +37,7 @@ class MigrationLog extends BaseEntity{
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
         this.iDMEDId = iDMEDId
+        this.iDMEDEntity = iDMEDEntity
     }
     static mapping = {
         id generator: "uuid"
