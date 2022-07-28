@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.patient.PatientService;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord;
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.DoctorMigrationRecord;
-import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecordOld;
+import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord;
 
 import java.util.Date;
 import java.util.List;
@@ -38,7 +38,7 @@ public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
     private char modified;
 
-    private PatientMigrationRecordOld patient;
+    private PatientMigrationRecord patient;
     private String prescriptionId;
 
     private String reasonForUpdate;
@@ -161,11 +161,11 @@ public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         this.modified = modified;
     }
 
-    public PatientMigrationRecordOld getPatient() {
+    public PatientMigrationRecord getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientMigrationRecordOld patient) {
+    public void setPatient(PatientMigrationRecord patient) {
         this.patient = patient;
     }
 

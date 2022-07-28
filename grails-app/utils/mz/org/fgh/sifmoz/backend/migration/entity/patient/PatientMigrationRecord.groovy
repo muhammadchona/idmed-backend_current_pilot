@@ -4,12 +4,14 @@ import groovy.lang.MetaClass;
 import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province;
-import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService;
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService
+import mz.org.fgh.sifmoz.backend.migration.common.MigrationError;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
 import mz.org.fgh.sifmoz.backend.patient.PatientService;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord;
-import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord;
+import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
+import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,24 +53,27 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public List<MigrationLog> migrate() {
-        Patient patient
-        Patient.withTransaction {
-            patient = Patient.findById("8a8a822d821b4e5e01821b55da1a0000")
-        }
+
         List<MigrationLog> logs = new ArrayList<>();
-        getMigratedRecord().setAddress(this.getAddress1());
+        getMigratedRecord().setAddress(this.getAddress3() + " " +getAddress1());
+        getMigratedRecord().setAddressReference(this.getAddress2())
         getMigratedRecord().setAccountstatus(this.getAccountStatus());
         getMigratedRecord().setFirstNames(this.getFirstNames());
         getMigratedRecord().setId(this.getUuidopenmrs());
         getMigratedRecord().setCellphone(this.getCellphone());
         getMigratedRecord().setDateOfBirth(this.getDateOfBirth());
-        //setClinicToMigratedRecord(logs, this.clinic.getCode());
+        setClinicToMigratedRecord(logs);
         setProvinceToMigratedRecord(logs, this.province);
         getMigratedRecord().setMiddleNames("-");
         getMigratedRecord().setLastNames(this.getLastname());
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
-        patientService.save(getMigratedRecord());
-        return logs;
+
+        if (Utilities.listHasElements(logs)) return logs
+
+        Patient.withTransaction {
+            getMigratedRecord().save(flush: true)
+        }
+        return null;
     }
 
     @Override
@@ -96,21 +101,27 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         return (Patient) super.getMigratedRecord();
     }
 
-    void setClinicToMigratedRecord(List<MigrationLog> logs, String clinicCode) {
-        Clinic clinic = clinicService.findClinicByCode(clinicCode);
+    void setClinicToMigratedRecord(List<MigrationLog> logs) {
+        Clinic clinic = null
+        Clinic.withTransaction {
+            clinic = Clinic.findByUuid(this.clinicuuid)
+        }
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic);
         } else {
-            //logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinic.getCode()),getMigratedRecord().getId(), getEntityName()));
+            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid),getId(), getEntityName()));
         }
     }
 
     void setProvinceToMigratedRecord(List<MigrationLog> logs, String provinceName) {
-        Province province = provinceService.findProvinceByDescription(provinceName);
+        Province province = null
+        Province.withTransaction {
+            province = Province.findByDescription(provinceName);
+        }
         if (province != null) {
             getMigratedRecord().setProvince(province);
         } else {
-            //logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province),getMigratedRecord().getId(), getEntityName()));
+            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province), getId(), getEntityName()));
 
         }
     }

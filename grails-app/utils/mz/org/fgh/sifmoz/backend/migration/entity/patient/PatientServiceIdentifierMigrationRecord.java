@@ -13,7 +13,7 @@ public class PatientServiceIdentifierMigrationRecord extends AbstractMigrationRe
 
     private Integer id;
 
-    private PatientMigrationRecordOld patient;
+    private PatientMigrationRecord patient;
 
     private String value;
 
@@ -25,11 +25,11 @@ public class PatientServiceIdentifierMigrationRecord extends AbstractMigrationRe
         this.id = id;
     }
 
-    public PatientMigrationRecordOld getPatient() {
+    public PatientMigrationRecord getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientMigrationRecordOld patient) {
+    public void setPatient(PatientMigrationRecord patient) {
         this.patient = patient;
     }
 
