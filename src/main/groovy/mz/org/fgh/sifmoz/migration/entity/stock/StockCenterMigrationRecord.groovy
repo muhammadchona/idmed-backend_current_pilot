@@ -1,6 +1,10 @@
-package mz.org.fgh.sifmoz.migration.entity.stock;
+package mz.org.fgh.sifmoz.migration.entity.stock
 
-import mz.org.fgh.sifmoz.migration.base.log.AbstractMigrationLog
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinic.ClinicService
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
+import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
+import mz.org.fgh.sifmoz.backend.stockcenter.StockCenterService
 import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord
 import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord
@@ -8,7 +12,7 @@ import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord
 class StockCenterMigrationRecord extends AbstractMigrationRecord {
     private Integer id
 
-    private String stockCenterName
+    private String stockcentername
 
     private boolean preferred
 
@@ -16,11 +20,31 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
 
     private String clinicuuid
 
+    private boolean migration_status
+
     //------------------------------------------------
 
+    StockCenterService stockCenterService
+    ClinicService clinicService
+
     @Override
-    List<AbstractMigrationLog> migrate() {
-        return null
+    List<MigrationLog> migrate() {
+        System.out.println("Inside migrate method...");
+        List<MigrationLog> logs = new ArrayList<>()
+        getMigratedRecord().setName(this.stockcentername)
+        getMigratedRecord().setCode(this.stockcentername.replaceAll(" ", "_").toUpperCase())
+        getMigratedRecord().setPrefered(this.preferred)
+        Clinic clinicAux
+        try {
+            clinicAux = clinicService.findClinicByUuid(this.clinicuuid)
+        } catch (Exception e) {
+            System.out.println(e.getMessage())
+        } finally {
+            System.out.println("Cliniccccc")
+        }
+        getMigratedRecord().setClinic(clinicAux)
+        stockCenterService.save(getMigratedRecord())
+        return logs
     }
 
     @Override
@@ -45,6 +69,11 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     MigratedRecord initMigratedRecord() {
-        return null
+        return new StockCenter()
+    }
+
+    @Override
+    StockCenter getMigratedRecord() {
+        return (StockCenter) super.getMigratedRecord();
     }
 }
