@@ -19,7 +19,7 @@ class Clinic extends BaseEntity {
     boolean mainClinic
     boolean active
     String uuid = UUID.randomUUID().toString()
-    Long matchId
+    // Long matchId
 
     static belongsTo = [nationalClinic: NationalClinic]
     static hasMany = [sectors: ClinicSector]

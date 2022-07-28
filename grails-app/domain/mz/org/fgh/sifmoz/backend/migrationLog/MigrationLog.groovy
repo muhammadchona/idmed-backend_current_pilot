@@ -18,6 +18,7 @@ class MigrationLog extends BaseEntity{
     static constraints = {
         iDMEDId nullable: true
         iDMEDEntity nullable: true
+        creationDate nullable: true
     }
 
     MigrationLog() {
@@ -28,7 +29,6 @@ class MigrationLog extends BaseEntity{
         this.errorDescription = errorDescription
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
-        this.creationDate= System.currentTimeMillis() as Date
     }
 
     MigrationLog(String errorCode, String errorDescription, int sourceId, String sourceEntity, String iDMEDId, String iDMEDEntity) {
@@ -37,7 +37,6 @@ class MigrationLog extends BaseEntity{
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
         this.iDMEDId = iDMEDId
-        this.iDMEDEntity = iDMEDEntity
     }
     static mapping = {
         id generator: "uuid"
