@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.grails.web.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class StockMigrationSearchParams extends AbstractMigrationSearchParams<StockMigrationRecord> {
@@ -14,8 +15,13 @@ public class StockMigrationSearchParams extends AbstractMigrationSearchParams<St
     @Override
     public List<StockMigrationRecord> doSearch(long limit) {
         JSONArray jsonArray = getRestServiceProvider().get("/stock_migration_vw?limit=100");
+        this.searchResults.clear();
         StockMigrationRecord[] stockMigrationRecords = gson.fromJson(jsonArray.toString(), StockMigrationRecord[].class);
         logger.info(jsonArray.toString());
-        return null;
+
+        if (stockMigrationRecords != null && stockMigrationRecords.length > 0) {
+            this.searchResults.addAll(Arrays.asList(stockMigrationRecords));
+        }
+        return this.searchResults;
     }
 }
