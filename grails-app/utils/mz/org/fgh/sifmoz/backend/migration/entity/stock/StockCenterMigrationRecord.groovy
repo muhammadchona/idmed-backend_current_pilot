@@ -1,8 +1,13 @@
-package mz.org.fgh.sifmoz.backend.migration.entity.stock;
+package mz.org.fgh.sifmoz.backend.migration.entity.stock
 
-import mz.org.fgh.sifmoz.backend.migration.base.log.AbstractMigrationLog
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
+import mz.org.fgh.sifmoz.backend.stockcenter.StockCenterService
 
 class StockCenterMigrationRecord extends AbstractMigrationRecord {
     private Integer id
@@ -25,20 +30,25 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
     @Override
     List<MigrationLog> migrate() {
         System.out.println("Inside migrate method...");
+
         List<MigrationLog> logs = new ArrayList<>()
+        StockCenter.withTransaction {
         getMigratedRecord().setName(this.stockcentername)
         getMigratedRecord().setCode(this.stockcentername.replaceAll(" ", "_").toUpperCase())
         getMigratedRecord().setPrefered(this.preferred)
         Clinic clinicAux
         try {
-            clinicAux = clinicService.findClinicByUuid(this.clinicuuid)
+            clinicAux = Clinic.findByUuid(this.clinicuuid)
         } catch (Exception e) {
             System.out.println(e.getMessage())
         } finally {
             System.out.println("Cliniccccc")
         }
         getMigratedRecord().setClinic(clinicAux)
-        stockCenterService.save(getMigratedRecord())
+            getMigratedRecord().save(flush: true)
+        }
+
+//        stockCenterService.save(getMigratedRecord())
         return logs
     }
 
@@ -49,12 +59,12 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     int getId() {
-        return 0
+        return this.id
     }
 
     @Override
     String getEntityName() {
-        return null
+        return "stockcenter"
     }
     @Override
     MigratedRecord initMigratedRecord() {

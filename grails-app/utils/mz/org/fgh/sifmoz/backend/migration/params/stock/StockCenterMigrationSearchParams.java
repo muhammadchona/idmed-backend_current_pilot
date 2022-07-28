@@ -1,7 +1,7 @@
-package mz.org.fgh.sifmoz.migration.params.stock;
+package mz.org.fgh.sifmoz.backend.migration.params.stock;
 
-import mz.org.fgh.sifmoz.migration.base.search.params.AbstractMigrationSearchParams;
-import mz.org.fgh.sifmoz.migration.entity.stock.StockCenterMigrationRecord;
+import mz.org.fgh.sifmoz.backend.migration.base.search.params.AbstractMigrationSearchParams;
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.grails.web.json.JSONArray;
