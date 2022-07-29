@@ -31,7 +31,8 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
         logger.info("Registo migrado com sucesso: origem ["+this.getEntityName() +" : "+ this.getId()+"] - destino: ["+this.migratedRecord.getEntity() +" : "+  this.migratedRecord.getId()+"]");
         String uri = "/" + this.getEntityName().toLowerCase() + "?id=eq." + getId();
         restServiceProvider.patch(uri, "{\"migration_status\":\"MIGRATED\"}");
-        MigrationLog log = new MigrationLog("UNKNOWN", "Registo Migrado com Sucesso", getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity())
+        String[] msg = {"Registo Migrado com Sucesso"}
+        MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity())
         MigrationLog.withTransaction {
                 log.save(flush: true);
             }
@@ -40,7 +41,8 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
     @Override
     public List<MigrationLog> generateUnknowMigrationLog(MigrationRecord record, String message) {
         List<MigrationLog> migrationLogs = new ArrayList<>();
-        migrationLogs.add(new MigrationLog("UNKNOWN", message, record.getId(), record.getEntityName()));
+        String[] msg = {message}
+        migrationLogs.add(new MigrationLog("UNKNOWN", msg, record.getId(), record.getEntityName()));
         return migrationLogs;
     }
 

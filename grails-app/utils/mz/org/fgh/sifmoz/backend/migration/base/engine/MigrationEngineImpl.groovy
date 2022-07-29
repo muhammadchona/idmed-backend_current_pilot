@@ -47,6 +47,25 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
         this.engineType = engineType;
     }
 
+    public boolean isPatientEngine () {
+        return this.engineType == PATIENT_MIGRATION_ENGINE
+    }
+
+    public boolean isStockEngine () {
+        return this.engineType == STOCK_MIGRATION_ENGINE
+    }
+
+    public boolean isParamsEngine () {
+        return this.engineType == PARAMS_MIGRATION_ENGINE
+    }
+
+    public String getRelatedStage () {
+        if (isPatientEngine()) return PATIENT_MIGRATION_STAGE
+        else if (isParamsEngine()) return PARAMS_MIGRATION_STAGE
+        else if (isStockEngine()) return STOCK_MIGRATION_STAGE
+        else return null
+    }
+
     public void doMigration() {
         this.searchRecords();
 

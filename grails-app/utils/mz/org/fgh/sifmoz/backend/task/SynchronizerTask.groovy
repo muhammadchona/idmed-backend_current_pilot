@@ -4,16 +4,21 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService;
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class SynchronizerTask {
+public abstract class SynchronizerTask implements ISynchronizerTask {
 
     @Autowired
     ISystemConfigsService systemConfigsService;
 
-    protected boolean isProvincialOrUs() {
+    SystemConfigs instalationConfig;
 
-        SystemConfigs systemConfig = systemConfigsService.getByKey("instalation_type");
+    public SynchronizerTask() {
+        SystemConfigs.withTransaction {
+            instalationConfig = SystemConfigs.findByKey("instalation_type");
+        }
+    }
 
-        if (systemConfig.getValue().equals("PROVINCIAL")) {
+    protected boolean isProvincial() {
+        if (instalationConfig.getValue().equals("PROVINCIAL")) {
             return true;
         } else {
              return false;
@@ -21,7 +26,6 @@ public abstract class SynchronizerTask {
     }
 
     protected String getUsOrProvince() {
-        SystemConfigs systemConfig = systemConfigsService.getByKey("instalation_type");
-        return systemConfig.getDescription();
+        return instalationConfig.getDescription();
     }
 }

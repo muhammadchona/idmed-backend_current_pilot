@@ -8,7 +8,7 @@ class MigrationLog extends BaseEntity{
 
     String id;
     String errorCode;
-    String errorDescription;
+    String[] errorDescription;
     int sourceId;
     String sourceEntity;
     String iDMEDId;
@@ -24,14 +24,14 @@ class MigrationLog extends BaseEntity{
     MigrationLog() {
     }
 
-    MigrationLog(String errorCode, String errorDescription, int sourceId, String sourceEntity) {
+    MigrationLog(String errorCode, String[] errorDescription, int sourceId, String sourceEntity) {
         this.errorCode = errorCode
         this.errorDescription = errorDescription
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
     }
 
-    MigrationLog(String errorCode, String errorDescription, int sourceId, String sourceEntity, String iDMEDId, String iDMEDEntity) {
+    MigrationLog(String errorCode, String[] errorDescription, int sourceId, String sourceEntity, String iDMEDId, String iDMEDEntity) {
         this.errorCode = errorCode
         this.errorDescription = errorDescription
         this.sourceId = sourceId
