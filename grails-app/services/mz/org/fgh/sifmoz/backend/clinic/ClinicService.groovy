@@ -16,6 +16,4 @@ interface ClinicService {
     Clinic save(Clinic clinic)
 
     Clinic findClinicByCode(String code)
-
-    Clinic findClinicByUuid(String uuid)
 }
