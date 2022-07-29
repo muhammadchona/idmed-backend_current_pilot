@@ -1,9 +1,9 @@
-package mz.org.fgh.sifmoz.backend.packaging
+package mz.org.fgh.sifmoz.backend.migration.stage
 
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class RestIPackServiceSpec extends Specification implements ServiceUnitTest<RestPackService>{
+class MigrationServiceSpec extends Specification implements ServiceUnitTest<MigrationService>{
 
     def setup() {
     }
