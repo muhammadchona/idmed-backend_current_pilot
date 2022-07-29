@@ -33,6 +33,7 @@ class InteroperabilityTypeController extends RestfulController{
 
     @Transactional
     def save(InteroperabilityType interoperabilityType) {
+        interoperabilityType.beforeInsert()
         if (interoperabilityType == null) {
             render status: NOT_FOUND
             return

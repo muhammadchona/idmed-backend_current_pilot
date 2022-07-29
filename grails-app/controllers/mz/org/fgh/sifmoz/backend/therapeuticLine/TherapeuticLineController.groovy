@@ -36,6 +36,7 @@ class TherapeuticLineController extends RestfulController{
 
     @Transactional
     def save(TherapeuticLine therapeuticLine) {
+        therapeuticLine.beforeInsert()
         if (therapeuticLine == null) {
             render status: NOT_FOUND
             return

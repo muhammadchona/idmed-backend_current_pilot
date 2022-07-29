@@ -34,6 +34,7 @@ class InteroperabilityAttributeController extends RestfulController{
 
     @Transactional
     def save(InteroperabilityAttribute interoperabilityAttribute) {
+        interoperabilityAttribute.beforeInsert()
         if (interoperabilityAttribute == null) {
             render status: NOT_FOUND
             return

@@ -38,6 +38,7 @@ class ProvinceController extends RestfulController{
 
     @Transactional
     def save(Province province) {
+        province.beforeInsert()
         if (province == null) {
             render status: NOT_FOUND
             return

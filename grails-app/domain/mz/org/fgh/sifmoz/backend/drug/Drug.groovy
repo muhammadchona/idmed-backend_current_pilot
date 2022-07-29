@@ -26,8 +26,13 @@ class Drug extends BaseEntity {
     boolean active
     static hasMany = [stockList: Stock, therapeuticRegimenList: TherapeuticRegimen]
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
         form lazy: true
+    }
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     static constraints = {

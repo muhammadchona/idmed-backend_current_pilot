@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.facilityType
 
 import grails.converters.JSON
+import grails.persistence.Event
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
@@ -36,6 +37,7 @@ class FacilityTypeController extends RestfulController{
 
     @Transactional
     def save(FacilityType facilityType) {
+        facilityType.beforeInsert()
         if (facilityType == null) {
             render status: NOT_FOUND
             return
