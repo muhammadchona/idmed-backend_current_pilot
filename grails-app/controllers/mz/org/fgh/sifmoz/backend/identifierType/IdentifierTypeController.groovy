@@ -36,6 +36,7 @@ class IdentifierTypeController extends RestfulController{
 
     @Transactional
     def save(IdentifierType identifierType) {
+        identifierType.beforeInsert()
         if (identifierType == null) {
             render status: NOT_FOUND
             return

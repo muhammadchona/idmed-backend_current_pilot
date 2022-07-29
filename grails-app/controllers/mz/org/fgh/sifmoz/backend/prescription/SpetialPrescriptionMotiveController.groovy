@@ -33,6 +33,7 @@ class SpetialPrescriptionMotiveController extends RestfulController {
 
     @Transactional
     def save(SpetialPrescriptionMotive spetialPrescriptionMotive) {
+        spetialPrescriptionMotive.beforeInsert()
         if (spetialPrescriptionMotive == null) {
             render status: NOT_FOUND
             return

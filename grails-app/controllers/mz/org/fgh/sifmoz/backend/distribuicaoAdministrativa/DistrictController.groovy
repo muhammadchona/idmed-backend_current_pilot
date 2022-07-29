@@ -36,6 +36,7 @@ class DistrictController extends RestfulController{
 
     @Transactional
     def save(District district) {
+        district.beforeInsert()
         if (district == null) {
             render status: NOT_FOUND
             return

@@ -36,6 +36,7 @@ class GroupTypeController extends RestfulController{
 
     @Transactional
     def save(GroupType groupType) {
+        groupType.beforeInsert()
         if (groupType == null) {
             render status: NOT_FOUND
             return

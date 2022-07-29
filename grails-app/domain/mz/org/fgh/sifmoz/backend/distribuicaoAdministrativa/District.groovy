@@ -15,7 +15,13 @@ class District extends BaseEntity {
     static belongsTo = [Province]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
     static constraints = {
         code nullable: false, unique: ['province']
