@@ -153,13 +153,12 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             }
 
         } else if ("TARV".equalsIgnoreCase(this.tipodoenca)) {
-
             //patientServiceIdentifierService.updatePatientServiceIdentifier(patientid, psi.getValue());
             List<PatientServiceIdentifier> listPSIs = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(psi.getValue()))
-            for (PatientServiceIdentifier psiObj in listPSIs) {
+            PatientServiceIdentifier.withTransaction {
+                for (PatientServiceIdentifier psiObj in listPSIs) {
                 psiObj.setPrefered(false)
                 psiObj.setValue(psi.getValue())
-                psiObj.withTransaction {
                     psiObj.validate()
                     if (!psiObj.hasErrors()) {
                         psiObj.save(flush: true)
