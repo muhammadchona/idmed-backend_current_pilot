@@ -25,7 +25,6 @@ class MigrationService extends SynchronizerTask{
     @Autowired
     MigrationStageService migrationStageService
 
-
     @Override
     void execute() {
         if (!isProvincial()) {
