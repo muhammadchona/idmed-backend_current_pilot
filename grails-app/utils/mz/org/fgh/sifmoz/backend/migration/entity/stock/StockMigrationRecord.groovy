@@ -38,7 +38,13 @@ class StockMigrationRecord extends AbstractMigrationRecord {
 
     private String stockcentername
 
+    String atccode_id
+
     String name
+
+    private boolean  mainclinic
+
+    private String clinicname
 
     private StockTakeMigrationRecord stockTakeMigrationRecord;
 
@@ -50,77 +56,76 @@ class StockMigrationRecord extends AbstractMigrationRecord {
     List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
         Stock.withTransaction {
-            def clinic = Clinic.findWhere(main_clinic: true)
-            DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy")
+            def clinic = Clinic.findWhere(mainClinic: true)
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy")
             String dateFormated = dateFormat.format(this.datereceived)
+            Date receivedDate = dateFormat.parse(dateFormated)
+            StockEntrance stockEntrance = new  StockEntrance()
 
             // Setting StockEntrance
-            getMigratedRecordEntrance().setClinic(clinic)
-            getMigratedRecordEntrance().setDateReceived(this.datereceived)
-            getMigratedRecordEntrance().setOrderNumber(dateFormated + "_NA")
+            stockEntrance.setClinic(clinic)
+            stockEntrance.setDateReceived(receivedDate)
+            stockEntrance.setOrderNumber(dateFormated + "_NA")
 
             // Setting Stock
-            getMigratedRecordStock().setClinic(clinic)
-            getMigratedRecordStock().setBatchNumber(this.batchnumber)
-            getMigratedRecordStock().setModified(this.modified == (char) 'T')
-            getMigratedRecordStock().setUnitsReceived(this.unitsreceived)
-            getMigratedRecordStock().setExpireDate(this.expirydate)
-            getMigratedRecordStock().setShelfNumber(this.shelfnumber)
-            getMigratedRecordStock().setManufacture(this.manufacturer)
+            getMigratedRecord().setClinic(clinic)
+            getMigratedRecord().setBatchNumber(this.batchnumber)
+            getMigratedRecord().setModified(this.modified == (char) 'T')
+            getMigratedRecord().setUnitsReceived(this.unitsreceived)
+            getMigratedRecord().setExpireDate(this.expirydate)
+            getMigratedRecord().setShelfNumber(this.shelfnumber)
+            getMigratedRecord().setManufacture(this.manufacturer)
+            getMigratedRecord().setHasUnitsRemaining(this.hasunitsremaining == (char) 'T')
+
 
             // Auxiliar
-            def stockEntranceAux = StockEntrance.findWhere(this.datereceived)
+            def stockEntranceAux = StockEntrance.findWhere(dateReceived: receivedDate)
             def stockCenterAux = StockCenter.findWhere(name: this.stockcentername)
-            def drugAux = Drug.findWhere(name: this.name)
+            List<Drug> drugList = Drug.list()
+            def drugAux = Drug.findByFnmCode(this.atccode_id)
+//            def drugAux = Drug.findWhere(fnmCode: this.atccode_id)
+            getMigratedRecord().setCenter(stockCenterAux)
+            getMigratedRecord().setDrug(drugAux)
 
 
             if (stockEntranceAux != null) {// Ja existe o stockEntrance // migrar apenas o Stock
 
-                getMigratedRecordStock().setEntrance(stockEntranceAux) // Setting numero de guia => (id do stockEntrance)
-                getMigratedRecordStock().setCenter(stockCenterAux)
-                getMigratedRecordStock().setHasUnitsRemaining(this.hasunitsremaining == (char) 'T')
-                getMigratedRecordStock().setDrug(drugAux)
+                getMigratedRecord().setEntrance(stockEntranceAux) // Setting numero de guia => (id do stockEntrance)
 
                 //Saving Stock
-                if (getMigratedRecordStock().hasErrors()) {
-                    System.println("ERROR: "+getMigratedRecordStock().errors)
+                if (getMigratedRecord().hasErrors()) {
                     MigrationLog migrationLog = new MigrationLog()
-                    migrationLog.errors = getMigratedRecordStock().errors
+                    migrationLog.errors = getMigratedRecord().errors
                     logs.add(migrationLog)
                 } else {
-                    System.println("NO ERROR...")
-                    getMigratedRecordStock().save(flush: true)
+                    getMigratedRecord().save(flush: true)
                 }
             } else {// O stockEntrance ainda nao existe
                 // migrar entrance e o Stock
 
                 def stockEntranceAux1 = null
                 //Saving StockEntrance
-                if (getMigratedRecordEntrance().hasErrors()) {
-                    System.println("ERROR: "+getMigratedRecordEntrance().errors)
+                if (stockEntrance.hasErrors()) {
                     MigrationLog migrationLog = new MigrationLog()
-                    migrationLog.errors = getMigratedRecordEntrance().errors
+                    migrationLog.errors = stockEntrance().errors
                     logs.add(migrationLog)
                 } else {
-                    System.println("NO ERROR...")
-                    stockEntranceAux1 = getMigratedRecordEntrance().save(flush: true)
+                    stockEntranceAux1 = stockEntrance.save(flush: true)
                 }
 
                 if (stockEntranceAux1 != null) {
-                    getMigratedRecordStock().setEntrance(stockEntranceAux1)
-                    getMigratedRecordStock().setCenter(stockCenterAux)
-                    getMigratedRecordStock().setHasUnitsRemaining(this.hasunitsremaining == (char) 'T')
-                    getMigratedRecordStock().setDrug(drugAux)
+                    getMigratedRecord().setEntrance(stockEntranceAux1)
+                    getMigratedRecord().setCenter(stockCenterAux)
+                    getMigratedRecord().setHasUnitsRemaining(this.hasunitsremaining == (char) 'T')
+                    getMigratedRecord().setDrug(drugAux)
 
                     //Saving Stock
-                    if (getMigratedRecordStock().hasErrors()) {
-                        System.println("ERROR: " + getMigratedRecordStock().errors)
+                    if (getMigratedRecord().hasErrors()) {
                         MigrationLog migrationLog = new MigrationLog()
-                        migrationLog.errors = getMigratedRecordStock().errors
+                        migrationLog.errors = getMigratedRecord().errors
                         logs.add(migrationLog)
                     } else {
-                        System.println("NO ERROR...")
-                        getMigratedRecordStock().save(flush: true)
+                        getMigratedRecord().save(flush: true)
                     }
                 }
             }
@@ -149,11 +154,7 @@ class StockMigrationRecord extends AbstractMigrationRecord {
         return new Stock()
     }
 
-    Stock getMigratedRecordStock() {
+    Stock getMigratedRecord() {
         return (Stock) super.getMigratedRecord()
-    }
-
-    StockEntrance getMigratedRecordEntrance() {
-        return (StockEntrance) super.getMigratedRecord()
     }
 }
