@@ -36,6 +36,7 @@ class DispenseTypeController extends RestfulController{
 
     @Transactional
     def save(DispenseType dispenseType) {
+        dispenseType.beforeInsert()
         if (dispenseType == null) {
             render status: NOT_FOUND
             return

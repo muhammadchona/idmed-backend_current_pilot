@@ -36,6 +36,7 @@ class TherapeuticRegimenController extends RestfulController{
 
     @Transactional
     def save(TherapeuticRegimen therapeuticRegimen) {
+        therapeuticRegimen.beforeInsert()
         if (therapeuticRegimen == null) {
             render status: NOT_FOUND
             return

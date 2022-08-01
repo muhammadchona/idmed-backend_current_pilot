@@ -36,6 +36,7 @@ class EpisodeTypeController extends RestfulController{
 
     @Transactional
     def save(EpisodeType episodeType) {
+        episodeType.beforeInsert()
         if (episodeType == null) {
             render status: NOT_FOUND
             return

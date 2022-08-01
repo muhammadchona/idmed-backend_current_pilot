@@ -36,6 +36,7 @@ class DispenseModeController extends RestfulController{
 
     @Transactional
     def save(DispenseMode dispenseMode) {
+        dispenseMode.beforeInsert()
         if (dispenseMode == null) {
             render status: NOT_FOUND
             return

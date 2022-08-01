@@ -9,12 +9,23 @@ import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class InteroperabilityAttribute {
 
+    String id
     @JsonManagedReference
     InteroperabilityType interoperabilityType
     String value
 
     @JsonBackReference
     HealthInformationSystem healthInformationSystem
+
+    static mapping = {
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
 
     static belongsTo = [healthInformationSystem : HealthInformationSystem]
 

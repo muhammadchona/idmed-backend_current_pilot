@@ -6,8 +6,10 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockCenterMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 
@@ -38,7 +40,8 @@ class MigrationController extends RestfulController{
     }
 
     def index(Integer max) {
-        initPatientMigrationEngine()
+        initStockCenterMigrationEngine()
+        //initPatientMigrationEngine()
         //params.max = Math.min(max ?: 10, 100)
         //respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
         //initStockMigrationEngine()
@@ -61,8 +64,14 @@ class MigrationController extends RestfulController{
 
     private static void initStockMigrationEngine() {
         StockMigrationSearchParams params = new StockMigrationSearchParams()
-        MigrationEngineImpl<StockMigrationRecord> stockMigrationEngine = new MigrationEngineImpl<>(params)
+        MigrationEngineImpl<StockMigrationRecord> stockMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         executor.execute(stockMigrationEngine)
+    }
+
+    private static void initStockCenterMigrationEngine() {
+        StockCenterMigrationSearchParams params = new StockCenterMigrationSearchParams()
+        MigrationEngineImpl<StockCenterMigrationRecord> stockCenterMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        executor.execute(stockCenterMigrationEngine)
     }
 
 
