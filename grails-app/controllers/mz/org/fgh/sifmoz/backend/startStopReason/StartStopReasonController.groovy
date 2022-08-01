@@ -36,6 +36,7 @@ class StartStopReasonController extends RestfulController{
 
     @Transactional
     def save(StartStopReason startStopReason) {
+        startStopReason.beforeInsert()
         if (startStopReason == null) {
             render status: NOT_FOUND
             return

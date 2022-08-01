@@ -13,18 +13,9 @@ import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
 import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 
 public class PatientMigrationRecord extends AbstractMigrationRecord {
 
-    ClinicService clinicService;
-
-    PatientService patientService;
-
-    ProvinceService provinceService;
     int id;
     boolean accountStatus;
     boolean isPatientEmTransito = false
@@ -71,9 +62,15 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (Utilities.listHasElements(logs)) return logs
 
         Patient.withTransaction {
-            getMigratedRecord().save(flush: true)
+            getMigratedRecord().validate()
+            if (!getMigratedRecord().hasErrors()) {
+                getMigratedRecord().save(flush: true)
+            } else {
+                logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
+                return logs
+            }
         }
-        return null;
+        return logs;
     }
 
     @Override
@@ -109,7 +106,8 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic);
         } else {
-            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid),getId(), getEntityName()));
+            String[] msg = {String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)}
+            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()));
         }
     }
 
@@ -121,8 +119,8 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (province != null) {
             getMigratedRecord().setProvince(province);
         } else {
-            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province), getId(), getEntityName()));
-
+            String[] msg = {String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province)}
+            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),msg, getId(), getEntityName()));
         }
     }
 

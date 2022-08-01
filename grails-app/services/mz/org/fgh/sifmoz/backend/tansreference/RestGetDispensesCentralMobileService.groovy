@@ -2,7 +2,6 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import mz.org.fgh.sifmoz.backend.task.ISynchronizerTask
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
@@ -42,7 +41,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @Transactional
 @EnableScheduling
 @Slf4j
-class RestGetDispensesCentralMobileService extends SynchronizerTask implements ISynchronizerTask {
+class RestGetDispensesCentralMobileService extends SynchronizerTask {
 
     private static final NAME = "PostPatientCentralMobile"
     @Autowired
@@ -76,7 +75,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask implements I
 
     //@Scheduled(cron = "0 0 */2 * * ?")
     void execute() {
-        if (!this.isProvincialOrUs()) {
+        if (!this.isProvincial()) {
             Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
           //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "mobile")
             ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")

@@ -29,6 +29,7 @@ class ClinicSectorTypeController {
 
     @Transactional
     def save(ClinicSectorType clinicSectorType) {
+        clinicSectorType.beforeInsert()
         if (clinicSectorType == null) {
             render status: NOT_FOUND
             return

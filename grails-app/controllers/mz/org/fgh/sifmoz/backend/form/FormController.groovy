@@ -37,6 +37,7 @@ class FormController extends RestfulController{
 
     @Transactional
     def save(Form form) {
+        form.beforeInsert()
         if (form == null) {
             render status: NOT_FOUND
             return

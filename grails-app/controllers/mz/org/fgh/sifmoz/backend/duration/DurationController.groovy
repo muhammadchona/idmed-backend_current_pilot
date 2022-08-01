@@ -36,6 +36,7 @@ class DurationController extends RestfulController{
 
     @Transactional
     def save(Duration duration) {
+        duration.beforeInsert()
         if (duration == null) {
             render status: NOT_FOUND
             return

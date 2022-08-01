@@ -9,7 +9,13 @@ class GroupType extends BaseEntity {
     String description
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     static constraints = {
@@ -17,13 +23,4 @@ class GroupType extends BaseEntity {
         description nullable: false
     }
 
-
-    @Override
-    public String toString() {
-        return "GroupType{" +
-                "id='" + id + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

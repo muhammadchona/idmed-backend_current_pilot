@@ -2,7 +2,6 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import mz.org.fgh.sifmoz.backend.task.ISynchronizerTask
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
@@ -29,7 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @Transactional
 @EnableScheduling
 @Slf4j
-class RestGetPatientMobileCentralService extends SynchronizerTask implements ISynchronizerTask {
+class RestGetPatientMobileCentralService extends SynchronizerTask {
 
     private static final NAME = "GetPatientMobileCentralMobile"
     @Autowired
@@ -58,7 +57,7 @@ class RestGetPatientMobileCentralService extends SynchronizerTask implements ISy
     void execute() {
       //  PatientTransReference.withTransaction {
 
-        if (!this.isProvincialOrUs()) {
+        if (!this.isProvincial()) {
             Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
             ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code, "mobile")
             String urlPath = "/sync_mobile_patient?clinicuuid=eq."+clinicLoged.getUuid()+"syncstatus=eq.S"; //addClinicuuid
