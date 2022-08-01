@@ -8,11 +8,11 @@ import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 class TherapeuticRegimen extends BaseEntity {
+
     String id
     String regimenScheme
     boolean active
     String code
-  //  boolean pedhiatric
     String description
     String openmrsUuid
     @JsonBackReference
