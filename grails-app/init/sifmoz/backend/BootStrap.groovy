@@ -1,6 +1,6 @@
 package sifmoz.backend
 
-import com.fasterxml.jackson.annotation.JsonBackReference
+
 import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
@@ -67,8 +67,10 @@ class BootStrap {
 
         TherapeuticRegimen.withTransaction { initTherapeuticRegimen() }
 
-        Drug.withTransaction { initDrug() }
-
+        Drug.withTransaction {
+            initDrug()
+            initRegimenDrugAssossiation()
+        }
 
     }
 
@@ -83,7 +85,7 @@ class BootStrap {
                 facilityType.id = facilityTypeObject.id
                 facilityType.code = facilityTypeObject.code
                 facilityType.description = facilityTypeObject.description
-                facilityType.save(flush: true, failOnError: false)
+                facilityType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -95,7 +97,7 @@ class BootStrap {
                 identifierType.id = identifierTypeObject.id
                 identifierType.code = identifierTypeObject.code
                 identifierType.description = identifierTypeObject.description
-                identifierType.save(flush: true, failOnError: false)
+                identifierType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -107,7 +109,7 @@ class BootStrap {
                 clinicSectorType.id = clinicSectorTypeObject.id
                 clinicSectorType.code = clinicSectorTypeObject.code
                 clinicSectorType.description = clinicSectorTypeObject.description
-                clinicSectorType.save(flush: true, failOnError: false)
+                clinicSectorType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -119,7 +121,7 @@ class BootStrap {
                 clinicalServiceAttributeType.id = clinicalServiceAttributeTypeObject.id
                 clinicalServiceAttributeType.code = clinicalServiceAttributeTypeObject.code
                 clinicalServiceAttributeType.description = clinicalServiceAttributeTypeObject.description
-                clinicalServiceAttributeType.save(flush: true, failOnError: false)
+                clinicalServiceAttributeType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -132,7 +134,7 @@ class BootStrap {
                 dispenseMode.code = dispenseModeObject.code
                 dispenseMode.description = dispenseModeObject.description
                 dispenseMode.openmrsUuid = dispenseModeObject.openmrs_uuid
-                dispenseMode.save(flush: true, failOnError: false)
+                dispenseMode.save(flush: true, failOnError: true)
             }
         }
     }
@@ -144,7 +146,7 @@ class BootStrap {
                 dispenseType.id = dispenseTypeObject.id
                 dispenseType.code = dispenseTypeObject.code
                 dispenseType.description = dispenseTypeObject.description
-                dispenseType.save(flush: true, failOnError: false)
+                dispenseType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -156,7 +158,7 @@ class BootStrap {
                 form.id = formObject.id
                 form.code = formObject.code
                 form.description = formObject.description
-                form.save(flush: true, failOnError: false)
+                form.save(flush: true, failOnError: true)
             }
         }
     }
@@ -168,7 +170,7 @@ class BootStrap {
                 duration.id = durationObject.id
                 duration.weeks = durationObject.weeks
                 duration.description = durationObject.description
-                duration.save(flush: true, failOnError: false)
+                duration.save(flush: true, failOnError: true)
             }
         }
     }
@@ -181,7 +183,7 @@ class BootStrap {
                 startStopReason.isStartReason = startStopReasonObject.isStartReason
                 startStopReason.code = startStopReasonObject.code
                 startStopReason.reason = startStopReasonObject.reason
-                startStopReason.save(flush: true, failOnError: false)
+                startStopReason.save(flush: true, failOnError: true)
             }
         }
     }
@@ -193,7 +195,7 @@ class BootStrap {
                 groupType.id = groupTypeObject.id
                 groupType.code = groupTypeObject.code
                 groupType.description = groupTypeObject.description
-                groupType.save(flush: true, failOnError: false)
+                groupType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -206,7 +208,7 @@ class BootStrap {
                 therapeuticLine.code = therapeuticLineObject.code
                 therapeuticLine.description = therapeuticLineObject.description
                 therapeuticLine.uuid = therapeuticLineObject.uuid
-                therapeuticLine.save(flush: true, failOnError: false)
+                therapeuticLine.save(flush: true, failOnError: true)
             }
         }
     }
@@ -218,7 +220,7 @@ class BootStrap {
                 episodeType.id = episodeTypeObject.id
                 episodeType.code = episodeTypeObject.code
                 episodeType.description = episodeTypeObject.description
-                episodeType.save(flush: true, failOnError: false)
+                episodeType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -231,7 +233,7 @@ class BootStrap {
                 clinicalService.code = clinicalServiceObject.code
                 clinicalService.description = clinicalServiceObject.description
                 clinicalService.identifierType = clinicalServiceObject.identifierType
-                clinicalService.save(flush: true, failOnError: false)
+                clinicalService.save(flush: true, failOnError: true)
             }
         }
     }
@@ -243,7 +245,7 @@ class BootStrap {
                 spetialPrescriptionMotive.id = spetialPrescriptionMotiveObject.id
                 spetialPrescriptionMotive.code = spetialPrescriptionMotiveObject.code
                 spetialPrescriptionMotive.description = spetialPrescriptionMotiveObject.description
-                spetialPrescriptionMotive.save(flush: true, failOnError: false)
+                spetialPrescriptionMotive.save(flush: true, failOnError: true)
             }
         }
     }
@@ -256,19 +258,19 @@ class BootStrap {
                 healthInformationSystem.abbreviation = healthInformationSystemObject.abbreviation
                 healthInformationSystem.description = healthInformationSystemObject.description
                 healthInformationSystem.active = healthInformationSystemObject.active
-                healthInformationSystem.save(flush: true, failOnError: false)
+                healthInformationSystem.save(flush: true, failOnError: true)
             }
         }
     }
 
     void initInteroperabilityType() {
-        for (interoperabilityTypeObject in listFacilityType()) {
+        for (interoperabilityTypeObject in listInteroperabilityType()) {
             if (!InteroperabilityType.findById(interoperabilityTypeObject.id)) {
                 InteroperabilityType interoperabilityType = new InteroperabilityType()
                 interoperabilityType.id = interoperabilityTypeObject.id
                 interoperabilityType.code = interoperabilityTypeObject.code
                 interoperabilityType.description = interoperabilityTypeObject.description
-                interoperabilityType.save(flush: true, failOnError: false)
+                interoperabilityType.save(flush: true, failOnError: true)
             }
         }
     }
@@ -282,7 +284,7 @@ class BootStrap {
                 interoperabilityAttribute.interoperabilityType = interoperabilityAttributeObject.interoperabilityType
                 interoperabilityAttribute.value = interoperabilityAttributeObject.value
                 interoperabilityAttribute.healthInformationSystem = interoperabilityAttributeObject.healthInformationSystem
-                interoperabilityAttribute.save(flush: true, failOnError: false)
+                interoperabilityAttribute.save(flush: true, failOnError: true)
             }
         }
     }
@@ -294,7 +296,7 @@ class BootStrap {
                 province.id = provinceObject.id
                 province.code = provinceObject.code
                 province.description = provinceObject.description
-                province.save(flush: true, failOnError: false)
+                province.save(flush: true, failOnError: true)
             }
         }
     }
@@ -307,7 +309,7 @@ class BootStrap {
                 district.code = districtObject.code
                 district.description = districtObject.description
                 district.province = districtObject.province
-                district.save(flush: true, failOnError: false)
+                district.save(flush: true, failOnError: true)
             }
         }
     }
@@ -318,12 +320,13 @@ class BootStrap {
                 TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
                 therapeuticRegimen.id = therapeuticRegimenObject.id
                 therapeuticRegimen.code = therapeuticRegimenObject.code
-                therapeuticRegimen.regimenScheme = therapeuticRegimenObject.regimenScheme
+                therapeuticRegimen.regimenScheme = therapeuticRegimenObject.regimen_scheme
                 therapeuticRegimen.active = therapeuticRegimenObject.active
                 therapeuticRegimen.description = therapeuticRegimenObject.description
-                therapeuticRegimen.openmrsUuid = therapeuticRegimenObject.openmrsUuid
+                therapeuticRegimen.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
                 therapeuticRegimen.clincalService = ClinicalService.findById(therapeuticRegimenObject.clincal_service_id)
-                therapeuticRegimen.save(flush: true, failOnError: false)
+                therapeuticRegimen.save(flush: true, failOnError: true)
+
             }
         }
     }
@@ -340,15 +343,30 @@ class BootStrap {
                 drug.defaultTimes = drugObject.default_times
                 drug.defaultPeriodTreatment = drugObject.default_period_treatment
                 drug.fnmCode = drugObject.fnm_code
-                drug.uuidOpenmrs = drugObject.openmrs_uuid
+                drug.uuidOpenmrs = drugObject.uuid_openmrs
                 drug.active = drugObject.active
                 drug.clinicalService = ClinicalService.findById(drugObject.clincal_service_id)
                 drug.form = Form.findById(drugObject.form_id)
-                drug.save(flush: true, failOnError: false)
+                drug.save(flush: true, failOnError: true)
+
             }
         }
     }
 
+    void initRegimenDrugAssossiation() {
+        for (drugRegimen in listRegimenDrugs()) {
+            Drug drug = Drug.findByFnmCode(drugRegimen.drug_id)
+            TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.findByCode(drugRegimen.regimen_id)
+
+            Set<TherapeuticRegimen> therapeuticRegimenList = new ArrayList<>() as Set<TherapeuticRegimen>
+            therapeuticRegimenList.add(therapeuticRegimen)
+
+            if(drug && therapeuticRegimen){
+                therapeuticRegimen.addToDrugs(drug)
+                therapeuticRegimen.save(flush: true, failOnError: false)
+            }
+        }
+    }
 
     List<Object> listFacilityType() {
         List<Object> facilityTypeList = new ArrayList<>()
@@ -430,7 +448,7 @@ class BootStrap {
         formList.add(new LinkedHashMap(id: '451906BE-792D-4506-98DB-408F69B97AB1', code: 'Descongestionante_nasal', description: 'Descongestionante Nasal'))
         formList.add(new LinkedHashMap(id: 'D213A686-782C-4AF3-BC31-BA04EEF0EDB0', code: 'Solução_Oftámilca', description: 'Solução Oftámilca'))
         formList.add(new LinkedHashMap(id: '70E72CB3-F66D-41D7-B2C9-8F545E880FC6', code: 'Gotas_Ouvidos', description: 'Gotas para os ouvidos'))
-        formList.add(new LinkedHashMap(id: 'D32F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', code: 'Suspensão', description: 'Suspensão'))
+        formList.add(new LinkedHashMap(id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', code: 'Suspensão', description: 'Suspensão'))
         formList.add(new LinkedHashMap(id: '17828974-026F-41CF-A906-E97ABFB2A0AC', code: 'Creme', description: 'Creme'))
         formList.add(new LinkedHashMap(id: '700FBB4F-C67C-4085-B05C-33259C29F90E', code: 'Pomada', description: 'Pomada'))
         formList.add(new LinkedHashMap(id: '935436AC-8CB2-4691-8FC6-99209CDB9906', code: 'Gel', description: 'Gel'))
@@ -490,7 +508,7 @@ class BootStrap {
     List<Object> listTherapeuticLine() {
         List<Object> therapeuticLineList = new ArrayList<>()
         therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaea6f30009', code: '1', uuid: '7323b36e-fedf-45bc-b866-083854c09f7b', description: 'Primeira Linha'))
-        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbagb014av0c', code: '1', uuid: '6E117555-BB10-43C9-83B4-9171A1734BB7', description: 'Primeira Linha Alternativa'))
+        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbagb014av0c', code: '1_ALT', uuid: '6E117555-BB10-43C9-83B4-9171A1734BB7', description: 'Primeira Linha Alternativa'))
         therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaeef36000a', code: '2', uuid: '8112b34d-6695-48b2-975a-7fd7abb06a6e', description: 'Segunda Linha'))
         therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaf1701000b', code: '3', uuid: '843c7cff-f2ba-4134-a015-43370c614de6', description: 'Terceira Linha'))
 
@@ -576,33 +594,33 @@ class BootStrap {
     List<Object> listInteroperabilityAttribute() {
         List<Object> interoperabilityAttributeList = new ArrayList<>()
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'CA5B9D8A-F0B4-4957-B249-63A75214CD0C', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'http://localhost/openmrs/ws/rest/v1/', interoperabilityType: InteroperabilityType.findById('D3B4942C-514B-47A5-BAED-F3A47A466E09')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '34C5A7BB-E7DE-4CFB-B349-2BC36FD4FFCA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'http://localhost/openmrs/ws/rest/v1/reportingrest/cohort/ba36b483-c17c-454d-9a3a-f060a933c6da', districtListinteroperabilityType: InteroperabilityType.findById('CFCA8326-0AB9-46D0-B5CE-1E277E564823')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'CE34FBAD-D1F1-4C8E-A823-CBCF3137A0BA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '2.x', districtListinteroperabilityType: InteroperabilityType.findById('0718F9D9-39A8-405A-8092-5BDDE4204B25')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '876FA63C-8F5F-42FB-A2D5-24F1BFEDD3ED', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '49857ace-1a92-4980-8313-1067714df151', districtListinteroperabilityType: InteroperabilityType.findById('CEBEF157-57B9-4442-A1E3-59FA92E818D6')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'AF6051CD-7AB6-4841-A47D-2D6608095822', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d83e4e-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('73715EBA-8BDD-4C55-8895-C01FB0D5AF57')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'FFB2BE0D-2191-41A1-88A4-78ACADE251D4', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1e2efd8-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('EE650283-C62F-43E7-8835-A7B7A9706119')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '9CC90263-5A21-47D9-AAC0-33FE9FB60C09', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd5c15047-58f3-4eb2-9f98-af82e3531cb5', districtListinteroperabilityType: InteroperabilityType.findById('416001E8-2F6E-46D4-A448-88E3188160E5')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '7439C298-97EE-486D-9711-D9D17BA161F9', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '93603742-1cae-4970-9077-e2b27e46bd7e', districtListinteroperabilityType: InteroperabilityType.findById('BD2B4C58-4CEE-49D9-9D70-ED2B3B777064')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'F9AE9B98-CE83-4010-85E5-B9F569555054', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1e2efd8-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('7C7C893F-D22F-46A7-8CE4-953A9853B6A8')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A542DCF1-99AB-4DC2-AAE2-80279D34B0A9', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '4ce83895-5c0e-4170-b0cc-d3974b54131f', districtListinteroperabilityType: InteroperabilityType.findById('FA1E03AA-EEB0-446E-89F0-BB966C9FC65C')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '4F3C8B49-20F1-4BBB-83C8-7F217A35D505', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '9db4ce3b-4c1c-45dd-905f-c984a052f26e', districtListinteroperabilityType: InteroperabilityType.findById('44A81300-7B59-4196-8BF6-B15CBFD11667')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '6D5E1BBE-CC76-439C-A11A-8CD804B044AF', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd5c15047-58f3-4eb2-9f98-af82e3531cb5', districtListinteroperabilityType: InteroperabilityType.findById('BCD2F582-6737-48B6-B56E-FF80EE37DD22')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '531A21E7-2123-4B72-803B-4C6FADE0D0BD', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '93603742-1cae-4970-9077-e2b27e46bd7e', districtListinteroperabilityType: InteroperabilityType.findById('DE6B0CA7-5481-407C-B542-D0E56EF43342')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'CAFC31D5-8617-47A0-A286-C63971772337', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd9911494-b231-4b3c-9246-1fe5f269476c', districtListinteroperabilityType: InteroperabilityType.findById('8B0D0D86-C6C1-4327-8206-78DC4DFC6EDA')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'AB2F5969-E6C9-4F37-94F1-992DF8788DF2', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'b7c246bc-f2b6-49e5-9325-911cdca7a8b3', districtListinteroperabilityType: InteroperabilityType.findById('22AD8E9F-1A09-4794-A393-4D4C7F4676F8')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A77D1618-1321-44CF-85FA-9BF1D6099C90', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de2ca0-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('A7D2F52E-8409-492B-8ECD-A7093E83224E')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '4E165FE8-7A33-4349-B8A7-10FF204A7DBD', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de28ae-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('585F5AAC-A014-4F6A-84C3-428C9C68EFD8')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '73E51E2B-4DEB-450B-8F0E-E355BC988D34', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '40a9a12b-1205-4a55-bb93-caf15452bf61', districtListinteroperabilityType: InteroperabilityType.findById('DD0FCFE6-94DB-4A8B-9760-C8EEB512044A')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A34A1593-2E3A-4371-8B35-BAAFF3FA058B', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '1098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', districtListinteroperabilityType: InteroperabilityType.findById('3D7530B4-C5DE-4073-8A0D-4137CBA6297D')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '82BDF33C-42FB-4226-B0CF-52D4B793049D', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'f53848d5-3521-4cc8-ac72-d63adef281a1', districtListinteroperabilityType: InteroperabilityType.findById('517C1996-CE00-4159-87F2-3F9DA2D24962')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A4B2E452-1565-48BD-B866-2EB7DE823BA0', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be', districtListinteroperabilityType: InteroperabilityType.findById('4794A14A-EF6E-4AD7-A7FD-D3E291AC2BDD')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'F6EFA41C-4308-4782-835C-8B2A9E2B3B61', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('B361B735-26D0-4B58-9BB1-35C317778698')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '22E9B370-EA14-4B8D-98BC-1E3ADC84F72E', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9f036-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('05C533A6-0BC1-495C-95EF-80C0B3C063A7')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '4FE4D425-5514-4CDA-9467-0AD33A5CA9CF', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de1bfc-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('30C65546-FACA-489F-809B-60EFCDFB5BF2')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '4107FCCF-4B40-4B58-BFDD-0B9BF83D25BC', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9facc-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('80B52D48-0946-4267-9535-EC01484914E8')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '9881585A-79F3-4756-AD05-7968775BF98C', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e279133c-1d5f-11e0-b929-000c29ad1d07', districtListinteroperabilityType: InteroperabilityType.findById('329B13FD-82BE-429F-ABD3-A0B72051332C')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: '5143CEA0-EAD7-4A1C-8D0D-DC1697B23AA3', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '24bd60e2-a1c9-4159-a24f-12af15b77510', districtListinteroperabilityType: InteroperabilityType.findById('B2AAF0F5-D23B-4DD4-95BA-0ACCC0656A9C')))
-        interoperabilityAttributeList.add(new LinkedHashMap(id: 'C60F7C25-7198-4605-BDD4-FF6DF3309AB2', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '7013d271-1bc2-4a50-bed6-8932044bc18f', districtListinteroperabilityType: InteroperabilityType.findById('94094FC8-99F1-4A23-8E2A-1E823E30B6D7')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '34C5A7BB-E7DE-4CFB-B349-2BC36FD4FFCA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'http://localhost/openmrs/ws/rest/v1/reportingrest/cohort/ba36b483-c17c-454d-9a3a-f060a933c6da', interoperabilityType: InteroperabilityType.findById('CFCA8326-0AB9-46D0-B5CE-1E277E564823')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'CE34FBAD-D1F1-4C8E-A823-CBCF3137A0BA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '2.x', interoperabilityType: InteroperabilityType.findById('0718F9D9-39A8-405A-8092-5BDDE4204B25')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '876FA63C-8F5F-42FB-A2D5-24F1BFEDD3ED', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '49857ace-1a92-4980-8313-1067714df151', interoperabilityType: InteroperabilityType.findById('CEBEF157-57B9-4442-A1E3-59FA92E818D6')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'AF6051CD-7AB6-4841-A47D-2D6608095822', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d83e4e-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('73715EBA-8BDD-4C55-8895-C01FB0D5AF57')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'FFB2BE0D-2191-41A1-88A4-78ACADE251D4', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1e2efd8-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('EE650283-C62F-43E7-8835-A7B7A9706119')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '9CC90263-5A21-47D9-AAC0-33FE9FB60C09', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd5c15047-58f3-4eb2-9f98-af82e3531cb5', interoperabilityType: InteroperabilityType.findById('416001E8-2F6E-46D4-A448-88E3188160E5')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '7439C298-97EE-486D-9711-D9D17BA161F9', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '93603742-1cae-4970-9077-e2b27e46bd7e', interoperabilityType: InteroperabilityType.findById('BD2B4C58-4CEE-49D9-9D70-ED2B3B777064')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'F9AE9B98-CE83-4010-85E5-B9F569555054', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1e2efd8-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('7C7C893F-D22F-46A7-8CE4-953A9853B6A8')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A542DCF1-99AB-4DC2-AAE2-80279D34B0A9', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '4ce83895-5c0e-4170-b0cc-d3974b54131f', interoperabilityType: InteroperabilityType.findById('FA1E03AA-EEB0-446E-89F0-BB966C9FC65C')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '4F3C8B49-20F1-4BBB-83C8-7F217A35D505', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '9db4ce3b-4c1c-45dd-905f-c984a052f26e', interoperabilityType: InteroperabilityType.findById('44A81300-7B59-4196-8BF6-B15CBFD11667')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '6D5E1BBE-CC76-439C-A11A-8CD804B044AF', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd5c15047-58f3-4eb2-9f98-af82e3531cb5', interoperabilityType: InteroperabilityType.findById('BCD2F582-6737-48B6-B56E-FF80EE37DD22')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '531A21E7-2123-4B72-803B-4C6FADE0D0BD', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '93603742-1cae-4970-9077-e2b27e46bd7e', interoperabilityType: InteroperabilityType.findById('DE6B0CA7-5481-407C-B542-D0E56EF43342')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'CAFC31D5-8617-47A0-A286-C63971772337', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'd9911494-b231-4b3c-9246-1fe5f269476c', interoperabilityType: InteroperabilityType.findById('8B0D0D86-C6C1-4327-8206-78DC4DFC6EDA')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'AB2F5969-E6C9-4F37-94F1-992DF8788DF2', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'b7c246bc-f2b6-49e5-9325-911cdca7a8b3', interoperabilityType: InteroperabilityType.findById('22AD8E9F-1A09-4794-A393-4D4C7F4676F8')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A77D1618-1321-44CF-85FA-9BF1D6099C90', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de2ca0-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('A7D2F52E-8409-492B-8ECD-A7093E83224E')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '4E165FE8-7A33-4349-B8A7-10FF204A7DBD', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de28ae-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('585F5AAC-A014-4F6A-84C3-428C9C68EFD8')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '73E51E2B-4DEB-450B-8F0E-E355BC988D34', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '40a9a12b-1205-4a55-bb93-caf15452bf61', interoperabilityType: InteroperabilityType.findById('DD0FCFE6-94DB-4A8B-9760-C8EEB512044A')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A34A1593-2E3A-4371-8B35-BAAFF3FA058B', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '1098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', interoperabilityType: InteroperabilityType.findById('3D7530B4-C5DE-4073-8A0D-4137CBA6297D')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '82BDF33C-42FB-4226-B0CF-52D4B793049D', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'f53848d5-3521-4cc8-ac72-d63adef281a1', interoperabilityType: InteroperabilityType.findById('517C1996-CE00-4159-87F2-3F9DA2D24962')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'A4B2E452-1565-48BD-B866-2EB7DE823BA0', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be', interoperabilityType: InteroperabilityType.findById('4794A14A-EF6E-4AD7-A7FD-D3E291AC2BDD')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'F6EFA41C-4308-4782-835C-8B2A9E2B3B61', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('B361B735-26D0-4B58-9BB1-35C317778698')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '22E9B370-EA14-4B8D-98BC-1E3ADC84F72E', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9f036-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('05C533A6-0BC1-495C-95EF-80C0B3C063A7')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '4FE4D425-5514-4CDA-9467-0AD33A5CA9CF', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1de1bfc-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('30C65546-FACA-489F-809B-60EFCDFB5BF2')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '4107FCCF-4B40-4B58-BFDD-0B9BF83D25BC', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d9facc-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('80B52D48-0946-4267-9535-EC01484914E8')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '9881585A-79F3-4756-AD05-7968775BF98C', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e279133c-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('329B13FD-82BE-429F-ABD3-A0B72051332C')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '5143CEA0-EAD7-4A1C-8D0D-DC1697B23AA3', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '24bd60e2-a1c9-4159-a24f-12af15b77510', interoperabilityType: InteroperabilityType.findById('B2AAF0F5-D23B-4DD4-95BA-0ACCC0656A9C')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'C60F7C25-7198-4605-BDD4-FF6DF3309AB2', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '7013d271-1bc2-4a50-bed6-8932044bc18f', interoperabilityType: InteroperabilityType.findById('94094FC8-99F1-4A23-8E2A-1E823E30B6D7')))
 
         return interoperabilityAttributeList
     }
@@ -808,116 +826,115 @@ class BootStrap {
 
         List<Object> therapeuticRegimenList = new ArrayList<>()
 
-        therapeuticRegimenList.add(new LinkedHashMap(id: '90118ad6-999e-4f4d-8aee-8bde6e3d4f6d',regimen_scheme: 'TDF+3TC+ATV/r', code: '2alt1', openmrs_uuid: '7bf5a88d-6db6-4899-a01a-bfd14ce77b53', active: false, description: 'TDF+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'c2b8e086-6f82-4a7e-9615-3c95fea396b1',regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r80/20)',  code: 'A2Fped Xarope', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r80/20)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '8552a6d1-9e75-4c33-84fb-8a35ac0a1f2c',regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r100/25',  code: 'ABCPedCpts', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r(2DFC+LPV/r100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '66359dea-94c3-4de7-b7ef-d858b2f33eb8',regimen_scheme: 'AZT+3TC+ATV/r',  code: '2alt3', openmrs_uuid: 'ba25f2b5-4216-4605-9e6b-1f591033dc3e', active: true, description: 'AZT+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '3c6e19e6-ba06-4c33-9970-62e89b62582d',regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r80/20)',  code: 'ABCPedXarope', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r(2DFC+LPV/r80/20)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'a3f0aa60-c296-48bc-aee9-bca43f3d00bb',regimen_scheme: 'ABC+3TC+EFV',  code: 'X5A', openmrs_uuid: '78419317-cdda-42e9-92a3-13cb0cbf0020', active: true, description: 'ABC+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'de4a3f40-d20c-42c9-b8ee-3c646bc3e85b',regimen_scheme: 'AZT+3TC+NVP',  code: 'A2A', openmrs_uuid: 'e1dd2f44-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'AZT+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '172a3ed8-5738-4e39-bd63-62467c2068f8',regimen_scheme: 'TDF+AZT+3TC+LPV/r',  code: 'C1A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '84581535-1c71-4e7d-9da3-852fdb8df744',regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r40/10)',  code: 'ABCPedGranulos', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: false, description: 'ABC+3TC+LPV/r(2DFC+LPV/r40/10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'c9bddf65-1400-4d76-813f-908efc0350c4',regimen_scheme: 'ABC+3TC+EFV Ped(2DFC+EFV200)',  code: 'X5APed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+3TC+EFV Ped(2DFC+EFV200)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'b3a3b2c4-6832-4b9e-bad0-79b9e967ec74',regimen_scheme: 'TDF+3TC+NVP',  code: 'TDF12', openmrs_uuid: '2e44e77e-eac4-4f64-84d2-73d32abf94d5', active: true, description: 'TDF+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'd513cd89-7b92-433a-82f0-16b9f1b74ee7',regimen_scheme: 'TDF+ABC+LPV/r',  code: 'C6A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '81670de2-6dae-4da7-84f6-f6e2c42025cd',regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)',  code: 'A2Fped Granulos', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '0f347ba1-cba7-4637-978b-1b920e7f0437',regimen_scheme: 'ABC+3TC+RAL',  code: '1TB2', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'ABC+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '5c3ca182-b55c-4409-ba6e-9a2586f0e7d1',regimen_scheme: '3TC+RAL+DRV/r',  code: '3L_3TC', openmrs_uuid: '', active: false, description: '3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '0104ded8-054e-41ed-a669-6c11e1d5fec2',regimen_scheme: 'TDF+3TC+DTG',  code: '1aLTLD', openmrs_uuid: 'e3f6bb60-e2cf-46cb-a9da-27d634ba8607', active: true, description: 'TDF+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '1e4fbb43-ecd9-4d45-9ab7-2232baf47110',regimen_scheme: 'ABC+3TC+DTG',  code: '1alt1', openmrs_uuid: 'af15246d-30b8-4aff-8391-ca2b58e2c88b', active: true, description: 'ABC+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'ca77f024-b568-4ee5-8fa9-946e5e38a9c5',regimen_scheme: 'd4T30+3TC+dDI400+LPV/r',  code: 'dDI123', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'd4T30+3TC+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '5a96f4e2-6ad5-417a-b891-d32998db6ffc',regimen_scheme: 'ABC+3TC+NVP (2FDC+NVP50)',  code: 'X5CPed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'ABC+3TC+NVP (2FDC+NVP50)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '238d6085-89bd-4f0d-8055-1f98602b04e5',regimen_scheme: 'AZT+3TC+ABC',  code: 'A2C', openmrs_uuid: '3e7f46c7-a971-4c0c-82aa-a65589fd518e', active: true, description: 'AZT+3TC+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'ea929911-25f9-4687-a867-e8ed126a1755',regimen_scheme: 'AZT+3TC+DTG',  code: '1alt2', openmrs_uuid: '9cb63f72-4c08-4543-878a-537dcabe5670', active: false, description: 'AZT+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '6f01220d-adbf-43a8-a446-8304816db868',regimen_scheme: 'ABC+AZT+LPV/r',  code: 'X3N', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+AZT+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '7d010064-2a47-4d62-bf5c-b2de9fea2188',regimen_scheme: 'TDF+AZT+LPV/r',  code: 'TDF13', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+AZT+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'df826005-f486-40ac-be77-5fd8760b15a3',regimen_scheme: 'TDF+ABC+3TC+LPV/r',  code: 'C4A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+ABC+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'cc844796-789c-4418-a12c-48f14ef4b879',regimen_scheme: 'ABC+3TC+ATV/r',  code: '2alt2', openmrs_uuid: 'e8b741b3-463c-46b1-8423-a16f736af8d4', active: true, description: 'ABC+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'f03621ab-358a-4143-943b-f0df34e70ffa',regimen_scheme: 'TDF+3TC+LPV/r',  code: 'C7A', openmrs_uuid: 'f8c5d365-7636-4449-9acd-c83c4fd2ea01', active: true, description: 'TDF+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '83f720f6-c11b-447f-8149-faaead605104',regimen_scheme: 'AZT+3TC+EFV',  code: 'A2B', openmrs_uuid: 'e1de19fe-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'c8bfba60-97ce-4a38-8f53-71b1b758c347',regimen_scheme: 'AZT+3TC+ABC (2FDC+ABC Baby)',  code: 'A2Cped', openmrs_uuid: '3e7f46c7-a971-4c0c-82aa-a65589fd518e', active: true, description: 'AZT+3TC+ABC (2FDC+ABC Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '74937b5a-440a-4844-921c-62609ea78725',regimen_scheme: 'AZT+3TC+NVP (3FDC Baby)',  code: 'A2Aped', openmrs_uuid: 'e1dd2f44-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+NVP (3FDC Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '93b15d9b-ea38-4438-80f8-dad2162c9c65',regimen_scheme:'TDF+3TC+EFV',  code: 'A4A', openmrs_uuid: '9dc17c1b-7b6d-488e-a38d-505a7b65ec82', active: true, description: 'TDF+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'e11e5b38-c18b-4546-bd80-98df9906957a',regimen_scheme: 'AZT+3TC+RAL+DRV/r',  code: '3Lb', openmrs_uuid: '', active: false, description: 'AZT+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'f415d3be-67f3-4801-863f-b5a245e918fe',regimen_scheme: 'TDF+3TC+RAL+DRV/r',  code: '3La', openmrs_uuid: '', active: false, description: 'TDF+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '3d080342-990e-47aa-8195-81e472cc5fbc',regimen_scheme: 'ABC+3TC+RAL+DRV/r',  code: '3Lbb', openmrs_uuid: '', active: true, description: 'ABC+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '0cba491b-afd9-4f15-bad1-1a78f94ab40d',regimen_scheme: 'd4T+3TC+EFV (2DFC Baby + EFV)',  code: 'D4T123X', openmrs_uuid: '', active: false, description: 'd4T+3TC+EFV (2DFC Baby + EFV)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'dbd4d793-5d1e-40d8-b242-1153e7977438',regimen_scheme: 'TDF+3TC+RAL',  code: '1TB1', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '85cf6677-186b-40e8-a3a5-52bc493a82b0',regimen_scheme: 'AZT+3TC+RAL',  code: '1TB3', openmrs_uuid: 'c4a56680-ac6e-4538-8126-e3097b7b4789', active: true, description: 'AZT+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'b0da927c-c1e4-4df7-8e5c-634d3a43bcc1',regimen_scheme: 'PTV Pediatrico',  code: 'PTV Pediatri', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'PTV Pediatrico', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '6c87963f-d603-4a62-a0c1-df6645f74f3c',regimen_scheme: 'TDF+FTC PreEP',  code: 'PreEP', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+FTC PreEP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'f4b4703e-49aa-4e86-8aee-5a22f3c4bde4',regimen_scheme: 'ABC+3TC120/60+DTG',  code: 'X6APed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+3TC120/60+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '80f03d2f-b7b6-4922-a79d-344959517911',regimen_scheme: 'AZT+3TC+LPV/r',  code: 'A2F', openmrs_uuid: 'daf60844-9002-403f-bd93-3838149a9a5e', active: false, description: 'AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '1d2b832f-8ef9-4a32-8fdd-8774aa579533',regimen_scheme: 'ABC+3TC+NVP',  code: 'X5C', openmrs_uuid: 'e11be52e-0da1-4d32-ab5c-e0feb9b6abd6', active: false, description: 'ABC+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'ef22088a-30d4-4981-8628-3ae6b7026ea5',regimen_scheme: 'ABC+AZT+3TC+LPV/r',  code: 'X3N1', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '4f630e5d-f35c-4bc4-acb6-3d19b1b420f6',regimen_scheme: 'AZT+3TC+EFV (2FDC+EFV 200)',  code: 'A2Bped', openmrs_uuid: 'e1de19fe-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+EFV (2FDC+EFV 200)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'a54eed82-3789-4863-ae37-ff43e19bab90',regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r100/25',  code: 'A2Fped Cpts', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '3f892be3-f5d7-404b-b2ca-dfcea9edcc80',regimen_scheme: 'ABC+3TC120/60+LPV/R100/25',  code: '2ALT3', openmrs_uuid: 'ABC+3TC120/60+LPV/R100/25', active: false, description: 'ABC+3TC120/60+LPV/R100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'd68c8585-1d4b-411c-94f9-45bedca6894c',regimen_scheme: 'ABC+3TC+LPV/r',  code: 'ABC12', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'fb27fd40-c739-407d-b9e0-37bac8561bff',regimen_scheme: 'd4T+3TC+LPV/r(2DFC Baby+LPV/r)',  code: 'D4T124', openmrs_uuid: '', active: false, description: 'd4T+3TC+LPV/r(2DFC Baby+LPV/r)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'a647afcb-4c90-48de-a647-39ec87aca13d',regimen_scheme: 'd4T+3TC+NVP (3DFC Baby )',  code: 'A1Aped', openmrs_uuid: '', active: false, description: 'd4T+3TC+NVP (3DFC Baby )', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'cb5b73dd-deda-4363-a8da-6859b34f79e4',regimen_scheme: 'd4T+3TC+ABC (2DFC Baby + ABC )',  code: 'A1Eped', openmrs_uuid: '', active: false, description: 'd4T+3TC+ABC (2DFC Baby + ABC )', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '8A049D25-8804-439D-84D3-A730E0F0699F',regimen_scheme: '2as Optimizadas ATV/r',  code: '2Op1', openmrs_uuid: '', active: true, description: '2as Optimizadas ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '9FC3ABE1-925E-43F2-A2F4-D01C9B67BA89',regimen_scheme: '2as Optimizadas ATV/r+RAL',  code: '2Op2', openmrs_uuid: '', active: true, description: '2as Optimizadas ATV/r+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '1F7B72CB-DF9D-4FFB-BA00-7D6B847223AA',regimen_scheme: '2as Optimizadas DRV+RTV',  code: '2Op3', openmrs_uuid: '', active: true, description: '2as Optimizadas DRV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'B34FEE8D-52B8-40B2-819C-66CA29FC5ADC',regimen_scheme: '3a Linha adaptada DRV+RAL+RTV', code: '3op1', openmrs_uuid: '', active: true, description: '3a Linha adaptada DRV+RAL+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '05D2C1BF-A824-410B-B627-211302400213',regimen_scheme: 'ABC+3TC+DTG (2DFC ped + DTG10)',  code: 'X7APed', openmrs_uuid: '', active: true, description: 'ABC+3TC+DTG (2DFC ped + DTG10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '7D18A417-7CCE-47C2-A1EF-6212356FA7FE',regimen_scheme: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)',  code: 'A2Fped', openmrs_uuid: '', active: true, description: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '678A48E0-6B7B-438D-B5CD-EFFA4557F5E9',regimen_scheme: 'ABC+3TC+LPV/r (2FC+LPV/r)',  code: 'ABCPedNew', openmrs_uuid: '', active: false, description: 'ABC+3TC+LPV/r (2FC+LPV/r)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'E10520F0-E38C-4FD6-A1D8-F4D9DE637F7C',regimen_scheme: 'ABC+dDI250+LPV/r',  code: 'C2A2', openmrs_uuid: '', active: false, description: 'ABC+dDI250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'B657EB26-005E-4F95-A069-DE08D346820A',regimen_scheme: 'ABC+dDI400+LPV/r',  code: 'C2A1', openmrs_uuid: '', active: false, description: 'ABC+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'F8120855-2653-4C74-8D1D-E00517477012',regimen_scheme: 'AZT+3TC+ddI 250+LPV/r',  code: 'B5C', openmrs_uuid: '', active: false, description: 'AZT+3TC+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '91C6F86A-DC93-488F-B490-0359C18AFD76',regimen_scheme: 'AZT+3TC+ddI 400+LPV/r',  code: 'B5D', openmrs_uuid: '', active: false, description: 'AZT+3TC+ddI 400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '4BA93343-3129-404A-B82C-0FFBFB3F4006',regimen_scheme: 'AZT+ddI 250+LPV/r',  code: 'B1C', openmrs_uuid: '', active: false, description: 'AZT+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'D04B75BE-2B57-48FE-9044-976C1D01D4E6',regimen_scheme: 'AZT+ddI 400+EFV',  code: 'A3M', openmrs_uuid: '', active: false, description: 'AZT+ddI 400+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '63E0973A-E072-430A-AC28-0696F907F21E',regimen_scheme: 'AZT+ddI 400+LPV/r',  code: 'B1D',openmrs_uuid: '', active: false, description: 'AZT+ddI 400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'A343AD70-87E0-49E5-9408-A4E7148AFEC8',regimen_scheme: 'd4T 30+3TC+ABC',  code: 'A1E', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '16A80420-067A-4E6F-8881-44779B89BAAD',regimen_scheme: 'd4T 30+3TC+ddI 250+LPV/r',  code: 'B2F', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'F0AC82D1-3AFF-4A5B-8E20-6102C011660E',regimen_scheme: 'd4T 30+3TC+EFV',  code: 'A1C',openmrs_uuid: '', active: false, description: 'd4T 30+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'BDE352BF-7E1E-4AFE-B85C-B8DE54381D5F',regimen_scheme: 'd4T 30+3TC+NVP',  code: 'A1A', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '352FEF64-1ACB-45E2-806A-9026B132F785',regimen_scheme: 'd4T 30+ddI 250+EFV',  code: 'A3L', openmrs_uuid: '', active: false, description: 'd4T 30+ddI 250+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '6EC60A57-B191-4C38-B82A-FF0820DCBA8E',regimen_scheme: 'd4T 30+ddI 250+NVP',  code: 'A1K', openmrs_uuid: '', active: false, description: 'd4T 30+ddI 250+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '7DF4F49A-DA4C-498A-9879-0C63276ADF8E',regimen_scheme: 'd4T+3TC+EFZ200 (Ped)',  code: 'D4T123', openmrs_uuid: '', active: false, description: 'd4T+3TC+EFZ200 (Ped)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'F7901F59-C9B0-46BC-AA8D-2B906ACDFF8B',regimen_scheme: 'd4T30+3TC+ABC+LPV/r',  code: 'A1O', openmrs_uuid: '', active: false, description: 'd4T30+3TC+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'DE077C18-BFDC-453E-BA70-544B59517EB2',regimen_scheme: 'd4T30+3TC+LPV/r',  code: 'A1M', openmrs_uuid: '', active: false, description: 'd4T30+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'D67DBB95-46EF-4074-9D87-284FD7A7F5CF',regimen_scheme: 'd4T30+3TC+SQV+RTV',  code: 'A1P',openmrs_uuid: '', active: false, description: 'd4T30+3TC+SQV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'B2A9928E-C66B-47AE-AC9A-037066B6A8A1',regimen_scheme: 'd4T30+ABC+LPV/r',  code: 'A1N', openmrs_uuid: '', active: false, description: 'd4T30+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '6245CDD5-000F-4EBF-AF53-4B0B36591661',regimen_scheme: 'd4T30+dDI250+LPV/r',  code: 'C2X2', openmrs_uuid: '', active: false, description: 'd4T30+dDI250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'E3BA4694-3315-4B52-803F-1189C2A873BD',regimen_scheme: 'd4T30+dDI400+LPV/r',  code: 'C2X1',openmrs_uuid: '', active: false, description: 'd4T30+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'F69C1484-5872-47D5-8240-024F3557A433',regimen_scheme: 'ddI 250+3TC+EFV',  code: 'A3C', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'B207065A-CFE7-4986-BE91-D8EE6913887F',regimen_scheme: 'ddI 250+3TC+LPV/r',  code: 'A3N', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '1A2D5659-CB3C-46C5-AF7F-21581A168999',regimen_scheme: 'ddI 250+3TC+NVP',  code: 'A3A', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'F7803CDE-3005-43B8-AF50-B6827A2D074C',regimen_scheme: 'ddI 400+3TC+EFV',  code: 'A3D', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'DFF036F8-CE2A-4901-9ECD-39EFAC3D4E18',regimen_scheme: 'ddI 400+3TC+LPV/r',  code: 'A3O', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '4841FD1F-A01C-4EB1-8565-BDD3D9AAA1AC',regimen_scheme: 'ddI 400+3TC+NVP',  code: 'A3B', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '18BD5C82-EDD7-4497-9132-7064E0BFCB12',regimen_scheme: 'Regime Genérico TARV',  code: 'RG TARV',openmrs_uuid: '', active: false, description: 'Regime Genérico TARV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'FAA2F4FC-40B0-4A1A-B1D4-E8D49616B64B',regimen_scheme: 'SQV+RTV+ddI 250+ABC',  code: 'C8A', openmrs_uuid: '', active: false, description: 'SQV+RTV+ddI 250+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '9C970473-2C41-4411-A4B0-8FBCCA062919',regimen_scheme: 'SQV+RTV+ddi 400+ABC',  code: 'C8B', openmrs_uuid: '', active: false, description: 'SQV+RTV+ddi 400+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '0765552C-7369-4281-BC8A-A8DD4E297A23',regimen_scheme: 'TDF+3TC+d4T+LPV/r',  code: 'TDF14',openmrs_uuid: '', active: false, description: 'TDF+3TC+d4T+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: 'B9509EF0-D01D-47AF-961C-CED32A841E8D',regimen_scheme: 'TDF+AZT+3TC+SQV+RTV',  code: 'C3A1', openmrs_uuid: '', active: false, description: 'TDF+AZT+3TC+SQV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '90118ad6-999e-4f4d-8aee-8bde6e3d4f6d', regimen_scheme: 'TDF+3TC+ATV/r', code: '2alt1', openmrs_uuid: '7bf5a88d-6db6-4899-a01a-bfd14ce77b53', active: false, description: 'TDF+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'c2b8e086-6f82-4a7e-9615-3c95fea396b1', regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r80/20)', code: 'A2Fped Xarope', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r80/20)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '8552a6d1-9e75-4c33-84fb-8a35ac0a1f2c', regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r100/25', code: 'ABCPedCpts', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r(2DFC+LPV/r100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '66359dea-94c3-4de7-b7ef-d858b2f33eb8', regimen_scheme: 'AZT+3TC+ATV/r', code: '2alt3', openmrs_uuid: 'ba25f2b5-4216-4605-9e6b-1f591033dc3e', active: true, description: 'AZT+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '3c6e19e6-ba06-4c33-9970-62e89b62582d', regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r80/20)', code: 'ABCPedXarope', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r(2DFC+LPV/r80/20)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'a3f0aa60-c296-48bc-aee9-bca43f3d00bb', regimen_scheme: 'ABC+3TC+EFV', code: 'X5A', openmrs_uuid: '78419317-cdda-42e9-92a3-13cb0cbf0020', active: true, description: 'ABC+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'de4a3f40-d20c-42c9-b8ee-3c646bc3e85b', regimen_scheme: 'AZT+3TC+NVP', code: 'A2A', openmrs_uuid: 'e1dd2f44-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'AZT+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '172a3ed8-5738-4e39-bd63-62467c2068f8', regimen_scheme: 'TDF+AZT+3TC+LPV/r', code: 'C1A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '84581535-1c71-4e7d-9da3-852fdb8df744', regimen_scheme: 'ABC+3TC+LPV/r(2DFC+LPV/r40/10)', code: 'ABCPedGranulos', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: false, description: 'ABC+3TC+LPV/r(2DFC+LPV/r40/10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'c9bddf65-1400-4d76-813f-908efc0350c4', regimen_scheme: 'ABC+3TC+EFV Ped(2DFC+EFV200)', code: 'X5APed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+3TC+EFV Ped(2DFC+EFV200)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'b3a3b2c4-6832-4b9e-bad0-79b9e967ec74', regimen_scheme: 'TDF+3TC+NVP', code: 'TDF12', openmrs_uuid: '2e44e77e-eac4-4f64-84d2-73d32abf94d5', active: true, description: 'TDF+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'd513cd89-7b92-433a-82f0-16b9f1b74ee7', regimen_scheme: 'TDF+ABC+LPV/r', code: 'C6A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '81670de2-6dae-4da7-84f6-f6e2c42025cd', regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', code: 'A2Fped Granulos', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '0f347ba1-cba7-4637-978b-1b920e7f0437', regimen_scheme: 'ABC+3TC+RAL', code: '1TB2', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'ABC+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '5c3ca182-b55c-4409-ba6e-9a2586f0e7d1', regimen_scheme: '3TC+RAL+DRV/r', code: '3L_3TC', openmrs_uuid: '', active: false, description: '3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '0104ded8-054e-41ed-a669-6c11e1d5fec2', regimen_scheme: 'TDF+3TC+DTG', code: '1aLTLD', openmrs_uuid: 'e3f6bb60-e2cf-46cb-a9da-27d634ba8607', active: true, description: 'TDF+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '1e4fbb43-ecd9-4d45-9ab7-2232baf47110', regimen_scheme: 'ABC+3TC+DTG', code: '1alt1', openmrs_uuid: 'af15246d-30b8-4aff-8391-ca2b58e2c88b', active: true, description: 'ABC+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'ca77f024-b568-4ee5-8fa9-946e5e38a9c5', regimen_scheme: 'd4T30+3TC+dDI400+LPV/r', code: 'dDI123', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'd4T30+3TC+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '5a96f4e2-6ad5-417a-b891-d32998db6ffc', regimen_scheme: 'ABC+3TC+NVP (2FDC+NVP50)', code: 'X5CPed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'ABC+3TC+NVP (2FDC+NVP50)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '238d6085-89bd-4f0d-8055-1f98602b04e5', regimen_scheme: 'AZT+3TC+ABC', code: 'A2C', openmrs_uuid: '3e7f46c7-a971-4c0c-82aa-a65589fd518e', active: true, description: 'AZT+3TC+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'ea929911-25f9-4687-a867-e8ed126a1755', regimen_scheme: 'AZT+3TC+DTG', code: '1alt2', openmrs_uuid: '9cb63f72-4c08-4543-878a-537dcabe5670', active: false, description: 'AZT+3TC+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '6f01220d-adbf-43a8-a446-8304816db868', regimen_scheme: 'ABC+AZT+LPV/r', code: 'X3N', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+AZT+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '7d010064-2a47-4d62-bf5c-b2de9fea2188', regimen_scheme: 'TDF+AZT+LPV/r', code: 'TDF13', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+AZT+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'df826005-f486-40ac-be77-5fd8760b15a3', regimen_scheme: 'TDF+ABC+3TC+LPV/r', code: 'C4A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+ABC+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'cc844796-789c-4418-a12c-48f14ef4b879', regimen_scheme: 'ABC+3TC+ATV/r', code: '2alt2', openmrs_uuid: 'e8b741b3-463c-46b1-8423-a16f736af8d4', active: true, description: 'ABC+3TC+ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'f03621ab-358a-4143-943b-f0df34e70ffa', regimen_scheme: 'TDF+3TC+LPV/r', code: 'C7A', openmrs_uuid: 'f8c5d365-7636-4449-9acd-c83c4fd2ea01', active: true, description: 'TDF+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '83f720f6-c11b-447f-8149-faaead605104', regimen_scheme: 'AZT+3TC+EFV', code: 'A2B', openmrs_uuid: 'e1de19fe-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'c8bfba60-97ce-4a38-8f53-71b1b758c347', regimen_scheme: 'AZT+3TC+ABC (2FDC+ABC Baby)', code: 'A2Cped', openmrs_uuid: '3e7f46c7-a971-4c0c-82aa-a65589fd518e', active: true, description: 'AZT+3TC+ABC (2FDC+ABC Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '74937b5a-440a-4844-921c-62609ea78725', regimen_scheme: 'AZT+3TC+NVP (3FDC Baby)', code: 'A2Aped', openmrs_uuid: 'e1dd2f44-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+NVP (3FDC Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '93b15d9b-ea38-4438-80f8-dad2162c9c65', regimen_scheme: 'TDF+3TC+EFV', code: 'A4A', openmrs_uuid: '9dc17c1b-7b6d-488e-a38d-505a7b65ec82', active: true, description: 'TDF+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'e11e5b38-c18b-4546-bd80-98df9906957a', regimen_scheme: 'AZT+3TC+RAL+DRV/r', code: '3Lb', openmrs_uuid: '', active: false, description: 'AZT+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'f415d3be-67f3-4801-863f-b5a245e918fe', regimen_scheme: 'TDF+3TC+RAL+DRV/r', code: '3La', openmrs_uuid: '', active: false, description: 'TDF+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '3d080342-990e-47aa-8195-81e472cc5fbc', regimen_scheme: 'ABC+3TC+RAL+DRV/r', code: '3Lbb', openmrs_uuid: '', active: true, description: 'ABC+3TC+RAL+DRV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '0cba491b-afd9-4f15-bad1-1a78f94ab40d', regimen_scheme: 'd4T+3TC+EFV (2DFC Baby + EFV)', code: 'D4T123X', openmrs_uuid: '', active: false, description: 'd4T+3TC+EFV (2DFC Baby + EFV)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'dbd4d793-5d1e-40d8-b242-1153e7977438', regimen_scheme: 'TDF+3TC+RAL', code: '1TB1', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '85cf6677-186b-40e8-a3a5-52bc493a82b0', regimen_scheme: 'AZT+3TC+RAL', code: '1TB3', openmrs_uuid: 'c4a56680-ac6e-4538-8126-e3097b7b4789', active: true, description: 'AZT+3TC+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'b0da927c-c1e4-4df7-8e5c-634d3a43bcc1', regimen_scheme: 'PTV Pediatrico', code: 'PTV Pediatri', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'PTV Pediatrico', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '6c87963f-d603-4a62-a0c1-df6645f74f3c', regimen_scheme: 'TDF+FTC PreEP', code: 'PreEP', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'TDF+FTC PreEP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'f4b4703e-49aa-4e86-8aee-5a22f3c4bde4', regimen_scheme: 'ABC+3TC120/60+DTG', code: 'X6APed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+3TC120/60+DTG', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '80f03d2f-b7b6-4922-a79d-344959517911', regimen_scheme: 'AZT+3TC+LPV/r', code: 'A2F', openmrs_uuid: 'daf60844-9002-403f-bd93-3838149a9a5e', active: false, description: 'AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '1d2b832f-8ef9-4a32-8fdd-8774aa579533', regimen_scheme: 'ABC+3TC+NVP', code: 'X5C', openmrs_uuid: 'e11be52e-0da1-4d32-ab5c-e0feb9b6abd6', active: false, description: 'ABC+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'ef22088a-30d4-4981-8628-3ae6b7026ea5', regimen_scheme: 'ABC+AZT+3TC+LPV/r', code: 'X3N1', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+AZT+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '4f630e5d-f35c-4bc4-acb6-3d19b1b420f6', regimen_scheme: 'AZT+3TC+EFV (2FDC+EFV 200)', code: 'A2Bped', openmrs_uuid: 'e1de19fe-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'AZT+3TC+EFV (2FDC+EFV 200)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'a54eed82-3789-4863-ae37-ff43e19bab90', regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r100/25', code: 'A2Fped Cpts', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '3f892be3-f5d7-404b-b2ca-dfcea9edcc80', regimen_scheme: 'ABC+3TC120/60+LPV/R100/25', code: '2ALT3', openmrs_uuid: 'ABC+3TC120/60+LPV/R100/25', active: false, description: 'ABC+3TC120/60+LPV/R100/25', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'd68c8585-1d4b-411c-94f9-45bedca6894c', regimen_scheme: 'ABC+3TC+LPV/r', code: 'ABC12', openmrs_uuid: 'cf05347e-063c-4896-91a4-097741cf6be6', active: true, description: 'ABC+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'fb27fd40-c739-407d-b9e0-37bac8561bff', regimen_scheme: 'd4T+3TC+LPV/r(2DFC Baby+LPV/r)', code: 'D4T124', openmrs_uuid: '', active: false, description: 'd4T+3TC+LPV/r(2DFC Baby+LPV/r)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'a647afcb-4c90-48de-a647-39ec87aca13d', regimen_scheme: 'd4T+3TC+NVP (3DFC Baby )', code: 'A1Aped', openmrs_uuid: '', active: false, description: 'd4T+3TC+NVP (3DFC Baby )', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'cb5b73dd-deda-4363-a8da-6859b34f79e4', regimen_scheme: 'd4T+3TC+ABC (2DFC Baby + ABC )', code: 'A1Eped', openmrs_uuid: '', active: false, description: 'd4T+3TC+ABC (2DFC Baby + ABC )', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '8A049D25-8804-439D-84D3-A730E0F0699F', regimen_scheme: '2as Optimizadas ATV/r', code: '2Op1', openmrs_uuid: '', active: true, description: '2as Optimizadas ATV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '9FC3ABE1-925E-43F2-A2F4-D01C9B67BA89', regimen_scheme: '2as Optimizadas ATV/r+RAL', code: '2Op2', openmrs_uuid: '', active: true, description: '2as Optimizadas ATV/r+RAL', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '1F7B72CB-DF9D-4FFB-BA00-7D6B847223AA', regimen_scheme: '2as Optimizadas DRV+RTV', code: '2Op3', openmrs_uuid: '', active: true, description: '2as Optimizadas DRV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'B34FEE8D-52B8-40B2-819C-66CA29FC5ADC', regimen_scheme: '3a Linha adaptada DRV+RAL+RTV', code: '3op1', openmrs_uuid: '', active: true, description: '3a Linha adaptada DRV+RAL+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '05D2C1BF-A824-410B-B627-211302400213', regimen_scheme: 'ABC+3TC+DTG (2DFC ped + DTG10)', code: 'X7APed', openmrs_uuid: '', active: true, description: 'ABC+3TC+DTG (2DFC ped + DTG10)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '7D18A417-7CCE-47C2-A1EF-6212356FA7FE', regimen_scheme: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)', code: 'A2Fped', openmrs_uuid: '', active: true, description: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '678A48E0-6B7B-438D-B5CD-EFFA4557F5E9', regimen_scheme: 'ABC+3TC+LPV/r (2FC+LPV/r)', code: 'ABCPedNew', openmrs_uuid: '', active: false, description: 'ABC+3TC+LPV/r (2FC+LPV/r)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'E10520F0-E38C-4FD6-A1D8-F4D9DE637F7C', regimen_scheme: 'ABC+dDI250+LPV/r', code: 'C2A2', openmrs_uuid: '', active: false, description: 'ABC+dDI250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'B657EB26-005E-4F95-A069-DE08D346820A', regimen_scheme: 'ABC+dDI400+LPV/r', code: 'C2A1', openmrs_uuid: '', active: false, description: 'ABC+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'F8120855-2653-4C74-8D1D-E00517477012', regimen_scheme: 'AZT+3TC+ddI 250+LPV/r', code: 'B5C', openmrs_uuid: '', active: false, description: 'AZT+3TC+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '91C6F86A-DC93-488F-B490-0359C18AFD76', regimen_scheme: 'AZT+3TC+ddI 400+LPV/r', code: 'B5D', openmrs_uuid: '', active: false, description: 'AZT+3TC+ddI 400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '4BA93343-3129-404A-B82C-0FFBFB3F4006', regimen_scheme: 'AZT+ddI 250+LPV/r', code: 'B1C', openmrs_uuid: '', active: false, description: 'AZT+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'D04B75BE-2B57-48FE-9044-976C1D01D4E6', regimen_scheme: 'AZT+ddI 400+EFV', code: 'A3M', openmrs_uuid: '', active: false, description: 'AZT+ddI 400+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '63E0973A-E072-430A-AC28-0696F907F21E', regimen_scheme: 'AZT+ddI 400+LPV/r', code: 'B1D', openmrs_uuid: '', active: false, description: 'AZT+ddI 400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'A343AD70-87E0-49E5-9408-A4E7148AFEC8', regimen_scheme: 'd4T 30+3TC+ABC', code: 'A1E', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '16A80420-067A-4E6F-8881-44779B89BAAD', regimen_scheme: 'd4T 30+3TC+ddI 250+LPV/r', code: 'B2F', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+ddI 250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'F0AC82D1-3AFF-4A5B-8E20-6102C011660E', regimen_scheme: 'd4T 30+3TC+EFV', code: 'A1C', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'BDE352BF-7E1E-4AFE-B85C-B8DE54381D5F', regimen_scheme: 'd4T 30+3TC+NVP', code: 'A1A', openmrs_uuid: '', active: false, description: 'd4T 30+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '352FEF64-1ACB-45E2-806A-9026B132F785', regimen_scheme: 'd4T 30+ddI 250+EFV', code: 'A3L', openmrs_uuid: '', active: false, description: 'd4T 30+ddI 250+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '6EC60A57-B191-4C38-B82A-FF0820DCBA8E', regimen_scheme: 'd4T 30+ddI 250+NVP', code: 'A1K', openmrs_uuid: '', active: false, description: 'd4T 30+ddI 250+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '7DF4F49A-DA4C-498A-9879-0C63276ADF8E', regimen_scheme: 'd4T+3TC+EFZ200 (Ped)', code: 'D4T123', openmrs_uuid: '', active: false, description: 'd4T+3TC+EFZ200 (Ped)', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'F7901F59-C9B0-46BC-AA8D-2B906ACDFF8B', regimen_scheme: 'd4T30+3TC+ABC+LPV/r', code: 'A1O', openmrs_uuid: '', active: false, description: 'd4T30+3TC+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'DE077C18-BFDC-453E-BA70-544B59517EB2', regimen_scheme: 'd4T30+3TC+LPV/r', code: 'A1M', openmrs_uuid: '', active: false, description: 'd4T30+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'D67DBB95-46EF-4074-9D87-284FD7A7F5CF', regimen_scheme: 'd4T30+3TC+SQV+RTV', code: 'A1P', openmrs_uuid: '', active: false, description: 'd4T30+3TC+SQV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'B2A9928E-C66B-47AE-AC9A-037066B6A8A1', regimen_scheme: 'd4T30+ABC+LPV/r', code: 'A1N', openmrs_uuid: '', active: false, description: 'd4T30+ABC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '6245CDD5-000F-4EBF-AF53-4B0B36591661', regimen_scheme: 'd4T30+dDI250+LPV/r', code: 'C2X2', openmrs_uuid: '', active: false, description: 'd4T30+dDI250+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'E3BA4694-3315-4B52-803F-1189C2A873BD', regimen_scheme: 'd4T30+dDI400+LPV/r', code: 'C2X1', openmrs_uuid: '', active: false, description: 'd4T30+dDI400+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'F69C1484-5872-47D5-8240-024F3557A433', regimen_scheme: 'ddI 250+3TC+EFV', code: 'A3C', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'B207065A-CFE7-4986-BE91-D8EE6913887F', regimen_scheme: 'ddI 250+3TC+LPV/r', code: 'A3N', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '1A2D5659-CB3C-46C5-AF7F-21581A168999', regimen_scheme: 'ddI 250+3TC+NVP', code: 'A3A', openmrs_uuid: '', active: false, description: 'ddI 250+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'F7803CDE-3005-43B8-AF50-B6827A2D074C', regimen_scheme: 'ddI 400+3TC+EFV', code: 'A3D', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+EFV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'DFF036F8-CE2A-4901-9ECD-39EFAC3D4E18', regimen_scheme: 'ddI 400+3TC+LPV/r', code: 'A3O', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '4841FD1F-A01C-4EB1-8565-BDD3D9AAA1AC', regimen_scheme: 'ddI 400+3TC+NVP', code: 'A3B', openmrs_uuid: '', active: false, description: 'ddI 400+3TC+NVP', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '18BD5C82-EDD7-4497-9132-7064E0BFCB12', regimen_scheme: 'Regime Genérico TARV', code: 'RG TARV', openmrs_uuid: '', active: false, description: 'Regime Genérico TARV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'FAA2F4FC-40B0-4A1A-B1D4-E8D49616B64B', regimen_scheme: 'SQV+RTV+ddI 250+ABC', code: 'C8A', openmrs_uuid: '', active: false, description: 'SQV+RTV+ddI 250+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '9C970473-2C41-4411-A4B0-8FBCCA062919', regimen_scheme: 'SQV+RTV+ddi 400+ABC', code: 'C8B', openmrs_uuid: '', active: false, description: 'SQV+RTV+ddi 400+ABC', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '0765552C-7369-4281-BC8A-A8DD4E297A23', regimen_scheme: 'TDF+3TC+d4T+LPV/r', code: 'TDF14', openmrs_uuid: '', active: false, description: 'TDF+3TC+d4T+LPV/r', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: 'B9509EF0-D01D-47AF-961C-CED32A841E8D', regimen_scheme: 'TDF+AZT+3TC+SQV+RTV', code: 'C3A1', openmrs_uuid: '', active: false, description: 'TDF+AZT+3TC+SQV+RTV', clincal_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
 
         return therapeuticRegimenList
 
     }
 
 
-
-    List<Object> listDrug(){
+    List<Object> listDrug() {
 
         List<Object> listDrug = new ArrayList<>()
 
         listDrug.add(new LinkedHashMap(id: '8fa7539a-4452-44b2-9b0f-c1d5229746b4', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[TDF/3TC/EFV] Tenofovir 300mg/Lamivudina 300mg/Efavirenze 400mg TLE30', uuid_openmrs: '08S18X-b0-de4a-4233-86fa-c91f9e606be5', fnm_code: '08S18X', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'f0196993-bca0-4284-9474-c7fc5f0f5000', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[Vit B6 25mg cp] Piridoxina (Vit B6) 25mg',uuid_openmrs:  '', fnm_code: '12D14Z', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
+        listDrug.add(new LinkedHashMap(id: 'f0196993-bca0-4284-9474-c7fc5f0f5000', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[Vit B6 25mg cp] Piridoxina (Vit B6) 25mg', uuid_openmrs: '', fnm_code: '12D14Z', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '06fd53a0-5201-4bf8-8e46-f4e0b0809963', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[RPT/INH 300/300mg cp] Rifapentina 300mg/ Isoniazida 300mg', uuid_openmrs: '', fnm_code: '08L06X', default_treatment: 3, default_period_treatment: 'Semana', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '0de13637-deb3-42d1-8870-b5f4102dc641', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[RPT 150mg cp] Rifapentina 150mg', uuid_openmrs: '', fnm_code: '08L06XZ', default_treatment: 1, default_period_treatment: 'Semana', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '6cba5522-48f6-4f3e-9ece-e4f2495f79ab', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[LFX 250mg cp] Levofloxacina 250mg ', uuid_openmrs: '', fnm_code: '08H07', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: 'ebaec112-1b91-4aaa-a865-d5b770b5bebd', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[LFX 100mg cp] Levofloxacina 100 mg Disp', uuid_openmrs: '', fnm_code: '08H07Y', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: 'b40c9f35-16c1-48da-af00-c45096fbf88c', form_id: '74C8F060-1EA4-45E9-94DB-2DE6775E6481', default_times: 2, pack_size: 120, name: '[LPV/RTV] Lopinavir/Ritornavir 40mg/10mg Pellets/Granulos', uuid_openmrs: '08S38Y-0c-0932-4b37-ab53-4aae60820544', fnm_code: '08S38Y', default_treatment: 2, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'ef000f5c-2e4c-4843-b2fb-0a265dc60a6a', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[RAL] Raltegravir 400mg', uuid_openmrs: '08S30ZZ-b2-edb5-4815-a4bf-8f0618f029be', fnm_code: '08S30ZZ', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'd95d079e-a83c-4ca5-86c6-23b99e6fa6a7', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 0, pack_size: 80, name: '[LPV/RTV] Lopinavir/Ritonavir 400mg/100mg 5ml 80ml', uuid_openmrs: '08S39-054-ad23-4d26-8ca1-88308070d08e', fnm_code: '08S39', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'd95d079e-a83c-4ca5-86c6-23b99e6fa6a7', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 1, pack_size: 80, name: '[LPV/RTV] Lopinavir/Ritonavir 400mg/100mg 5ml 80ml', uuid_openmrs: '08S39-054-ad23-4d26-8ca1-88308070d08e', fnm_code: '08S39', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '53b9d0ca-ce34-42d7-b9b1-0e9de4f47222', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 120, name: '[LPV/RTV] Lopinavir/Ritonavir 200mg/50mg', uuid_openmrs: '08S39Z-7a-93f6-4e05-baa3-8c4684c8013e', fnm_code: '08S39Z', default_treatment: 2, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'bc7fe62f-a72f-4935-84a8-1d47a60db24f', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[NVP] Nevirapine 200mg', uuid_openmrs: '08S22-d18-2655-4426-868a-b291a5adff38', fnm_code: '08S22', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '8aa8e4c1-3d9c-4d67-9d28-a27e018e0676', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[NVP]  Nevirapina 50mg', uuid_openmrs: '08S23Z-cd-22ff-4993-9378-335cf43bd5c8', fnm_code: '08S23Z', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '8aa8e4c1-3d9c-4d67-9d28-a27e018e0676', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[NVP]  Nevirapina 50mg', uuid_openmrs: '08S23Z-cd-22ff-4993-9378-335cf43bd5c8', fnm_code: '08S23Z', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '6ede4a9f-8da4-4581-b8d8-52a88e01f8b2', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 2, pack_size: 240, name: '[AZT] Zidovudine 50mg/5ml', uuid_openmrs: '08S17Y-b6-6e76-451d-8892-a6d407e0e0d6', fnm_code: '08S17Y', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'dcd3ce1c-5b97-4248-ba51-c1b98ebbc376', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[AZT] Zidovudine 300mg', uuid_openmrs: '08S15-f3b-d54c-420d-ad96-698f71c003c5', fnm_code: '08S15', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '6d0462de-c438-4099-af6a-c1ea8ff2e224', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[ABC] Abacavir 300mg', uuid_openmrs: '08S01-ab-d6e9-4de6-beb8-441daf8d00a3', fnm_code: '08S01', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -925,28 +942,28 @@ class BootStrap {
         listDrug.add(new LinkedHashMap(id: 'a037bad8-1e21-4f37-be3c-120c6751d3ac', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[EFV] Efavirenz 600mg', uuid_openmrs: '08S21-918-6273-4f5c-be72-755da371e731', fnm_code: '08S21', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '69600a88-15c0-436c-a6ed-9d14b97c7586', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 90, name: '[EFV] Efavirenz 200mg', uuid_openmrs: '08S20-9db-3bef-4de8-af61-4610d4ead1ba', fnm_code: '08S20', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'd012e46e-5aec-4993-bed4-5f062f3b63a6', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[TDF] Tenofovir 300mg', uuid_openmrs: '08S18-6cb-4b62-4cc0-98af-8053e1396419', fnm_code: '08S18', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'a46c022d-0d74-46ec-9932-7b02788afea5', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 90, name: '[TDF/3TC/EFV] Tenofovir 300mg/Lamivudina 300mg/Efavirenze 400mg TLE90', uuid_openmrs: '08S18XI-6-0715-4389-a4b2-d20de330e26c', fnm_code: '08S18XI', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'a46c022d-0d74-46ec-9932-7b02788afea5', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 90, name: '[TDF/3TC/EFV] Tenofovir 300mg/Lamivudina 300mg/Efavirenze 400mg TLE90', uuid_openmrs: '08S18XI-6-0715-4389-a4b2-d20de330e26c', fnm_code: '08S18XI', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '03e69b01-f5d7-49e9-9fd4-bc582c24af2b', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/AZT/NVP] Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg', uuid_openmrs: '08S42-d98-6b3e-485f-b969-376fca8b7789', fnm_code: '08S42', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '45a61698-cc56-4f7f-8081-8b8c17df3622', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[3TC/AZT/NVP] Lamivudina 30mg/Zidovudina 60mg/Nevirapina 50mg', uuid_openmrs: '08S42B-d89-7e03-4f25-975e-b66a5e28e063',fnm_code:  '08S42B', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '4d2c441c-4393-489e-bd4c-bab5c7456a78', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[3TC/AZT/ABC] Lamivudina 150mg/Zidovudina 300mg/Abacavir 300mg', uuid_openmrs: '08S41-ec0-c1cf-42e1-9a37-9f23b4f07bba', fnm_code: '08S41', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'b8620a31-e203-4b1d-9f22-7e13d5c44746', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 30, name: '[TDF/FTC] Tenofovir 300mg/Emtricitabina 200mg', uuid_openmrs: '08S31-9e9-49f9-4cd6-8268-8df7315e3d09', fnm_code: '08S31', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'cfe9ea7f-7833-47e9-9049-f3309446e984', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[ABC/3TC] Abacavir 120mg/Lamivudina 60mg', uuid_openmrs: '08S01ZW-ec-ec31-45aa-a74e-7238872483e8', fnm_code: '08S01ZW', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '45a61698-cc56-4f7f-8081-8b8c17df3622', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[3TC/AZT/NVP] Lamivudina 30mg/Zidovudina 60mg/Nevirapina 50mg', uuid_openmrs: '08S42B-d89-7e03-4f25-975e-b66a5e28e063', fnm_code: '08S42B', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '4d2c441c-4393-489e-bd4c-bab5c7456a78', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[3TC/AZT/ABC] Lamivudina 150mg/Zidovudina 300mg/Abacavir 300mg', uuid_openmrs: '08S41-ec0-c1cf-42e1-9a37-9f23b4f07bba', fnm_code: '08S41', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'b8620a31-e203-4b1d-9f22-7e13d5c44746', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[TDF/FTC] Tenofovir 300mg/Emtricitabina 200mg', uuid_openmrs: '08S31-9e9-49f9-4cd6-8268-8df7315e3d09', fnm_code: '08S31', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'cfe9ea7f-7833-47e9-9049-f3309446e984', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[ABC/3TC] Abacavir 120mg/Lamivudina 60mg', uuid_openmrs: '08S01ZW-ec-ec31-45aa-a74e-7238872483e8', fnm_code: '08S01ZW', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '135b1a6f-0791-47d4-8e8e-6f8b75bab054', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/AZT] Lamivudina 30mg/ Zidovudina 60mg', uuid_openmrs: '08S40Z-fc-6563-49e4-bf81-a456bf79ec88', fnm_code: '08S40Z', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'f8a6a5be-9737-474b-ade2-b2789610d7ee', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 120, name: '[LPV/RTV] Lopinavir/Ritonavir -Aluvia 200mg/50mg', uuid_openmrs: '08S38Z-99-3fe6-48b7-9b25-3052660f3d8b', fnm_code: '08S38Z', default_treatment: 2, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '909a8ee5-30cd-45ef-8540-0a44f26a1a09', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[ABC/3TC] Abacavir 60 and Lamivudina 30mg', uuid_openmrs: '08S01ZZ-2e-29dd-40aa-94b4-0d4fe65e081c', fnm_code: '08S01ZZ', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '909a8ee5-30cd-45ef-8540-0a44f26a1a09', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[ABC/3TC] Abacavir 60 and Lamivudina 30mg', uuid_openmrs: '08S01ZZ-2e-29dd-40aa-94b4-0d4fe65e081c', fnm_code: '08S01ZZ', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '3c6518d4-ad5b-445e-b3d4-8812363e056c', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/D4T/NVP] Lamivudina 150mg/Stavudina 30mg/Nevirapina 200mg', uuid_openmrs: '08S4X-833-b26a-4996-8066-48847431404a', fnm_code: '08S4X', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '10a8ead6-f561-4440-b483-4261e27be295', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 30, name: '[ABC/3TC] Abacavir 600mg/Lamivudina 300mg', uuid_openmrs: '08S01ZY-d7-4218-4032-aa8c-615aec71a218', fnm_code: '08S01ZY', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '10a8ead6-f561-4440-b483-4261e27be295', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[ABC/3TC] Abacavir 600mg/Lamivudina 300mg', uuid_openmrs: '08S01ZY-d7-4218-4032-aa8c-615aec71a218', fnm_code: '08S01ZY', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '8ba0bfde-b1b1-408a-806f-4683f2bb17c1', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/AZT] Lamivudina 150mg/ Zidovudina 300mg', uuid_openmrs: '08S40-833-b26a-4996-8066-48847431404a', fnm_code: '08S40', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'df7f5db0-cd09-44fd-a1cd-d9398482dffc', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 60, name: '[LPV/RTV] Lopinavir/Ritonavir -Aluvia 100mg/25mg', uuid_openmrs: '08S39B-b2-e392-425a-b824-f33f745733e6', fnm_code: '08S39B', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'df7f5db0-cd09-44fd-a1cd-d9398482dffc', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[LPV/RTV] Lopinavir/Ritonavir -Aluvia 100mg/25mg', uuid_openmrs: '08S39B-b2-e392-425a-b824-f33f745733e6', fnm_code: '08S39B', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '0596bddc-63cb-4805-80ae-2cc693adf66f', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 90, name: '[TDF/3TC/DTG] Tenofovir 300mg/Lamivudina 300mg/Dolutegravir 50mg TLD90', uuid_openmrs: '08S18WI-4-70b1-4732-af8b-be24cb04aaa6', fnm_code: '08S18WI', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '67034ec5-f1b7-4832-b187-d7e621b84262', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 2, pack_size: 240, name: '[NVP] Nevirapine 50mg/5ml', uuid_openmrs: '08S23-316-d7e9-4757-9466-d0e6c1d8b1db',fnm_code:  '08S23', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '67034ec5-f1b7-4832-b187-d7e621b84262', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 2, pack_size: 240, name: '[NVP] Nevirapine 50mg/5ml', uuid_openmrs: '08S23-316-d7e9-4757-9466-d0e6c1d8b1db', fnm_code: '08S23', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'd985d045-c98f-4cec-83c7-6f461e5d36a2', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[INH 100 cp] Isoniazida 100mg', uuid_openmrs: '', fnm_code: '08L04', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '1892f3ff-d77d-4d46-b8df-496695eac891', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[TDF/3TC] Tenofovir 300mg/Lamivudina 300mg', uuid_openmrs: '08S18Z-da-b787-4fa1-a2d6-2fda22da6564', fnm_code: '08S18Z', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'f8f1d700-5556-4baf-be6d-ba293b38cee4', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[INH 300mg cp] Isoniazida 300mg', uuid_openmrs: '', fnm_code: '08L03', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '238ea424-9f4e-4b6e-8cec-b39c3e4e3345', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[Vit B6 50mg cp] Piridoxina (Vitamina B6) 50mg', uuid_openmrs: '', fnm_code: '12D14', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '3cbfb612-cc39-4001-82f0-451568d43a8c', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[ATV/RTV] Atazanavir 300mg/Ritonavir 100mg', uuid_openmrs: '08S30WZ-48-cf6b-47e2-a101-0cc9faa8fbce', fnm_code: '08S30WZ', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'd5d428c0-6219-459c-8837-b4069694b45a', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC] Lamivudine 150mg', uuid_openmrs: '08S13-ddb-e5bd-4b96-ae5d-11ada78c8a35', fnm_code: '08S13', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: 'c8e78317-ee4d-415f-9674-d3e0fd543d12', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 0, pack_size: 180, name: '[TDF/3TC/EFV] Tenofovir 300mg/Lamivudina 300mg/Efavirenze 400mg TLE180', uuid_openmrs: '08S18XII-3a07-4e5f-9d00-0016dc840a84', fnm_code: '08S18XII', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: 'c8e78317-ee4d-415f-9674-d3e0fd543d12', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 180, name: '[TDF/3TC/EFV] Tenofovir 300mg/Lamivudina 300mg/Efavirenze 400mg TLE180', uuid_openmrs: '08S18XII-3a07-4e5f-9d00-0016dc840a84', fnm_code: '08S18XII', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'da4377a3-f9ab-4bb3-aa33-7aa1aee56db5', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 2, pack_size: 60, name: '[LPV/RTV]  Lopinavir/Ritonavir-Kaletra 80/20 mg/ml', uuid_openmrs: '08S39Y-3a-20c8-4a16-aaea-f2d4537202e4', fnm_code: '08S39Y', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '215B0404-E745-40C8-9F53-4C1BB510D4DF', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[EFV] Efavirenz 50mg', uuid_openmrs: '08S20-9db-3bef-4de8-af61-4610d4ead1ba', fnm_code: 'TSW80', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '1c607f0f-311a-43a4-ac8c-2e205d53ad0e', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 180, name: '[TDF/3TC/DTG] Tenofovir 300mg/Lamivudina 300mg/Dolutegravir 50mg TLD180', uuid_openmrs: '08S18WII-5863-4423-9e97-bc1b480df134', fnm_code: '08S18WII', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -969,7 +986,7 @@ class BootStrap {
         listDrug.add(new LinkedHashMap(id: '44A0216C-48BD-406F-9C41-60DA9DCB05D9', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[DRV] Darunavir 300mg ', uuid_openmrs: '', fnm_code: '08S30Z', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'D7C3CDFE-A012-4B96-9595-8170FACDCBBD', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 1, pack_size: 300, name: '[ABC] Abacavir sulfato 10mg/mL', uuid_openmrs: '', fnm_code: '08S02', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '98D80A5B-2C0A-4EB0-B7AD-01B3B03FB1AD', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 1, pack_size: 600, name: '[ABC] Abacavir sulfato 20mg/mL', uuid_openmrs: '', fnm_code: '08S02Z', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        listDrug.add(new LinkedHashMap(id: '9C60B7A7-17F0-45F7-B410-BAFB5B580FDA', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[DDI] Didanosina 100mg', uuid_openmrs: '',fnm_code:  '08S04', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '9C60B7A7-17F0-45F7-B410-BAFB5B580FDA', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[DDI] Didanosina 100mg', uuid_openmrs: '', fnm_code: '08S04', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '10BDC114-7DB7-477F-AC4A-812AC9C74ACB', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[DDI] Didanosina 150mg', uuid_openmrs: '', fnm_code: '08S05', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '09DD20BB-ACF0-42C4-8456-AA3E20D5244F', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[DDI] Didanosina 200mg;', uuid_openmrs: '', fnm_code: '08S06', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '14F63C61-5334-4B2D-B3E5-FA7F752B46F8', form_id: '74C8F060-1EA4-45E9-94DB-2DE6775E6481', default_times: 1, pack_size: 30, name: '[DDI] Didanosina libertacao lenta 125mg', uuid_openmrs: '', fnm_code: '08S07', default_treatment: 1, default_period_treatment: 'Dia', active: false, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -986,6 +1003,289 @@ class BootStrap {
 
         return listDrug
 
+
+    }
+
+    List<Object> listRegimenDrugs() {
+
+        List<Object> listDrugRegimen = new ArrayList<>()
+
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op1', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op2', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op2', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op3', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op3', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op3', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op3', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2Op3', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3op1', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3L_3TC', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt2', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt2', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1alt1', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1alt1', drug_id: '08S30ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X7APed', drug_id: '08S01ZWi'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X7APed', drug_id: '08S30ZXi'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X7APed', drug_id: '08S30ZX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X6APed', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X6APed', drug_id: '08S30ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5A', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5A', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5A', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5A', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5APed', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5APed', drug_id: '08S20'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABC12', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABC12', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABC12', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABC12', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABC12', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedCpts', drug_id: '08S01ZW'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedCpts', drug_id: '08S01ZWi'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedCpts', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedCpts', drug_id: '08S39B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedGranulos', drug_id: '08S01ZW'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedGranulos', drug_id: '08S01ZWi'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedGranulos', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedGranulos', drug_id: '08S38Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedXarope', drug_id: '08S01ZW'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedXarope', drug_id: '08S01ZWi'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedXarope', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedXarope', drug_id: '08S39Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedNew', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedNew', drug_id: '08S38Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedNew', drug_id: '08S39'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedNew', drug_id: '08S39B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'ABCPedNew', drug_id: '08S39Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5C', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5C', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5C', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5C', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5CPed', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5CPed', drug_id: '08S23Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5CPed', drug_id: '08S01ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X5CPed', drug_id: '08S23Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB2', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB2', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB2', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB2', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S01ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lbb', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N1', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N1', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N1', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N1', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N', drug_id: '08S15'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'X3N', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A2', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A2', drug_id: '08S08'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A2', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A1', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A1', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C2A1', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2C', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2C', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2C', drug_id: '08S41'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Cped', drug_id: '08S01Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Cped', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt3', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt3', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1alt2', drug_id: '08S30ZY'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1alt2', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2B', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2B', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Bped', drug_id: '08S20'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Bped', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Bped', drug_id: '08S19'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Bped', drug_id: '08S20'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Bped', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2F', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2F', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2F', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Cpts', drug_id: '08S39B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Cpts', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Granulos', drug_id: '08S38Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Granulos', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Xarope', drug_id: '08S39Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped Xarope', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped', drug_id: '08S38Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped', drug_id: '08S39'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped', drug_id: '08S39B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped', drug_id: '08S39Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Fped', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2A', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2A', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2A', drug_id: '08S42'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Aped', drug_id: '08S23Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Aped', drug_id: '08S40Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A2Aped', drug_id: '08S42B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB3', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB3', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S29Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3Lb', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1C', drug_id: '08S08'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1C', drug_id: '08S15'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1C', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3M', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3M', drug_id: '08S15'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3M', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1D', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1D', drug_id: '08S15'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'B1D', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1E', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1E', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'dDI123', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'dDI123', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'dDI123', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1C', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1C', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1A', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1A', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1A', drug_id: '08S36'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1Eped', drug_id: '08S01Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1Eped', drug_id: '08S32Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'D4T124', drug_id: '08S32Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'D4T124', drug_id: '08S39'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'D4T124', drug_id: '08S39B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'D4T124', drug_id: '08S39Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1Aped', drug_id: '08S23Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1Aped', drug_id: '08S32Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1Aped', drug_id: '08S34B'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1O', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1O', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1O', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1M', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1M', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1P', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1P', drug_id: '08S30'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A1P', drug_id: '08S32'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3C', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3C', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3C', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3A', drug_id: '08S08'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3A', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3A', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3D', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3D', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3D', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3B', drug_id: '08S09'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3B', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A3B', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S02'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S02Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S03Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S04'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S05'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S06'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S07'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S10'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S10Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S10Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S11'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S12'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S14'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S24'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S25'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S26'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S31'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S33'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'DUMMY TARV', drug_id: '08S38'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'PTV Pediatri', drug_id: '08S17Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'PTV Pediatri', drug_id: '08S23'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'RG TARV', drug_id: '08S17'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'RG TARV', drug_id: '08S23'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C8A', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C8A', drug_id: '08S08'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C8A', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C8A', drug_id: '08S30'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt1', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '2alt1', drug_id: '08S30WZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1aLTLD', drug_id: '08S18W'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1aLTLD', drug_id: '08S18WI'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1aLTLD', drug_id: '08S18WII'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S18X'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S18XI'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S18XII'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S18Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'A4A', drug_id: '08S21'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C7A', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C7A', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C7A', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C7A', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C7A', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF12', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF12', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF12', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF12', drug_id: '08S22'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB1', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '1TB1', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S30YX'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S29Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30Y'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: '3La.', drug_id: '08S30ZZ'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C4A', drug_id: '08S01'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C4A', drug_id: '08S13'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C4A', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C4A', drug_id: '08S18Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C4A', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C6A', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C1A', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C1A', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C1A', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C3A1', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C3A1', drug_id: '08S29'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C3A1', drug_id: '08S29Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C3A1', drug_id: '08S30'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'C3A1', drug_id: '08S40'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF13', drug_id: '08S15'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF13', drug_id: '08S18'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF13', drug_id: '08S38Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'TDF13', drug_id: '08S39Z'))
+        listDrugRegimen.add(new LinkedHashMap(regimen_id: 'PreEP', drug_id: '08S31'))
+
+        return listDrugRegimen
 
     }
 
