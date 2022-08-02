@@ -20,7 +20,7 @@ import javax.transaction.Transactional
 @Component
 public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements MigrationEngine<T> {
 
-    static Logger logger = LogManager.getLogger(MigrationEngineImplOld.class);
+    static Logger logger = LogManager.getLogger(MigrationEngineImpl.class);
 
     protected SearchEngine<T> searchEngine;
     protected List<T> recordList;
@@ -29,6 +29,12 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     private SystemConfigs engineConfig;
     @Autowired
     private ISystemConfigsService systemConfigsService;
+    private String engineStatus;
+
+    public static final String ENGINE_RUNNING = "PARAMS_MIGRATION_STAGE";
+    public static final String ENGINE_SLEEPING = "PARAMS_MIGRATION_STAGE";
+    public static final String ENGINE_FINISHED = "PARAMS_MIGRATION_STAGE";
+    public static final String ENGINE_STOPED = "PARAMS_MIGRATION_STAGE";
 
     public static final String PARAMS_MIGRATION_STAGE = "PARAMS_MIGRATION_STAGE";
     public static final String STOCK_MIGRATION_STAGE = "STOCK_MIGRATION_STAGE";
@@ -70,6 +76,8 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
         this.searchRecords();
 
         if (Utilities.listHasElements((ArrayList<?>) this.recordList)) {
+            engineStatus = ENGINE_RUNNING
+
             for (MigrationRecord record : recordList) {
                 logger.info("Iniciando a migração do registo [" + record.getEntityName()+" : "+record.getId()+"]");
 
@@ -89,6 +97,7 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
                 }
             }
             while(stopRequested()) {
+                engineStatus = ENGINE_SLEEPING
                 try {
                     logger.info("Motor de Migração " + engineType + "Desligado");
                     Thread.sleep(10000);
@@ -99,7 +108,17 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
             if(!stopRequested()) {
                 this.doMigration();
             }
+        } else {
+            engineStatus = ENGINE_FINISHED
         }
+    }
+
+    public boolean isRunning() {
+        return this.engineStatus == ENGINE_RUNNING
+    }
+
+    public boolean isFinished () {
+        return this.engineStatus == ENGINE_FINISHED
     }
 
     private SystemConfigs getEngineConfig(){
@@ -131,6 +150,7 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
     @Override
     public void run() {
         while(stopRequested()) {
+            engineStatus = ENGINE_SLEEPING
             try {
                 logger.info("Motor de Migração " + engineType + "Desligado");
                 Thread.sleep(10000);

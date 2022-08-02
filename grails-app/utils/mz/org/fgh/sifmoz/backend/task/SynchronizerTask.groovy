@@ -12,17 +12,17 @@ public abstract class SynchronizerTask implements ISynchronizerTask {
     SystemConfigs instalationConfig;
 
     public SynchronizerTask() {
-        SystemConfigs.withTransaction {
-            instalationConfig = SystemConfigs.findByKey("instalation_type");
+        if (systemConfigsService != null) {
+            instalationConfig = systemConfigsService.getByKey("INSTALATION_TYPE")
+        } else {
+            SystemConfigs.withTransaction {
+                instalationConfig = SystemConfigs.findByKey("INSTALATION_TYPE")
+            }
         }
     }
 
     protected boolean isProvincial() {
-        if (instalationConfig.getValue().equals("PROVINCIAL")) {
-            return true;
-        } else {
-             return false;
-        }
+        return instalationConfig.getValue().equals("PROVINCIAL")
     }
 
     protected String getUsOrProvince() {
