@@ -1,13 +1,11 @@
 package mz.org.fgh.sifmoz.backend.migration.entity.stock
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
+import mz.org.fgh.sifmoz.backend.migration.common.MigrationError
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
-import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
-import mz.org.fgh.sifmoz.backend.stockcenter.StockCenterService
 
 class StockCenterMigrationRecord extends AbstractMigrationRecord {
     private Integer id
@@ -24,41 +22,34 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
 
     //------------------------------------------------
 
-    StockCenterService stockCenterService
-    ClinicService clinicService
-
     @Override
     List<MigrationLog> migrate() {
-        System.out.println("Inside migrate method...");
-
         List<MigrationLog> logs = new ArrayList<>()
         StockCenter.withTransaction {
-        getMigratedRecord().setName(this.stockcentername)
-        getMigratedRecord().setCode(this.stockcentername.replaceAll(" ", "_").toUpperCase())
-        getMigratedRecord().setPrefered(this.preferred)
-        System.out.println(getMigratedRecord())
-        System.out.println(this.clinicuuid)
-            Clinic clinicAux
-        try {
-            clinicAux = Clinic.findByUuid(this.clinicuuid)
-        } catch (Exception e) {
-            System.out.println(e.getMessage())
-        } finally {
-            System.out.println(clinicAux)
-        }
-        getMigratedRecord().setClinic(clinicAux)
-            if (getMigratedRecord().hasErrors()) {
-                System.println("ERROR: "+getMigratedRecord().errors)
-                MigrationLog migrationLog = new MigrationLog()
-                migrationLog.errors = getMigratedRecord().errors
-                logs.add(migrationLog)
+            getMigratedRecord().setName(this.stockcentername)
+            getMigratedRecord().setCode(this.stockcentername.replaceAll(" ", "_").toUpperCase())
+            getMigratedRecord().setPrefered(this.preferred)
+            Clinic clinicAux = Clinic.findByUuid(this.clinicuuid)
+
+            if (clinicAux != null) {
+                getMigratedRecord().setClinic(clinicAux);
             } else {
-                System.println("NO ERROR...")
+                String[] msg = {String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)}
+                logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()));
+            }
+
+            if (getMigratedRecord().hasErrors()) {
+//                MigrationLog migrationLog = new MigrationLog()
+//                migrationLog.errors = getMigratedRecord().errors
+//                logs.add(migrationLog)
+                logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
+            }
+
+            if (logs.size() == 0){
                 getMigratedRecord().save(flush: true)
             }
-        }
 
-//        stockCenterService.save(getMigratedRecord())
+        }
         return logs
     }
 
@@ -83,6 +74,6 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     StockCenter getMigratedRecord() {
-        return (StockCenter) super.getMigratedRecord();
+        return (StockCenter) super.getMigratedRecord()
     }
 }
