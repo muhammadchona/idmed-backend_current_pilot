@@ -1,4 +1,4 @@
-package mz.org.fgh.sifmoz.migration.entity.prescription
+package mz.org.fgh.sifmoz.backend.migration.entity.prescription
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
@@ -9,6 +9,8 @@ import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.duration.Duration
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
+import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
@@ -23,59 +25,38 @@ import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
-import mz.org.fgh.sifmoz.migration.base.record.AbstractMigrationRecord
-import mz.org.fgh.sifmoz.migration.base.record.MigratedRecord
-import mz.org.fgh.sifmoz.migration.base.record.MigrationRecord
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import java.time.LocalDate
 
-class PrescriptionMigrationRecord extends AbstractMigrationRecord {
+public class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
     private Integer id;
-
-
     private Date prescriptiondate;
-
-    private String firstnamedoctor ;
+    private String firstnamedoctor;
     private String lastnamedoctor
     private int duration;
-
     private char modifiedprescription;
-
     private Date enddateprescription;
-
     private int dispensaTrimestral;
-
     private int dispensaSemestral;
-
     private String tipodoenca;
-
     private char tb;
-
     private char saaj;
-
     private char cpn;
     private char ccr;
-
     private String cliniccode;
-
     private String uuidopenmrs;
-
     private String patientid;
-
     private Date startdate;
     private Date stopdate;
     private String startnotes;
     private String startreason;
     private String stopreason;
-
     private String notesprescription;
-
     private char currentprescrtiption;
-
     private String therapeuticlinecode;
     private String therapeuticregimencode;
-
     //package
     private String reasonforpackagereturn;
     private boolean packagereturnedpack;
@@ -88,7 +69,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private Integer weekssupply
     private String nextpickupdate
     private String modedispenseuuid
-
     //PackageDrug
     private Integer qtyinhand
     private String drugname
@@ -112,7 +92,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         psi.setService(clinicalService);
         List<PatientServiceIdentifier> listPSI = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(this.uuidopenmrs))
         psi.setValue(this.patientid);
-        if (listPSI.isEmpty()) {
+        if (!Utilities.listHasElements(listPSI.isEmpty())){
             psi.setPrefered(true);
             PatientServiceIdentifier.withTransaction {
                 psi.validate()
@@ -157,8 +137,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             List<PatientServiceIdentifier> listPSIs = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(psi.getValue()))
             PatientServiceIdentifier.withTransaction {
                 for (PatientServiceIdentifier psiObj in listPSIs) {
-                psiObj.setPrefered(false)
-                psiObj.setValue(psi.getValue())
+                    psiObj.setPrefered(false)
+                    psiObj.setValue(psi.getValue())
                     psiObj.validate()
                     if (!psiObj.hasErrors()) {
                         psiObj.save(flush: true)
@@ -167,11 +147,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                         return logs
                     }
                 }
-            }
-
-            psi.setPrefered(true);
-            psi.setValue(this.patientid);
-            PatientServiceIdentifier.withTransaction {
+                psi.setPrefered(true);
+                psi.setValue(this.patientid);
                 psi.validate()
                 if (!psi.hasErrors()) {
                     psi.save(flush: true)
@@ -180,11 +157,13 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                     return logs
                 }
             }
+
         }
+
 
         Prescription prescription = new Prescription();
         prescription.setClinic(clinic);
-        prescription.setDoctor(Doctor.findByFirstnamesAndLastname(this.firstnamedoctor,this.lastnamedoctor));
+        prescription.setDoctor(Doctor.findByFirstnamesAndLastname(this.firstnamedoctor, this.lastnamedoctor));
         prescription.setModified(this.modifiedprescription == 'T' ? true : false);
         prescription.setExpiryDate(this.enddateprescription);
         prescription.setCurrent(this.currentprescrtiption == 'T' ? true : false);
@@ -250,8 +229,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         packagedDrugStock.setStock(MigrationLog.findBySourceIdAndEntity(stockid, "Stock").getiDMEDId())
         packagedDrugStock.setCreationDate(this.dispensedate)
         packagedDrugStock.setPackagedDrug(packagedDrug)
-
-
         //marcar migrationstatus prescricao e package
 
         Prescription.withTransaction {
@@ -280,18 +257,13 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     }
 
     @Override
-    public long getId() {
+    int getId() {
         return 0;
     }
 
     @Override
     public String getEntityName() {
         return "Prescription";
-    }
-
-    @Override
-    public void generateUnknowMigrationLog(MigrationRecord record, String message) {
-
     }
 
     @Override
@@ -319,5 +291,4 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         else if (this.dispensaTrimestral == 1) return "DT"
         return "DA";
     }
-
 }
