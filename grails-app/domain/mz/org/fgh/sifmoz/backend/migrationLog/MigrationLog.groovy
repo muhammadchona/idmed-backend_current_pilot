@@ -48,4 +48,17 @@ class MigrationLog extends BaseEntity{
         return this.id
     }
 
+
+    @Override
+    public String toString() {
+        return "MigrationLog{" +
+                "errorCode='" + errorCode + '\'' +
+                ", errorDescription=" + Arrays.toString(errorDescription) +
+                ", sourceId=" + sourceId +
+                ", sourceEntity='" + sourceEntity + '\'' +
+                ", iDMEDId='" + iDMEDId + '\'' +
+                ", iDMEDEntity='" + iDMEDEntity + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

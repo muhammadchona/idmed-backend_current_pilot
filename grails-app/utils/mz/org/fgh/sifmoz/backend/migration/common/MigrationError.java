@@ -5,7 +5,13 @@ public enum MigrationError {
     PROVINCE_NOT_FOUND("E002", "A Provincia com description: {0} do IDART, nao existe no IDMED"),
     PATIENT_NOT_FOUND("E003", "O paciente com patient_id: {0} do IDART, nao existe no IDMED"),
 
-    IDENTIFIER_TYPE_NOT_FOUND("E004", "O tipo de Identificador com o code: {0} do IDART, nao existe no IDMED");
+    IDENTIFIER_TYPE_NOT_FOUND("E004", "O tipo de Identificador com o code: {0} do IDART, nao existe no IDMED"),
+
+    //STOCK
+    STOCK_CENTER_NOT_FOUND("E005", "O stock center com o nome: {0} do IDART, nao existe no IDMED"),
+    DRUG_NOT_FOUND("E006", "O medicamento: {0} do IDART, nao existe no IDMED"),
+    STOCK_ENTRANCE_NOT_FOUND("E007", "A entrada de stock do IDART, nao existe no IDMED"),
+    MAIN_CLINIC_NOT_IDENTIFIED("E008", "A clinica principal nao foi identificada no IDMED");
 
     private final String code;
     private final String description;
