@@ -58,6 +58,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setMiddleNames("-");
         getMigratedRecord().setLastNames(this.getLastname());
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
+        getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
 
         if (Utilities.listHasElements(logs)) return logs
 

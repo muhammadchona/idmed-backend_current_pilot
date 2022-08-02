@@ -42,6 +42,8 @@ class UrlMappings {
         get "/$controller/printReport/$reportId/$fileType(.$format)?"(action:'printReport')
         get "/$controller/getProcessingStatus/$reportId(.$format)?"(action:'getProcessingStatus')
         get "/$controller/printReport/$reportId(.$format)?"(action:'printReport')
+        get "/$controller/migrationStatus(.$format)?"(action:"migrationStatus")
+        post "/$controller/initMigration(.$format)?"(action:"initMigration")
         delete "/$controller/delete/$reportId(.$format)?"(action:'deleteByReportId')
 
         get "/$controller/getPatientNid/$nid(.$format)?"(action:'getDetailsByNid')
