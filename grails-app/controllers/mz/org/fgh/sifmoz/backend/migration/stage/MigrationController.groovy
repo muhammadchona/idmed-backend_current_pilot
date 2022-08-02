@@ -1,10 +1,13 @@
 package mz.org.fgh.sifmoz.backend.migration.stage
 
+import com.google.gson.Gson
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
+import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
@@ -12,6 +15,9 @@ import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockCenterMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
+import mz.org.fgh.sifmoz.backend.restUtils.RestService
+import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+import org.grails.web.json.JSONArray
 
 import java.util.concurrent.ExecutorService
 
@@ -27,6 +33,7 @@ class MigrationController extends RestfulController{
     MigrationStageService migrationStageService
     MigrationEngineImpl migrationEngine
     ISystemConfigsService systemConfigsService
+    MigrationService migrationService
     private static ExecutorService executor;
     private List<SystemConfigs> systemConfigs
 
@@ -39,13 +46,26 @@ class MigrationController extends RestfulController{
         executor = ExecutorThreadProvider.getInstance().getExecutorService();
     }
 
+    def migrationStatus() {
+        Gson gson = new Gson()
+        RestService restService = new RestService("MIGRATION", "IDART")
+        List<MigrationSatus> migrationSatuses = new ArrayList<>()
+        JSONArray jsonArray = restService.get("/migration_progress")
+        MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class);
+        migrationSatuses.addAll(Arrays.asList(migrationStatusList))
+        respond migrationSatuses
+    }
+
+    def initMigration() {
+        MigrationStage migrationStage = MigrationStage.findByCode(MigrationEngineImpl.PARAMS_MIGRATION_STAGE)
+        migrationStage.setValue("IN_PROGRESS")
+        migrationStageService.save(migrationStage)
+        migrationService.execute()
+    }
+
     def index(Integer max) {
-        initStockCenterMigrationEngine()
-        //initPatientMigrationEngine()
-        //params.max = Math.min(max ?: 10, 100)
-        //respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
-        //initStockMigrationEngine()
-        render status: NOT_FOUND
+        params.max = Math.min(max ?: 10, 100)
+        respond migrationStageService.list(params), model:[migrationStageCount: migrationStageService.count()]
     }
 
     def show(String id) {
