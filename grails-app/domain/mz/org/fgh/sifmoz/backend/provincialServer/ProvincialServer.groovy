@@ -4,7 +4,7 @@ package mz.org.fgh.sifmoz.backend.provincialServer
 
 class ProvincialServer {
 
-    Long id
+    String id
     String code
     String urlPath
     String port
@@ -12,6 +12,9 @@ class ProvincialServer {
     String username
     String password
 
+    static mapping = {
+        id generator: "uuid"
+    }
 
     static constraints = {
         urlPath(nullable: false, blank: false)

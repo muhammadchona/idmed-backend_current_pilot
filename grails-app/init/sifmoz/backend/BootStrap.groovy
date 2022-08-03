@@ -1,6 +1,8 @@
 package sifmoz.backend
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
@@ -13,15 +15,19 @@ import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 import mz.org.fgh.sifmoz.backend.form.Form
 import mz.org.fgh.sifmoz.backend.groupType.GroupType
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
+import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationService
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
 import mz.org.fgh.sifmoz.backend.prescription.SpetialPrescriptionMotive
+import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeType
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
+import mz.org.fgh.sifmoz.backend.stockoperation.StockOperationType
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
@@ -37,7 +43,7 @@ class BootStrap {
 
         ClinicSectorType.withTransaction { initClinicSectorType() }
 
-        // ClinicalServiceAttribute.withTransaction {initClinical}
+        ClinicalServiceAttributeType.withTransaction { initClinicalServiceAttributeType() }
 
         DispenseMode.withTransaction { initDispenseMode() }
 
@@ -76,7 +82,22 @@ class BootStrap {
             initRegimenDrugAssossiation()
         }
 
+        Clinic.withTransaction { initDefaultClinic() }
+
+        ClinicSector.withTransaction { initClinicSector()  }
+
+        SystemConfigs.withTransaction { initSystemConfigs() }
+
+        MigrationStage.withTransaction { initMigrationStage() }
+
+        StockOperationType.withTransaction { initStockOperationType() }
+
+        PatientTransReferenceType.withTransaction { initPatientTransReferenceType() }
+
+        ProvincialServer.withTransaction { initProvincialServer() }
+
     }
+
 
     def destroy = {
     }
@@ -375,9 +396,191 @@ class BootStrap {
 
             if(drug && therapeuticRegimen){
                 therapeuticRegimen.addToDrugs(drug)
-                therapeuticRegimen.save(flush: true, failOnError: false)
+                therapeuticRegimen.save(flush: true, failOnError: true)
             }
         }
+    }
+
+    void initDefaultClinic(){
+
+        if(Clinic.list().isEmpty()){
+            Clinic defaultClinic = new Clinic()
+            defaultClinic.setId('56F128E8-A85E-45B4-AE5C-E91D14ACA906')
+            defaultClinic.setCode('DC')
+            defaultClinic.setNotes('Default Clinic')
+            defaultClinic.setTelephone('0000000000')
+            defaultClinic.setClinicName('Clínica Padrão')
+            defaultClinic.setProvince(Province.findByCode('01'))
+            defaultClinic.setDistrict(District.findByCodeAndProvince('01', Province.findByCode('01')))
+            defaultClinic.setFacilityType(FacilityType.findByCode('US'))
+            defaultClinic.setMainClinic(true)
+            defaultClinic.setActive(true)
+            defaultClinic.setUuid('56F128E8-A85E-45B4-AE5C-E91D14ACA906')
+            defaultClinic.save(flush: true, failOnError: true)
+        }
+    }
+
+    void initClinicSector() {
+        for (clinicSectorObject in listClinicSector()) {
+            if (!ClinicSector.findById(clinicSectorObject.id)) {
+                ClinicSector clinicSector = new ClinicSector()
+                clinicSector.id = clinicSectorObject.id
+                clinicSector.code = clinicSectorObject.code
+                clinicSector.description = clinicSectorObject.description
+                clinicSector.active = clinicSectorObject.active
+                clinicSector.uuid = clinicSectorObject.uuid
+                clinicSector.clinicSectorType = ClinicSectorType.findById(clinicSectorObject.clinicSectorType_id)
+                clinicSector.clinic = Clinic.findByMainClinic(true)
+                clinicSector.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void initSystemConfigs() {
+        for (systemConfigsObject in listSystemConfigs()) {
+            if (!SystemConfigs.findById(systemConfigsObject.id)) {
+                SystemConfigs systemConfigs = new SystemConfigs()
+                systemConfigs.id = systemConfigsObject.id
+                systemConfigs.value = systemConfigsObject.value
+                systemConfigs.description = systemConfigsObject.description
+                systemConfigs.key = systemConfigsObject.key
+                systemConfigs.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void initMigrationStage() {
+        for (migrationStageObject in listMigrationStage()) {
+            if (!MigrationStage.findById(migrationStageObject.id)) {
+                MigrationStage migrationStage = new MigrationStage()
+                migrationStage.id = migrationStageObject.id
+                migrationStage.value = migrationStageObject.value
+                migrationStage.code = migrationStageObject.code
+                migrationStage.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void initStockOperationType() {
+        for (stockOperationTypeObject in listStockOperationType()) {
+            if (!StockOperationType.findById(stockOperationTypeObject.id)) {
+                StockOperationType stockOperationType = new StockOperationType()
+                stockOperationType.id = stockOperationTypeObject.id
+                stockOperationType.description = stockOperationTypeObject.description
+                stockOperationType.code = stockOperationTypeObject.code
+                stockOperationType.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void initPatientTransReferenceType() {
+        for (patientTransReferenceTypeObject in listPatientTransReferenceType()) {
+            if (!PatientTransReferenceType.findById(patientTransReferenceTypeObject.id)) {
+                PatientTransReferenceType patientTransReferenceType = new PatientTransReferenceType()
+                patientTransReferenceType.id = patientTransReferenceTypeObject.id
+                patientTransReferenceType.description = patientTransReferenceTypeObject.description
+                patientTransReferenceType.code = patientTransReferenceTypeObject.code
+                patientTransReferenceType.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void initProvincialServer() {
+        for (provincialServerObject in listProvincialServer()) {
+            if (!ProvincialServer.findById(provincialServerObject.id)) {
+                ProvincialServer provincialServer = new ProvincialServer()
+                provincialServer.id = provincialServerObject.id
+                provincialServer.urlPath = provincialServerObject.urlPath
+                provincialServer.port = provincialServerObject.port
+                provincialServer.destination = provincialServerObject.destination
+                provincialServer.code = provincialServerObject.code
+                provincialServer.username = provincialServerObject.username
+                provincialServer.password = provincialServerObject.password
+                provincialServer.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+
+    List<Object> listProvincialServer() {
+        List<Object> provincialServerList = new ArrayList<>()
+        provincialServerList.add(new LinkedHashMap(id: '59BA4DAD-A32F-4B60-84D9-4A7F7E8C84FC', code: '01', urlPath: 'idartniassa.fgh.org.mz:', port: '3001', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '9BDBBAEB-F14E-4E9F-9C89-09F4D2A469FE', code: '02', urlPath: 'idartcabodelegado.fgh.org.mz:', port: '3002', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'C4F70C54-32BC-48F2-8BC5-A4CDD8B6571D', code: '03', urlPath: 'idartnampula.fgh.org.mz:', port: '3003', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '9E0F91B0-14F3-4FEC-9097-64E3F2B65B59', code: '04', urlPath: 'idartzambezia.fgh.org.mz:', port: '3004', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '168FAD26-1A41-4F46-9238-69528F35D3ED', code: '05', urlPath: 'idarttete.fgh.org.mz:', port: '3005', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '32DAA4E4-D949-4534-8B86-AFC54262421C', code: '06', urlPath: 'idartmanica.fgh.org.mz:', port: '3006', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '220212B7-4744-4DCD-A8CB-27DDEEA91140', code: '07', urlPath: 'idartsofala.fgh.org.mz:', port: '3007', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'E1DAE032-1C95-4872-9EF3-6ED9DE9D9DE5', code: '08', urlPath: 'idartinhambane.fgh.org.mz:', port: '3008', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '4489B1B6-A485-439A-B966-1C752873BF79', code: '09', urlPath: 'idartgaza.fgh.org.mz:', port: '3009', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'A5336E44-A9DC-4019-8B33-9F0738DB2D55', code: '10', urlPath: 'idartmaputo-prov.fgh.org.mz:', port: '3010', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'F21B5D3F-9C70-40A0-BE2F-66F4A458655F', code: '11', urlPath: 'idartmaputo.cid.fgh.org.mz:', port: '3011', destination: 'MOBILE', username: 'postgres', password: 'postgres' ))
+
+        provincialServerList.add(new LinkedHashMap(id: '0231B69C-A7AC-4024-8DF7-E75E2828E578', code: '01', urlPath: 'idartniassa.fgh.org.mz:', port: '5001', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '2C3B00F3-C8CB-4071-A070-54819C2F0962', code: '02', urlPath: 'idartcabodelegado.fgh.org.mz:', port: '5002', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'C44CD2E8-DCB3-464A-9F0F-F6E6421E73C8', code: '03', urlPath: 'idartnampula.fgh.org.mz:', port: '5003', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '3C0BF87C-87F3-4AF6-B95B-2D93F6B274AE', code: '04', urlPath: 'idartzambezia.fgh.org.mz:', port: '5004', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '2408211C-7ACD-42C5-AC52-A3ACBCA747CF', code: '05', urlPath: 'idarttete.fgh.org.mz:', port: '5005', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '29467F85-6CE4-4757-8AC5-E18FCFE0784C', code: '06', urlPath: 'idartmanica.fgh.org.mz:', port: '5006', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '668BD439-B176-4FF5-9525-81D9DFB84F6D', code: '07', urlPath: 'idartsofala.fgh.org.mz:', port: '5007', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'EDE2C07E-EE4B-4DED-8A7D-16D58BFB3751', code: '08', urlPath: 'idartinhambane.fgh.org.mz:', port: '5008', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '6C50D9EB-9165-49AE-8A33-C9C837F58084', code: '09', urlPath: 'idartgaza.fgh.org.mz:', port: '5009', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: 'DFF5C2ED-FB41-4574-9C26-BB164605BC00', code: '10', urlPath: 'idartmaputo-prov.fgh.org.mz:', port: '5010', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+        provincialServerList.add(new LinkedHashMap(id: '9E0AD237-9C7E-4656-9E58-D311F5E47F28', code: '11', urlPath: 'idartmaputo.cid.fgh.org.mz:', port: '5011', destination: 'IDMED', username: 'postgres', password: 'postgres' ))
+
+        return provincialServerList
+    }
+
+    List<Object> listSystemConfigs() {
+        List<Object> systemConfigsList = new ArrayList<>()
+        systemConfigsList.add(new LinkedHashMap(id: 'E55F958E-89B3-4BFD-90AF-B1DFFBAE62F8', value: 'ON', key: 'PATIENT_MIGRATION_ENGINE', description: 'Patient migration engine' ))
+        systemConfigsList.add(new LinkedHashMap(id: 'C35CC29F-CA73-4B26-9AC1-BC440750F854', value: 'ON', key: 'STOCK_MIGRATION_ENGINE',  description: 'Stock migration engine'))
+        systemConfigsList.add(new LinkedHashMap(id: '570911CB-6D46-4A3A-8A56-906A73DF1062', value: 'ON', key: 'PARAMS_MIGRATION_ENGINE',  description: 'Params migration engine'))
+        systemConfigsList.add(new LinkedHashMap(id: 'E6CDDA47-DC11-4DAA-8672-04B37DEE9703', value: 'LOCAL', key: 'INSTALATION_TYPE',  description: 'Local/Provincial Instalation'))
+        systemConfigsList.add(new LinkedHashMap(id: 'B5C44B42-3328-40D9-90D7-6DFF90A672D4', value: 'true', key: 'ACTIVATE_DATA_MIGRATION',  description: 'Indica se a migração de dados está activa ou não'))
+
+        return systemConfigsList
+    }
+
+    List<Object> listMigrationStage() {
+        List<Object> migrationStageList = new ArrayList<>()
+        migrationStageList.add(new LinkedHashMap(id: 'B15A0866-4A82-4826-9C3B-AD0532DCB077', code: 'STOCK_MIGRATION_STAGE', value: 'NOT_STARTED'))
+        migrationStageList.add(new LinkedHashMap(id: '23B894EB-E9BB-4EFE-A2E4-C0776095AC35', code: 'PATIENT_MIGRATION_STAGE', value: 'NOT_STARTED'))
+        migrationStageList.add(new LinkedHashMap(id: 'DCDCA69E-3FCF-4815-B0F2-8CEAF610AAB0', code: 'PARAMS_MIGRATION_STAGE', value: 'NOT_STARTED'))
+
+        return migrationStageList
+    }
+
+    List<Object> listStockOperationType() {
+        List<Object> stockOperationTypeList = new ArrayList<>()
+        stockOperationTypeList.add(new LinkedHashMap(id: '919327EC-CA8B-4529-9B92-769CECB96785', code: 'AJUSTE_POSETIVO', description: 'Ajuste Posetivo'))
+        stockOperationTypeList.add(new LinkedHashMap(id: 'B54FDBC8-5DD2-4CFA-9B22-627B3CC58D36', code: 'AJUSTE_NEGATIVO', description: 'Ajuste Negativo'))
+        stockOperationTypeList.add(new LinkedHashMap(id: 'C000A387-8076-4002-95B1-5EB4B993C848', code: 'SEM_AJUSTE', description: 'Sem Ajuste'))
+
+        return stockOperationTypeList
+    }
+
+    List<Object> listPatientTransReferenceType() {
+        List<Object> stockOperationTypeList = new ArrayList<>()
+        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'TRANSFERENCIA', description: 'Transfêrencia'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'TRANSITO', description: 'Trânsito'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'REFERENCIA_FP', description: 'Refêrencia para Farmácia Privada'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'REFERENCIA_DC', description: 'Refêrencia para Dispensa Comunitária'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'VOLTOU_DA_REFERENCIA', description: 'Voltou da Refêrencia'))
+
+        return stockOperationTypeList
+    }
+
+    List<Object> listClinicSector() {
+        List<Object> clinicSectorList = new ArrayList<>()
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181901608880000', code: 'CPN', description: 'Consulta Pre-Natal', clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee0181901608890000', active: 'true'))
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee018190163i0c0001', code: 'TB', description: 'Tuberculose',  clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee018190163e0c0001', active: 'true'))
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181901074b20002', code: 'PREP', description: 'Profilaxia Pré-Exposição',  clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee0181901674b20002', active: 'true'))
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181902674b20003', code: 'SAAJ', description: 'Serviços Amigos dos Adolescentes e Jovens',  clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee0181901674b20003', active: 'true'))
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181902674b20005', code: 'CCR', description: 'Consulta Criança em Risco',  clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee0181901674b20005', active: 'true'))
+        clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181902674b20004', code: 'NORMAL', description: 'Atendimento Geral',  clinicSectorType_id: '8a8a823b81c7fa9d0181c802d7ec0006', uuid: '8a8a823b81900fee0181901674b20004', active: 'true'))
+
+        return clinicSectorList
     }
 
     List<Object> listFacilityType() {
@@ -395,6 +598,7 @@ class BootStrap {
         identifierTypeList.add(new LinkedHashMap(id: '8BC2D0A9-9AC4-487B-B71F-F8088B1CB532', code: 'NID', description: 'NID', pattern: '########01/####/#####'))
         identifierTypeList.add(new LinkedHashMap(id: '50D0185F-A115-40D9-BF70-75E3F1F6DD91', code: 'NID_CCR', description: 'NID CCR', pattern: '##########/####/#####'))
         identifierTypeList.add(new LinkedHashMap(id: '9A502C09-5F57-4262-A3D5-CA6B62E0D58F', code: 'NID_PREP', description: 'NID PREP', pattern: '##########/####/#####'))
+        identifierTypeList.add(new LinkedHashMap(id: '6C2D9E83-6B6B-4F78-9EE8-30CB19CDDF93', code: 'NID_TB', description: 'NIT', pattern: '##########/####/#####'))
 
         return identifierTypeList
     }
@@ -489,7 +693,7 @@ class BootStrap {
 
     List<Object> listStartStopReason() {
         List<Object> startStopReasonList = new ArrayList<>()
-        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bc4cdd0003', isStartReason: false, reason: 'Termino do tratamento', code: 'TERMINO_DO_TRATAMENTO'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bc4cdd0003', isStartReason: false, reason: 'Termino do Tratamento', code: 'TERMINO_DO_TRATAMENTO'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bc5cdd0004', isStartReason: true, reason: 'Transferido DE', code: 'TRANSFERIDO_DE'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bc6cdd0005', isStartReason: true, reason: 'Reinicio ao Tratamento', code: 'REINICIO_TRATAMETO'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bc9cdd0008', isStartReason: false, reason: 'Abandono', code: 'ABANDONO'))
@@ -500,7 +704,10 @@ class BootStrap {
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bf3cdd0011', isStartReason: true, reason: 'Trânsito', code: 'TRANSITO'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017cj9bh1ldc0013', isStartReason: false, reason: 'Óbito', code: 'OBITO'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017cj9bh1ldc0014', isStartReason: true, reason: 'Em Manutenção', code: 'MANUNTENCAO'))
-        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0002', isStartReason: true, reason: 'Inicio', code: 'INICIO_AO_TRATAMENTO'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0002', isStartReason: true, reason: 'Novo Paciente', code: 'NOVO_PACIENTE'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0003', isStartReason: true, reason: 'Inicio CCR', code: 'INICIO_CCR'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0004', isStartReason: false, reason: 'Fim PPE', code: 'FIM_PPE'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0005', isStartReason: false, reason: 'Tratamento Suspenso Pelo Clinico', code: 'TSPC'))
 
         return startStopReasonList
 
@@ -519,10 +726,10 @@ class BootStrap {
 
     List<Object> listTherapeuticLine() {
         List<Object> therapeuticLineList = new ArrayList<>()
-        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaea6f30009', code: '1', uuid: '7323b36e-fedf-45bc-b866-083854c09f7b', description: 'Primeira Linha'))
-        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbagb014av0c', code: '1_ALT', uuid: '6E117555-BB10-43C9-83B4-9171A1734BB7', description: 'Primeira Linha Alternativa'))
-        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaeef36000a', code: '2', uuid: '8112b34d-6695-48b2-975a-7fd7abb06a6e', description: 'Segunda Linha'))
-        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaf1701000b', code: '3', uuid: '843c7cff-f2ba-4134-a015-43370c614de6', description: 'Terceira Linha'))
+        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaea6f30009', code: '1', uuid: '7323b36e-fedf-45bc-b866-083854c09f7b', description: '1ª Linha'))
+        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbagb014av0c', code: '1_ALT', uuid: '6E117555-BB10-43C9-83B4-9171A1734BB7', description: '1ª Linha Alternativa'))
+        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaeef36000a', code: '2', uuid: '8112b34d-6695-48b2-975a-7fd7abb06a6e', description: '2ª Linha'))
+        therapeuticLineList.add(new LinkedHashMap(id: 'ff8081817cb69063017cbbaf1701000b', code: '3', uuid: '843c7cff-f2ba-4134-a015-43370c614de6', description: '3ª Linha'))
 
         return therapeuticLineList
 
@@ -554,7 +761,9 @@ class BootStrap {
         List<Object> clinicalServiceList = new ArrayList<>()
         clinicalServiceList.add(new LinkedHashMap(id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F', code: 'TARV', description: 'Tratamento Anti-RetroViral', identifierType: IdentifierType.findById('8BC2D0A9-9AC4-487B-B71F-F8088B1CB532'), active: true))
         clinicalServiceList.add(new LinkedHashMap(id: '6D12193B-7D5D-4665-8FC6-A03855986FBD', code: 'TPT', description: 'Tratamento Preventivo da Tuberculose', identifierType: IdentifierType.findById('50D0185F-A115-40D9-BF70-75E3F1F6DD91'), active: true))
-        clinicalServiceList.add(new LinkedHashMap(id: '165C876C-F850-436F-B0BB-80D519056BC3', code: 'PREP', description: 'Tratamento Anti-RetroViral', identifierType: IdentifierType.findById('9A502C09-5F57-4262-A3D5-CA6B62E0D58F'), active: true))
+        clinicalServiceList.add(new LinkedHashMap(id: '165C876C-F850-436F-B0BB-80D519056BC3', code: 'PREP', description: 'Tratamento Preventivo à Infecção Pelo HIV', identifierType: IdentifierType.findById('9A502C09-5F57-4262-A3D5-CA6B62E0D58F'), active: true))
+        clinicalServiceList.add(new LinkedHashMap(id: 'C2AE49AE-FD70-4E6C-8C96-9131B62ECEDF', code: 'PPE', description: 'Tratamento Após Exposição ao HIV', identifierType: IdentifierType.findById('8BC2D0A9-9AC4-487B-B71F-F8088B1CB532'), active: true))
+        clinicalServiceList.add(new LinkedHashMap(id: 'F5FEAD76-3038-4D3D-AC28-D63B9952F022', code: 'TB', description: 'Tratamento da Tuberculose', identifierType: IdentifierType.findById('6C2D9E83-6B6B-4F78-9EE8-30CB19CDDF93'), active: true))
 
         return clinicalServiceList
     }
@@ -963,6 +1172,7 @@ class BootStrap {
         listDrug.add(new LinkedHashMap(id: '135b1a6f-0791-47d4-8e8e-6f8b75bab054', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/AZT] Lamivudina 30mg/ Zidovudina 60mg', uuid_openmrs: '08S40Z-fc-6563-49e4-bf81-a456bf79ec88', fnm_code: '08S40Z', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'f8a6a5be-9737-474b-ade2-b2789610d7ee', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 120, name: '[LPV/RTV] Lopinavir/Ritonavir -Aluvia 200mg/50mg', uuid_openmrs: '08S38Z-99-3fe6-48b7-9b25-3052660f3d8b', fnm_code: '08S38Z', default_treatment: 2, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '909a8ee5-30cd-45ef-8540-0a44f26a1a09', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[ABC/3TC] Abacavir 60 and Lamivudina 30mg', uuid_openmrs: '08S01ZZ-2e-29dd-40aa-94b4-0d4fe65e081c', fnm_code: '08S01ZZ', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        listDrug.add(new LinkedHashMap(id: '909a8ee5-30cd-45ef-8540-0a44f26a1a09', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 60, name: '[ABC/3TC] Abacavir 60mg/ Lamivudina 30mg', uuid_openmrs: '08S01ZZ-2e-29dd-40aa-94b4-0d4fe65e081c', fnm_code: '08S01ZWi', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '3c6518d4-ad5b-445e-b3d4-8812363e056c', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/D4T/NVP] Lamivudina 150mg/Stavudina 30mg/Nevirapina 200mg', uuid_openmrs: '08S4X-833-b26a-4996-8066-48847431404a', fnm_code: '08S4X', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '10a8ead6-f561-4440-b483-4261e27be295', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 30, name: '[ABC/3TC] Abacavir 600mg/Lamivudina 300mg', uuid_openmrs: '08S01ZY-d7-4218-4032-aa8c-615aec71a218', fnm_code: '08S01ZY', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: '8ba0bfde-b1b1-408a-806f-4683f2bb17c1', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[3TC/AZT] Lamivudina 150mg/ Zidovudina 300mg', uuid_openmrs: '08S40-833-b26a-4996-8066-48847431404a', fnm_code: '08S40', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
