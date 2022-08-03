@@ -16,6 +16,8 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
+import mz.org.fgh.sifmoz.backend.migration.stage.MigrationService
+import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
 import mz.org.fgh.sifmoz.backend.prescription.SpetialPrescriptionMotive
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeType
@@ -26,6 +28,8 @@ import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 class BootStrap {
 
     def init = { servletContext ->
+
+        MigrationStage.withTransaction {initMigration()}
 
         FacilityType.withTransaction { initFacilityType() }
 
@@ -78,7 +82,15 @@ class BootStrap {
     }
 
     // Methods
-    void initFacilityType() {
+    void initMigration() {
+        MigrationStage stage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
+        if (stage != null) {
+            MigrationService migrationService = new MigrationService()
+            migrationService.execute()
+        }
+    }
+
+     void initFacilityType() {
         for (facilityTypeObject in listFacilityType()) {
             if (!FacilityType.findById(facilityTypeObject.id)) {
                 FacilityType facilityType = new FacilityType()
