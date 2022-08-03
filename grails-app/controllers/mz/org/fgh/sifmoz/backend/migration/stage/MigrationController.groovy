@@ -58,7 +58,7 @@ class MigrationController extends RestfulController{
 
     def initMigration() {
         MigrationStage migrationStage = MigrationStage.findByCode(MigrationEngineImpl.PARAMS_MIGRATION_STAGE)
-        migrationStage.setValue("IN_PROGRESS")
+        migrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
         migrationStageService.save(migrationStage)
         migrationService.execute()
     }

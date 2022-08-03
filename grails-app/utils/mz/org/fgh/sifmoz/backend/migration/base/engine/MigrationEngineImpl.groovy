@@ -1,21 +1,19 @@
-package mz.org.fgh.sifmoz.backend.migration.base.engine;
+package mz.org.fgh.sifmoz.backend.migration.base.engine
 
-import grails.gorm.services.Service;
+
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService;
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord;
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigrationRecord;
-import mz.org.fgh.sifmoz.backend.migration.base.search.SearchEngine;
+import mz.org.fgh.sifmoz.backend.migration.base.search.SearchEngine
 import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 import mz.org.fgh.sifmoz.backend.migration.base.search.params.AbstractMigrationSearchParams;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import javax.transaction.Transactional
 
 @Component
 public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements MigrationEngine<T> {
@@ -109,8 +107,31 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
                 this.doMigration();
             }
         } else {
+            while(!isRelatedMigrationStageCompleted()) {
+                engineStatus = ENGINE_SLEEPING
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                this.doMigration()
+            }
             engineStatus = ENGINE_FINISHED
         }
+    }
+
+    private MigrationStage getCurrStage() {
+        MigrationStage stage = null
+        MigrationStage.withTransaction {
+            stage = MigrationStage.findByCode(getRelatedStage())
+        }
+        if (stage == null) throw new RuntimeException(getRelatedStage() + " Not found.")
+
+        return stage
+    }
+
+    private boolean isRelatedMigrationStageCompleted() {
+        return getCurrStage().getValue() == MigrationStage.STAGE_COMPLETED
     }
 
     public boolean isRunning() {

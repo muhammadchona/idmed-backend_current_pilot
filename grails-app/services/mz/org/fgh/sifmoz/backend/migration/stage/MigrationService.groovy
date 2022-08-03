@@ -31,7 +31,7 @@ class MigrationService extends SynchronizerTask{
     @Override
     void execute() {
         if (!isProvincial()) {
-            curMigrationStage = MigrationStage.findByValue("IN_PROGRESS")
+            curMigrationStage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
             if (curMigrationStage == null) return
             executor = ExecutorThreadProvider.getInstance().getExecutorService();
             if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) migrationEngineList = new ArrayList<>();
@@ -60,16 +60,16 @@ class MigrationService extends SynchronizerTask{
                     e.printStackTrace();
                 }
             }
-            curMigrationStage.setValue("COMPLETED")
+            curMigrationStage.setValue(MigrationStage.STAGE_COMPLETED)
             migrationStageService.save(curMigrationStage)
             if (curMigrationStage.getCode() == MigrationEngineImpl.PARAMS_MIGRATION_STAGE) {
                 curMigrationStage = MigrationStage.findByCode(MigrationEngineImpl.STOCK_MIGRATION_STAGE)
-                curMigrationStage.setValue("IN_PROGRESS")
+                curMigrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
                 migrationStageService.save(curMigrationStage)
                 this.execute()
             } else if (curMigrationStage.getCode() == MigrationEngineImpl.STOCK_MIGRATION_STAGE) {
                 curMigrationStage = MigrationStage.findByCode(MigrationEngineImpl.PATIENT_MIGRATION_STAGE)
-                curMigrationStage.setValue("IN_PROGRESS")
+                curMigrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
                 migrationStageService.save(curMigrationStage)
                 this.execute()
             }
