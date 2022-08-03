@@ -63,7 +63,6 @@ class StockMigrationRecord extends AbstractMigrationRecord {
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy")
             String dateFormated = dateFormat.format(this.datereceived)
             Date receivedDate = dateFormat.parse(dateFormated)
-            def stockEntranceAux = null
 
             def clinic = Clinic.findWhere(mainClinic: true)
             def stockEntranceIfAlreadyExist = StockEntrance.findWhere(dateReceived: receivedDate)
@@ -74,11 +73,6 @@ class StockMigrationRecord extends AbstractMigrationRecord {
                 drugAux = Drug.findByName(this.name)
             }
 
-            // Setting StockEntrance
-            StockEntrance stockEntrance = new  StockEntrance()
-            stockEntrance.setClinic(clinic)
-            stockEntrance.setDateReceived(receivedDate)
-            stockEntrance.setOrderNumber(dateFormated + "_NA")
 
             // Setting Stock
             getMigratedRecord().setBatchNumber(this.batchnumber.length() > 0 ? this.batchnumber : dateFormated +"_"+ drugAux.fnmCode)
@@ -94,88 +88,54 @@ class StockMigrationRecord extends AbstractMigrationRecord {
                 getMigratedRecord().setStockMoviment(0)
             }
 
-
             //LOGS
             if (clinic != null) {
                 getMigratedRecord().setClinic(clinic)
             } else {
-                String[] msg = {String.format(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getDescription())}
+                String[] msg = [String.format(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getDescription())]
                 logs.add(new MigrationLog(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getCode(),msg,getId(), getEntityName()))
             }
 
             if (stockCenterAux != null) {
                 getMigratedRecord().setCenter(stockCenterAux)
             } else {
-                String[] msg = {String.format(MigrationError.STOCK_CENTER_NOT_FOUND.getDescription(), this.stockcentername)}
+                String[] msg = [String.format(MigrationError.STOCK_CENTER_NOT_FOUND.getDescription(), this.stockcentername)]
                 logs.add(new MigrationLog(MigrationError.STOCK_CENTER_NOT_FOUND.getCode(),msg,getId(), getEntityName()))
             }
 
             if (drugAux != null) {
                 getMigratedRecord().setDrug(drugAux)
             } else {
-                String[] msg = {String.format(MigrationError.DRUG_NOT_FOUND.getDescription(), this.atccode_id != null ? this.atccode_id : this.name)}
+                String[] msg = [String.format(MigrationError.DRUG_NOT_FOUND.getDescription(), this.atccode_id != null ? this.atccode_id : this.name)]
                 logs.add(new MigrationLog(MigrationError.DRUG_NOT_FOUND.getCode(),msg,getId(), getEntityName()))
             }
 
-            // The business Logic
             if (stockEntranceIfAlreadyExist != null) {// Ja existe o stockEntrance // migrar apenas o Stock
-                getMigratedRecord().setEntrance(stockEntranceIfAlreadyExist) // Setting numero de guia => (id do stockEntrance)
-                if (getMigratedRecord().hasErrors()) {
-                    MigrationLog migrationLog = new MigrationLog()
-                    migrationLog.errors = getMigratedRecord().errors.toString()
-                    logs.add(migrationLog)
-                    System.out.println(migrationLog)
-                }
+                getMigratedRecord().setEntrance(stockEntranceIfAlreadyExist)
+                // Setting numero de guia => (id do stockEntrance)
+            } else {
+                // Setting StockEntrance
+                StockEntrance stockEntrance = new StockEntrance()
+                stockEntrance.setClinic(clinic)
+                stockEntrance.setDateReceived(receivedDate)
+                stockEntrance.setOrderNumber(dateFormated + "_NA")
 
-                if (getMigratedRecord().hasErrors()) {
-//                    MigrationLog migrationLog = new MigrationLog()
-//                    migrationLog.errors = getMigratedRecord().errors.toString()
-//                    logs.add(migrationLog)
-                    logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
-                }
-
-                if(logs.size() == 0){
-                    def createdStock =  getMigratedRecord().save(flush: true)
-                    if(createdStock == null) {
-                        logs.add(new MigrationLog("800","Nao Criado",getId(), getEntityName()))
-                    }
-                }
-
-            } else {// O stockEntrance ainda nao existe
-
+                stockEntrance.validate()
                 if (stockEntrance.hasErrors()) {
-//                    MigrationLog migrationLog = new MigrationLog()
-//                    migrationLog.errors = stockEntrance().errors
-//                    logs.add(migrationLog)
-//                    System.out.println(migrationLog)
-                    logs.addAll(generateUnknowMigrationLog(this, stockEntrance.getErrors().toString()))
-                }else{
-                    stockEntranceAux = stockEntrance.save(flush: true)
-                }
-
-                if (stockEntranceAux != null) {
-                    getMigratedRecord().setEntrance(stockEntranceAux)
-                }else{
-                    String[] msg = {String.format(MigrationError.STOCK_ENTRANCE_NOT_FOUND.getDescription())}
-                    logs.add(new MigrationLog(MigrationError.STOCK_ENTRANCE_NOT_FOUND.getCode(),msg,getId(), getEntityName()))
-                }
-
-                if (getMigratedRecord().hasErrors()) {
-//                    MigrationLog migrationLog = new MigrationLog()
-//                    migrationLog.errors = getMigratedRecord().errors.toString()
-//                    logs.add(migrationLog)
                     logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
-                }
-
-                if(logs.size() == 0){
-                      def createdStock =  getMigratedRecord().save(flush: true)
-                    if(createdStock == null) {
-                        logs.add(new MigrationLog("800","Nao Criado",getId(), getEntityName()))
-                    }
+                } else {
+                    def createStockEntrance = stockEntrance.save(flush: true)
+                    getMigratedRecord().setEntrance(createStockEntrance)
                 }
             }
-        }
+                getMigratedRecord().validate()
+                if (getMigratedRecord().hasErrors()) {
+                    logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
+                } else {
+                    getMigratedRecord().save(flush: true)
+                }
 
+        }
         return logs
     }
 

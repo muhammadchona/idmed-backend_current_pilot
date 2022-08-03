@@ -6,7 +6,15 @@ import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockTakeMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockAdjustmentSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockCenterMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockTakeMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.backend.restUtils.RestService
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
@@ -42,6 +50,7 @@ class MigrationService extends SynchronizerTask{
 
     private void initMigrationEngines() {
         initPatientMigrationEngine()
+        initStockMigrationEngine()
     }
 
     private void initMigrationProcess() {
@@ -81,6 +90,22 @@ class MigrationService extends SynchronizerTask{
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         this.migrationEngineList.add(patientMigrationEngine)
     }
+
+    private void initStockMigrationEngine () {
+        StockMigrationSearchParams params = new StockMigrationSearchParams()
+        MigrationEngineImpl<StockMigrationRecord> stockMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.STOCK_MIGRATION_ENGINE)
+        StockTakeMigrationSearchParams paramsStockTake = new StockTakeMigrationSearchParams()
+        MigrationEngineImpl<StockTakeMigrationRecord> stockTakeMigrationEngine = new MigrationEngineImpl<>(paramsStockTake, MigrationEngineImpl.STOCK_MIGRATION_ENGINE)
+        StockCenterMigrationSearchParams paramsStockCenter = new StockCenterMigrationSearchParams()
+        MigrationEngineImpl<StockCenterMigrationRecord> stockCenterMigrationEngine = new MigrationEngineImpl<>(paramsStockCenter, MigrationEngineImpl.STOCK_MIGRATION_ENGINE)
+        StockAdjustmentSearchParams paramsStockAdjustment = new StockAdjustmentSearchParams()
+        MigrationEngineImpl<StockAdjustmentMigrationRecord> stockAdjustmentMigrationEngine = new MigrationEngineImpl<>(paramsStockAdjustment, MigrationEngineImpl.STOCK_MIGRATION_ENGINE)
+        this.migrationEngineList.add(stockCenterMigrationEngine)
+        this.migrationEngineList.add(stockMigrationEngine)
+        this.migrationEngineList.add(stockTakeMigrationEngine)
+        this.migrationEngineList.add(stockAdjustmentMigrationEngine)
+    }
+
 
     private MigrationSatus getCurrStageStatus() {
         Gson gson = new Gson()
