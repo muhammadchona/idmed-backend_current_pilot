@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 class MigrationSatus implements Validateable{
-    String id = UUID.randomUUID().toString()
+    String id
     String migration_stage
     int total_records
     int total_migrated
