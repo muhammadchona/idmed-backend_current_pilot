@@ -5,12 +5,22 @@ import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
+import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinic.ClinicMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinicSector.ClinicSectorMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.parameter.doctor.DoctorMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.parameter.drug.DrugMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.parameter.regimeTerapeutico.RegimeTerapeuticoMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockTakeMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicSectorMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.parameter.DoctorMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.parameter.DrugMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.parameter.RegimeTerapeuticoMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockAdjustmentSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockCenterMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
@@ -51,6 +61,7 @@ class MigrationService extends SynchronizerTask{
     private void initMigrationEngines() {
         initPatientMigrationEngine()
         initStockMigrationEngine()
+        initParameterMigrationEngine()
     }
 
     private void initMigrationProcess() {
@@ -106,6 +117,26 @@ class MigrationService extends SynchronizerTask{
         this.migrationEngineList.add(stockAdjustmentMigrationEngine)
     }
 
+    private void initParameterMigrationEngine(){
+        ClinicMigrationSearchParams paramsClinic = new ClinicMigrationSearchParams()
+        ClinicSectorMigrationSearchParams paramsClinicSector = new ClinicSectorMigrationSearchParams()
+        DoctorMigrationSearchParams paramsDoctor = new DoctorMigrationSearchParams()
+        DrugMigrationSearchParams paramsDrug = new DrugMigrationSearchParams()
+        RegimeTerapeuticoMigrationSearchParams paramsRegimen = new RegimeTerapeuticoMigrationSearchParams()
+
+        MigrationEngineImpl<ClinicMigrationRecord> clinicMigrationEngine = new MigrationEngineImpl<>(paramsClinic, MigrationEngineImpl.PARAMS_MIGRATION_ENGINE)
+        MigrationEngineImpl<ClinicSectorMigrationRecord> clinicSectorMigrationEngine = new MigrationEngineImpl<>(paramsClinicSector, MigrationEngineImpl.PARAMS_MIGRATION_ENGINE)
+        MigrationEngineImpl<DoctorMigrationRecord> doctorMigrationEngine = new MigrationEngineImpl<>(paramsDoctor, MigrationEngineImpl.PARAMS_MIGRATION_ENGINE)
+        MigrationEngineImpl<DrugMigrationRecord> drugMigrationEngine = new MigrationEngineImpl<>(paramsDrug, MigrationEngineImpl.PARAMS_MIGRATION_ENGINE)
+        MigrationEngineImpl<RegimeTerapeuticoMigrationRecord> regimeTerapeuticoMigrationEngine = new MigrationEngineImpl<>(paramsRegimen, MigrationEngineImpl.PARAMS_MIGRATION_ENGINE)
+
+        this.migrationEngineList.add(clinicMigrationEngine)
+        this.migrationEngineList.add(clinicSectorMigrationEngine)
+        this.migrationEngineList.add(doctorMigrationEngine)
+        this.migrationEngineList.add(drugMigrationEngine)
+        this.migrationEngineList.add(regimeTerapeuticoMigrationEngine)
+
+    }
 
     private MigrationSatus getCurrStageStatus() {
         Gson gson = new Gson()
