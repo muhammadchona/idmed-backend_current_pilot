@@ -33,7 +33,7 @@ class Stock extends BaseEntity {
         expireDate(nullable: false, blank: false)
         batchNumber(nullable: false, blank: false)
         shelfNumber(nullable: true, maxSize: 10)
-        unitsReceived(min: 1)
+        unitsReceived(min: 0)
         stockMoviment(min: 0)
         manufacture(nullable: true, maxSize: 20)
         packagedDrugs nullable: true

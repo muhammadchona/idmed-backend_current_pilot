@@ -11,7 +11,10 @@ public enum MigrationError {
     STOCK_CENTER_NOT_FOUND("E005", "O stock center com o nome: {0} do IDART, nao existe no IDMED"),
     DRUG_NOT_FOUND("E006", "O medicamento: {0} do IDART, nao existe no IDMED"),
     STOCK_ENTRANCE_NOT_FOUND("E007", "A entrada de stock do IDART, nao existe no IDMED"),
-    MAIN_CLINIC_NOT_IDENTIFIED("E008", "A clinica principal nao foi identificada no IDMED");
+    MAIN_CLINIC_NOT_IDENTIFIED("E008", "A clinica principal nao foi identificada no IDMED"),
+
+    STOCK_NOT_FOUND("E010", "O stock do IDART, nao existe no IDMED"),
+    INVENTORY_NOT_FOUND("E011", "O inventario do IDART, nao existe no IDMED");
 
     private final String code;
     private final String description;

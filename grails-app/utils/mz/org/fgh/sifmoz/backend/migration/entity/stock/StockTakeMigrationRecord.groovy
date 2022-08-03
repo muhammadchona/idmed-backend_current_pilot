@@ -1,18 +1,24 @@
-package mz.org.fgh.sifmoz.backend.migration.entity.stock;
+package mz.org.fgh.sifmoz.backend.migration.entity.stock
 
+import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import mz.org.fgh.sifmoz.backend.migration.base.log.AbstractMigrationLog
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
+import mz.org.fgh.sifmoz.backend.migration.base.record.MigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.common.MigrationError
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.stockinventory.Inventory
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
-class StockTakeMigrationRecord extends AbstractMigrationRecord {
+public class StockTakeMigrationRecord extends AbstractMigrationRecord {
     private Integer id
 
-    private String stockTakeNumber
+    private String stocktakenumber
 
-    private Date startDate
+    private Date startdate
 
-    private Date endDate
+    private Date enddate
 
     private Set<StockAdjustmentMigrationRecord> adjustments
 
@@ -21,8 +27,34 @@ class StockTakeMigrationRecord extends AbstractMigrationRecord {
     //---------------------------------------------------
 
     @Override
-    List<AbstractMigrationLog> migrate() {
-        return null
+    List<MigrationLog> migrate() {
+        List<MigrationLog> logs = new ArrayList<>();
+        Inventory.withTransaction {
+            def clinic = Clinic.findWhere(mainClinic: true)
+
+            if (clinic != null) {
+                getMigratedRecord().setClinic(clinic)
+            } else {
+                String[] msg = [String.format(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getDescription())]
+                logs.add(new MigrationLog(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getCode(),msg,getId(), getEntityName()))
+            }
+
+            getMigratedRecord().setStartDate(this.startdate)
+            getMigratedRecord().setEndDate(this.enddate)
+            getMigratedRecord().setClinic(clinic)
+            getMigratedRecord().setGeneric(true)
+            getMigratedRecord().setSequence(0)
+            if (Utilities.listHasElements(logs)) return logs
+
+            getMigratedRecord().validate()
+            if(getMigratedRecord().hasErrors()) {
+                logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
+            }
+            else {
+                def createdInventory = getMigratedRecord().save(flush: true)
+            }
+        }
+        return logs;
     }
 
     @Override
@@ -32,16 +64,21 @@ class StockTakeMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     int getId() {
-        return 0
+       this.id
     }
 
     @Override
     String getEntityName() {
-        return null
+        return "stocktake";
     }
 
     @Override
     MigratedRecord initMigratedRecord() {
-        return null
+        return new Inventory();
+    }
+
+    @Override
+    Inventory getMigratedRecord() {
+        return (Inventory) super.getMigratedRecord();
     }
 }

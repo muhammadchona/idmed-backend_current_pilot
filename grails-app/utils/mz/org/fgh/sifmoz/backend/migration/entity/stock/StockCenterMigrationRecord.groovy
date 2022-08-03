@@ -34,14 +34,11 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
             if (clinicAux != null) {
                 getMigratedRecord().setClinic(clinicAux);
             } else {
-                String[] msg = {String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)}
+                String[] msg = [String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)]
                 logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()));
             }
 
             if (getMigratedRecord().hasErrors()) {
-//                MigrationLog migrationLog = new MigrationLog()
-//                migrationLog.errors = getMigratedRecord().errors
-//                logs.add(migrationLog)
                 logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
             }
 
