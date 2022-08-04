@@ -56,7 +56,7 @@ class Patient extends BaseEntity {
         dateOfBirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
             return dateofbirth != null ? dateofbirth <= new Date() : null
         })
-        cellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
+        cellphone(nullable: true )
         alternativeCellphone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         address nullable: true
         addressReference nullable: true
