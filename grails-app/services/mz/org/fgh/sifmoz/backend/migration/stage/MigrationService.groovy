@@ -11,6 +11,7 @@ import mz.org.fgh.sifmoz.backend.migration.entity.parameter.doctor.DoctorMigrati
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.drug.DrugMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.regimeTerapeutico.RegimeTerapeuticoMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.prescription.PrescriptionMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
@@ -99,7 +100,10 @@ class MigrationService extends SynchronizerTask{
     private void initPatientMigrationEngine () {
         PatientMigrationSearchParams params = new PatientMigrationSearchParams()
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        MigrationEngineImpl<PrescriptionMigrationRecord> prescriptionMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         this.migrationEngineList.add(patientMigrationEngine)
+        this.migrationEngineList.add(prescriptionMigrationEngine)
+
     }
 
     private void initStockMigrationEngine () {

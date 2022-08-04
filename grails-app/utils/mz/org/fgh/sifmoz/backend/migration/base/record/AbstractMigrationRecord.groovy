@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public abstract class AbstractMigrationRecord implements MigrationRecord{
+public abstract class AbstractMigrationRecord implements MigrationRecord {
 
     protected MigratedRecord migratedRecord;
+    protected RestService restService;
     static Logger logger = LogManager.getLogger(AbstractMigrationRecord.class);
     @Autowired
     protected MigrationLogService migrationLogService;
@@ -28,14 +29,14 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
 
     @Override
     public void setAsMigratedSuccessfully(RestService restServiceProvider) {
-        logger.info("Registo migrado com sucesso: origem ["+this.getEntityName() +" : "+ this.getId()+"] - destino: ["+this.migratedRecord.getEntity() +" : "+  this.migratedRecord.getId()+"]");
+        logger.info("Registo migrado com sucesso: origem [" + this.getEntityName() + " : " + this.getId() + "] - destino: [" + this.migratedRecord.getEntity() + " : " + this.migratedRecord.getId() + "]");
         String uri = "/" + this.getEntityName().toLowerCase() + "?id=eq." + getId();
         restServiceProvider.patch(uri, "{\"migration_status\":\"MIGRATED\"}");
         String[] msg = ["Registo Migrado com Sucesso"]
         MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity())
         MigrationLog.withTransaction {
-                log.save(flush: true);
-            }
+            log.save(flush: true);
+        }
     }
 
     @Override
@@ -48,7 +49,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
 
     @Override
     public void setAsRejectedForMigration(RestService restServiceProvider) {
-        logger.info("Registo não migrado: ["+this.getEntityName() +" : "+  this.getId()+"]");
+        logger.info("Registo não migrado: [" + this.getEntityName() + " : " + this.getId() + "]");
         String uri = "/" + this.getEntityName().toLowerCase() + "?id=eq." + getId();
         restServiceProvider.patch(uri, "{\"migration_status\":\"REJECTED\"}");
     }
@@ -60,9 +61,24 @@ public abstract class AbstractMigrationRecord implements MigrationRecord{
     @Override
     public void saveMigrationLogs(List<MigrationLog> migrationLogs) {
         MigrationLog.withTransaction {
-            for (MigrationLog migrationLog: migrationLogs) {
+            for (MigrationLog migrationLog : migrationLogs) {
                 migrationLog.save(flush: true);
             }
         }
+    }
+
+    @Override
+    public void setMigratedRecord(MigratedRecord migratedRecord) {
+this.migratedRecord= migratedRecord;
+    }
+
+    @Override
+    RestService getRestService() {
+        return this.restService;
+    }
+
+    @Override
+    void setRestService(RestService restService) {
+        this.restService = restService;
     }
 }

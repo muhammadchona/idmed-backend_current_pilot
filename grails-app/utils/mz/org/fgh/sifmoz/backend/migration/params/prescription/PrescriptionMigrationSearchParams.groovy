@@ -8,15 +8,19 @@ import org.grails.web.json.JSONArray
 
 class PrescriptionMigrationSearchParams extends AbstractMigrationSearchParams<PrescriptionMigrationRecord> {
 
-    static Logger logger = LogManager.getLogger(PrescriptionMigrationSearchParams.class);
+    static Logger logger = LogManager.getLogger(PrescriptionMigrationSearchParams.class)
+
     @Override
-    public List<PrescriptionMigrationRecord> doSearch(long limit) {
-        JSONArray jsonArray = getRestServiceProvider().get("/prescription_migration_vw?limit=1");
-        this.searchResults.clear();
-        PrescriptionMigrationRecord[] prescriptionMigrationRecords = gson.fromJson(jsonArray.toString(), PrescriptionMigrationRecord[].class);
+    List<PrescriptionMigrationRecord> doSearch(long limit) {
+        JSONArray jsonArray = getRestServiceProvider().get("/prescription_migration_vw?limit=20")
+        this.searchResults.clear()
+        PrescriptionMigrationRecord[] prescriptionMigrationRecords = gson.fromJson(jsonArray.toString(), PrescriptionMigrationRecord[].class)
         if (prescriptionMigrationRecords != null && prescriptionMigrationRecords.length > 0) {
-            this.searchResults.addAll(Arrays.asList(prescriptionMigrationRecords));
+            this.searchResults.addAll(Arrays.asList(prescriptionMigrationRecords))
         }
-        return this.searchResults;
+        for (PrescriptionMigrationRecord record : this.searchResults) {
+            record.setRestService(getRestServiceProvider())
+        }
+        return this.searchResults
     }
 }

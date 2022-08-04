@@ -43,26 +43,23 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
 
 
     @Override
-    public List<MigrationLog> migrate() {
-
-        List<MigrationLog> logs = new ArrayList<>();
-        getMigratedRecord().setAddress(this.getAddress3() + " " +getAddress1());
-        getMigratedRecord().setAddressReference(this.getAddress2())
-        getMigratedRecord().setAccountstatus(this.getAccountStatus());
-        getMigratedRecord().setFirstNames(this.getFirstNames());
-        getMigratedRecord().setId(this.getUuidopenmrs());
-        getMigratedRecord().setCellphone(this.getCellphone());
-        getMigratedRecord().setDateOfBirth(this.getDateOfBirth());
-        setClinicToMigratedRecord(logs);
-        setProvinceToMigratedRecord(logs, this.province);
-        getMigratedRecord().setMiddleNames("-");
-        getMigratedRecord().setLastNames(this.getLastname());
-        getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino");
-        getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
-
-        if (Utilities.listHasElements(logs)) return logs
-
+    List<MigrationLog> migrate() {
+        List<MigrationLog> logs = new ArrayList<>()
         Patient.withTransaction {
+        getMigratedRecord().setAddress(this.getAddress3() + " " +getAddress1())
+        getMigratedRecord().setAddressReference(this.getAddress2())
+        getMigratedRecord().setAccountstatus(this.getAccountStatus())
+        getMigratedRecord().setFirstNames(this.getFirstnames())
+        getMigratedRecord().setId(this.getUuidopenmrs())
+        getMigratedRecord().setCellphone(this.getCellphone())
+        getMigratedRecord().setDateOfBirth(this.getDateOfBirth())
+        setClinicToMigratedRecord(logs)
+        setProvinceToMigratedRecord(logs, this.province)
+        getMigratedRecord().setMiddleNames("-")
+        getMigratedRecord().setLastNames(this.getLastname())
+        getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
+        getMigratedRecord().setDistrict(Clinic.findByUuid(this.clinicuuid).getDistrict())
+        if (Utilities.listHasElements(logs)) return logs
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
                 getMigratedRecord().save(flush: true)
@@ -71,32 +68,32 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
                 return logs
             }
         }
-        return logs;
+        return logs
     }
 
     @Override
-    public void updateIDMEDInfo() {
+    void updateIDMEDInfo() {
 
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    int getId() {
+        return this.id
     }
 
     @Override
-    public String getEntityName() {
-        return "Patient";
+    String getEntityName() {
+        return "Patient"
     }
 
     @Override
-    public MigratedRecord initMigratedRecord() {
-        return new Patient();
+    MigratedRecord initMigratedRecord() {
+        return new Patient()
     }
 
     @Override
-    public Patient getMigratedRecord() {
-        return (Patient) super.getMigratedRecord();
+    Patient getMigratedRecord() {
+        return (Patient) super.getMigratedRecord()
     }
 
     void setClinicToMigratedRecord(List<MigrationLog> logs) {
@@ -105,23 +102,23 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
             clinic = Clinic.findByUuid(this.clinicuuid)
         }
         if (clinic != null) {
-            getMigratedRecord().setClinic(clinic);
+            getMigratedRecord().setClinic(clinic)
         } else {
             String[] msg = {String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)}
-            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()));
+            logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()))
         }
     }
 
     void setProvinceToMigratedRecord(List<MigrationLog> logs, String provinceName) {
         Province province = null
         Province.withTransaction {
-            province = Province.findByDescription(provinceName);
+            province = Province.findByDescription(provinceName)
         }
         if (province != null) {
-            getMigratedRecord().setProvince(province);
+            getMigratedRecord().setProvince(province)
         } else {
             String[] msg = {String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province)}
-            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),msg, getId(), getEntityName()));
+            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),msg, getId(), getEntityName()))
         }
     }
 
