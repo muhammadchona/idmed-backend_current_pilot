@@ -130,6 +130,7 @@ class BootStrap {
                 identifierType.id = identifierTypeObject.id
                 identifierType.code = identifierTypeObject.code
                 identifierType.description = identifierTypeObject.description
+                identifierType.setPattern(identifierTypeObject.pattern)
                 identifierType.save(flush: true, failOnError: true)
             }
         }
