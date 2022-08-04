@@ -10,6 +10,7 @@ public interface MigrationRecord {
 
     List<MigrationLog> migrate();
 
+
     void setAsMigratedSuccessfully(RestService restServiceProvider);
 
     void setAsRejectedForMigration(RestService restServiceProvider);
@@ -27,4 +28,10 @@ public interface MigrationRecord {
     void saveMigrationLogs(List<MigrationLog> migrationLogs);
 
     MigratedRecord getMigratedRecord();
+
+     void setMigratedRecord(MigratedRecord migratedRecord);
+
+     RestService getRestService();
+
+     void setRestService(RestService restService);
 }
