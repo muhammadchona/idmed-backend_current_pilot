@@ -16,12 +16,13 @@ import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigration
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockTakeMigrationRecord
-import mz.org.fgh.sifmoz.backend.migration.params.PatientMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.patient.PatientMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicSectorMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.DoctorMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.DrugMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.RegimeTerapeuticoMigrationSearchParams
+import mz.org.fgh.sifmoz.backend.migration.params.prescription.PrescriptionMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockAdjustmentSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockCenterMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.stock.StockMigrationSearchParams
@@ -73,7 +74,7 @@ class MigrationService extends SynchronizerTask{
                 executor.execute(engine)
             }
         }
-        if (existRunningEngineOnStage()) {
+        //if (existRunningEngineOnStage()) {
             while (getCurrStageStatus().getStage_progress() < 100 || getCurrStageStatus().getTotal_rejcted() > 0) {
                 try {
                     Thread.sleep(10000);
@@ -81,17 +82,19 @@ class MigrationService extends SynchronizerTask{
                     e.printStackTrace();
                 }
             }
+        MigrationStage.withTransaction {
             curMigrationStage.setValue(MigrationStage.STAGE_COMPLETED)
-            migrationStageService.save(curMigrationStage)
+            //migrationStageService.save(curMigrationStage)
+            curMigrationStage.save(flush: true, insert: true)
             if (curMigrationStage.getCode() == MigrationEngineImpl.PARAMS_MIGRATION_STAGE) {
                 curMigrationStage = MigrationStage.findByCode(MigrationEngineImpl.STOCK_MIGRATION_STAGE)
                 curMigrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
-                migrationStageService.save(curMigrationStage)
+                curMigrationStage.save(flush: true, insert: true)
                 this.execute()
             } else if (curMigrationStage.getCode() == MigrationEngineImpl.STOCK_MIGRATION_STAGE) {
                 curMigrationStage = MigrationStage.findByCode(MigrationEngineImpl.PATIENT_MIGRATION_STAGE)
                 curMigrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
-                migrationStageService.save(curMigrationStage)
+                curMigrationStage.save(flush: true, insert: true)
                 this.execute()
             }
         }
@@ -99,11 +102,12 @@ class MigrationService extends SynchronizerTask{
 
     private void initPatientMigrationEngine () {
         PatientMigrationSearchParams params = new PatientMigrationSearchParams()
+        PrescriptionMigrationSearchParams prescriptionMigrationSearchParams = new PrescriptionMigrationSearchParams()
+
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
-        MigrationEngineImpl<PrescriptionMigrationRecord> prescriptionMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        MigrationEngineImpl<PrescriptionMigrationRecord> prescriptionMigrationEngine = new MigrationEngineImpl<>(prescriptionMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         this.migrationEngineList.add(patientMigrationEngine)
         this.migrationEngineList.add(prescriptionMigrationEngine)
-
     }
 
     private void initStockMigrationEngine () {
@@ -139,20 +143,24 @@ class MigrationService extends SynchronizerTask{
         this.migrationEngineList.add(doctorMigrationEngine)
         this.migrationEngineList.add(drugMigrationEngine)
         this.migrationEngineList.add(regimeTerapeuticoMigrationEngine)
-
     }
 
     private MigrationSatus getCurrStageStatus() {
+        List<MigrationSatus> migrationSatuses = getMigrationStatus()
+        for (MigrationSatus migrationSatus : migrationSatuses) {
+            if (migrationSatus.getMigration_stage() == curMigrationStage.getCode()) return migrationSatus
+        }
+        return null
+    }
+
+    public List<MigrationSatus> getMigrationStatus() {
         Gson gson = new Gson()
         RestService restService = new RestService("MIGRATION", "IDART")
         List<MigrationSatus> migrationSatuses = new ArrayList<>()
         JSONArray jsonArray = restService.get("/migration_progress")
         MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class);
         migrationSatuses.addAll(Arrays.asList(migrationStatusList))
-        for (MigrationSatus migrationSatus : migrationSatuses) {
-            if (migrationSatus.getMigration_stage() == curMigrationStage.getCode()) return migrationSatus
-        }
-        return null
+        return migrationSatuses
     }
 
     boolean existRunningEngineOnStage() {

@@ -35,28 +35,19 @@ class DoctorMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public List<MigrationLog> migrate() {
-        return null;
-    }
-
-    @Override
-    public void updateIDMEDInfo() {
-
-    }
-
-    @Override
-    int getId() {
         List<MigrationLog> logs = new ArrayList<>()
-        getMigratedRecord().setFirstnames(this.firstname)
-        getMigratedRecord().setLastname(this.lastname)
-        getMigratedRecord().setGender("TBD")
-        getMigratedRecord().setTelephone(this.telephoneno)
-        getMigratedRecord().setEmail(this.emailaddress)
-        getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
-        getMigratedRecord().setActive(true)
-
-        if (Utilities.listHasElements(logs)) return logs
-
         Doctor.withTransaction {
+            getMigratedRecord().setFirstnames(this.firstname)
+            getMigratedRecord().setLastname(this.lastname)
+            getMigratedRecord().setGender("TBD")
+            getMigratedRecord().setTelephone(this.telephoneno)
+            getMigratedRecord().setEmail(this.emailaddress)
+            getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
+            getMigratedRecord().setActive(true)
+
+            if (Utilities.listHasElements(logs)) return logs
+
+
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
                 getMigratedRecord().save(flush: true)
@@ -66,6 +57,16 @@ class DoctorMigrationRecord extends AbstractMigrationRecord {
             }
         }
         return logs
+    }
+
+    @Override
+    public void updateIDMEDInfo() {
+
+    }
+
+    @Override
+    int getId() {
+        return this.id
     }
 
     @Override

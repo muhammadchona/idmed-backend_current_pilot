@@ -30,7 +30,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     @Override
     public void setAsMigratedSuccessfully(RestService restServiceProvider) {
         logger.info("Registo migrado com sucesso: origem [" + this.getEntityName() + " : " + this.getId() + "] - destino: [" + this.migratedRecord.getEntity() + " : " + this.migratedRecord.getId() + "]");
-        String uri = "/" + this.getEntityName().toLowerCase() + "?id=eq." + getId();
+        String uri = "/" + this.getEntityName().toLowerCase() + "?"+getIdFieldName()+"=eq." + getId();
         restServiceProvider.patch(uri, "{\"migration_status\":\"MIGRATED\"}");
         String[] msg = ["Registo Migrado com Sucesso"]
         MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity())
@@ -62,7 +62,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     public void saveMigrationLogs(List<MigrationLog> migrationLogs) {
         MigrationLog.withTransaction {
             for (MigrationLog migrationLog : migrationLogs) {
-                migrationLog.save(flush: true);
+                migrationLog.save(flush: true, failOnError: true);
             }
         }
     }
@@ -80,5 +80,10 @@ this.migratedRecord= migratedRecord;
     @Override
     void setRestService(RestService restService) {
         this.restService = restService;
+    }
+
+    @Override
+    String getIdFieldName() {
+        return "id"
     }
 }

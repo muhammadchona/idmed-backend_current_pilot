@@ -35,7 +35,7 @@ class BootStrap {
 
     def init = { servletContext ->
 
-        MigrationStage.withTransaction {initMigration()}
+        //MigrationStage.withTransaction {initMigration()}
 
         FacilityType.withTransaction { initFacilityType() }
 
@@ -563,11 +563,11 @@ class BootStrap {
 
     List<Object> listPatientTransReferenceType() {
         List<Object> stockOperationTypeList = new ArrayList<>()
-        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'TRANSFERENCIA', description: 'Transfêrencia'))
-        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'TRANSITO', description: 'Trânsito'))
-        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'REFERENCIA_FP', description: 'Refêrencia para Farmácia Privada'))
-        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'REFERENCIA_DC', description: 'Refêrencia para Dispensa Comunitária'))
-        stockOperationTypeList.add(new LinkedHashMap(id: '', code: 'VOLTOU_DA_REFERENCIA', description: 'Voltou da Refêrencia'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '98309d25-dbba-4f77-a69b-f2b87126a738', code: 'TRANSFERENCIA', description: 'Transfêrencia'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '7992ccf1-e9f6-417e-8b59-ba0a66feeb0e', code: 'TRANSITO', description: 'Trânsito'))
+        stockOperationTypeList.add(new LinkedHashMap(id: 'fac618a2-a98d-42a1-892e-71d56a850380', code: 'REFERENCIA_FP', description: 'Refêrencia para Farmácia Privada'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '36cfa45f-6277-4108-bf34-5030002540c7', code: 'REFERENCIA_DC', description: 'Refêrencia para Dispensa Comunitária'))
+        stockOperationTypeList.add(new LinkedHashMap(id: '5e4111c1-556a-4e25-8045-0f520dff79de', code: 'VOLTOU_DA_REFERENCIA', description: 'Voltou da Refêrencia'))
 
         return stockOperationTypeList
     }

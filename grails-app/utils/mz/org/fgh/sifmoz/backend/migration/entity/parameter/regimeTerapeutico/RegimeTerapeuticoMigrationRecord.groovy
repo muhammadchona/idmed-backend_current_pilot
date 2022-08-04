@@ -33,7 +33,14 @@ class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
     @Override
      List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
-        TherapeuticRegimen regimenAux = TherapeuticRegimen.findByCode(this.codigoregime)
+        TherapeuticRegimen regimenAux = null
+        TherapeuticRegimen.withTransaction {
+            regimenAux = TherapeuticRegimen.findByCode(this.codigoregime)
+
+        if (regimenAux != null) {
+            setMigratedRecord(regimenAux)
+            return null
+        }
 
         getMigratedRecord().setId(!regimenAux ? UUID.randomUUID().toString() : regimenAux.id)
         getMigratedRecord().setRegimenScheme(this.regimeesquema)
@@ -45,8 +52,7 @@ class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
 
         if (Utilities.listHasElements(logs)) return logs
 
-        TherapeuticRegimen.withTransaction {
-            if(!regimenAux) {
+
                 getMigratedRecord().validate()
                 if (!getMigratedRecord().hasErrors()) {
                     getMigratedRecord().save(flush: true)
@@ -54,8 +60,6 @@ class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
                     logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
                     return logs
                 }
-            }
-
         }
         return logs
     }
@@ -67,7 +71,7 @@ class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     int getId() {
-        return this.id
+        return this.regimeid
     }
 
     @Override
@@ -85,4 +89,8 @@ class RegimeTerapeuticoMigrationRecord extends AbstractMigrationRecord {
         return (TherapeuticRegimen) super.getMigratedRecord();
     }
 
+    @Override
+    String getIdFieldName() {
+        return "regimeid"
+    }
 }

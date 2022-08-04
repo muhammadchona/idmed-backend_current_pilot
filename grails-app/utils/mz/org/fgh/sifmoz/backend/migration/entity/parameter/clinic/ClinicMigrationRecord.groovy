@@ -39,20 +39,23 @@ class ClinicMigrationRecord extends AbstractMigrationRecord {
     @Override
      List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
-        getMigratedRecord().setId(this.uuid)
-        getMigratedRecord().setNotes(this.notes)
-        getMigratedRecord().setTelephone(this.telephone)
-        getMigratedRecord().setMainClinic(this.mainclinic)
-        getMigratedRecord().setClinicName(this.clinicname)
-        getMigratedRecord().setProvince(Province.findByDescription(this.province))
-        getMigratedRecord().setDistrict(District.findByDescription(this.district))
-        getMigratedRecord().setFacilityType(FacilityType.findByDescription(this.facilitytype))
-        getMigratedRecord().setMainClinic(false)
-        getMigratedRecord().setActive(true)
-
-        if (Utilities.listHasElements(logs)) return logs
-
         Clinic.withTransaction {
+            getMigratedRecord().setId(this.uuid)
+            getMigratedRecord().setNotes(this.notes)
+            getMigratedRecord().setTelephone(this.telephone)
+            getMigratedRecord().setMainClinic(this.mainclinic)
+            getMigratedRecord().setClinicName(this.clinicname)
+            getMigratedRecord().setProvince(Province.findByDescription(this.province))
+            getMigratedRecord().setDistrict(District.findByDescriptionIlike("%"+this.district+"%"))
+            getMigratedRecord().setFacilityType(FacilityType.findByDescriptionIlike("%"+this.facilitytype+"%"))
+            getMigratedRecord().setMainClinic(false)
+            getMigratedRecord().setCode(this.code)
+            getMigratedRecord().setActive(true)
+            getMigratedRecord().setUuid(this.uuid)
+
+            if (Utilities.listHasElements(logs)) return logs
+
+
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
                 getMigratedRecord().save(flush: true)

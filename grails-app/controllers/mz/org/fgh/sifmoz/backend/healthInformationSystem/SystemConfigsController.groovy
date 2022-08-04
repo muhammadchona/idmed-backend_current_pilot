@@ -28,6 +28,7 @@ class SystemConfigsController {
 
     @Transactional
     def save(SystemConfigs systemConfigs) {
+        systemConfigs.beforeInsert()
         if (systemConfigs == null) {
             render status: NOT_FOUND
             return

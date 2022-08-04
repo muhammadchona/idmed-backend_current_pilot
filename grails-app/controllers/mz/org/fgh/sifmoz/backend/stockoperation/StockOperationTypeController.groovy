@@ -36,6 +36,7 @@ class StockOperationTypeController extends RestfulController{
 
     @Transactional
     def save(StockOperationType stockOperationType) {
+        stockOperationType.beforeInsert()
         if (stockOperationType == null) {
             render status: NOT_FOUND
             return

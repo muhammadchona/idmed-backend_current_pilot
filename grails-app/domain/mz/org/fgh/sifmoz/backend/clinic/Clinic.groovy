@@ -18,15 +18,21 @@ class Clinic extends BaseEntity {
     FacilityType facilityType
     boolean mainClinic
     boolean active
-    String uuid = UUID.randomUUID().toString()
+    String uuid
     // Long matchId
 
     static belongsTo = [nationalClinic: NationalClinic]
     static hasMany = [sectors: ClinicSector]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
     static constraints = {
         code nullable: false
         notes nullable: true, blank: true

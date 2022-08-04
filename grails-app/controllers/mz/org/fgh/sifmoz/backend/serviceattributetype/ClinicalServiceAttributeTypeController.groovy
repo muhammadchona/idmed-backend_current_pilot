@@ -32,6 +32,7 @@ class ClinicalServiceAttributeTypeController extends RestfulController{
 
     @Transactional
     def save(ClinicalServiceAttributeType clinicalServiceAttributeType) {
+        clinicalServiceAttributeType.beforeInsert()
         if (clinicalServiceAttributeType == null) {
             render status: NOT_FOUND
             return

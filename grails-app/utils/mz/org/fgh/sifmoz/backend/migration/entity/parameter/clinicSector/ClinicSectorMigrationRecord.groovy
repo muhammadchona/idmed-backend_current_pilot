@@ -33,17 +33,18 @@ class ClinicSectorMigrationRecord extends AbstractMigrationRecord {
     @Override
      List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
-        getMigratedRecord().setId(this.uuid)
-        getMigratedRecord().setCode(this.code)
-        getMigratedRecord().setDescription(this.sectorname)
-        getMigratedRecord().setUuid(this.uuid)
-        getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
-        getMigratedRecord().setClinicSectorType(ClinicSectorType.findByCode(this.clinicSectortype))
-        getMigratedRecord().setActive(true)
-
-        if (Utilities.listHasElements(logs)) return logs
-
         ClinicSector.withTransaction {
+            getMigratedRecord().setId(this.uuid)
+            getMigratedRecord().setCode(this.code)
+            getMigratedRecord().setDescription(this.sectorname)
+            getMigratedRecord().setUuid(this.uuid)
+            getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
+            getMigratedRecord().setClinicSectorType(ClinicSectorType.findByCode(this.clinicSectortype))
+            getMigratedRecord().setActive(true)
+
+            if (Utilities.listHasElements(logs)) return logs
+
+
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
                 getMigratedRecord().save(flush: true)

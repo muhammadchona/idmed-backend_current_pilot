@@ -13,7 +13,13 @@ class MigrationStage {
     String value
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     static constraints = {

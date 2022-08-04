@@ -16,7 +16,7 @@ public class DoctorMigrationSearchParams extends AbstractMigrationSearchParams<D
 
     @Override
     public List<DoctorMigrationRecord> doSearch(long limit) {
-        JSONArray jsonArray = getRestServiceProvider().get("/doctor?not.and=(migration_status.eq.MIGRATED,migration_status.eq.REJECTED)&limit=" + limit);
+        JSONArray jsonArray = getRestServiceProvider().get("/doctor?or=(migration_status.is.null,migration_status.eq.CORRECTED)&limit=" + limit);
         this.searchResults.clear();
         DoctorMigrationRecord[] doctorMigrationRecords = gson.fromJson(jsonArray.toString(), DoctorMigrationRecord[].class);
         logger.info(jsonArray.toString());

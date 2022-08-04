@@ -34,4 +34,6 @@ public interface MigrationRecord {
      RestService getRestService();
 
      void setRestService(RestService restService);
+
+     String getIdFieldName();
 }

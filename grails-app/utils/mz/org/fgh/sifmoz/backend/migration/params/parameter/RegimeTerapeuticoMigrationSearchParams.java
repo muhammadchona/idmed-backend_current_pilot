@@ -16,7 +16,7 @@ public class RegimeTerapeuticoMigrationSearchParams extends AbstractMigrationSea
 
     @Override
     public List<RegimeTerapeuticoMigrationRecord> doSearch(long limit) {
-        JSONArray jsonArray = getRestServiceProvider().get("/regimeterapeutico?not.and=(migration_status.eq.MIGRATED,migration_status.eq.REJECTED)&limit=" + limit);
+        JSONArray jsonArray = getRestServiceProvider().get("/regimeterapeutico?or=(migration_status.is.null,migration_status.eq.CORRECTED)&limit=" + limit);
         this.searchResults.clear();
         RegimeTerapeuticoMigrationRecord[] regimeTerapeuticoMigrationRecords = gson.fromJson(jsonArray.toString(), RegimeTerapeuticoMigrationRecord[].class);
         logger.info(jsonArray.toString());
