@@ -159,12 +159,10 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
             prescription.getPrescriptionDetails().add(prescriptionDetail)
 
-
             PatientVisit patientVisit = new PatientVisit()
             patientVisit.setClinic(clinic)
             patientVisit.setVisitDate(this.prescriptiondate)
             patientVisit.setPatient(psi.getPatient())
-
 
             Pack pack = new Pack()
             pack.setReasonForPackageReturn(this.reasonforpackagereturn)
@@ -201,32 +199,9 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
             pack.setClinic(clinic)
 
-            Integer quantity = Integer.parseInt(StringUtils.replace(StringUtils.replace(this.qtyinhand, "(", ""), ")", ""))
-            //PackageDrug
-            Drug drug = Drug.findByName(drugname)
-            PackagedDrug packagedDrug = new PackagedDrug()
-            packagedDrug.setQuantitySupplied(quantity)
-            packagedDrug.setNextPickUpDate(nxtPickDt)
-            packagedDrug.setDrug(drug)
-            packagedDrug.setCreationDate(this.dispensedate)
-            packagedDrug.setPack(pack)
-
-            //PackageDrugStock
-            PackagedDrugStock packagedDrugStock = new PackagedDrugStock()
-            packagedDrugStock.setQuantitySupplied(quantity)
-            packagedDrugStock.setDrug(drug)
-            MigrationLog log = MigrationLog.findBySourceIdAndSourceEntity(stockid, "stock");
-
-            packagedDrugStock.setStock(log != null ? Stock.findById(log.getiDMEDId()) : null)
-            packagedDrugStock.setCreationDate(this.dispensedate)
-            packagedDrugStock.setPackagedDrug(packagedDrug)
-            //marcar migrationstatus prescricao e package
-
             prescription.validate()
             pack.validate()
             patientVisit.validate()
-            packagedDrug.validate()
-            packagedDrugStock.validate()
             if (!Utilities.stringHasValue(psi.id)) {
                 psi.validate()
                 if (!psi.hasErrors()) {
@@ -263,19 +238,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 pack.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, pack.getErrors().toString()))
-                return logs
-            }
-            if (!packagedDrug.hasErrors()) {
-                packagedDrug.save(flush: true)
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, packagedDrug.getErrors().toString()))
-                return logs
-            }
-            if (!packagedDrugStock.hasErrors()) {
-                packagedDrugStock.save(flush: true)
-                packM.setAsMigratedSuccessfully(getRestService())
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, packagedDrugStock.getErrors().toString()))
                 return logs
             }
         }

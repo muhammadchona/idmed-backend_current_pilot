@@ -35,7 +35,7 @@ class BootStrap {
 
     def init = { servletContext ->
 
-        MigrationStage.withTransaction {initMigration()}
+        //MigrationStage.withTransaction {initMigration()}
 
         FacilityType.withTransaction { initFacilityType() }
 

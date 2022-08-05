@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.migration.entity.prescription
 
-
+import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
@@ -40,22 +40,22 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
         List<MigrationLog> logs = new ArrayList<>()
         PrescribedDrug.withTransaction {
 
-            MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.parentpackage, "Prescription")
-            Prescription pack = Prescription.findById(prescriptionMigrationLog.getiDMEDId())
+            MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.prescription, "Prescription")
+            Prescription savedPrescription = Prescription.findById(prescriptionMigrationLog.getiDMEDId())
 
-            MigrationLog stockMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.stock, "stock")
-            Stock stock = Stock.findById(stockMigrationLog.getiDMEDId())
+            MigrationLog drugkMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.drug, "drug")
 
             PrescribedDrug prescribedDrug = new PrescribedDrug()
-            prescribedDrug.setDrug(stock.getDrug())
+            prescribedDrug.setDrug(Drug.findById(drugkMigrationLog.getiDMEDId()))
             prescribedDrug.setModified(this.modified == "T")
-            prescribedDrug.setPrescription(prescription)
+            prescribedDrug.setPrescription(savedPrescription)
             prescribedDrug.setAmtPerTime(this.amtpertime.intValue())
             prescribedDrug.setQtyPrescribed(this.amtpertime * this.timesperday)
             prescribedDrug.setTimesPerDay(this.timesperday)
-            prescribedDrug.setForm(stock.getDrug().getForm().getDescription())
+            prescribedDrug.setForm(prescribedDrug.getDrug().getDefaultPeriodTreatment())
             if (!prescribedDrug.hasErrors()) {
                 prescribedDrug.save(flush: true)
+                setMigratedRecord(prescribedDrug)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescribedDrug.getErrors().toString()))
                 return logs

@@ -43,6 +43,8 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             MigrationLog packMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.parentpackage, "Package")
             Pack pack = Pack.findById(packMigrationLog.getiDMEDId())
 
+            if (pack == null) throw new RuntimeException("Não foi encontrado o respectivo registo PACK.")
+
             PackagedDrug packagedDrug = new PackagedDrug()
             packagedDrug.setQuantitySupplied(this.amount)
             packagedDrug.setNextPickUpDate(pack.getNextPickUpDate())
@@ -50,7 +52,6 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             packagedDrug.setCreationDate(new Date())
             packagedDrug.setPack(pack)
             packagedDrug.setToContinue(true)
-
 
             //PackageDrugStock
             PackagedDrugStock packagedDrugStock = new PackagedDrugStock()
@@ -63,9 +64,9 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
 
             packagedDrug.validate()
 
-            packagedDrug.validate()
             if (!packagedDrug.hasErrors()) {
                 packagedDrug.save(flush: true)
+                setMigratedRecord(packagedDrug)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, packagedDrug.getErrors().toString()))
                 return logs
