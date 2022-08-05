@@ -6,6 +6,7 @@ import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 class PatientServiceIdentifier extends BaseEntity {
     String id
@@ -37,6 +38,9 @@ class PatientServiceIdentifier extends BaseEntity {
         reopenDate nullable: true
     }
 
+    boolean hasEpisodes () {
+        return Utilities.listHasElements(this.episodes as ArrayList<?>)
+    }
 
 //    @Override
 //    public String toString() {

@@ -52,7 +52,7 @@ class Patient extends BaseEntity {
     }
 
     static constraints = {
-        firstNames unique: ['middleNames', 'lastNames', 'gender', 'dateOfBirth', 'cellphone']
+        //firstNames unique: ['middleNames', 'lastNames', 'gender', 'dateOfBirth', 'cellphone']
         dateOfBirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
             return dateofbirth != null ? dateofbirth <= new Date() : null
         })
