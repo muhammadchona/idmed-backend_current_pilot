@@ -29,7 +29,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     String clinicuuid;
     String nextOfKinName;
     String nextOfKinPhone;
-    String firstNames;
+    String firstnames;
     String homePhone;
     String lastname;
     char modified;
@@ -58,7 +58,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setMiddleNames("-")
         getMigratedRecord().setLastNames(this.getLastname())
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
-        getMigratedRecord().setDistrict(Clinic.findByUuid(this.clinicuuid).getDistrict())
+        getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
         if (Utilities.listHasElements(logs)) return logs
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
@@ -99,7 +99,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     void setClinicToMigratedRecord(List<MigrationLog> logs) {
         Clinic clinic = null
         Clinic.withTransaction {
-            clinic = Clinic.findByUuid(this.clinicuuid)
+            clinic = Clinic.findByMainClinic(true)
         }
         if (clinic != null) {
             getMigratedRecord().setClinic(clinic)

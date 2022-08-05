@@ -28,6 +28,7 @@ class ProvincialServerController {
 
     @Transactional
     def save(ProvincialServer provincialServer) {
+        provincialServer.beforeInsert()
         if (provincialServer == null) {
             render status: NOT_FOUND
             return

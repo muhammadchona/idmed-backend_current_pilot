@@ -31,9 +31,9 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
             getMigratedRecord().setPrefered(this.preferred)
             Clinic clinicAux = Clinic.findByUuid(this.clinicuuid)
 
-            if (clinicAux != null) {
-                getMigratedRecord().setClinic(clinicAux);
-            } else {
+            getMigratedRecord().setClinic(this.preferred ? Clinic.findByMainClinic(true) : clinicAux);
+
+            if (getMigratedRecord().getClinic() == null)  {
                 String[] msg = [String.format(MigrationError.CLINIC_NOT_FOUND.getDescription(), this.clinicuuid)]
                 logs.add(new MigrationLog(MigrationError.CLINIC_NOT_FOUND.getCode(),msg,getId(), getEntityName()));
             }

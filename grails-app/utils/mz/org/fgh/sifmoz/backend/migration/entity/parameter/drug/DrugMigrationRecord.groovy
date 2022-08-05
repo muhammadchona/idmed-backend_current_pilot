@@ -14,6 +14,8 @@ class DrugMigrationRecord extends AbstractMigrationRecord {
 
      String form
 
+     int id
+
      String atccode_id
 
      String dispensinginstructions1
@@ -47,14 +49,21 @@ class DrugMigrationRecord extends AbstractMigrationRecord {
     @Override
     List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
+        Drug drugAux = null
+        Drug.withNewTransaction {
+            drugAux = Drug.findByFnmCode(this.atccode_id)
 
-        Drug drugAux = Drug.findByFnmCode(this.atccode_id)
 
-        getMigratedRecord().setId(!drugAux ? UUID.randomUUID().toString() : drugAux.id)
+        if (drugAux != null) {
+            setMigratedRecord(drugAux)
+            return null
+        }
+
+        getMigratedRecord().setId(UUID.randomUUID().toString())
         getMigratedRecord().setPackSize(this.packsize)
         getMigratedRecord().setName(this.name)
         getMigratedRecord().setDefaultTreatment(this.defaultamnt)
-        getMigratedRecord().setDefaultTimes(this.defaulttimes)
+        getMigratedRecord().setDefaultTimes(this.defaulttimes <= 0 ? 1 : this.defaulttimes)
         getMigratedRecord().setDefaultPeriodTreatment(this.defaulttakeperiod)
         if(this.atccode_id && !this.atccode_id?.trim()?.isEmpty()){
             getMigratedRecord().setFnmCode(this.atccode_id)
@@ -63,22 +72,19 @@ class DrugMigrationRecord extends AbstractMigrationRecord {
         }
         getMigratedRecord().setUuidOpenmrs(this.uuidopenmrs)
         getMigratedRecord().setClinicalService(ClinicalService.findByCode(this.tipodoenca))
-        getMigratedRecord().setForm(Form.findByCode(this.form))
+        getMigratedRecord().setForm(Form.findByDescription(this.form))
         getMigratedRecord().setActive(false)
 
         if (Utilities.listHasElements(logs)) return logs
 
-        Drug.withTransaction {
-            if(!drugAux) {
-                getMigratedRecord().validate()
-                if (!getMigratedRecord().hasErrors()) {
-                    getMigratedRecord().save(flush: true)
-                } else {
-                    logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
-                    return logs
-                }
-            }
 
+            getMigratedRecord().validate()
+            if (!getMigratedRecord().hasErrors()) {
+                getMigratedRecord().save(flush: true)
+            } else {
+                logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
+                return logs
+            }
         }
         return logs
     }

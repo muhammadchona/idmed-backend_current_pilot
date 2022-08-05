@@ -366,6 +366,4 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             return TherapeuticLine.findByCode("1_ALT")
         }
     }
-
-
 }

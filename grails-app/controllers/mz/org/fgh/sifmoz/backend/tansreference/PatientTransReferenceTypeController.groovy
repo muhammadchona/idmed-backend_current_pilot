@@ -36,6 +36,7 @@ class PatientTransReferenceTypeController extends RestfulController{
 
     @Transactional
     def save(PatientTransReferenceType patientTransReferenceType) {
+        patientTransReferenceType.beforeInsert()
         if (patientTransReferenceType == null) {
             render status: NOT_FOUND
             return

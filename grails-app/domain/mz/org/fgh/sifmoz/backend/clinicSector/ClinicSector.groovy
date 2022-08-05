@@ -19,7 +19,13 @@ class ClinicSector extends BaseEntity {
     static belongsTo = [Clinic]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     static constraints = {

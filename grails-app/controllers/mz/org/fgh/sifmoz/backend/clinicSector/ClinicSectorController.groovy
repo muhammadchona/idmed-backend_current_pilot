@@ -35,6 +35,7 @@ class ClinicSectorController extends RestfulController{
 
     @Transactional
     def save(ClinicSector clinicSector) {
+        clinicSector.beforeInsert()
         if (clinicSector == null) {
             render status: NOT_FOUND
             return
