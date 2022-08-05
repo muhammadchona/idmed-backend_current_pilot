@@ -5,13 +5,14 @@ import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
-import mz.org.fgh.sifmoz.backend.migration.entity.dispense.PackageMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinic.ClinicMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinicSector.ClinicSectorMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.doctor.DoctorMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.drug.DrugMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.regimeTerapeutico.RegimeTerapeuticoMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.patient.PatientMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.prescription.PackagedDrugsMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.entity.prescription.PrescribedDrugsMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.prescription.PrescriptionMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
@@ -111,11 +112,12 @@ class MigrationService extends SynchronizerTask{
 
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         MigrationEngineImpl<PrescriptionMigrationRecord> prescriptionMigrationEngine = new MigrationEngineImpl<>(prescriptionMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
-        MigrationEngineImpl<PackageMigrationRecord> packagedDrugsMigrationEngine = new MigrationEngineImpl<>(packagedDrugsMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        MigrationEngineImpl<PackagedDrugsMigrationRecord> packagedDrugsMigrationEngine = new MigrationEngineImpl<>(packagedDrugsMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        MigrationEngineImpl<PrescribedDrugsMigrationRecord> prescribedDrugsMigrationEngine = new MigrationEngineImpl<>(prescribedDrugsMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         this.migrationEngineList.add(patientMigrationEngine)
         this.migrationEngineList.add(prescriptionMigrationEngine)
         this.migrationEngineList.add(packagedDrugsMigrationEngine)
-        this.migrationEngineList.add(prescribedDrugsMigrationSearchParams)
+        this.migrationEngineList.add(prescribedDrugsMigrationEngine)
     }
 
     private void initStockMigrationEngine () {
