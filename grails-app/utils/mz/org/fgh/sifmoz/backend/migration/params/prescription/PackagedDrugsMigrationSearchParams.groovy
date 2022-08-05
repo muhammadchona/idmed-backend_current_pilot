@@ -12,7 +12,7 @@ class PackagedDrugsMigrationSearchParams extends AbstractMigrationSearchParams<P
 
     @Override
     List<PackageMigrationRecord> doSearch(long limit) {
-        JSONArray jsonArray = getRestServiceProvider().get("/packaged_drugs_migration_vw?or=(migration_status.is.null,migration_status.eq.CORRECTED)&limit="+limit)
+        JSONArray jsonArray = getRestServiceProvider().get("/packaged_drugs_migration_vw?limit="+limit)
         this.searchResults.clear()
         PackageMigrationRecord[] packagedMigrationRecords = gson.fromJson(jsonArray.toString(), PackageMigrationRecord[].class)
         if (packagedMigrationRecords != null && packagedMigrationRecords.length > 0) {
