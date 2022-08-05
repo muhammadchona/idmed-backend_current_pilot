@@ -41,6 +41,10 @@ class ClinicalService extends BaseEntity {
     }
 
     boolean isPrep() {
-        false
+        return this.code == "PREP"
+    }
+
+    boolean isTarv() {
+        return this.code == "TARV"
     }
 }

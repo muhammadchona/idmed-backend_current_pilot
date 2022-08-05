@@ -55,6 +55,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private Date startdate
     private Date stopdate
     private String startnotes
+    private String stopnotes
     private String startreason
     private String stopreason
     private String notesprescription
@@ -86,91 +87,55 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
         Prescription.withTransaction {
-            PatientServiceIdentifier psi = new PatientServiceIdentifier()
-            psi.setStartDate(this.prescriptiondate)
-            MigrationLog migrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.patientid, "Patient")
-            if (migrationLog != null) {
-                psi.setPatient(Patient.findById(migrationLog.getiDMEDId()));
-            } else {
-                String[] msg = { String.format(MigrationError.PATIENT_NOT_FOUND.getDescription(), this.clinicuuid) }
-                logs.add(new MigrationLog(MigrationError.PATIENT_NOT_FOUND.getCode(), msg, getId(), getEntityName()))
-            }
-
-            // psi.setPatient(Patient.findById(this.uuidopenmrs))
+            MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.patientid, "Patient")
+            if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             ClinicalService clinicalService = ClinicalService.findByCode(this.tipodoenca)
-            psi.setIdentifierType(clinicalService.getIdentifierType())
-            Clinic clinic = Clinic.findByUuid(this.clinicuuid)
-            psi.setClinic(clinic)
-            psi.setService(clinicalService)
-            List<PatientServiceIdentifier> listPSI = PatientServiceIdentifier.findAllWhere(patient: psi.getPatient())
-            psi.setValue(this.nid)
-            psi.setState("activo")
-            if (!Utilities.listHasElements(listPSI)) {
-                psi.setPrefered(true)
-                psi.validate()
-                if (!psi.hasErrors()) {
-                    psi.save(flush: true)
-                } else {
-                    logs.addAll(generateUnknowMigrationLog(this, psi.getErrors().toString()))
-                    return logs
-                }
-                // A lista de prescricoes vem ordenada por  dataPrescricao e paciente
-                // primeira prescricao
-                //Cria o episodio
-            } else if ("TARV".equalsIgnoreCase(this.tipodoenca)) {
-                List<PatientServiceIdentifier> listPSIs = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(psi.getValue()))
-                PatientServiceIdentifier.withTransaction {
-                    for (PatientServiceIdentifier psiObj in listPSIs) {
+            Clinic clinic = Clinic.findByMainClinic(true)
+            Patient patient = Patient.findById(patientMigrationLog.getiDMEDId())
+            PatientServiceIdentifier psi = PatientServiceIdentifier.findByPatientAndService(patient, clinicalService)
+
+            if (psi == null ) {
+                psi = new PatientServiceIdentifier()
+                psi.setStartDate(this.prescriptiondate)
+                psi.setPatient(patient);
+                psi.setClinic(clinic)
+                psi.setService(clinicalService)
+                psi.setIdentifierType(clinicalService.getIdentifierType())
+                psi.setValue(this.nid)
+                psi.setState("Activo")
+                psi.setPrefered(clinicalService.isTarv())
+                psi.setValue(this.nid)
+
+                List<PatientServiceIdentifier> listPSI = PatientServiceIdentifier.findAllByPatient(psi.getPatient())
+
+                if (!Utilities.listHasElements(listPSI)) {
+                    psi.setPrefered(true)
+                } else if (psi.isPrefered()) {
+                    for (PatientServiceIdentifier psiObj : listPSI) {
                         psiObj.setPrefered(false)
                         psiObj.setValue(psi.getValue())
-                        psiObj.setState("activo")
+                        psiObj.setState("Activo")
                         psiObj.validate()
-                        if (!psiObj.hasErrors()) {
-                            psiObj.save(flush: true)
-                        } else {
-                            logs.addAll(generateUnknowMigrationLog(this, psi.getErrors().toString()))
-                            return logs
-                        }
-                    }
-                    psi.setPrefered(true)
-                    psi.setValue(this.nid)
-                    psi.validate()
-                    if (!psi.hasErrors()) {
-                        psi.save(flush: true)
-                    } else {
-                        logs.addAll(generateUnknowMigrationLog(this, psi.getErrors().toString()))
-                        return logs
+                        psiObj.save(flush: true)
                     }
                 }
-
-            }
-            Episode episode = new Episode()
-            episode.setClinic(clinic)
-            episode.setEpisodeDate(this.prescriptiondate)
-            String codeEpisodeType = this.stopdate == null ? "INICIO" : "FIM"
-            episode.setEpisodeType(EpisodeType.findByCode(codeEpisodeType))
-            //StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
-            StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
-            episode.setStartStopReason(startStopReason)
-            episode.setCreationDate(this.prescriptiondate)
-            ClinicSector clinicSector = ClinicSector.findByCode(getClinicSectorCode())
-            episode.setClinicSector(clinicSector)
-            episode.setNotes(this.stopdate == null ? this.startnotes : this.startnotes)
-            episode.setReferralClinic(clinic)
-            episode.setEpisodeDate(this.stopdate == null ? this.startdate : this.stopdate)
-            episode.setPatientServiceIdentifier(psi)
-
-            EpisodeMigrationRecord episodeM = new EpisodeMigrationRecord()
-            episodeM.setId(this.episodeid)
-            episodeM.setMigratedRecord(episode)
-
-            episode.validate()
-            if (!episode.hasErrors()) {
-                episode.save(flush: true)
             } else {
-                logs.addAll(generateUnknowMigrationLog(this, episode.getErrors().toString()))
-                return logs
+                psi.setEpisodes(Episode.findAllByPatientServiceIdentifier(psi) as Set<Episode>)
             }
+
+            Episode episode
+            if (!psi.hasEpisodes()) {
+                episode = createEpisodeFromMigrationData(clinic, psi)
+
+            } else {
+                MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.episodeid, "Episode")
+                episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                if (episode == null) {
+                    episode = createEpisodeFromMigrationData(clinic, psi)
+                }
+            }
+
+            EpisodeMigrationRecord episodeMigrationRecord = createEpisodeMigrationRecord(episode)
 
             Prescription prescription = new Prescription()
             prescription.setClinic(clinic)
@@ -184,7 +149,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             prescription.setPatientType("")
             prescription.setPatientStatus("")
 
-
             PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
             prescriptionDetail.setPrescription(prescription)
             TherapeuticLine therapeuticLine = getLinhaTerapeutica(this.therapeuticlinecode)
@@ -192,7 +156,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             TherapeuticRegimen regimen = TherapeuticRegimen.findByCode(StringUtils.trim(therapeuticregimencode))
             prescriptionDetail.setTherapeuticRegimen(regimen)
             prescriptionDetail.setDispenseType(DispenseType.findByCode(getTipoDispensa()))
-            prescriptionDetail.setPrescription(prescription)
+            prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
+            prescription.getPrescriptionDetails().add(prescriptionDetail)
 
 
             PatientVisit patientVisit = new PatientVisit()
@@ -229,8 +194,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             pack.setPatientVisitDetails(patientVisitDetailsSet)
 
-            //TODO:rever
-            //pack.setPatientVisitDetails(patientVisitDetailsList)
             Date nxtPickDt = ConvertDateUtils.createDate(StringUtils.replace(this.nextpickupdate, " ", "-"), "dd-MMM-yyyy")
             pack.setNextPickUpDate(nxtPickDt)
             pack.setPatientVisitDetails(patientVisitDetailsSet)
@@ -264,8 +227,26 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             patientVisit.validate()
             packagedDrug.validate()
             packagedDrugStock.validate()
+            if (!Utilities.stringHasValue(psi.id)) {
+                psi.validate()
+                if (!psi.hasErrors()) {
+                    psi.save(flush: true)
+                } else {
+                    logs.addAll(generateUnknowMigrationLog(this, psi.getErrors().toString()))
+                    return logs
+                }
+            }
+            if (!Utilities.stringHasValue(episode.id)) {
+                episode.validate()
+                if (!episode.hasErrors()) {
+                    episode.save(flush: true)
+                    episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
+                } else {
+                    logs.addAll(generateUnknowMigrationLog(this, episode.getErrors().toString()))
+                    return logs
+                }
+            }
             if (!prescription.hasErrors()) {
-                // 1-prescr ,pack,patientvisit
                 prescription.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescription.getErrors().toString()))
@@ -273,42 +254,30 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             }
 
             if (!patientVisit.hasErrors()) {
-                // 1-prescr ,pack,patientvisit
                 patientVisit.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, patientVisit.getErrors().toString()))
                 return logs
             }
             if (!pack.hasErrors()) {
-                // 1-prescr ,pack,patientvisit
                 pack.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, pack.getErrors().toString()))
                 return logs
             }
             if (!packagedDrug.hasErrors()) {
-                // 1-prescr ,pack,patientvisit
-
                 packagedDrug.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, packagedDrug.getErrors().toString()))
                 return logs
             }
-            PackagedDrugStock.withTransaction {
-                if (!packagedDrugStock.hasErrors()) {
-                    // 1-prescr ,pack,patientvisit
-                    packagedDrugStock.save(flush: true)
-                    episodeM.setAsMigratedSuccessfully(getRestService())
-                    packM.setAsMigratedSuccessfully(getRestService())
-
-
-                } else {
-                    logs.addAll(generateUnknowMigrationLog(this, packagedDrugStock.getErrors().toString()))
-                    return logs
-                }
+            if (!packagedDrugStock.hasErrors()) {
+                packagedDrugStock.save(flush: true)
+                packM.setAsMigratedSuccessfully(getRestService())
+            } else {
+                logs.addAll(generateUnknowMigrationLog(this, packagedDrugStock.getErrors().toString()))
+                return logs
             }
-
-
         }
         return logs
     }
@@ -365,5 +334,31 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         } else if (linhaTerap.toString().contains("ALT")) {
             return TherapeuticLine.findByCode("1_ALT")
         }
+    }
+
+    private Episode createEpisodeFromMigrationData(Clinic clinic, PatientServiceIdentifier psi) {
+        Episode episode = new Episode()
+        episode.setClinic(clinic)
+        episode.setEpisodeDate(this.prescriptiondate)
+        String codeEpisodeType = this.stopdate == null ? "INICIO" : "FIM"
+        episode.setEpisodeType(EpisodeType.findByCode(codeEpisodeType))
+        //StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
+        StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
+        episode.setStartStopReason(startStopReason)
+        episode.setCreationDate(new Date())
+        ClinicSector clinicSector = ClinicSector.findByCode(getClinicSectorCode())
+        episode.setClinicSector(clinicSector)
+        episode.setNotes(this.stopdate == null ? this.startnotes : this.stopnotes)
+        episode.setEpisodeDate(this.stopdate == null ? this.startdate : this.stopdate)
+        episode.setPatientServiceIdentifier(psi)
+
+        return episode
+    }
+
+    private EpisodeMigrationRecord createEpisodeMigrationRecord(Episode episode) {
+        EpisodeMigrationRecord episodeM = new EpisodeMigrationRecord()
+        episodeM.setId(this.episodeid)
+        episodeM.setMigratedRecord(episode)
+        return episodeM
     }
 }
