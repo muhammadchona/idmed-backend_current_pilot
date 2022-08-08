@@ -72,7 +72,7 @@ class StockAdjustmentMigrationRecord extends AbstractMigrationRecord {
                 logs.add(new MigrationLog(MigrationError.MAIN_CLINIC_NOT_IDENTIFIED.getCode(),msg,getId(), getEntityName()))
             }
 
-         MigrationLog migrationLogStock =  MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(String.valueOf(this.stock_id) ,"stock" )
+         MigrationLog migrationLogStock =  MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(String.valueOf(this.stock_id) as int,"stock" )
             if(migrationLogStock != null) {
                 Stock stock = Stock.findById(migrationLogStock.iDMEDId)
                 getMigratedRecord().setAdjustedStock(stock)
@@ -81,7 +81,7 @@ class StockAdjustmentMigrationRecord extends AbstractMigrationRecord {
                 logs.add(new MigrationLog(MigrationError.STOCK_NOT_FOUND.getCode(),msg,getId(), getEntityName()))
             }
 
-            MigrationLog migrationLogInventory =  MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.stocktake_id ,"stocktake" )
+            MigrationLog migrationLogInventory =  MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.stocktake_id as int,"stocktake" )
             if(migrationLogStock != null) {
                 Inventory inventory = Inventory.findById(migrationLogInventory.iDMEDId)
                 getMigratedRecord().setInventory(inventory)

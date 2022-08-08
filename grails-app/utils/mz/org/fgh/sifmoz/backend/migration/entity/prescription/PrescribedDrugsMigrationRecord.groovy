@@ -40,10 +40,12 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
         List<MigrationLog> logs = new ArrayList<>()
         PrescribedDrug.withTransaction {
 
-            MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.prescription, "Prescription")
+            MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.prescription, "Prescription")
+            if (prescriptionMigrationLog == null) throw new RuntimeException("Não foi encontrado o respectivo log da migracao da prescricao")
+
             Prescription savedPrescription = Prescription.findById(prescriptionMigrationLog.getiDMEDId())
 
-            MigrationLog drugkMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.drug, "drug")
+            MigrationLog drugkMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.drug, "drug")
 
             PrescribedDrug prescribedDrug = new PrescribedDrug()
             prescribedDrug.setDrug(Drug.findById(drugkMigrationLog.getiDMEDId()))

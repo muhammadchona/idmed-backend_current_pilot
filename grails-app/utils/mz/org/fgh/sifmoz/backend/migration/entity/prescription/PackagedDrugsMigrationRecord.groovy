@@ -37,10 +37,10 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
     public List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
         PackagedDrug.withTransaction {
-            MigrationLog stockMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.stock, "stock")
+            MigrationLog stockMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.stock, "stock")
             Stock stock = Stock.findById(stockMigrationLog.getiDMEDId())
 
-            MigrationLog packMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.parentpackage, "Package")
+            MigrationLog packMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.parentpackage, "Package")
             Pack pack = Pack.findById(packMigrationLog.getiDMEDId())
 
             if (pack == null) throw new RuntimeException("Não foi encontrado o respectivo registo PACK.")
@@ -61,7 +61,6 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             packagedDrugStock.setCreationDate(new Date())
             packagedDrugStock.setPackagedDrug(packagedDrug)
             packagedDrugStock.setQuantitySupplied(this.amount)
-
             packagedDrug.validate()
 
             if (!packagedDrug.hasErrors()) {

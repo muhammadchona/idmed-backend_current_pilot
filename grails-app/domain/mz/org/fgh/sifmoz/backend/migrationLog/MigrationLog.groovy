@@ -12,6 +12,7 @@ class MigrationLog extends BaseEntity{
     int sourceId;
     String sourceEntity;
     String iDMEDId;
+    String status
     String iDMEDEntity;
     Date creationDate = new Date()
 
@@ -29,15 +30,17 @@ class MigrationLog extends BaseEntity{
         this.errorDescription = errorDescription
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
+        this.status = "REJECTED"
     }
 
-    MigrationLog(String errorCode, String[] errorDescription, int sourceId, String sourceEntity, String iDMEDId, String iDMEDEntity) {
+    MigrationLog(String errorCode, String[] errorDescription, int sourceId, String sourceEntity, String iDMEDId, String iDMEDEntity, String status) {
         this.errorCode = errorCode
         this.errorDescription = errorDescription
         this.sourceId = sourceId
         this.sourceEntity = sourceEntity
         this.iDMEDId = iDMEDId
         this.iDMEDEntity = iDMEDEntity
+        this.status = status
     }
     static mapping = {
         id generator: "uuid"
