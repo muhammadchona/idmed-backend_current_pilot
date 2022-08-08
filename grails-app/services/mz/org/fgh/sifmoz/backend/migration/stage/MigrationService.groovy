@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutorService
 @Transactional
 @EnableScheduling
 @Slf4j
-class MigrationService extends SynchronizerTask{
+class MigrationService extends SynchronizerTask implements Runnable{
 
     MigrationStage curMigrationStage
     List<MigrationEngineImpl> migrationEngineList
@@ -178,5 +178,10 @@ class MigrationService extends SynchronizerTask{
             if (engine.isRunning() && engine.getRelatedStage() == this.curMigrationStage.getCode()) return true
         }
         return false
+    }
+
+    @Override
+    void run() {
+        this.execute()
     }
 }

@@ -33,7 +33,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
         String uri = "/" + this.getEntityName().toLowerCase() + "?"+getIdFieldName()+"=eq." + getId();
         restServiceProvider.patch(uri, "{\"migration_status\":\"MIGRATED\"}");
         String[] msg = ["Registo Migrado com Sucesso"]
-        MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity())
+        MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity(), "MIGRATED")
         MigrationLog.withTransaction {
             log.save(flush: true);
         }

@@ -21,6 +21,7 @@ import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttri
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationService
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
+import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.backend.prescription.SpetialPrescriptionMotive
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
@@ -31,11 +32,11 @@ import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
+import java.util.concurrent.ExecutorService
+
 class BootStrap {
 
     def init = { servletContext ->
-
-        //MigrationStage.withTransaction {initMigration()}
 
         FacilityType.withTransaction { initFacilityType() }
 
@@ -96,6 +97,8 @@ class BootStrap {
 
         ProvincialServer.withTransaction { initProvincialServer() }
 
+        MigrationStage.withTransaction {initMigration()}
+
     }
 
 
@@ -104,11 +107,7 @@ class BootStrap {
 
     // Methods
     void initMigration() {
-        MigrationStage stage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
-        if (stage != null) {
-            MigrationService migrationService = new MigrationService()
-            migrationService.execute()
-        }
+        if (MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS) != null) ExecutorThreadProvider.getInstance().getExecutorService().execute(new MigrationService())
     }
 
      void initFacilityType() {

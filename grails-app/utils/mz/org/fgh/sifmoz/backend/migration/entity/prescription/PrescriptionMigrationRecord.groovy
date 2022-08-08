@@ -87,7 +87,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
         Prescription.withTransaction {
-            MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.patientid, "Patient")
+            MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.patientid, "Patient")
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             ClinicalService clinicalService = ClinicalService.findByCode(this.tipodoenca)
             Clinic clinic = Clinic.findByMainClinic(true)
@@ -137,7 +137,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             EpisodeMigrationRecord episodeMigrationRecord = createEpisodeMigrationRecord(episode)
 
-            Prescription prescription = new Prescription()
+            Prescription prescription = getMigratedRecord()
             prescription.setClinic(clinic)
             prescription.setDoctor(Doctor.findByFirstnamesAndLastname("Generic", "Provider"))
             prescription.setModified(this.modifiedprescription == 'T' ? true : false)
