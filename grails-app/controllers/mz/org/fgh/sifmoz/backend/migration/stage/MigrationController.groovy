@@ -1,11 +1,13 @@
 package mz.org.fgh.sifmoz.backend.migration.stage
 
-
+import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.ISystemConfigsService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
+import mz.org.fgh.sifmoz.backend.migrationLog.IMigrationLogService
+import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 
 import java.util.concurrent.ExecutorService
@@ -19,6 +21,7 @@ import grails.gorm.transactions.Transactional
 
 class MigrationController extends RestfulController{
 
+    IMigrationLogService migrationLogService
     MigrationStageService migrationStageService
     MigrationEngineImpl migrationEngine
     ISystemConfigsService systemConfigsService
@@ -33,6 +36,13 @@ class MigrationController extends RestfulController{
         super(MigrationStage.class)
         systemConfigs = SystemConfigs.list()
         executor = ExecutorThreadProvider.getInstance().getExecutorService();
+    }
+
+
+    def printReport() {
+        List<MigrationLog> reportObjects = migrationLogService.resultList()
+
+        render reportObjects as JSON
     }
 
     def migrationStatus() {
