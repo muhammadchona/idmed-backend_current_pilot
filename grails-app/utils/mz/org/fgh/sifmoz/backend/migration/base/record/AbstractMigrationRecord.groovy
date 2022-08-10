@@ -1,18 +1,13 @@
-package mz.org.fgh.sifmoz.backend.migration.base.record;
+package mz.org.fgh.sifmoz.backend.migration.base.record
 
-import groovy.lang.Closure;
+
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
-import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLogService;
+import mz.org.fgh.sifmoz.backend.migrationLog.IMigrationLogService;
 import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.springframework.stereotype.Component
 
 @Component
 public abstract class AbstractMigrationRecord implements MigrationRecord {
@@ -21,7 +16,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     protected RestService restService;
     static Logger logger = LogManager.getLogger(AbstractMigrationRecord.class);
     @Autowired
-    protected MigrationLogService migrationLogService;
+    protected IMigrationLogService migrationLogService;
 
     public AbstractMigrationRecord() {
         this.migratedRecord = initMigratedRecord();
