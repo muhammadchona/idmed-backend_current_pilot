@@ -128,8 +128,10 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 episode = createEpisodeFromMigrationData(clinic, psi)
 
             } else {
-                MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.episodeid, "Episode")
-                episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
+                if (episodeMigrationLog != null) {
+                    episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                } else
                 if (episode == null) {
                     episode = createEpisodeFromMigrationData(clinic, psi)
                 }
@@ -139,12 +141,30 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             Prescription prescription = getMigratedRecord()
             prescription.setClinic(clinic)
-            prescription.setDoctor(Doctor.findByFirstnamesAndLastname("Generic", "Provider"))
+
+            Doctor doctor = Doctor.findByFirstnamesAndLastname("Generic", "Provider")
+            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Provedor", "Desconhecido")
+            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Clinico", "Generico")
+            prescription.setDoctor(doctor)
+
             prescription.setModified(this.modifiedprescription == 'T' ? true : false)
             prescription.setExpiryDate(this.enddateprescription)
             prescription.setCurrent(this.currentprescrtiption == 'T' ? true : false)
             prescription.setDuration(Duration.findByWeeks(this.durationprescription))
-            prescription.setNotes(this.notesprescription)
+            if (prescription.duration == null) {
+                DispenseType dispenseType = DispenseType.findByCode(getTipoDispensa())
+                if (dispenseType.isDM()) {
+                    prescription.setDuration(Duration.findByWeeks(4))
+                } else if (dispenseType.isDT()) {
+                    prescription.setDuration(Duration.findByWeeks(12))
+                } else if (dispenseType.isDS()) {
+                    prescription.setDuration(Duration.findByWeeks(24))
+                }
+                else prescription.setDuration(Duration.findByWeeks(4))
+                prescription.setNotes("A duracao da prescricao foi atribuida devido a problemas de qualidade de dados")
+            } else {
+                prescription.setNotes(this.notesprescription)
+            }
             prescription.setPrescriptionDate(this.prescriptiondate)
             prescription.setPatientType("")
             prescription.setPatientStatus("")
@@ -282,7 +302,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         if (this.dispensaSemestral == 1 && this.dispensaTrimestral == 1) return "DM"
         else if (this.dispensaSemestral == 1) return "DS"
         else if (this.dispensaTrimestral == 1) return "DT"
-        return "DA"
+        return "DM"
     }
 
     TherapeuticLine getLinhaTerapeutica(String linhaTerap) {
@@ -305,13 +325,36 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         String codeEpisodeType = this.stopdate == null ? "INICIO" : "FIM"
         episode.setEpisodeType(EpisodeType.findByCode(codeEpisodeType))
         //StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
-        StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
+        String reason = this.stopdate == null ? this.startreason : this.stopreason
+
+        StartStopReason startStopReason = StartStopReason.findByReasonIlike(this.stopdate == null ? "%"+this.startreason+"%" : "%"+this.stopreason+"%")
+        if (startStopReason == null) {
+            List<StartStopReason> startStopReasonList = StartStopReason.all
+            for (StartStopReason startStopReason1 : startStopReasonList) {
+                if (Utilities.compareStringIgnoringAccents(startStopReason1.getReason(), reason)) {
+                    startStopReason = startStopReason1
+                    break
+                }
+            }
+            if (startStopReason == null) {
+                for (StartStopReason startStopReason1 : startStopReasonList) {
+                    if (Utilities.stripAccents(reason).toLowerCase().contains(Utilities.stripAccents(startStopReason1.getReason()).toLowerCase())) {
+                        startStopReason = startStopReason1
+                        break
+                    }
+                }
+            }
+            if (startStopReason == null) throw new RuntimeException("Nao foi possivel identificar o motivo do episodio correspondente a ["+ reason + "]")
+        }
         episode.setStartStopReason(startStopReason)
         episode.setCreationDate(new Date())
         ClinicSector clinicSector = ClinicSector.findByCode(getClinicSectorCode())
         episode.setClinicSector(clinicSector)
         episode.setNotes(this.stopdate == null ? this.startnotes : this.stopnotes)
         episode.setEpisodeDate(this.stopdate == null ? this.startdate : this.stopdate)
+        if (!Utilities.stringHasValue(episode.getNotes()) && this.startdate != null) {
+            episode.setNotes(Utilities.stringHasValue(this.startreason) ? this.startreason : this.stopreason)
+        }
         episode.setPatientServiceIdentifier(psi)
 
         return episode

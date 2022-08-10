@@ -36,4 +36,6 @@ public interface MigrationRecord {
      void setRestService(RestService restService);
 
      String getIdFieldName();
+
+     void deletePreviousLogs();
 }

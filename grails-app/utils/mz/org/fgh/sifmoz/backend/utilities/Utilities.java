@@ -8,6 +8,8 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import org.grails.web.json.JSONArray;
 
 import java.nio.charset.StandardCharsets;
+import java.text.Collator;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,6 +120,23 @@ public class Utilities {
         String strDate = dateFormat.format(date);
 
         return strDate;
+    }
+
+    public static boolean compareStringIgnoringAccents(String a, String b) {
+        final Collator instance = Collator.getInstance();
+
+        instance.setStrength(Collator.NO_DECOMPOSITION);
+
+        if (instance.compare(a, b) == 0) return true;
+
+        return false;
+    }
+
+    public static String stripAccents(String s)
+    {
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return s;
     }
 
 }

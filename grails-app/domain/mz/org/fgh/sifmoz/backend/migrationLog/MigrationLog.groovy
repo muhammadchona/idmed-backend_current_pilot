@@ -20,6 +20,7 @@ class MigrationLog extends BaseEntity{
         iDMEDId nullable: true
         iDMEDEntity nullable: true
         creationDate nullable: true
+        //sourceId unique: [sourceEntity]
     }
 
     MigrationLog() {

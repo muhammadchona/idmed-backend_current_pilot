@@ -43,7 +43,7 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
                 " where p.pickupDate BETWEEN  :startDate AND :endDate  AND " +
                 " p.clinic.id =:clinicId ",
                // " AND psi.service.id =:clincalServiceId ",
-                [startDate: startDate, endDate: endDate, clinicId: clinicId]);
+                [startDate: startDate, endDate: endDate, clinicId: clinicId])
         //clincalServiceId:clincalServiceId
 
         return list
