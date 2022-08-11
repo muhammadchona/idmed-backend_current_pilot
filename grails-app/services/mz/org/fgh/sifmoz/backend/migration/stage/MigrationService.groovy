@@ -39,6 +39,7 @@ import org.grails.web.json.JSONArray
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
 
+import java.text.Collator
 import java.util.concurrent.ExecutorService
 
 @Transactional
@@ -183,5 +184,18 @@ class MigrationService extends SynchronizerTask implements Runnable{
     @Override
     void run() {
         this.execute()
+    }
+
+    static void main(String[] args) {
+        String a = "nocaoo";
+        String b = "noção";
+
+        final Collator instance = Collator.getInstance();
+
+        // This strategy mean it'll ignore the accents
+        instance.setStrength(Collator.NO_DECOMPOSITION);
+
+        // Will print 0 because its EQUAL
+        System.out.println(instance.compare(a, b));
     }
 }
