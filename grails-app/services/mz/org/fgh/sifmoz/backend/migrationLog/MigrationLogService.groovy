@@ -1,18 +1,34 @@
 package mz.org.fgh.sifmoz.backend.migrationLog
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
+@Transactional
 @Service(MigrationLog)
-interface MigrationLogService {
+abstract class MigrationLogService implements IMigrationLogService {
 
-    MigrationLog get(Serializable id)
+    @Override
+    MigrationLog get(Serializable id) {
+        return null
+    }
 
-    List<MigrationLog> list(Map args)
+    @Override
+    List<MigrationLog> resultList() {
+        return MigrationLog.findAll("from MigrationLog as ml where ml.status='REJECTED' order by ml.sourceEntity")
+    }
 
-    Long count()
+    @Override
+    Long count() {
+        return null
+    }
 
-    MigrationLog delete(Serializable id)
+    @Override
+    MigrationLog delete(Serializable id) {
+        return null
+    }
 
-    MigrationLog save(MigrationLog migrationLog)
-
+    @Override
+    MigrationLog save(MigrationLog migrationLog) {
+        return null
+    }
 }

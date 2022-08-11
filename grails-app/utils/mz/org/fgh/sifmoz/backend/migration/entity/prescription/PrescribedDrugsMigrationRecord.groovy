@@ -15,8 +15,7 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
 
     private Integer id;
 
-
-    private Integer amtpertime;
+    private double amtpertime;
 
     private Integer drug;
 
@@ -47,17 +46,16 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
 
             MigrationLog drugkMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.drug, "drug")
 
-            PrescribedDrug prescribedDrug = new PrescribedDrug()
+            PrescribedDrug prescribedDrug = getMigratedRecord() as PrescribedDrug
             prescribedDrug.setDrug(Drug.findById(drugkMigrationLog.getiDMEDId()))
             prescribedDrug.setModified(this.modified == "T")
             prescribedDrug.setPrescription(savedPrescription)
-            prescribedDrug.setAmtPerTime(this.amtpertime.intValue())
-            prescribedDrug.setQtyPrescribed(this.amtpertime * this.timesperday)
+            prescribedDrug.setAmtPerTime(this.amtpertime)
+            prescribedDrug.setQtyPrescribed(this.amtpertime * this.timesperday as int)
             prescribedDrug.setTimesPerDay(this.timesperday)
             prescribedDrug.setForm(prescribedDrug.getDrug().getDefaultPeriodTreatment())
             if (!prescribedDrug.hasErrors()) {
                 prescribedDrug.save(flush: true)
-                setMigratedRecord(prescribedDrug)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescribedDrug.getErrors().toString()))
                 return logs
@@ -81,16 +79,11 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public String getEntityName() {
-        return "PrescribedDrugs";
+        return "Prescribeddrugs";
     }
 
     @Override
     public MigratedRecord initMigratedRecord() {
-        return null;
-    }
-
-    @Override
-    public void setMigratedRecord(MigratedRecord migratedRecord) {
-        this.migratedRecord = migratedRecord;
+        return new PrescribedDrug();
     }
 }

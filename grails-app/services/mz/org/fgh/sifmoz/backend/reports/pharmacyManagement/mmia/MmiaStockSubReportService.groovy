@@ -109,9 +109,9 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
             }
 
 
-            processMonitor.setProgress(100);
+            processMonitor.setProgress(100)
             processMonitor.setMsg("Processamento terminado")
-            reportProcessMonitorService.save(processMonitor);
+            reportProcessMonitorService.save(processMonitor)
 
             return mmiaStockSubReportItems
         }

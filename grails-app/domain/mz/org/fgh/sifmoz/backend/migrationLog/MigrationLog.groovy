@@ -20,7 +20,9 @@ class MigrationLog extends BaseEntity{
         iDMEDId nullable: true
         iDMEDEntity nullable: true
         creationDate nullable: true
+        //sourceId unique: [sourceEntity]
     }
+
 
     MigrationLog() {
     }
@@ -44,6 +46,7 @@ class MigrationLog extends BaseEntity{
     }
     static mapping = {
         id generator: "uuid"
+        sort: "source_entity"
     }
 
     @Override

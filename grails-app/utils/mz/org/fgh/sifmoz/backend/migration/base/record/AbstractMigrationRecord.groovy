@@ -1,18 +1,13 @@
-package mz.org.fgh.sifmoz.backend.migration.base.record;
+package mz.org.fgh.sifmoz.backend.migration.base.record
 
-import groovy.lang.Closure;
+
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
-import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLogService;
+import mz.org.fgh.sifmoz.backend.migrationLog.IMigrationLogService;
 import mz.org.fgh.sifmoz.backend.restUtils.RestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.springframework.stereotype.Component
 
 @Component
 public abstract class AbstractMigrationRecord implements MigrationRecord {
@@ -21,7 +16,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     protected RestService restService;
     static Logger logger = LogManager.getLogger(AbstractMigrationRecord.class);
     @Autowired
-    protected MigrationLogService migrationLogService;
+    protected IMigrationLogService migrationLogService;
 
     public AbstractMigrationRecord() {
         this.migratedRecord = initMigratedRecord();
@@ -35,7 +30,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
         String[] msg = ["Registo Migrado com Sucesso"]
         MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity(), "MIGRATED")
         MigrationLog.withTransaction {
-            log.save(flush: true);
+            log.save(flush: true, failOnError: true);
         }
     }
 
@@ -68,8 +63,16 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     }
 
     @Override
+    void deletePreviousLogs() {
+        MigrationLog.withTransaction {
+            List<MigrationLog> logs = MigrationLog.findAllBySourceIdAndSourceEntity(getId(), getEntityName())
+            MigrationLog.deleteAll(logs)
+        }
+    }
+
+    @Override
     public void setMigratedRecord(MigratedRecord migratedRecord) {
-this.migratedRecord= migratedRecord;
+        this.migratedRecord= migratedRecord;
     }
 
     @Override
