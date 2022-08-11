@@ -62,24 +62,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private char currentprescrtiption
     private String therapeuticlinecode
     private String therapeuticregimencode
-    //package
-    private Integer packid
-    private String reasonforpackagereturn
-    private boolean packagereturnedpack
-    private String modifiedpack
-    private Date datereceivedpack
-    private boolean stockreturnedpack
-    private Date dateleftpack
-    private Date pickupdatepack
-    private Date packdate
-    private Integer weekssupply
-    private String nextpickupdate
-    private String modedispenseuuid
-    //PackageDrug
-    private String qtyinhand
-    private String drugname
-    private Date dispensedate
-    private Integer stockid
+
     private Integer episodeid
 
 
@@ -126,7 +109,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             Episode episode
             if (!psi.hasEpisodes()) {
                 episode = createEpisodeFromMigrationData(clinic, psi)
-
             } else {
                 MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
                 if (episodeMigrationLog != null) {
@@ -147,9 +129,9 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Clinico", "Generico")
             prescription.setDoctor(doctor)
 
-            prescription.setModified(this.modifiedprescription == 'T' ? true : false)
+            prescription.setModified(this.modifiedprescription == 'T')
             prescription.setExpiryDate(this.enddateprescription)
-            prescription.setCurrent(this.currentprescrtiption == 'T' ? true : false)
+            prescription.setCurrent(this.currentprescrtiption == 'T')
             prescription.setDuration(Duration.findByWeeks(this.durationprescription))
             if (prescription.duration == null) {
                 DispenseType dispenseType = DispenseType.findByCode(getTipoDispensa())
@@ -179,49 +161,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
             prescription.getPrescriptionDetails().add(prescriptionDetail)
 
-            PatientVisit patientVisit = new PatientVisit()
-            patientVisit.setClinic(clinic)
-            patientVisit.setVisitDate(this.prescriptiondate)
-            patientVisit.setPatient(psi.getPatient())
-
-            Pack pack = new Pack()
-            pack.setReasonForPackageReturn(this.reasonforpackagereturn)
-            pack.setPickupDate(this.pickupdatepack)
-            pack.setPackageReturned(this.packagereturnedpack ? 1 : 0)
-            pack.setModified(this.modifiedpack == "T")
-            pack.setDateReceived(this.datereceivedpack)
-            pack.setStockReturned(this.stockreturnedpack ? 1 : 0)
-            pack.setDateLeft(this.dateleftpack)
-            pack.setWeeksSupply(this.weekssupply)
-            pack.setPackDate(this.packdate)
-            pack.setPickupDate(this.pickupdatepack)
-
-            PackMigrationRecord packM = new PackMigrationRecord()
-            packM.setId(this.packid)
-            packM.setMigratedRecord(pack)
-
-
-            PatientVisitDetails patientVisitDetails = new PatientVisitDetails()
-            patientVisitDetails.setClinic(clinic)
-            patientVisitDetails.setPrescription(prescription)
-            patientVisitDetails.setEpisode(episode)
-            Set<PatientVisitDetails> patientVisitDetailsSet = new HashSet<>();
-            patientVisitDetailsSet.add(patientVisitDetails)
-            patientVisitDetails.setPatientVisit(patientVisit)
-            patientVisitDetails.setPack(pack)
-
-            pack.setPatientVisitDetails(patientVisitDetailsSet)
-
-            Date nxtPickDt = ConvertDateUtils.createDate(StringUtils.replace(this.nextpickupdate, " ", "-"), "dd-MMM-yyyy")
-            pack.setNextPickUpDate(nxtPickDt)
-            pack.setPatientVisitDetails(patientVisitDetailsSet)
-            DispenseMode dsmode = DispenseMode.findById(modedispenseuuid)
-            pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
-            pack.setClinic(clinic)
-
             prescription.validate()
-            pack.validate()
-            patientVisit.validate()
+
             if (!Utilities.stringHasValue(psi.id)) {
                 psi.validate()
                 if (!psi.hasErrors()) {
@@ -245,19 +186,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 prescription.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescription.getErrors().toString()))
-                return logs
-            }
-
-            if (!patientVisit.hasErrors()) {
-                patientVisit.save(flush: true)
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, patientVisit.getErrors().toString()))
-                return logs
-            }
-            if (!pack.hasErrors()) {
-                pack.save(flush: true)
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, pack.getErrors().toString()))
                 return logs
             }
         }

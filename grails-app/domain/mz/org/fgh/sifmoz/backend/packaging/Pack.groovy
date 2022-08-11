@@ -42,6 +42,7 @@ class Pack extends BaseEntity {
         syncStatus(nullable: true)
         dispenseMode(nullable: false)
         groupPack nullable: true
+        patientVisitDetails nullable: true
         reasonForPackageReturn(nullable: true,maxSize: 500)
     }
 }

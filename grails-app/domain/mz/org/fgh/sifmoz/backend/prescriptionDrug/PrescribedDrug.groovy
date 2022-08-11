@@ -9,7 +9,7 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 
 class PrescribedDrug extends BaseEntity {
     String id
-    int amtPerTime
+    double amtPerTime
     int timesPerDay
     int qtyPrescribed
     String form
@@ -25,6 +25,5 @@ class PrescribedDrug extends BaseEntity {
     }
     static constraints = {
         timesPerDay(min: 1)
-        amtPerTime min: 1
     }
 }
