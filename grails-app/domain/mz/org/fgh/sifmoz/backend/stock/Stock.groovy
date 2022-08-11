@@ -32,10 +32,9 @@ class Stock extends BaseEntity {
     static constraints = {
         expireDate(nullable: false, blank: false)
         batchNumber(nullable: false, blank: false)
-        shelfNumber(nullable: true, maxSize: 10)
+        shelfNumber(nullable: true)
         unitsReceived(min: 0)
-        stockMoviment(min: 0)
-        manufacture(nullable: true, maxSize: 20)
+        manufacture(nullable: true)
         packagedDrugs nullable: true
         adjustments nullable: true
     }
@@ -43,7 +42,7 @@ class Stock extends BaseEntity {
 
     /*
     @Override
-    public String toString() {
+    String toString() {
         return "Stock{" +
                 ", id='" + id + '\'' +
                 ", expireDate=" + expireDate +
@@ -57,7 +56,7 @@ class Stock extends BaseEntity {
                 ", drug=" + drug +
                 ", center=" + center +
                 ", clinic=" + clinic +
-                '}';
+                '}'
     }
      */
 }

@@ -117,8 +117,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         if (province != null) {
             getMigratedRecord().setProvince(province)
         } else {
-            String[] msg = {String.format(MigrationError.PROVINCE_NOT_FOUND.getDescription(), this.province)}
-            logs.add(new MigrationLog(MigrationError.PROVINCE_NOT_FOUND.getCode(),msg, getId(), getEntityName()))
+            getMigratedRecord().setProvince(getMigratedRecord().getClinic().getProvince())
         }
     }
 

@@ -62,24 +62,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private char currentprescrtiption
     private String therapeuticlinecode
     private String therapeuticregimencode
-    //package
-    private Integer packid
-    private String reasonforpackagereturn
-    private boolean packagereturnedpack
-    private String modifiedpack
-    private Date datereceivedpack
-    private boolean stockreturnedpack
-    private Date dateleftpack
-    private Date pickupdatepack
-    private Date packdate
-    private Integer weekssupply
-    private String nextpickupdate
-    private String modedispenseuuid
-    //PackageDrug
-    private String qtyinhand
-    private String drugname
-    private Date dispensedate
-    private Integer stockid
+
     private Integer episodeid
 
 
@@ -126,10 +109,11 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             Episode episode
             if (!psi.hasEpisodes()) {
                 episode = createEpisodeFromMigrationData(clinic, psi)
-
             } else {
-                MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntity(this.episodeid, "Episode")
-                episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
+                if (episodeMigrationLog != null) {
+                    episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                } else
                 if (episode == null) {
                     episode = createEpisodeFromMigrationData(clinic, psi)
                 }
@@ -139,12 +123,30 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             Prescription prescription = getMigratedRecord()
             prescription.setClinic(clinic)
-            prescription.setDoctor(Doctor.findByFirstnamesAndLastname("Generic", "Provider"))
-            prescription.setModified(this.modifiedprescription == 'T' ? true : false)
+
+            Doctor doctor = Doctor.findByFirstnamesAndLastname("Generic", "Provider")
+            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Provedor", "Desconhecido")
+            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Clinico", "Generico")
+            prescription.setDoctor(doctor)
+
+            prescription.setModified(this.modifiedprescription == 'T')
             prescription.setExpiryDate(this.enddateprescription)
-            prescription.setCurrent(this.currentprescrtiption == 'T' ? true : false)
+            prescription.setCurrent(this.currentprescrtiption == 'T')
             prescription.setDuration(Duration.findByWeeks(this.durationprescription))
-            prescription.setNotes(this.notesprescription)
+            if (prescription.duration == null) {
+                DispenseType dispenseType = DispenseType.findByCode(getTipoDispensa())
+                if (dispenseType.isDM()) {
+                    prescription.setDuration(Duration.findByWeeks(4))
+                } else if (dispenseType.isDT()) {
+                    prescription.setDuration(Duration.findByWeeks(12))
+                } else if (dispenseType.isDS()) {
+                    prescription.setDuration(Duration.findByWeeks(24))
+                }
+                else prescription.setDuration(Duration.findByWeeks(4))
+                prescription.setNotes("A duracao da prescricao foi atribuida devido a problemas de qualidade de dados")
+            } else {
+                prescription.setNotes(this.notesprescription)
+            }
             prescription.setPrescriptionDate(this.prescriptiondate)
             prescription.setPatientType("")
             prescription.setPatientStatus("")
@@ -159,49 +161,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
             prescription.getPrescriptionDetails().add(prescriptionDetail)
 
-            PatientVisit patientVisit = new PatientVisit()
-            patientVisit.setClinic(clinic)
-            patientVisit.setVisitDate(this.prescriptiondate)
-            patientVisit.setPatient(psi.getPatient())
-
-            Pack pack = new Pack()
-            pack.setReasonForPackageReturn(this.reasonforpackagereturn)
-            pack.setPickupDate(this.pickupdatepack)
-            pack.setPackageReturned(this.packagereturnedpack ? 1 : 0)
-            pack.setModified(this.modifiedpack == "T")
-            pack.setDateReceived(this.datereceivedpack)
-            pack.setStockReturned(this.stockreturnedpack ? 1 : 0)
-            pack.setDateLeft(this.dateleftpack)
-            pack.setWeeksSupply(this.weekssupply)
-            pack.setPackDate(this.packdate)
-            pack.setPickupDate(this.pickupdatepack)
-
-            PackMigrationRecord packM = new PackMigrationRecord()
-            packM.setId(this.packid)
-            packM.setMigratedRecord(pack)
-
-
-            PatientVisitDetails patientVisitDetails = new PatientVisitDetails()
-            patientVisitDetails.setClinic(clinic)
-            patientVisitDetails.setPrescription(prescription)
-            patientVisitDetails.setEpisode(episode)
-            Set<PatientVisitDetails> patientVisitDetailsSet = new HashSet<>();
-            patientVisitDetailsSet.add(patientVisitDetails)
-            patientVisitDetails.setPatientVisit(patientVisit)
-            patientVisitDetails.setPack(pack)
-
-            pack.setPatientVisitDetails(patientVisitDetailsSet)
-
-            Date nxtPickDt = ConvertDateUtils.createDate(StringUtils.replace(this.nextpickupdate, " ", "-"), "dd-MMM-yyyy")
-            pack.setNextPickUpDate(nxtPickDt)
-            pack.setPatientVisitDetails(patientVisitDetailsSet)
-            DispenseMode dsmode = DispenseMode.findById(modedispenseuuid)
-            pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
-            pack.setClinic(clinic)
-
             prescription.validate()
-            pack.validate()
-            patientVisit.validate()
+
             if (!Utilities.stringHasValue(psi.id)) {
                 psi.validate()
                 if (!psi.hasErrors()) {
@@ -225,19 +186,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 prescription.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescription.getErrors().toString()))
-                return logs
-            }
-
-            if (!patientVisit.hasErrors()) {
-                patientVisit.save(flush: true)
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, patientVisit.getErrors().toString()))
-                return logs
-            }
-            if (!pack.hasErrors()) {
-                pack.save(flush: true)
-            } else {
-                logs.addAll(generateUnknowMigrationLog(this, pack.getErrors().toString()))
                 return logs
             }
         }
@@ -282,7 +230,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         if (this.dispensaSemestral == 1 && this.dispensaTrimestral == 1) return "DM"
         else if (this.dispensaSemestral == 1) return "DS"
         else if (this.dispensaTrimestral == 1) return "DT"
-        return "DA"
+        return "DM"
     }
 
     TherapeuticLine getLinhaTerapeutica(String linhaTerap) {
@@ -305,13 +253,36 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         String codeEpisodeType = this.stopdate == null ? "INICIO" : "FIM"
         episode.setEpisodeType(EpisodeType.findByCode(codeEpisodeType))
         //StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
-        StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
+        String reason = this.stopdate == null ? this.startreason : this.stopreason
+
+        StartStopReason startStopReason = StartStopReason.findByReasonIlike(this.stopdate == null ? "%"+this.startreason+"%" : "%"+this.stopreason+"%")
+        if (startStopReason == null) {
+            List<StartStopReason> startStopReasonList = StartStopReason.all
+            for (StartStopReason startStopReason1 : startStopReasonList) {
+                if (Utilities.compareStringIgnoringAccents(startStopReason1.getReason(), reason)) {
+                    startStopReason = startStopReason1
+                    break
+                }
+            }
+            if (startStopReason == null) {
+                for (StartStopReason startStopReason1 : startStopReasonList) {
+                    if (Utilities.stripAccents(reason).toLowerCase().contains(Utilities.stripAccents(startStopReason1.getReason()).toLowerCase())) {
+                        startStopReason = startStopReason1
+                        break
+                    }
+                }
+            }
+            if (startStopReason == null) throw new RuntimeException("Nao foi possivel identificar o motivo do episodio correspondente a ["+ reason + "]")
+        }
         episode.setStartStopReason(startStopReason)
         episode.setCreationDate(new Date())
         ClinicSector clinicSector = ClinicSector.findByCode(getClinicSectorCode())
         episode.setClinicSector(clinicSector)
         episode.setNotes(this.stopdate == null ? this.startnotes : this.stopnotes)
         episode.setEpisodeDate(this.stopdate == null ? this.startdate : this.stopdate)
+        if (!Utilities.stringHasValue(episode.getNotes()) && this.startdate != null) {
+            episode.setNotes(Utilities.stringHasValue(this.startreason) ? this.startreason : this.stopreason)
+        }
         episode.setPatientServiceIdentifier(psi)
 
         return episode

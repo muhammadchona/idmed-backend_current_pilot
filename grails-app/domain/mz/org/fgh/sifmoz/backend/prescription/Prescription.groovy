@@ -40,23 +40,23 @@ class Prescription extends BaseEntity{
         prescriptionDate(nullable: false, blank: false,  validator: { prescriptionDate, urc ->
             return ((prescriptionDate <= new Date()))})
         expiryDate(nullable: true, blank: true)
-        notes(nullable: true, maxSize: 500)
+        notes(nullable: true, maxSize: 1500)
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
         patientType nullable: true
     }
 
-    public void generateNextSeq() {
-        long lastSeq = 0;
+    void generateNextSeq() {
+        long lastSeq = 0
         try{
             if (Utilities.stringHasValue(this.prescriptionSeq)){
-                lastSeq = Long.parseLong(this.prescriptionSeq);
+                lastSeq = Long.parseLong(this.prescriptionSeq)
             }else {
-                lastSeq = 0;
+                lastSeq = 0
             }
         }catch (Exception e){
-            e.printStackTrace();
+            e.printStackTrace()
         }
-        setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)));
+        setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)))
     }
 }
