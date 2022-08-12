@@ -77,9 +77,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             Patient patient = Patient.findById(patientMigrationLog.getiDMEDId())
             PatientServiceIdentifier psi = PatientServiceIdentifier.findByPatientAndService(patient, clinicalService)
 
-            if (getId() == 1925365) {
-                System.out.println("Analisar")
-            }
             if (psi == null ) {
                 psi = new PatientServiceIdentifier()
                 psi.setStartDate(this.prescriptiondate)
@@ -110,16 +107,16 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             }
 
             Episode episode
-            if (!psi.hasEpisodes()) {
+            if (!psi.hasEpisodes() && this.episodeid > 0) {
                 episode = createEpisodeFromMigrationData(clinic, psi)
             } else {
                 MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
                 if (episodeMigrationLog != null) {
                     episode = Episode.findById(episodeMigrationLog.getiDMEDId())
                 } else
-                if (episode == null && this.episodeid != null) {
+                if (episode == null && this.episodeid > 0) {
                     episode = createEpisodeFromMigrationData(clinic, psi)
-                } else if (this.episodeid == null) {
+                } else if (this.episodeid <= 0) {
                     episode = Episode.findByNotes("Episodio criado para prescricoes sem episodio no iDART")
                     if (episode == null) {
                         episode = generateGenericEpisode(clinic, psi)
@@ -189,7 +186,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 episode.validate()
                 if (!episode.hasErrors()) {
                     episode.save(flush: true)
-                    if (this.episodeid != null) episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
+                    if (this.episodeid > 0) episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
                 } else {
                     logs.addAll(generateUnknowMigrationLog(this, episode.getErrors().toString()))
                     return logs

@@ -41,12 +41,12 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
             MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.patientid, "Patient")
             MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.prescriptionid, "Prescription")
             MigrationLog episodeMigrationLog
-            if (this.episodeid != null) {
+            if (this.episodeid > 0) {
                 episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
             }
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             if (prescriptionMigrationLog == null) throw new RuntimeException("MigrationLog of Prescription " + this.prescriptionid + " not found.")
-            if (episodeMigrationLog == null && this.episodeid != null) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
+            if (episodeMigrationLog == null && this.episodeid > 0) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
 
             Episode episode
             if (episodeMigrationLog != null) {
