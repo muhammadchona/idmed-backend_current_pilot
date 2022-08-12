@@ -41,6 +41,7 @@ import org.grails.web.json.JSONArray
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
 
+import java.text.Collator
 import java.util.concurrent.ExecutorService
 
 @Transactional
@@ -60,8 +61,11 @@ class MigrationService extends SynchronizerTask implements Runnable{
             curMigrationStage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
             if (curMigrationStage == null) return
             executor = ExecutorThreadProvider.getInstance().getExecutorService();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) migrationEngineList = new ArrayList<>();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) initMigrationEngines()
+            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) {
+                migrationEngineList = new ArrayList<>()
+                initMigrationEngines()
+            }
+
             initMigrationProcess()
         }
     }
@@ -189,4 +193,5 @@ class MigrationService extends SynchronizerTask implements Runnable{
     void run() {
         this.execute()
     }
+
 }

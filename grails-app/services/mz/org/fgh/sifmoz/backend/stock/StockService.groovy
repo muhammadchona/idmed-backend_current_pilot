@@ -15,10 +15,11 @@ abstract class StockService implements IStockService{
                 " inner join s.entrance se" +
                 " left join s.drug d" +
                 " where se.dateReceived BETWEEN  :startDate AND :endDate  AND " +
-                " s.clinic.id =:clinicId ",
-                [startDate: startDate, endDate: endDate, clinicId: clinicId]);
-        // AND d.clinicalService.id =:clinicalServiceId
-        //clinicalServiceId:clinicalServiceId]
+                " s.clinic.id =:clinicId " +
+                " AND d.clinicalService.id =:clinicalServiceId",
+                [startDate: startDate, endDate: endDate, clinicId: clinicId, clinicalServiceId:clinicalServiceId]);
+
+
 
         return list
 
