@@ -61,8 +61,11 @@ class MigrationService extends SynchronizerTask implements Runnable{
             curMigrationStage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
             if (curMigrationStage == null) return
             executor = ExecutorThreadProvider.getInstance().getExecutorService();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) migrationEngineList = new ArrayList<>();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) initMigrationEngines()
+            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) {
+                migrationEngineList = new ArrayList<>()
+                initMigrationEngines()
+            }
+
             initMigrationProcess()
         }
     }
@@ -191,16 +194,4 @@ class MigrationService extends SynchronizerTask implements Runnable{
         this.execute()
     }
 
-    static void main(String[] args) {
-        String a = "nocaoo";
-        String b = "noção";
-
-        final Collator instance = Collator.getInstance();
-
-        // This strategy mean it'll ignore the accents
-        instance.setStrength(Collator.NO_DECOMPOSITION);
-
-        // Will print 0 because its EQUAL
-        System.out.println(instance.compare(a, b));
-    }
 }

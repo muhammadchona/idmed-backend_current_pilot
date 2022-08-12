@@ -267,7 +267,6 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         episode.setEpisodeDate(this.prescriptiondate)
         String codeEpisodeType = this.stopdate == null ? "INICIO" : "FIM"
         episode.setEpisodeType(EpisodeType.findByCode(codeEpisodeType))
-        //StartStopReason startStopReason = StartStopReason.findByReason(this.stopdate == null ? this.startreason : this.stopreason)
         String reason = this.stopdate == null ? this.startreason : this.stopreason
 
         StartStopReason startStopReason = StartStopReason.findByReasonIlike(this.stopdate == null ? "%"+this.startreason+"%" : "%"+this.stopreason+"%")
@@ -287,7 +286,9 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                     }
                 }
             }
-            if (startStopReason == null) throw new RuntimeException("Nao foi possivel identificar o motivo do episodio correspondente a ["+ reason + "]")
+            if (startStopReason == null) {
+                startStopReason = StartStopReason.findByCode("OUTRO")
+            }
         }
         episode.setStartStopReason(startStopReason)
         episode.setCreationDate(new Date())
