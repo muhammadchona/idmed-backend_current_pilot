@@ -107,15 +107,25 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             }
 
             Episode episode
-            if (!psi.hasEpisodes()) {
+            if (!psi.hasEpisodes() && this.episodeid > 0) {
                 episode = createEpisodeFromMigrationData(clinic, psi)
             } else {
                 MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
                 if (episodeMigrationLog != null) {
                     episode = Episode.findById(episodeMigrationLog.getiDMEDId())
                 } else
-                if (episode == null) {
+                if (episode == null && this.episodeid > 0) {
                     episode = createEpisodeFromMigrationData(clinic, psi)
+                } else if (this.episodeid <= 0) {
+                    episode = Episode.findByNotes("Episodio criado para prescricoes sem episodio no iDART")
+                    if (episode == null) {
+                        episode = generateGenericEpisode(clinic, psi)
+                    } else {
+                        if (episode.getEpisodeDate() < this.prescriptiondate) {
+                            episode.setEpisodeDate(this.prescriptiondate)
+                            episode.save(flush: true)
+                        }
+                    }
                 }
             }
 
@@ -176,14 +186,19 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 episode.validate()
                 if (!episode.hasErrors()) {
                     episode.save(flush: true)
-                    episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
+                    if (this.episodeid > 0) episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
                 } else {
                     logs.addAll(generateUnknowMigrationLog(this, episode.getErrors().toString()))
                     return logs
                 }
             }
             if (!prescription.hasErrors()) {
-                prescription.save(flush: true)
+                try {
+                    prescription.save(flush: true)
+                } catch(Exception e) {
+                    e.printStackTrace()
+                    throw e
+                }
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescription.getErrors().toString()))
                 return logs
@@ -293,5 +308,20 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         episodeM.setId(this.episodeid)
         episodeM.setMigratedRecord(episode)
         return episodeM
+    }
+
+    private Episode generateGenericEpisode(Clinic clinic, PatientServiceIdentifier patientServiceIdentifier) {
+        Episode genericEpisode = new Episode()
+        genericEpisode.setNotes("Episodio criado para prescricoes sem episodio no iDART")
+        genericEpisode.setClinic(clinic)
+        genericEpisode.setEpisodeDate(this.prescriptiondate)
+        genericEpisode.setEpisodeType(EpisodeType.findByCode("INICIO"))
+        StartStopReason startStopReason = StartStopReason.findByCode("OUTRO")
+        genericEpisode.setStartStopReason(startStopReason)
+        genericEpisode.setCreationDate(new Date())
+        ClinicSector clinicSector = ClinicSector.findByCode(getClinicSectorCode())
+        genericEpisode.setClinicSector(clinicSector)
+        genericEpisode.setPatientServiceIdentifier(patientServiceIdentifier)
+        return genericEpisode
     }
 }

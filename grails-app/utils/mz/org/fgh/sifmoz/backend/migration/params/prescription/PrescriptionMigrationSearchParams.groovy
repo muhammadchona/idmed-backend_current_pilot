@@ -13,6 +13,14 @@ class PrescriptionMigrationSearchParams extends AbstractMigrationSearchParams<Pr
     @Override
     List<PrescriptionMigrationRecord> doSearch(long limit) {
         JSONArray jsonArray = getRestServiceProvider().get("/prescription_migration_vw?limit="+limit)
+        if (jsonArray == null) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            jsonArray = getRestServiceProvider().get("/prescription_migration_vw?limit="+limit)
+        }
         this.searchResults.clear()
         PrescriptionMigrationRecord[] prescriptionMigrationRecords = gson.fromJson(jsonArray.toString(), PrescriptionMigrationRecord[].class)
         if (prescriptionMigrationRecords != null && prescriptionMigrationRecords.length > 0) {

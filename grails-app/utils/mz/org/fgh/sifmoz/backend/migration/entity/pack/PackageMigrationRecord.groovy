@@ -40,12 +40,21 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
         Pack.withTransaction {
             MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.patientid, "Patient")
             MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.prescriptionid, "Prescription")
-            MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
+            MigrationLog episodeMigrationLog
+            if (this.episodeid > 0) {
+                episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
+            }
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             if (prescriptionMigrationLog == null) throw new RuntimeException("MigrationLog of Prescription " + this.prescriptionid + " not found.")
-            if (episodeMigrationLog == null) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
+            if (episodeMigrationLog == null && this.episodeid > 0) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
 
-            Episode episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+            Episode episode
+            if (episodeMigrationLog != null) {
+                episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+            } else {
+                episode = Episode.findByNotes("Episodio criado para prescricoes sem episodio no iDART")
+            }
+            if (episode == null)  throw new RuntimeException("Nao existe um episodio para associar a dispensa.")
 
             Prescription prescription = Prescription.findById(prescriptionMigrationLog.getiDMEDId())
 
