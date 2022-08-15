@@ -43,6 +43,7 @@ class UrlMappings {
         get "/$controller/getProcessingStatus/$reportId(.$format)?"(action:'getProcessingStatus')
         get "/$controller/printReport/$reportId(.$format)?"(action:'printReport')
         get "/$controller/migrationStatus(.$format)?"(action:"migrationStatus")
+        get "/$controller/migrationStatusDetails/$stage(.$format)?"(action:"migrationStatusDetails")
         post "/$controller/initMigration(.$format)?"(action:"initMigration")
         delete "/$controller/delete/$reportId(.$format)?"(action:'deleteByReportId')
 

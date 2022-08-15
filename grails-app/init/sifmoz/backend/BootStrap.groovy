@@ -708,6 +708,8 @@ class BootStrap {
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0003', isStartReason: true, reason: 'Inicio CCR', code: 'INICIO_CCR'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0004', isStartReason: false, reason: 'Fim PPE', code: 'FIM_PPE'))
         startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0005', isStartReason: false, reason: 'Tratamento Suspenso Pelo Clinico', code: 'TSPC'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0015', isStartReason: false, reason: 'Voltou a ser referido para outra Farmacia', code: 'VOLTOU_A_SER_REFERIDO_PARA'))
+        startStopReasonList.add(new LinkedHashMap(id: 'ff8081817c9791ee017c99bbb2aa0016', isStartReason: false, reason: 'Outro', code: 'OUTRO'))
 
         return startStopReasonList
 

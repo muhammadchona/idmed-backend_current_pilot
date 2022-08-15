@@ -30,7 +30,7 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
         String[] msg = ["Registo Migrado com Sucesso"]
         MigrationLog log = new MigrationLog("UNKNOWN", msg, getId(), getEntityName(), this.migratedRecord.getId(), this.migratedRecord.getEntity(), "MIGRATED")
         MigrationLog.withTransaction {
-            log.save(flush: true);
+            log.save(flush: true, failOnError: true);
         }
     }
 
@@ -63,8 +63,16 @@ public abstract class AbstractMigrationRecord implements MigrationRecord {
     }
 
     @Override
+    void deletePreviousLogs() {
+        MigrationLog.withTransaction {
+            List<MigrationLog> logs = MigrationLog.findAllBySourceIdAndSourceEntity(getId(), getEntityName())
+            MigrationLog.deleteAll(logs)
+        }
+    }
+
+    @Override
     public void setMigratedRecord(MigratedRecord migratedRecord) {
-this.migratedRecord= migratedRecord;
+        this.migratedRecord= migratedRecord;
     }
 
     @Override

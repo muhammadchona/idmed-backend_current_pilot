@@ -83,8 +83,10 @@ public class MigrationEngineImpl<T extends AbstractMigrationRecord> implements M
                 try {
                     migrationLogs = record.migrate();
                 } catch (Exception e) {
+                    e.printStackTrace()
                     migrationLogs = record.generateUnknowMigrationLog(record, e.getMessage());
                 } finally {
+                    record.deletePreviousLogs()
                     if (Utilities.listHasElements((ArrayList<?>) migrationLogs)) {
                         record.setAsRejectedForMigration(this.searchParams.getRestServiceProvider());
                         record.saveMigrationLogs(migrationLogs);

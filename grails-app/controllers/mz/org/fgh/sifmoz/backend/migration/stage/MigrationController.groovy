@@ -49,6 +49,10 @@ class MigrationController extends RestfulController{
         respond migrationService.getMigrationStatus()
     }
 
+    def migrationStatusDetails(String stage) {
+        respond migrationService.getMigrationStatusDetails(stage)
+    }
+
     def initMigration() {
         MigrationStage migrationStage = MigrationStage.findByCode(MigrationEngineImpl.PARAMS_MIGRATION_STAGE)
         migrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)

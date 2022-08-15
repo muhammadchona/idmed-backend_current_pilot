@@ -5,6 +5,8 @@ import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
+import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatusDetails
+import mz.org.fgh.sifmoz.backend.migration.entity.pack.PackageMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinic.ClinicMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinicSector.ClinicSectorMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.doctor.DoctorMigrationRecord
@@ -18,6 +20,7 @@ import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockAdjustmentMigration
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockCenterMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.stock.StockTakeMigrationRecord
+import mz.org.fgh.sifmoz.backend.migration.params.pack.PackageMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.patient.PatientMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.migration.params.parameter.ClinicSectorMigrationSearchParams
@@ -39,6 +42,7 @@ import org.grails.web.json.JSONArray
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
 
+import java.text.Collator
 import java.util.concurrent.ExecutorService
 
 @Transactional
@@ -49,17 +53,25 @@ class MigrationService extends SynchronizerTask implements Runnable{
     MigrationStage curMigrationStage
     List<MigrationEngineImpl> migrationEngineList
     private static ExecutorService executor;
+    private RestService restService
+    private Gson gson
     @Autowired
     MigrationStageService migrationStageService
+
+    MigrationService() {
+        this.gson = new Gson()
+        this.restService = new RestService("MIGRATION", "IDART")
+        this.migrationEngineList = new ArrayList<>()
+        executor = ExecutorThreadProvider.getInstance().getExecutorService();
+    }
 
     @Override
     void execute() {
         if (!isProvincial()) {
             curMigrationStage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
             if (curMigrationStage == null) return
-            executor = ExecutorThreadProvider.getInstance().getExecutorService();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) migrationEngineList = new ArrayList<>();
-            initMigrationEngines()
+            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) initMigrationEngines()
+
             initMigrationProcess()
         }
     }
@@ -109,12 +121,15 @@ class MigrationService extends SynchronizerTask implements Runnable{
         PrescriptionMigrationSearchParams prescriptionMigrationSearchParams = new PrescriptionMigrationSearchParams()
         PackagedDrugsMigrationSearchParams packagedDrugsMigrationSearchParams = new PackagedDrugsMigrationSearchParams()
         PrescribedDrugsMigrationSearchParams prescribedDrugsMigrationSearchParams = new PrescribedDrugsMigrationSearchParams()
+        PackageMigrationSearchParams packageMigrationSearchParams = new PackageMigrationSearchParams()
 
         MigrationEngineImpl<PatientMigrationRecord> patientMigrationEngine = new MigrationEngineImpl<>(params, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         MigrationEngineImpl<PrescriptionMigrationRecord> prescriptionMigrationEngine = new MigrationEngineImpl<>(prescriptionMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         MigrationEngineImpl<PackagedDrugsMigrationRecord> packagedDrugsMigrationEngine = new MigrationEngineImpl<>(packagedDrugsMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         MigrationEngineImpl<PrescribedDrugsMigrationRecord> prescribedDrugsMigrationEngine = new MigrationEngineImpl<>(prescribedDrugsMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
+        MigrationEngineImpl<PackageMigrationRecord> packageMigrationRecordMigrationEngine = new MigrationEngineImpl<>(packageMigrationSearchParams, MigrationEngineImpl.PATIENT_MIGRATION_ENGINE)
         this.migrationEngineList.add(patientMigrationEngine)
+        this.migrationEngineList.add(packageMigrationRecordMigrationEngine)
         this.migrationEngineList.add(prescriptionMigrationEngine)
         this.migrationEngineList.add(packagedDrugsMigrationEngine)
         this.migrationEngineList.add(prescribedDrugsMigrationEngine)
@@ -164,11 +179,17 @@ class MigrationService extends SynchronizerTask implements Runnable{
     }
 
     public List<MigrationSatus> getMigrationStatus() {
-        Gson gson = new Gson()
-        RestService restService = new RestService("MIGRATION", "IDART")
         List<MigrationSatus> migrationSatuses = new ArrayList<>()
         JSONArray jsonArray = restService.get("/migration_progress")
-        MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class);
+        MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class)
+        migrationSatuses.addAll(Arrays.asList(migrationStatusList))
+        return migrationSatuses
+    }
+
+    public List<MigrationSatusDetails> getMigrationStatusDetails(String stage) {
+        List<MigrationSatusDetails> migrationSatuses = new ArrayList<>()
+        JSONArray jsonArray = restService.get("/migration_engine_progress?migration_stage=eq."+stage+"&order=id")
+        MigrationSatusDetails[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatusDetails[].class)
         migrationSatuses.addAll(Arrays.asList(migrationStatusList))
         return migrationSatuses
     }
@@ -184,4 +205,5 @@ class MigrationService extends SynchronizerTask implements Runnable{
     void run() {
         this.execute()
     }
+
 }

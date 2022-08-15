@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ExecutorThreadProvider {
-    private static final int NUMBER_OF_THREADS = 16;
+    private static final int NUMBER_OF_THREADS = 24;
     private ExecutorService executorService;
 
     private static ExecutorThreadProvider instance;

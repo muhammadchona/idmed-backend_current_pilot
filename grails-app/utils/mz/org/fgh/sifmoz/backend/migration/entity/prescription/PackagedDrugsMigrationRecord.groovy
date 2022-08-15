@@ -38,20 +38,23 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
         List<MigrationLog> logs = new ArrayList<>()
         PackagedDrug.withTransaction {
             MigrationLog stockMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.stock, "stock")
+            if (stockMigrationLog == null) throw new RuntimeException("Não foi encontrado o log do respectivo registo stock.")
             Stock stock = Stock.findById(stockMigrationLog.getiDMEDId())
 
-            MigrationLog packMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.parentpackage, "Package")
+            MigrationLog packMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.parentpackage, "package")
+            if (packMigrationLog == null) throw new RuntimeException("Não foi encontrado o log do respectivo registo package.")
             Pack pack = Pack.findById(packMigrationLog.getiDMEDId())
 
             if (pack == null) throw new RuntimeException("Não foi encontrado o respectivo registo PACK.")
 
-            PackagedDrug packagedDrug = new PackagedDrug()
+            PackagedDrug packagedDrug = getMigratedRecord() as PackagedDrug
             packagedDrug.setQuantitySupplied(this.amount)
             packagedDrug.setNextPickUpDate(pack.getNextPickUpDate())
             packagedDrug.setDrug(stock.getDrug())
             packagedDrug.setCreationDate(new Date())
             packagedDrug.setPack(pack)
             packagedDrug.setToContinue(true)
+            packagedDrug.setPackagedDrugStocks(new HashSet<PackagedDrugStock>())
 
             //PackageDrugStock
             PackagedDrugStock packagedDrugStock = new PackagedDrugStock()
@@ -61,11 +64,11 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             packagedDrugStock.setCreationDate(new Date())
             packagedDrugStock.setPackagedDrug(packagedDrug)
             packagedDrugStock.setQuantitySupplied(this.amount)
+            packagedDrug.getPackagedDrugStocks().add(packagedDrugStock)
             packagedDrug.validate()
 
             if (!packagedDrug.hasErrors()) {
                 packagedDrug.save(flush: true)
-                setMigratedRecord(packagedDrug)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, packagedDrug.getErrors().toString()))
                 return logs
@@ -89,16 +92,11 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
 
     @Override
     public String getEntityName() {
-        return "PrescribedDrugs";
+        return "packageddrugs";
     }
 
     @Override
     public MigratedRecord initMigratedRecord() {
-        return null;
-    }
-
-    @Override
-    public void setMigratedRecord(MigratedRecord migratedRecord) {
-        this.migratedRecord = migratedRecord;
+        return new PackagedDrug();
     }
 }
