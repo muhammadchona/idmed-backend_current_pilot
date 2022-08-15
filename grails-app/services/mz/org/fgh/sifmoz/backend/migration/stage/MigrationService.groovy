@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.migration.base.engine.MigrationEngineImpl
 import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatus
+import mz.org.fgh.sifmoz.backend.migration.base.status.MigrationSatusDetails
 import mz.org.fgh.sifmoz.backend.migration.entity.pack.PackageMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinic.ClinicMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.entity.parameter.clinicSector.ClinicSectorMigrationRecord
@@ -52,19 +53,24 @@ class MigrationService extends SynchronizerTask implements Runnable{
     MigrationStage curMigrationStage
     List<MigrationEngineImpl> migrationEngineList
     private static ExecutorService executor;
+    private RestService restService
+    private Gson gson
     @Autowired
     MigrationStageService migrationStageService
+
+    MigrationService() {
+        this.gson = new Gson()
+        this.restService = new RestService("MIGRATION", "IDART")
+        this.migrationEngineList = new ArrayList<>()
+        executor = ExecutorThreadProvider.getInstance().getExecutorService();
+    }
 
     @Override
     void execute() {
         if (!isProvincial()) {
             curMigrationStage = MigrationStage.findByValue(MigrationStage.STAGE_IN_PROGRESS)
             if (curMigrationStage == null) return
-            executor = ExecutorThreadProvider.getInstance().getExecutorService();
-            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) {
-                migrationEngineList = new ArrayList<>()
-                initMigrationEngines()
-            }
+            if (!Utilities.listHasElements(migrationEngineList as ArrayList<?>)) initMigrationEngines()
 
             initMigrationProcess()
         }
@@ -173,11 +179,17 @@ class MigrationService extends SynchronizerTask implements Runnable{
     }
 
     public List<MigrationSatus> getMigrationStatus() {
-        Gson gson = new Gson()
-        RestService restService = new RestService("MIGRATION", "IDART")
         List<MigrationSatus> migrationSatuses = new ArrayList<>()
         JSONArray jsonArray = restService.get("/migration_progress")
-        MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class);
+        MigrationSatus[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatus[].class)
+        migrationSatuses.addAll(Arrays.asList(migrationStatusList))
+        return migrationSatuses
+    }
+
+    public List<MigrationSatusDetails> getMigrationStatusDetails(String stage) {
+        List<MigrationSatusDetails> migrationSatuses = new ArrayList<>()
+        JSONArray jsonArray = restService.get("/migration_engine_progress?migration_stage=eq."+stage+"&order=id")
+        MigrationSatusDetails[] migrationStatusList = gson.fromJson(jsonArray.toString(), MigrationSatusDetails[].class)
         migrationSatuses.addAll(Arrays.asList(migrationStatusList))
         return migrationSatuses
     }
