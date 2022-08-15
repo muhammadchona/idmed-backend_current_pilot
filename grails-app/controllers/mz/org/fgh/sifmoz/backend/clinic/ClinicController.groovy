@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.clinic
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -86,5 +87,11 @@ class ClinicController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    def searchClinicsByDistrictId(String districtId){
+        District district = District.findById(districtId)
+        render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrictAndActive(district,true)) as JSON
+        // respond communityMobilizerService.getAllByDistrictId(districtId)
     }
 }
