@@ -49,7 +49,10 @@ class UrlMappings {
         delete "/$controller/delete/$reportId(.$format)?"(action:'deleteByReportId')
 
         get "/$controller/getPatientNid/$nid(.$format)?"(action:'getDetailsByNid')
+     //   get "/systemConfigs/$key(.$format)?"(action:'getByKey')
+        get "/clinic/district/$districtId(.$format)?"(controller:'clinic', action:'searchClinicsByDistrictId')
         "/"(controller: 'application', action:'index')
+        //"/"(controller: 'application', action:'index')
         "500"(view: '/error')
         "404"(view: '/notFound')
     }
