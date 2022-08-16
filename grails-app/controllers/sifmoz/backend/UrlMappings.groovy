@@ -37,6 +37,7 @@ class UrlMappings {
         get "/patientVisit/lastofPatient/$patientId(.$format)?"(controller:'patientVisit', action:'getLastVisitOfPatient')
         get "/pack/prescription/$prescriptionId(.$format)?"(controller:'pack', action:'getAllByPrescriptionId')
         get "/patient/reportActiveByServiceCode/"(controller:'patient', action:'getReportActiveByServiceCode')
+        get "/migrationLog/printReport/"(controller:'migration', action:'printReport')
         post "/$controller/initReportProcess(.$format)?"(action:'initReportProcess')
         get "/$controller/printReport/$reportId(.$format)?"(action:'getProcessedData')
         get "/$controller/printReport/$reportId/$fileType(.$format)?"(action:'printReport')

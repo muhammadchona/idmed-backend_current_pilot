@@ -80,7 +80,7 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
                         "    pre.patient_type    " +
                         "   FROM patient pat    " +
                         "   INNER JOIN patient_service_identifier psi ON psi.patient_id = pat.id    " +
-                        "   INNER JOIN clinical_service cs ON psi.service_id = cs.id and cs.code = 'TARV'    " +
+                        "   INNER JOIN clinical_service cs ON psi.service_id = cs.id and cs.code = :serv_clinico   " +
                         "   INNER JOIN identifier_type idt ON psi.identifier_type_id = idt.id    " +
                         "   inner join episode ep on ep.patient_service_identifier_id = psi.id    " +
                         "   INNER JOIN start_stop_reason str ON ep.start_stop_reason_id =  str.id    " +
@@ -95,14 +95,14 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
                         "   INNER JOIN prescription_detail pd ON pd.prescription_id = pre.id    " +
                         "   INNER JOIN therapeutic_regimen tr ON pd.therapeutic_regimen_id = tr.id    " +
                         "   INNER JOIN dispense_type dt ON pd.dispense_type_id = dt.id    " +
-                        "   where Date(pack.pickup_date) BETWEEN '2022-08-01' AND '2022-08-01'"
-//                [stDate: reportSearchParams.startDate, endDate: reportSearchParams.endDate]
+                        "   where Date(pack.pickup_date) BETWEEN :stDate AND :endDate"
 
 
         Session session = sessionFactory.getCurrentSession()
         def query = session.createSQLQuery(queryString)
-//        query.setParameter("stDate", reportSearchParams.startDate)
-//        query.setParameter("endDate", reportSearchParams.endDate)
+        query.setParameter("stDate", reportSearchParams.startDate)
+        query.setParameter("endDate", reportSearchParams.endDate)
+        query.setParameter("serv_clinico", reportSearchParams.clinicalService)
         List<Object[]> result = query.list()
 
         if (Utilities.listHasElements(result as ArrayList<?>)) {
