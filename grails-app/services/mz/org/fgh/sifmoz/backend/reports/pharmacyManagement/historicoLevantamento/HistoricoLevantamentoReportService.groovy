@@ -12,6 +12,8 @@ import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.reports.patients.ActivePatientReport
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
+import org.hibernate.Session
+import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 import java.text.SimpleDateFormat
@@ -22,6 +24,9 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
 
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
+
+    @Autowired
+    SessionFactory sessionFactory
 
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
 
@@ -53,51 +58,52 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
     @Override
     List<HistoricoLevantamentoReport> processamentoDados(ReportSearchParams reportSearchParams, ReportProcessMonitor processMonitor) {
         Clinic clinic = Clinic.findById(reportSearchParams.clinicId)
-        def result = Pack.executeQuery(
-                "SELECT " +
-                        "pat.id, " +
-                        "pat.firstNames, " +
-                        "pat.middleNames, " +
-                        "pat.lastNames, " +
-                        "pat.cellphone, " +
-                        "pd.reasonForUpdate, " +
-                        "str.reason, " +
-                        "pd.therapeuticRegimen.description, " +
-                        "pd.dispenseType.description, " +
-                        "dispMode.description, " +
-                        "cs.code, " +
-                        "pack.pickupDate, " +
-                        "pack.nextPickUpDate, " +
-                        "pat.dateOfBirth, " +
-                        "psi.prefered, " +
-                        "psi.value, " +
-                        "idt.id as prefered, " +
-                        "pre.patientType " +
-                        "FROM Pack pack " +
-                        "INNER JOIN DispenseMode dispMode " +
-                        "ON pack.dispenseMode.id = dispMode.id "+
-                        "INNER JOIN PatientVisitDetails pvd " +
-                        "ON pvd.pack.id = pack.id " +
-                        "INNER JOIN Prescription pre " +
-                        "ON pvd.prescription.id = pre.id "+
-                        "INNER JOIN PrescriptionDetail pd " +
-                        "ON pd.prescription.id = pre.id " +
-                        "INNER JOIN Episode ep " +
-                        "ON pvd.episode.id = ep.id " +
-                        "INNER JOIN StartStopReason str " +
-                        "ON str.id = ep.startStopReason.id " +
-                        "INNER JOIN PatientServiceIdentifier psi " +
-                        "ON psi.id = ep.patientServiceIdentifier.id " +
-                        "INNER JOIN ClinicalService cs " +
-                        "ON psi.service.id = cs.id and cs.code = 'TARV' " +
-                        "INNER JOIN IdentifierType idt " +
-                        "ON psi.identifierType.id = idt.id " +
-                        "INNER JOIN PatientVisit pv " +
-                        "ON pvd.patientVisit.id = pv.id and pv.visitDate BETWEEN :stDate AND :endDate " +
-                        "INNER JOIN Patient pat " +
-                        "ON pv.patient.id = pat.id ",
-                [stDate: reportSearchParams.startDate, endDate: reportSearchParams.endDate]
-        )
+        def queryString =
+                "SELECT    " +
+                        "    pat.id,    " +
+                        "    pat.first_names,    " +
+                        "    pat.middle_names,    " +
+                        "    pat.last_names,    " +
+                        "    pat.cellphone,    " +
+                        "    pd.reason_for_update,    " +
+                        "    str.reason,    " +
+                        "    tr.description as regime_terapeutico,    " +
+                        "    dt.description as redispense_type,    " +
+                        "    dispMode.description,    " +
+                        "    cs.code,    " +
+                        "    pack.pickup_date,    " +
+                        "    pack.next_pick_up_date,    " +
+                        "    pat.date_of_birth,    " +
+                        "    psi.prefered,    " +
+                        "    psi.value,    " +
+                        "    idt.id as prefered_idt,    " +
+                        "    pre.patient_type    " +
+                        "   FROM patient pat    " +
+                        "   INNER JOIN patient_service_identifier psi ON psi.patient_id = pat.id    " +
+                        "   INNER JOIN clinical_service cs ON psi.service_id = cs.id and cs.code = :serv_clinico   " +
+                        "   INNER JOIN identifier_type idt ON psi.identifier_type_id = idt.id    " +
+                        "   inner join episode ep on ep.patient_service_identifier_id = psi.id    " +
+                        "   INNER JOIN start_stop_reason str ON ep.start_stop_reason_id =  str.id    " +
+                        "   INNER JOIN ( SELECT patient_id, max(visit_date) as visit_date    " +
+                        "   from patient_visit    " +
+                        "   Group by 1 ) as pvAux on pvAux.patient_id = pat.id    " +
+                        "   INNER JOIN patient_visit pv on pv.visit_date = pvAux.visit_date and pv.patient_id = pvAux.patient_id    " +
+                        "   INNER JOIN patient_visit_details pvd  ON pvd.episode_id = ep.id and pvd.patient_visit_id = pv.id    " +
+                        "   INNER JOIN pack on pvd.pack_id = pack.id    " +
+                        "   INNER JOIN dispense_mode dispMode ON pack.dispense_mode_id = dispMode.id    " +
+                        "   INNER JOIN prescription pre  ON pvd.prescription_id = pre.id    " +
+                        "   INNER JOIN prescription_detail pd ON pd.prescription_id = pre.id    " +
+                        "   INNER JOIN therapeutic_regimen tr ON pd.therapeutic_regimen_id = tr.id    " +
+                        "   INNER JOIN dispense_type dt ON pd.dispense_type_id = dt.id    " +
+                        "   where Date(pack.pickup_date) BETWEEN :stDate AND :endDate"
+
+
+        Session session = sessionFactory.getCurrentSession()
+        def query = session.createSQLQuery(queryString)
+        query.setParameter("stDate", reportSearchParams.startDate)
+        query.setParameter("endDate", reportSearchParams.endDate)
+        query.setParameter("serv_clinico", reportSearchParams.clinicalService)
+        List<Object[]> result = query.list()
 
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
