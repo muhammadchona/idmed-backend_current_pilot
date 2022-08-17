@@ -59,8 +59,8 @@ class Patient extends BaseEntity {
         middleNames nullable: true
         cellphone(nullable: true )
         alternativeCellphone(nullable: true, maxSize: 12, minSize: 9)
-        address nullable: true
-        addressReference nullable: true
+        address nullable: true, maxSize: 750
+        addressReference nullable: true, maxSize: 750
         province nullable: false
         bairro nullable: true
         postoAdministrativo nullable: true
