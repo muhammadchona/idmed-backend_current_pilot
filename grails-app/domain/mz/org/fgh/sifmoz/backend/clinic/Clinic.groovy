@@ -37,7 +37,7 @@ class Clinic extends BaseEntity {
         code nullable: false
         notes nullable: true, blank: true
         telephone nullable: true, matches: /\d+/, maxSize: 12, minSize: 9
-        clinicName nullable: false, unique: ['province']
+        clinicName nullable: false, unique: ['province','district']
         sectors nullable: true
         nationalClinic nullable: true
         uuid unique: true
