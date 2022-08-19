@@ -99,8 +99,9 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
                 "                   where s.drug = dr and s.clinic = :clinic)",
                 [startDate: searchParams.getStartDate(), endDate: searchParams.getEndDate(), clinic: clinic, clinicalService: service])
 
+        double percUnit = 0
         if (Utilities.listHasElements(list as ArrayList<?>)) {
-            double percUnit = 35 / list.size()
+            percUnit = 35 / list.size()
             for (int i = 0; i < list.size() - 1; i++) {
 
                 generateAndSaveMmiaStockSubReport(list[i], mmiaStockSubReportItems, searchParams.getId())
