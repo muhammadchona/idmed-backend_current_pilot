@@ -62,6 +62,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private char currentprescrtiption
     private String therapeuticlinecode
     private String therapeuticregimencode
+    private String reasonforupdate
 
     private Integer episodeid
 
@@ -158,7 +159,26 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 prescription.setNotes(this.notesprescription)
             }
             prescription.setPrescriptionDate(this.prescriptiondate)
-            prescription.setPatientType("")
+            String patientType = null
+            if (this.reasonforupdate == "Manter") {
+                patientType = Prescription.PATIENT_TYPE_MANUTENCAO
+            } else if (this.reasonforupdate == "Inicia" || this.reasonforupdate == "Inicio (I)") {
+                patientType = Prescription.PATIENT_TYPE_NOVO
+            } else if (this.reasonforupdate == "Alterar") {
+                patientType = Prescription.PATIENT_TYPE_ALTERACAO
+            } else if (this.reasonforupdate == "Transfer de") {
+                patientType = Prescription.PATIENT_TYPE_TRANSFERENCIA
+            } else if (this.reasonforupdate == "Re-Inicio" || this.reasonforupdate == "Reiniciar") {
+                patientType = Prescription.PATIENT_TYPE_RE_INICIO
+            } else if (this.reasonforupdate == "Continua (C)") {
+                patientType = Prescription.PATIENT_TYPE_CONTINUA
+            } else if (this.reasonforupdate == "Fim (F)") {
+                patientType = Prescription.PATIENT_TYPE_FIM
+            } else if (this.reasonforupdate == "Transito") {
+                patientType = Prescription.PATIENT_TYPE_TRANSITO
+            }
+
+            prescription.setPatientType(patientType)
             prescription.setPatientStatus("")
 
             PrescriptionDetail prescriptionDetail = new PrescriptionDetail()

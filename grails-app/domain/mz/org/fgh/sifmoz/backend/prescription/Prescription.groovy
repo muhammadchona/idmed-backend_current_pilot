@@ -15,6 +15,15 @@ import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 class Prescription extends BaseEntity{
 
+    public static final String PATIENT_TYPE_MANUTENCAO = "MANUTENCAO"
+    public static final String PATIENT_TYPE_NOVO = "NOVO"
+    public static final String PATIENT_TYPE_TRANSITO = "TRANSITO"
+    public static final String PATIENT_TYPE_TRANSFERENCIA = "TRANSFERENCIA"
+    public static final String PATIENT_TYPE_ALTERACAO = "ALTERACAO"
+    public static final String PATIENT_TYPE_RE_INICIO= "RE_INICIO"
+    public static final String PATIENT_TYPE_CONTINUA= "CONTINUA"
+    public static final String PATIENT_TYPE_FIM= "FIM"
+
     String id
     Date prescriptionDate
     Date expiryDate

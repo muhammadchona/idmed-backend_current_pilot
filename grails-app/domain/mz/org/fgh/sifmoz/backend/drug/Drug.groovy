@@ -40,7 +40,7 @@ class Drug extends BaseEntity {
         fnmCode nullable: false, unique: true
         packSize(min: 0)
         uuidOpenmrs nullable: true
-        clinicalService nullable: true
+        clinicalService nullable: false
      //   defaultTreatment(min: 1.00)
         defaultTimes(min:1)
         stockList nullable: true

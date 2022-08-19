@@ -369,7 +369,8 @@ class BootStrap {
 
     void initDrug() {
         for (drugObject in listDrug()) {
-            if (!Drug.findById(drugObject.id)) {
+            Drug drug1 = Drug.findById(drugObject.id)
+            if (!drug1) {
                 Drug drug = new Drug()
                 drug.id = drugObject.id
                 drug.packSize = drugObject.pack_size
@@ -381,10 +382,15 @@ class BootStrap {
                 drug.fnmCode = drugObject.fnm_code
                 drug.uuidOpenmrs = drugObject.uuid_openmrs
                 drug.active = drugObject.active
-                drug.clinicalService = ClinicalService.findById(drugObject.clincal_service_id)
+                drug.clinicalService = ClinicalService.findById(drugObject.clinical_service_id)
                 drug.form = Form.findById(drugObject.form_id)
                 drug.save(flush: true, failOnError: true)
 
+            } else {
+                if (drug1.getClinicalService() == null) {
+                    drug1.clinicalService = ClinicalService.findById(drugObject.clinical_service_id)
+                    drug1.save(flush: true, failOnError: true)
+                }
             }
         }
     }

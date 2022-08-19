@@ -16,6 +16,12 @@ class StartStopReason extends BaseEntity {
     public static final String ALTERACAO = "ALTERACAO"
     public static final String MANUNTENCAO = "MANUNTENCAO"
     public static final String INICIO_AO_TRATAMENTO = "INICIO_AO_TRATAMENTO"
+    public static final String NOVO_PACIENTE = "NOVO_PACIENTE"
+    public static final String INICIO_CCR = "INICIO_CCR"
+    public static final String FIM_PPE = "FIM_PPE"
+    public static final String TSPC = "TSPC"
+    public static final String VOLTOU_A_SER_REFERIDO_PARA = "VOLTOU_A_SER_REFERIDO_PARA"
+    public static final String OUTRO = "OUTRO"
 
     String id
     boolean isStartReason

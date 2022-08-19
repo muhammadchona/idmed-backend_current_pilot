@@ -17,13 +17,13 @@ import mz.org.fgh.sifmoz.backend.utilities.Utilities;
 public class PatientMigrationRecord extends AbstractMigrationRecord {
 
     int id;
-    boolean accountStatus;
+    boolean accountstatus;
     boolean isPatientEmTransito = false
     String address1;
     String address2;
     String address3;
     String cellphone;
-    Date dateOfBirth;
+    Date dateofbirth;
     int clinicid;
     String clinicname;
     String clinicuuid;
@@ -33,7 +33,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
     String homePhone;
     String lastname;
     char modified;
-    String patientId;
+    String patientid;
     String province;
     char sex;
     String workPhone;
@@ -48,14 +48,15 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         Patient.withTransaction {
         getMigratedRecord().setAddress(this.getAddress3() + " " +getAddress1())
         getMigratedRecord().setAddressReference(this.getAddress2())
-        getMigratedRecord().setAccountstatus(this.getAccountStatus())
+        getMigratedRecord().setAccountstatus(this.accountstatus)
         getMigratedRecord().setFirstNames(this.getFirstnames())
         getMigratedRecord().setId(this.getUuidopenmrs())
         getMigratedRecord().setCellphone(this.getCellphone())
-        getMigratedRecord().setDateOfBirth(this.getDateOfBirth())
+        getMigratedRecord().setDateOfBirth(this.dateofbirth)
+        getMigratedRecord().setHisUuid(this.uuidopenmrs)
         setClinicToMigratedRecord(logs)
         setProvinceToMigratedRecord(logs, this.province)
-        getMigratedRecord().setMiddleNames("-")
+        getMigratedRecord().setMiddleNames("")
         getMigratedRecord().setLastNames(this.getLastname())
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
         getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
