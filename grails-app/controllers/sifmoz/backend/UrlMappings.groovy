@@ -18,6 +18,7 @@ class UrlMappings {
         get "/inventory/clinic/$clinicId(.$format)?"(controller:'inventory', action:'getByClinicId')
         get "/patientServiceIdentifier/clinic/$clinicId(.$format)?"(controller:'patientServiceIdentifier', action:'getByClinicId')
         get "/patientServiceIdentifier/patient/$patientId(.$format)?"(controller:'patientServiceIdentifier', action:'getByPatientId')
+        get "/patientServiceIdentifier/service/$serviceId(.$format)?"(controller:'patientServiceIdentifier', action:'getByServiceId')
         get "/episode/clinic/$clinicId(.$format)?"(controller:'episode', action:'getByClinicId')
         get "/episode/identifier/$identifierId(.$format)?"(controller:'episode', action:'getByIdentifierId')
         get "/doctor/clinic/$clinicId(.$format)?"(controller:'doctor', action:'getByClinicId')
