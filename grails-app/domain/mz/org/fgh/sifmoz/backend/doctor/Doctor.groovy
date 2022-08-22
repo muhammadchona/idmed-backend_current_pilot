@@ -19,8 +19,6 @@ class Doctor extends BaseEntity {
     @JsonIgnore
     Clinic clinic
     boolean active
-    @JsonIgnore
-    static hasMany = [prescriptions: Prescription]
 
     static mapping = {
         id generator: "uuid"
