@@ -139,4 +139,26 @@ public class Utilities {
         return s;
     }
 
+    public static String excludeProcessedProp(List<String> strings) {
+        String newProps = null;
+        for (String s : strings) {
+            if (stringHasValue(newProps)) newProps += "."+s;
+            newProps = s;
+        }
+
+        return newProps;
+    }
+
+    public List<String> splitString(String st, String separator) {
+        if (!stringHasValue(st)) return null;
+
+        List<String> result = new ArrayList<>();
+        String[] exploded = st.split(separator);
+
+        for (int i=0; i < exploded.length - 1; i++) {
+            result.add(exploded[i]);
+        }
+        return result;
+    }
+
 }

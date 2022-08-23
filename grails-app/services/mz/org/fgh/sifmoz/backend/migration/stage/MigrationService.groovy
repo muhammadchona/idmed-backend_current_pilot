@@ -93,7 +93,7 @@ class MigrationService extends SynchronizerTask implements Runnable{
         //if (existRunningEngineOnStage()) {
             while (getCurrStageStatus().getStage_progress() < 100 || getCurrStageStatus().getTotal_rejcted() > 0) {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(20000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

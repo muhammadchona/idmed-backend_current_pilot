@@ -135,9 +135,9 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             Prescription prescription = getMigratedRecord()
             prescription.setClinic(clinic)
 
-            Doctor doctor = Doctor.findByFirstnamesAndLastname("Generic", "Provider")
-            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Provedor", "Desconhecido")
-            if (doctor == null) doctor = Doctor.findByFirstnamesAndLastname("Clinico", "Generico")
+            Doctor doctor = Doctor.findByFirstnamesIlikeAndLastnameIlike("%Generic%", "%Provider%")
+            if (doctor == null) doctor = Doctor.findByFirstnamesIlikeAndLastnameIlike("%Provedor%", "%Desconhecido%")
+            if (doctor == null) doctor = Doctor.findByFirstnamesIlikeAndLastnameIlike("%Clinico%", "%Generico%")
             prescription.setDoctor(doctor)
 
             prescription.setModified(this.modifiedprescription == 'T')
