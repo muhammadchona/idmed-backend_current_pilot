@@ -19,6 +19,6 @@ interface IPatientServiceIdentifierService {
 
     List<PatientServiceIdentifier> getAllByPatientId(String patientId, int offset, int max)
 
-    List<PatientServiceIdentifier> getAllByServiceId(String serviceId)
+    List<PatientServiceIdentifier> getAllByPatientId(String serviceId)
 
 }

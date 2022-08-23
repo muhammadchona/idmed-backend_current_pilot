@@ -22,8 +22,8 @@ abstract class PatientServiceIdentifierService implements IPatientServiceIdentif
     }
 
     @Override
-    List<PatientServiceIdentifier> getAllByServiceId(String serviceId) {
-        def identifiers = PatientServiceIdentifier.findAllWhere(service: ClinicalService.findById(serviceId))
+    List<PatientServiceIdentifier> getAllByPatientId(String patientId) {
+        def identifiers = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(patientId))
         return identifiers
     }
 
