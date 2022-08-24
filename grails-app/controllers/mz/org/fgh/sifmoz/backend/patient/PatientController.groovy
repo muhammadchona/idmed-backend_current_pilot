@@ -116,12 +116,14 @@ class PatientController extends RestfulController {
         }
 
     def search(Patient patient) {
-
         List<Patient> patientList = patientService.search(patient)
         render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
-        //respond patientService.getAllByClinicId(clinicId, offset, max)
     }
 
+    def searchByParam(String searchString, String clinicId) {
+        List<Patient> patientList = patientService.search(searchString, clinicId)
+        render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
+    }
 
     def getOpenMRSSession(String interoperabilityId, String username, String password) {
 
