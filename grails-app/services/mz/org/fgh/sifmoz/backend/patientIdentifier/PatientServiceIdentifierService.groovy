@@ -4,6 +4,7 @@ import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 @Transactional
 @Service(PatientServiceIdentifier)
@@ -19,4 +20,11 @@ abstract class PatientServiceIdentifierService implements IPatientServiceIdentif
         def identifiers = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(patientId))
         return identifiers
     }
+
+    @Override
+    List<PatientServiceIdentifier> getAllByPatientId(String patientId) {
+        def identifiers = PatientServiceIdentifier.findAllWhere(patient: Patient.findById(patientId))
+        return identifiers
+    }
+
 }

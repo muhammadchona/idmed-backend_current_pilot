@@ -3,9 +3,7 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
-import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -93,7 +91,19 @@ class PatientServiceIdentifierController extends RestfulController{
     }
 
     def getByPatientId(String patientId, int offset, int max) {
-        // respond patientServiceIdentifierService.getAllByPatientId(patientId, offset, max)
-        render JSONSerializer.setObjectListJsonResponse(patientServiceIdentifierService.getAllByPatientId(patientId, offset, max)) as JSON
+        def result = patientServiceIdentifierService.getAllByPatientId(patientId, offset, max)
+        render JSONSerializer.setObjectListJsonResponse(result) as JSON
     }
+
+//    def getByServiceId(String serviceId) {
+////        for (i in patientServiceIdentifierService.getAllByServiceId(serviceId)) {
+////            System.out.println(i as JSON)
+////        }
+//
+//        def result = patientServiceIdentifierService.getAllByPatientId(serviceId)
+//
+//        System.out.println(result.size())
+//
+//        render JSONSerializer.setObjectListJsonResponse(result) as JSON
+//    }
 }
