@@ -37,11 +37,11 @@ class DoctorMigrationRecord extends AbstractMigrationRecord {
     public List<MigrationLog> migrate() {
         List<MigrationLog> logs = new ArrayList<>()
         Doctor.withTransaction {
-            getMigratedRecord().setFirstnames(this.firstname)
-            getMigratedRecord().setLastname(this.lastname)
+            getMigratedRecord().setFirstnames(this.firstname.trim())
+            getMigratedRecord().setLastname(this.lastname.trim())
             getMigratedRecord().setGender("TBD")
-            getMigratedRecord().setTelephone(this.telephoneno)
-            getMigratedRecord().setEmail(this.emailaddress)
+            getMigratedRecord().setTelephone(this.telephoneno.trim())
+            getMigratedRecord().setEmail(this.emailaddress.trim())
             getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
             getMigratedRecord().setActive(true)
 

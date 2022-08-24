@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
@@ -46,7 +47,9 @@ class PatientController extends RestfulController {
     }
 
     def show(String id) {
-        render JSONSerializer.setJsonObjectResponse(patientService.get(id)) as JSON
+        Patient patient = patientService.get(id)
+        render JSONSerializer.setJsonObjectResponse(patient) as JSON
+        //respond patientService.get(id)
     }
 
         @Transactional
@@ -104,9 +107,20 @@ class PatientController extends RestfulController {
         }
 
         def getByClinicId(String clinicId, int offset, int max) {
+            List<String> toIncludeProps = new ArrayList<>()
+            toIncludeProps.add("identifiers")
+            toIncludeProps.add("clinic")
+            //render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
             render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
             //respond patientService.getAllByClinicId(clinicId, offset, max)
         }
+
+    def search(Patient patient) {
+
+        List<Patient> patientList = patientService.search(patient)
+        render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
+        //respond patientService.getAllByClinicId(clinicId, offset, max)
+    }
 
 
     def getOpenMRSSession(String interoperabilityId, String username, String password) {
@@ -129,35 +143,6 @@ class PatientController extends RestfulController {
 
         render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, urlPath, "GET")
 
-    }
-
-    def getReportActiveByServiceCode () {
-
-        Clinic clinic = Clinic.findById("ff8081817c668dcc017c66dc3d330002")
-        ClinicalService clinicalService = ClinicalService.findByCode("TARV")
-        SessionFactoryUtils.getDataSource(sessionFactory).getConnection()
-        List<PatientServiceIdentifier> patients =   PatientServiceIdentifier.findAllByStartDateIsNotNullAndEndDateIsNullAndClinicAndService(clinic,clinicalService)
-
-        Map<String, Object> map = new HashMap<>()
-        map.put("path", "/home/muhammad/IdeaProjects/SIFMOZ-Backend-New/src/main/webapp/reports");
-        map.put("clinic", clinic.getClinicName())
-        map.put("clinicid", clinic.getId())
-        Map<String, Object> map1 = new HashMap<String, Object>()
-        map1.put("clinicname", clinic.getClinicName())
-           List<Map<String, Object>> reportObjects = new ArrayList<>()
-        //    List<Map<String, Object>> reportObjects = new ArrayList<Map<String, Object>>()
-        for (PatientServiceIdentifier patient:patients) {
-            Map<String, Object> reportObject = new HashMap<String, Object>()
-            reportObject.put("nid", patient.value)
-            reportObject.put("name", patient.patient.firstNames)
-            reportObject.put("gender", patient.patient.gender)
-            reportObject.put("birthDate", patient.patient.dateOfBirth)
-            reportObject.put("initTreatmentDate", patient.startDate)
-            reportObjects.add(reportObject)
-        }
-        reportObjects.add(map1)
-        byte [] report = ReportGenerator.generateReport(map,reportObjects,"/home/muhammad/IdeaProjects/SIFMOZ-Backend-New/src/main/webapp/reports/RelatorioPacientesActivos.jrxml")
-        render(file: report, contentType: 'application/pdf')
     }
 
 }

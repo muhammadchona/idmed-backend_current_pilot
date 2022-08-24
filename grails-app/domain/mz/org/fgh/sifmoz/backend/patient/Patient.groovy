@@ -49,6 +49,7 @@ class Patient extends BaseEntity {
 
     static mapping = {
         id generator: "uuid"
+        patientVisits: lazy:true
     }
 
     static constraints = {

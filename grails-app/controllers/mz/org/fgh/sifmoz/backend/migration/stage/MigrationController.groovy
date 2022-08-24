@@ -57,7 +57,8 @@ class MigrationController extends RestfulController{
         MigrationStage migrationStage = MigrationStage.findByCode(MigrationEngineImpl.PARAMS_MIGRATION_STAGE)
         migrationStage.setValue(MigrationStage.STAGE_IN_PROGRESS)
         migrationStageService.save(migrationStage)
-        migrationService.execute()
+        ExecutorThreadProvider.getInstance().getExecutorService().execute(migrationService)
+        render status: OK
     }
 
     def index(Integer max) {
