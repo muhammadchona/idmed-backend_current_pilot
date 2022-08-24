@@ -24,7 +24,7 @@ class JSONSerializer {
 
     String getJSON() {
         Closure jsonFormat = {
-                // Set the delegate of buildJSON to ensure that missing methods called thereby are routed to the JSONBuilder
+            // Set the delegate of buildJSON to ensure that missing methods called thereby are routed to the JSONBuilder
 
             if (this.searchMode) {
                 buildLightJSON.delegate = delegate
@@ -63,9 +63,12 @@ class JSONSerializer {
         obj.properties.each { propName, propValue ->
             if (!['class', 'metaClass'].contains(propName)) {
 
-                if (isSimple(propValue)) {
+                if (isSimpleProp(propValue)) {
                     setProperty(propName, propValue)
                 } else if (isSimpleIncluded(propName)) {
+                    /*Closure nestedObject = {
+                        buildLightJSON(propValue)
+                    }*/
                     setProperty(propName, propValue)
                 }
             }
@@ -77,7 +80,7 @@ class JSONSerializer {
         obj.properties.each { propName, propValue ->
             if (!['class', 'metaClass'].contains(propName)) {
 
-                if (isSimple(propValue)) {
+                if (isSimpleProp(propValue)) {
                     setProperty(propName, propValue)
                 } else if (isSimpleIncluded(propName)) {
                     setProperty(propName, propValue)
@@ -134,14 +137,21 @@ class JSONSerializer {
      * @param propValue
      * @return
      */
-    private boolean isSimple(propValue) {
+    private boolean isSimpleProp(propValue) {
         // This is a bit simplistic as an object might very well be Serializable but have properties that we want
         // to render in JSON as a nested object. If we run into this issue, replace the test below with an test
         // for whether propValue is an instanceof Number, String, Boolean, Char, etc.
         !(propValue instanceof BaseEntity) && !(propValue instanceof Collection) // || propValue == null
     }
 
-     static JSONArray setObjectListJsonResponse(List objectList) {
+    private boolean isSimple(propValue) {
+        // This is a bit simplistic as an object might very well be Serializable but have properties that we want
+        // to render in JSON as a nested object. If we run into this issue, replace the test below with an test
+        // for whether propValue is an instanceof Number, String, Boolean, Char, etc.
+        propValue instanceof Serializable || propValue == null
+    }
+
+    static JSONArray setObjectListJsonResponse(List objectList) {
         JSONArray patientList = new JSONArray()
 
         for (object in objectList) {

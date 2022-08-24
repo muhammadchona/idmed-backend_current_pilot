@@ -109,9 +109,18 @@ class PatientController extends RestfulController {
         def getByClinicId(String clinicId, int offset, int max) {
             List<String> toIncludeProps = new ArrayList<>()
             toIncludeProps.add("identifiers")
-            render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
+            toIncludeProps.add("clinic")
+            //render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
+            render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
             //respond patientService.getAllByClinicId(clinicId, offset, max)
         }
+
+    def search(Patient patient) {
+
+        List<Patient> patientList = patientService.search(patient)
+        render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
+        //respond patientService.getAllByClinicId(clinicId, offset, max)
+    }
 
 
     def getOpenMRSSession(String interoperabilityId, String username, String password) {

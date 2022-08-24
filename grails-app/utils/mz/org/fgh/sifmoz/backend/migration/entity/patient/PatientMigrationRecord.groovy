@@ -49,14 +49,27 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setAddress(this.getAddress3() + " " +getAddress1())
         getMigratedRecord().setAddressReference(this.getAddress2())
         getMigratedRecord().setAccountstatus(this.accountstatus)
-        getMigratedRecord().setFirstNames(this.getFirstnames())
+
+        if (!Utilities.stringHasValue(this.firstnames)) throw new RuntimeException("O paciente nao possui nome")
+
+        String[] names = this.firstnames.split(" ")
+        String firstName = names[0]
+        String midleName = null
+        if (names.length > 1) {
+            for (int h = 1; names.length; h++) {
+                if (!Utilities.stringHasValue(midleName)) midleName = names[h]
+                else midleName += " "+names[h]
+            }
+        }
+
+        getMigratedRecord().setFirstNames(firstName)
         getMigratedRecord().setId(this.getUuidopenmrs())
         getMigratedRecord().setCellphone(this.getCellphone())
         getMigratedRecord().setDateOfBirth(this.dateofbirth)
         getMigratedRecord().setHisUuid(this.uuidopenmrs)
         setClinicToMigratedRecord(logs)
         setProvinceToMigratedRecord(logs, this.province)
-        getMigratedRecord().setMiddleNames("")
+        getMigratedRecord().setMiddleNames(midleName)
         getMigratedRecord().setLastNames(this.getLastname())
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
         getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
