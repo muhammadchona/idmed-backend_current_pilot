@@ -13,13 +13,9 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
-import mz.org.fgh.sifmoz.backend.utilities.Utilities
-import mz.org.fgh.sifmoz.report.ReportGenerator
-import org.grails.web.json.JSONArray
+import mz.org.fgh.sifmoz.backend.report.ReportGenerator
 import org.hibernate.SessionFactory
 import org.springframework.orm.hibernate5.SessionFactoryUtils
-
-import java.nio.charset.StandardCharsets
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
