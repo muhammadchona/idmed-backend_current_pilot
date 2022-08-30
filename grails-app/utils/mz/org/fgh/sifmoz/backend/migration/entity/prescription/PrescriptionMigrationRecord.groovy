@@ -73,7 +73,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         Prescription.withTransaction {
             MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.patientid, "Patient")
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
-            ClinicalService clinicalService = ClinicalService.findByCode(this.tipodoenca)
+            ClinicalService clinicalService = ClinicalService.findByCode(this.tipodoenca == "TB" ? "TPT" : this.tipodoenca)
             Clinic clinic = Clinic.findByMainClinic(true)
             Patient patient = Patient.findById(patientMigrationLog.getiDMEDId())
             PatientServiceIdentifier psi = PatientServiceIdentifier.findByPatientAndService(patient, clinicalService)
