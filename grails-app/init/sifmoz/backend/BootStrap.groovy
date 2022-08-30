@@ -105,7 +105,7 @@ class BootStrap {
 
         Clinic.withTransaction {
 //            initDefaultClinic()
-            initClinic()
+//            initClinic()
         }
 
 //        ClinicSector.withTransaction { initClinicSector()  }

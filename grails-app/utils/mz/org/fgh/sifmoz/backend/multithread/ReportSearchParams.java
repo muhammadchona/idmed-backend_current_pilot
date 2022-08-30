@@ -35,6 +35,19 @@ public class ReportSearchParams implements Validateable {
     private String endDateParam;
     private String reportType;
 
+    public ReportSearchParams() {
+    }
+
+    public ReportSearchParams(String periodType) {
+        this.periodType = periodType;
+    }
+
+    public static ReportSearchParams generateAnnualPeriod(int year) {
+        ReportSearchParams params = new ReportSearchParams(PERIOD_TYPE_ANNUAL);
+        params.setYear(year);
+        params.determineStartEndDate();
+        return params;
+    }
     public void determineStartEndDate() {
         switch (getPeriodType()) {
             case PERIOD_TYPE_SPECIFIC:
