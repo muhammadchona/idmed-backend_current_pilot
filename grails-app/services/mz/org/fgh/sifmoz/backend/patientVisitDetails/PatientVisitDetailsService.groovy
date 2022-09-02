@@ -77,5 +77,16 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
         return patientVisitDetails.get(0)
     }
 
+    @Override
+    PatientVisitDetails getLastByEpisodeId(String episodeId) {
+        def list = PatientVisitDetails.executeQuery("select pvd " +
+                "from PatientVisitDetails pvd " +
+                "inner join pvd.patientVisit pv " +
+                "inner join pvd.episode e " +
+                "where e = :episode " +
+                "order by pv.visitDate desc",
+                [episode:Episode.findById(episodeId)])
 
+        return list.get(0)
+    }
 }

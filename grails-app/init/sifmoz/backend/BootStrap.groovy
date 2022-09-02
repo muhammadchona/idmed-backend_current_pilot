@@ -40,6 +40,7 @@ import mz.org.fgh.sifmoz.backend.protection.Role
 import mz.org.fgh.sifmoz.backend.protection.SecUser
 import mz.org.fgh.sifmoz.backend.protection.SecUserRole
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
 import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeType
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 import mz.org.fgh.sifmoz.backend.stockoperation.StockOperationType
@@ -126,6 +127,10 @@ class BootStrap {
 
         Requestmap.withTransaction {
             initRequestMaps()
+        }
+
+        ClinicalServiceAttribute.withTransaction {
+            initClinicalServiceAttribute()
         }
 
         Menu.withNewTransaction {
@@ -246,6 +251,19 @@ class BootStrap {
             }
         }
     }
+
+    void initClinicalServiceAttribute() {
+        for (clinicalServiceAttributeObject in listClinicalServiceAttribute()) {
+            if (!ClinicalServiceAttribute.findById(clinicalServiceAttributeObject.id)) {
+                ClinicalServiceAttribute clinicalServiceAttribute = new ClinicalServiceAttribute()
+                clinicalServiceAttribute.id = clinicalServiceAttributeObject.id
+                clinicalServiceAttribute.clinicalService = ClinicalService.findById(clinicalServiceAttributeObject.clinicalService)
+                clinicalServiceAttribute.clinicalServiceAttributeType = ClinicalServiceAttributeType.findById(clinicalServiceAttributeObject.clinicalServiceAttributeType)
+                clinicalServiceAttribute.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
 
     void initDispenseMode() {
         for (dispenseModeObject in listDispenseMode()) {
@@ -738,17 +756,6 @@ class BootStrap {
         return clinicSectorTypeList
     }
 
-    List<Object> listClinicalServiceAttributeType() {
-        List<Object> clinicalServiceAttributeList = new ArrayList<>()
-        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef6f59d0000', code: 'THERAPEUTICAL_REGIMEN', description: 'Regime terapeutico'))
-        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef853610003', code: 'PRESCRIPTION_CHANGE_MOTIVE', description: 'Motivo de alteracao de prescricao'))
-        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef7ab3f0002', code: 'PATIENT_TYPE', description: 'Tipo Paciente'))
-        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef760800001', code: 'THERAPEUTICAL_LINE', description: 'Linha terapeutica'))
-
-        return clinicalServiceAttributeList
-    }
-
-
     List<Object> listDispenseMode() {
         List<Object> dispenseModeList = new ArrayList<>()
         dispenseModeList.add(new LinkedHashMap(id: '091737af-d6bf-4830-8e87-82572ffac9ea', code: 'DC_CM-FHN', openmrs_uuid: '091737af-d6bf-4830-8e87-82572ffac9ea', description: 'Clínicas Móveis - Distribuição durante o final do dia'))
@@ -892,6 +899,38 @@ class BootStrap {
         return clinicalServiceList
     }
 
+    List<Object> listClinicalServiceAttribute() {
+        List<Object> clinicalServiceAttributeList = new ArrayList<>()
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44f', clinicalService: '80A7852B-57DF-4E40-90EC-ABDE8403E01F', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef6f59d0000'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44a', clinicalService: '80A7852B-57DF-4E40-90EC-ABDE8403E01F', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef853610003'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44b', clinicalService: '80A7852B-57DF-4E40-90EC-ABDE8403E01F', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef7ab3f0002'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44c', clinicalService: '80A7852B-57DF-4E40-90EC-ABDE8403E01F', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef760800001'))
+
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44e', clinicalService: '6D12193B-7D5D-4665-8FC6-A03855986FBD', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef853610003'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44g', clinicalService: '6D12193B-7D5D-4665-8FC6-A03855986FBD', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef7ab3f0002'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44h', clinicalService: '6D12193B-7D5D-4665-8FC6-A03855986FBD', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef760800001'))
+
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44i', clinicalService: '165C876C-F850-436F-B0BB-80D519056BC3', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef6f59d0000'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44j', clinicalService: '165C876C-F850-436F-B0BB-80D519056BC3', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef853610003'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44k', clinicalService: '165C876C-F850-436F-B0BB-80D519056BC3', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef7ab3f0002'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44l', clinicalService: '165C876C-F850-436F-B0BB-80D519056BC3', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef760800001'))
+
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44m', clinicalService: 'F5FEAD76-3038-4D3D-AC28-D63B9952F022', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef6f59d0000'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44n', clinicalService: 'F5FEAD76-3038-4D3D-AC28-D63B9952F022', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef853610003'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44o', clinicalService: 'F5FEAD76-3038-4D3D-AC28-D63B9952F022', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef7ab3f0002'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: '02a8d740-362f-4df8-b5ba-061594d8a44p', clinicalService: 'F5FEAD76-3038-4D3D-AC28-D63B9952F022', clinicalServiceAttributeType: 'ff8081817c99e33a017c9ef760800001'))
+        return clinicalServiceAttributeList
+    }
+
+    List<Object> listClinicalServiceAttributeType() {
+        List<Object> clinicalServiceAttributeList = new ArrayList<>()
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef6f59d0000', code: 'THERAPEUTICAL_REGIMEN', description: 'Regime terapeutico'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef853610003', code: 'PRESCRIPTION_CHANGE_MOTIVE', description: 'Motivo de alteracao de prescricao'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef7ab3f0002', code: 'PATIENT_TYPE', description: 'Tipo Paciente'))
+        clinicalServiceAttributeList.add(new LinkedHashMap(id: 'ff8081817c99e33a017c9ef760800001', code: 'THERAPEUTICAL_LINE', description: 'Linha terapeutica'))
+
+        return clinicalServiceAttributeList
+    }
 
     List<Object> listHealthInformationSystem() {
         List<Object> healthInformationSystemList = new ArrayList<>()

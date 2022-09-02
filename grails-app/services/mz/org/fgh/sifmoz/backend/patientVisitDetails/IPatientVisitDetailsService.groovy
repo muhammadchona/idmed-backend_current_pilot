@@ -28,4 +28,5 @@ interface IPatientVisitDetailsService{
 
     PatientVisitDetails getLastVisitByEpisodeId(String episodeId)
 
+    PatientVisitDetails getLastByEpisodeId(String episodeId)
 }
