@@ -6,15 +6,21 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.reports.referralManagement.IReferredPatientsReportService
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(Episode)
 abstract class EpisodeService implements IEpisodeService{
 
     IReferredPatientsReportService referredPatientsReportService
+    @Autowired
+    IPatientVisitDetailsService iPatientVisitDetailsService
 
     @Override
     List<Episode> getAllByClinicId(String clinicId, int offset, int max) {
@@ -22,7 +28,7 @@ abstract class EpisodeService implements IEpisodeService{
     }
     @Override
     List<Episode> getAllByIndentifier(String identifierId, int offset, int max) {
-        def episodes = Episode.findAllWhere(patientServiceIdentifier: PatientServiceIdentifier.findById(identifierId))
+        def episodes = Episode.findAllWhere(patientServiceIdentifier: PatientServiceIdentifier.findById(identifierId), [sort: ['episodeDate': 'desc'], max: 4])
         return episodes
     }
 
@@ -56,6 +62,24 @@ abstract class EpisodeService implements IEpisodeService{
                 "where psi = :patientServiceIdentifier and stp.code = 'REFERIDO_PARA' and ep.episodeDate <= :episodeDate order by ep.episodeDate desc", [patientServiceIdentifier:patientServiceIdentifier, episodeDate:episodeDate])
 
         return episodes.get(0)
+    }
+
+    @Override
+    Episode getLastWithVisitByIndentifier(PatientServiceIdentifier patientServiceIdentifier, Clinic clinic) {
+        def episodes = Episode.executeQuery("select ep from Episode ep " +
+                "inner join ep.startStopReason stp " +
+                "inner join ep.patientServiceIdentifier psi " +
+                "inner join ep.clinic c " +
+                "where psi = :patientServiceIdentifier " +
+                "and exists (select pvd from PatientVisitDetails pvd where pvd.episode = ep ) " +
+                //"and ep.clinic = :clinic" +
+                "order by ep.episodeDate desc", [patientServiceIdentifier: patientServiceIdentifier])
+        Episode episode = episodes.get(0)
+        PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getLastVisitByEpisodeId(episode.id)
+        patientVisitDetails.setPrescription(Prescription.findById(patientVisitDetails.prescription.id))
+        episode.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
+        episode.getPatientVisitDetails().add(patientVisitDetails)
+        return episode
     }
 
     @Override

@@ -25,4 +25,6 @@ interface IEpisodeService {
     Episode getEpisodeOfReferralByPatientServiceIdentfierAndBelowEpisodeDate(PatientServiceIdentifier patientServiceIdentifier, Date episodeDate)
 
     Episode getLastInitialEpisodeByIdentifier(String identifierId)
+
+    Episode getLastWithVisitByIndentifier(PatientServiceIdentifier patientServiceIdentifier, Clinic clinic)
 }

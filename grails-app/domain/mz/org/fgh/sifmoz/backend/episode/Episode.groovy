@@ -41,6 +41,9 @@ class Episode extends BaseEntity {
     static mapping = {
         id generator: "uuid"
     }
+
+    static fetchMode = [patientVisitDetails: 'lazy']
+
     static constraints = {
         episodeDate(nullable: false, blank: false, validator: { episodeDate, urc ->
             return episodeDate <= new Date()

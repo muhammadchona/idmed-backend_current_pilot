@@ -3,7 +3,11 @@ package mz.org.fgh.sifmoz.backend.episode
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+import org.grails.web.converters.marshaller.json.DomainClassMarshaller
+import org.grails.web.converters.marshaller.xml.DeepDomainClassMarshaller
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -93,5 +97,13 @@ class EpisodeController extends RestfulController{
     def getByIdentifierId(String identifierId, int offset, int max) {
         // respond episodeService.getAllByIndentifier(identifierId, offset, max)
         render JSONSerializer.setObjectListJsonResponse(episodeService.getAllByIndentifier(identifierId, offset, max)) as JSON
+    }
+
+
+    def getLastWithVisitByIndentifier(String identifierId, String cliniId) {
+        // respond episodeService.getAllByIndentifier(identifierId, offset, max)
+        //JSON.registerObjectMarshaller(DomainClassMarshaller)
+        //render episodeService.getLastWithVisitByIndentifier(PatientServiceIdentifier.findById(identifierId), Clinic.findById(cliniId))
+        render JSONSerializer.setJsonObjectResponse(episodeService.getLastWithVisitByIndentifier(PatientServiceIdentifier.findById(identifierId), Clinic.findById(cliniId))) as JSON
     }
 }

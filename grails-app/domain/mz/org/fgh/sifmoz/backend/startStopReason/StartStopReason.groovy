@@ -44,7 +44,7 @@ class StartStopReason extends BaseEntity {
     }
 
     boolean isNew() {
-        return this.code.equals(INICIO_AO_TRATAMENTO)
+        return this.code.equals(INICIO_AO_TRATAMENTO) || this.code.equals(NOVO_PACIENTE)
     }
 
     boolean isManutencao() {
