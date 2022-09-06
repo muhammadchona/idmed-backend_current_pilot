@@ -87,6 +87,7 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
                 "order by pv.visitDate desc",
                 [episode:Episode.findById(episodeId)])
 
+        if (list == null || list.size() <=0) return null
         return list.get(0)
     }
 }

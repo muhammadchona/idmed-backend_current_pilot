@@ -106,7 +106,10 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     def getLastByEpisodeId(String episodeId) {
-        render JSONSerializer.setJsonObjectResponse(patientVisitDetailsService.getLastByEpisodeId(episodeId)) as JSON
+        PatientVisitDetails pvd = patientVisitDetailsService.getLastByEpisodeId(episodeId)
+        if (pvd != null) {
+            render JSONSerializer.setJsonObjectResponse(pvd) as JSON
+        } else render status: NO_CONTENT
     }
 
     void determinePrescriptionPatientType(PatientVisitDetails patientVisitDetails) {
@@ -124,5 +127,10 @@ class PatientVisitDetailsController extends RestfulController{
             patientVisitDetails.prescription.setPatientType(Prescription.PATIENT_TYPE_MANUTENCAO)
         }
         prescriptionService.save(patientVisitDetails.prescription)
+    }
+
+    def mySave(PatientVisitDetails patientVisit) {
+        this.save(patientVisit)
+        render patientVisit
     }
 }
