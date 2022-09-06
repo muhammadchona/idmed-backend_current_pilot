@@ -14,6 +14,7 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.protection.Menu
 import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
+import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 class Patient extends BaseEntity {
     String id
@@ -112,5 +113,13 @@ class Patient extends BaseEntity {
             menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode,groupsMenuCode,dashboardMenuCode))
         }
         return menus
+    }
+
+    boolean isActiveOnGroup(String serviceCode) {
+        if (!Utilities.listHasElements(this.groups as ArrayList<?>)) return false
+        for (GroupInfo groupInfo : this.groups) {
+            if (groupInfo.service.code == serviceCode && groupInfo.isActive()) return true
+        }
+        return false
     }
 }
