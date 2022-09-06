@@ -8,7 +8,7 @@ class Localidade extends BaseEntity {
     String code
     String description
 
-    static belongsTo = [postoAdministrativo: PostoAdministrativo]
+    static belongsTo = [postoAdministrativo: PostoAdministrativo, district: District]
 
     static mapping = {
         id generator: "uuid"
@@ -16,6 +16,8 @@ class Localidade extends BaseEntity {
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
+        postoAdministrativo nullable: true
+        district nullable: true
     }
     @Override
     List<Menu> hasMenus() {
