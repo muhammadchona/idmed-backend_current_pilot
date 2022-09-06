@@ -35,6 +35,9 @@ class GroupInfo extends BaseEntity {
         packHeaders nullable: true
     }
 
+    public boolean isActive() {
+        return this.endDate == null
+    }
 
     @Override
     public String toString() {
