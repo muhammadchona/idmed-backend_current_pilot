@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.episode
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
@@ -27,4 +28,6 @@ interface IEpisodeService {
     Episode getLastInitialEpisodeByIdentifier(String identifierId)
 
     Episode getLastWithVisitByIndentifier(PatientServiceIdentifier patientServiceIdentifier, Clinic clinic)
+
+    Episode getLastEpisodeByIdentifier(Patient patient, String serviceCode)
 }

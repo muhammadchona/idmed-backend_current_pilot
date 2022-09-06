@@ -92,4 +92,9 @@ abstract class EpisodeService implements IEpisodeService{
         return episode
     }
 
+    @Override
+    Episode getLastEpisodeByIdentifier(Patient patient, String serviceCode) {
+        return Episode.findByPatientServiceIdentifier(PatientServiceIdentifier.findByPatientAndService(patient, ClinicalService.findByCode(serviceCode)), [sort: ['episodeDate': 'desc']])
+    }
+
 }

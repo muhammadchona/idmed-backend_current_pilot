@@ -12,13 +12,13 @@ abstract class PatientService implements IPatientService{
     @Override
     List<Patient> search(Patient patient) {
         String mainQuery =  "select p from Patient p " +
-                            " where (p.firstNames like :firstNames OR" +
-                            " p.middleNames like :middleNames OR " +
-                            " p.lastNames like :lastNames) " +
+                            " where (lower(p.firstNames) like lower(:firstNames) OR" +
+                            " lower(p.middleNames) like lower(:middleNames) OR " +
+                            " lower(p.lastNames) like lower(:lastNames)) " +
                             " AND p.clinic =:clinic"
         String indentifierCondition = " OR EXISTS (select psi " +
                                 "                   from PatientServiceIdentifier psi inner join psi.patient pt " +
-                                "                   where pt.id = p.id and psi.value like :identifier) "
+                                "                   where pt.id = p.id and lower(psi.value) like lower(:identifier)) "
         String searchQuery = mainQuery + (Utilities.listHasElements(patient.identifiers as ArrayList<?>) ? indentifierCondition : "")
 
         searchQuery += " order by p.firstNames "
@@ -38,13 +38,13 @@ abstract class PatientService implements IPatientService{
     @Override
     List<Patient> search(String searchString, String clinicId) {
         String mainQuery =  "select p from Patient p " +
-                " where (p.firstNames like :searchString OR" +
-                " p.middleNames like :searchString OR " +
-                " p.lastNames like :searchString) " +
+                " where (lower(p.firstNames) like lower(:searchString) OR" +
+                " lower(p.middleNames) like lower(:searchString) OR " +
+                " lower(p.lastNames) like lower(:searchString)) " +
                 " AND p.clinic =:clinic"
         String indentifierCondition = " OR EXISTS (select psi " +
                 "                   from PatientServiceIdentifier psi inner join psi.patient pt " +
-                "                   where pt.id = p.id and psi.value like :searchString) "
+                "                   where pt.id = p.id and lower(psi.value) like lower(:searchString)) "
         String searchQuery = mainQuery + indentifierCondition
 
         searchQuery += " order by p.firstNames "
