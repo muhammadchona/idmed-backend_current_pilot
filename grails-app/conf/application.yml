@@ -78,7 +78,7 @@ grails:
             all: '*/*'
     urlmapping:
         cache:
-            maxsize: 1000
+            maxsize: 10000
     controllers:
         defaultScope: singleton
     converters:
@@ -101,16 +101,16 @@ dataSource:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: root
 environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmedcentral
+            url: jdbc:postgresql://localhost:5432/idmed
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmedcentral
+            url: jdbc:postgresql://localhost:5432/idmed
     production:
         dataSource:
             dbCreate: update

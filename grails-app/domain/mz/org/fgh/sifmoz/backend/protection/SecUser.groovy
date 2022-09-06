@@ -15,6 +15,7 @@ class SecUser implements Serializable {
 
     String username
     String password
+    String openmrsPassword
     String fullName
     String contact
     String email
@@ -29,10 +30,11 @@ class SecUser implements Serializable {
     static hasMany = [clinics: Clinic, clinicSectors: ClinicSector]
 
 
-    SecUser(String username,String password, String fullname, String contact,String email){
+    SecUser(String username,String password, String fullname, String contact,String email, String openmrsPassword){
         this()
         this.username = username
         this.password = password
+        this.openmrsPassword = openmrsPassword
         this.fullName = fullname
         this.contact = contact
         this.email = email
@@ -46,6 +48,7 @@ class SecUser implements Serializable {
         password nullable: false, blank: false, password: true
         username nullable: false, blank: false, unique: true
         email nullable: true, blank: true
+        openmrsPassword nullable: true, blank: true
         roles bindable: true
     }
 
