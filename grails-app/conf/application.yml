@@ -78,7 +78,7 @@ grails:
             all: '*/*'
     urlmapping:
         cache:
-            maxsize: 1000
+            maxsize: 10000
     controllers:
         defaultScope: singleton
     converters:
