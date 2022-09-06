@@ -106,13 +106,13 @@ environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmedcentral
+            url: jdbc:postgresql://localhost:5432/micajune
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmedcentral
+            url: jdbc:postgresql://localhost:5432/micajune
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://db:5432/idmedcentral
+            url: jdbc:postgresql://db:5432/micajune
 
