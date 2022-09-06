@@ -36,7 +36,6 @@ class PatientVisit extends BaseEntity {
 
 
     static constraints = {
-        patientVisitDetails nullable: true
         adherenceScreening nullable: true
         vitalSigns nullable: true
         pregnancyScreening nullable: true
