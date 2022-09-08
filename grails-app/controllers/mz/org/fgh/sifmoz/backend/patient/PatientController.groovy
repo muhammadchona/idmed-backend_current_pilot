@@ -121,17 +121,17 @@ class PatientController extends RestfulController {
         render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
 
-    def getOpenMRSSession(String interoperabilityId, String username, String password) {
+    def getOpenMRSSession(String interoperabilityId, String openmrsBase64) {
 
         HealthInformationSystem healthInformationSystem = HealthInformationSystem.get(interoperabilityId)
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
         InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
 
-       render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, "session", "GET")
+       render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, "session", "GET")
 
     }
 
-    def getOpenMRSPatient(String interoperabilityId, String nid, String username, String password) {
+    def getOpenMRSPatient(String interoperabilityId, String nid, String openmrsBase64) {
 
         HealthInformationSystem healthInformationSystem = HealthInformationSystem.get(interoperabilityId)
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
@@ -139,7 +139,7 @@ class PatientController extends RestfulController {
 
         String urlPath = "patient?q="+nid.replaceAll("-","/") + "&v=full&limit=100"
 
-        render RestOpenMRSClient.getResponseOpenMRSClient(username, password, null, interoperabilityAttribute.value, urlPath, "GET")
+        render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, urlPath, "GET")
 
     }
 
