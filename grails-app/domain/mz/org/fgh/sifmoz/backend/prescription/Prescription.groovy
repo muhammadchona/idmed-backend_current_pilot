@@ -40,6 +40,16 @@ class Prescription extends BaseEntity{
 
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
+    public int getLeftDuration () {
+        if (!Utilities.listHasElements(this.patientVisitDetails as ArrayList<?>)) return (this.duration.weeks / 4)
+
+        int usedDuration = 0
+        for (PatientVisitDetails visitDetails : this.patientVisitDetails) {
+            usedDuration += visitDetails.pack.weeksSupply
+        }
+
+        return ((this.duration.weeks - usedDuration) / 4)
+    }
     static mapping = {
         id generator: "uuid"
         patientVisitDetails lazy: true

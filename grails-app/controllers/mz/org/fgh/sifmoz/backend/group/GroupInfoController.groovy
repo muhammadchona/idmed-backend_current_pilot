@@ -3,8 +3,13 @@ package mz.org.fgh.sifmoz.backend.group
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
+import static org.springframework.http.HttpStatus.ACCEPTED
+import static org.springframework.http.HttpStatus.CONFLICT
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -15,6 +20,7 @@ import grails.gorm.transactions.Transactional
 class GroupInfoController extends RestfulController{
 
     IGroupService groupService
+    IEpisodeService episodeService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -89,5 +95,26 @@ class GroupInfoController extends RestfulController{
     def getByClinicId(String clinicId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(groupService.getAllByClinicId(clinicId, offset, max)) as JSON
         //respond patientService.getAllByClinicId(clinicId, offset, max)
+    }
+
+    def validadePatient(String patientId, String serviceCode) {
+        Patient patient = Patient.findById(patientId)
+        patient.setGroups(groupService.getAllActiveOfPatientOnService(patient, serviceCode))
+        String msg = "Accepted"
+
+        Episode lastPatientEpisode = episodeService.getLastEpisodeByIdentifier(patient, serviceCode)
+
+        if (lastPatientEpisode == null) {
+            msg = "O paciente selecionado não possui episódios."
+            render msg
+        } else if (!lastPatientEpisode.startStopReason.isStartReason) {
+            msg = "O Último episódio do paciente não é de inicio."
+            render msg
+        }else
+        if (patient.isActiveOnGroup(serviceCode)) {
+            msg = "O paciente selecionado ja se encontra associado a um grupo activo do serviço [" + serviceCode + "]"
+            render msg
+        }
+        render msg
     }
 }
