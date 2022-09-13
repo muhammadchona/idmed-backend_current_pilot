@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.groupMember
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.group.GroupInfo
+import mz.org.fgh.sifmoz.backend.group.GroupMemberPrescription
 import mz.org.fgh.sifmoz.backend.group.GroupPackHeader
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.protection.Menu

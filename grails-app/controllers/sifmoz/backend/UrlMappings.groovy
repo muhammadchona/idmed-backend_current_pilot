@@ -47,6 +47,7 @@ class UrlMappings {
         get "/api/prescriptionDetail/prescription/$prescriptionId(.$format)?"(controller:'prescriptionDetail', action:'getAllByPrescriptionId')
         get "/api/patientVisit/patient/$patientId(.$format)?"(controller:'patientVisit', action:'getByPatientId')
         get "/api/groupInfo/clinic/$clinicId(.$format)?"(controller:'groupInfo', action:'getByClinicId')
+        get "/api/groupInfo/validadePatient/$patientId/$serviceCode(.$format)?"(controller:'groupInfo', action:'validadePatient')
         get "/api/patientVisit/lastofPatient/$patientId(.$format)?"(controller:'patientVisit', action:'getLastVisitOfPatient')
         get "/api/pack/prescription/$prescriptionId(.$format)?"(controller:'pack', action:'getAllByPrescriptionId')
         get "/api/patient/reportActiveByServiceCode/"(controller:'patient', action:'getReportActiveByServiceCode')
@@ -65,6 +66,7 @@ class UrlMappings {
      //   get "/systemConfigs/$key(.$format)?"(action:'getByKey')
         get "/api/clinic/district/$districtId(.$format)?"(controller:'clinic', action:'searchClinicsByDistrictId')
         get "/api/clinic/province/$provinceCode(.$format)?"(controller:'clinic', action:'searchClinicsByProvinceCode')
+        get "/api/groupMemberPrescription/member/$memberId(.$format)?"(controller:'groupMemberPrescription', action:'getByMemberId')
 
         post "/api/secrUserRole/(.$format)?"(controller:'secUserRole', action:'save')
        // "/"(controller: 'application', action:'index')
