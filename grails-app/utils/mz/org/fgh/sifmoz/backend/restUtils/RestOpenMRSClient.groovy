@@ -164,11 +164,10 @@ class RestOpenMRSClient {
         return result
     }
 
-    static def getResponseOpenMRSClient(String username, String password, String object, String urlBase, String urlPath, String method) {
+    static def getResponseOpenMRSClient(String openmrsBase64, String object, String urlBase, String urlPath, String method) {
         String restUrl = urlBase.concat(urlPath)
         try {
-            String userCredentials = new StringBuffer(username).append(":").append(password).toString()
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()))
+            String basicAuth = "Basic " + openmrsBase64
             println(restUrl)
             println(basicAuth)
             URL siteURL = new URL(restUrl)
@@ -190,7 +189,6 @@ class RestOpenMRSClient {
                 input.close()
 
                 // print result
-                println(new JSONObject(response.toString()))
                 return new JSONObject(response.toString())
             } else {
                 println("GET request not worked")
