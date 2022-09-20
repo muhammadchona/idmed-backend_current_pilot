@@ -25,8 +25,8 @@ class ReferedStockMoviment extends BaseEntity {
         date(nullable: false, blank: false, validator: { date, urc ->
             return ((date <= new Date()))
         })
-        orderNumber(nullable: false, blank: false, maxSize: 20)
-        origin(nullable: false, blank: false, maxSize: 20)
+        orderNumber(nullable: false, blank: false, maxSize: 100)
+        origin(nullable: false, blank: false, maxSize: 100)
         quantity(min: 1)
     }
 

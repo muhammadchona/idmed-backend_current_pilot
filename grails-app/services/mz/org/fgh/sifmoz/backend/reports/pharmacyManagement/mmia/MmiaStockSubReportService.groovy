@@ -102,7 +102,7 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
         double percUnit = 0
         if (Utilities.listHasElements(list as ArrayList<?>)) {
             percUnit = 35 / list.size()
-            for (int i = 0; i < list.size() - 1; i++) {
+            for (int i = 0; i < list.size(); i++) {
 
                 generateAndSaveMmiaStockSubReport(list[i], mmiaStockSubReportItems, searchParams.getId())
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)

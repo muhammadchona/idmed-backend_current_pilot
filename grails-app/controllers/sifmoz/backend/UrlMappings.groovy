@@ -67,6 +67,7 @@ class UrlMappings {
         get "/api/clinic/district/$districtId(.$format)?"(controller:'clinic', action:'searchClinicsByDistrictId')
         get "/api/clinic/province/$provinceCode(.$format)?"(controller:'clinic', action:'searchClinicsByProvinceCode')
         get "/api/groupMemberPrescription/member/$memberId(.$format)?"(controller:'groupMemberPrescription', action:'getByMemberId')
+        get "/api/drugStockFile/sumary/$clinicId/$drugId(.$format)?"(controller:'drugStockFile', action:'getDrugSumaryEvents')
 
         post "/api/secrUserRole/(.$format)?"(controller:'secUserRole', action:'save')
        // "/"(controller: 'application', action:'index')

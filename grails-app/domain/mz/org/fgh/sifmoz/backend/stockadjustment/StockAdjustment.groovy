@@ -36,7 +36,6 @@ abstract class StockAdjustment extends BaseEntity {
 
     static constraints = {
         notes(nullable: true)
-        operation nullable: true
     }
 
 

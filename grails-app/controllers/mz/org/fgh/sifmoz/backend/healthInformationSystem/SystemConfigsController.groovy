@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -99,6 +100,7 @@ class SystemConfigsController {
                 mainClinic.setMainClinic(true)
                 mainClinic.save(flush: true, insert: true, failOnError: true)
                 initClinicSector()
+                initStockCenter(mainClinic)
             }
         }
     }
@@ -118,6 +120,7 @@ class SystemConfigsController {
             }
         }
     }
+
     List<Object> listClinicSector() {
         List<Object> clinicSectorList = new ArrayList<>()
         clinicSectorList.add(new LinkedHashMap(id: '8a8a823b81900fee0181901608880000', code: 'CPN', description: 'Consulta Pre-Natal', clinicSectorType_id: '8a8a823b81c7fa9d0181c801ab120000', uuid: '8a8a823b81900fee0181901608890000', active: 'true'))
@@ -132,5 +135,17 @@ class SystemConfigsController {
 
     def getByKey(String key) {
         render JSONSerializer.setJsonObjectResponse(SystemConfigs.findByKey(key)) as JSON
+    }
+
+    def initStockCenter(Clinic mainClinic ) {
+        if (!StockCenter.findAll()) {
+            StockCenter stockCenter = new StockCenter()
+            stockCenter.id = UUID.randomUUID()
+            stockCenter.setClinic(mainClinic)
+            stockCenter.setName(mainClinic.clinicName)
+            stockCenter.setCode(mainClinic.clinicName.toUpperCase())
+            stockCenter.setPrefered(true)
+            stockCenter.save(flush: true, failOnError: true)
+        }
     }
 }
