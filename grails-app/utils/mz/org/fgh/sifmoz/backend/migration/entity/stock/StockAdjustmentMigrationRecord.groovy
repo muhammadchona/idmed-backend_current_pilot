@@ -52,9 +52,9 @@ class StockAdjustmentMigrationRecord extends AbstractMigrationRecord {
 
             StockOperationType operationType;
             if (this.adjustedvalue > 0) {
-                operationType =  StockOperationType.findByCode("POS")
+                operationType =  StockOperationType.findByCode("AJUSTE_POSETIVO")
             } else  if (this.adjustedvalue < 0)  {
-                operationType =  StockOperationType.findByCode("NEG")
+                operationType =  StockOperationType.findByCode("AJUSTE_NEGATIVO")
             } else {
                 operationType =  StockOperationType.findByCode("SEM_AJUSTE")
             }
