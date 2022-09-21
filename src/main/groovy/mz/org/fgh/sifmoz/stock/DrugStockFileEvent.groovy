@@ -14,6 +14,8 @@ class DrugStockFileEvent extends AbstractValidateble{
     long loses
     long balance
     String notes
+    String code
+    String stockId
 
     void calculateBalance(long previousBalance) {
         this.balance = incomes - outcomes + posetiveAdjustment - negativeAdjustment - loses + previousBalance
