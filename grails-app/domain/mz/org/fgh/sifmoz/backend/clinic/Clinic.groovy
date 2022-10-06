@@ -20,7 +20,6 @@ class Clinic extends BaseEntity {
     boolean mainClinic
     boolean active
     String uuid
-    // Long matchId
 
     static belongsTo = [nationalClinic: NationalClinic]
     static hasMany = [sectors: ClinicSector]
