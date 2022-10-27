@@ -23,4 +23,6 @@ interface IPatientVisitService {
 
     PatientVisit getLastVisitOfPatient(String patientId)
 
+    List<PatientVisit> getAllLastWithScreening(String clinicId, int offset, int max)
+
 }

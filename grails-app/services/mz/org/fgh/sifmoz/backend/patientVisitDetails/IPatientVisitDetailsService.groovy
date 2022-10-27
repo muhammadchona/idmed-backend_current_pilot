@@ -20,6 +20,8 @@ interface IPatientVisitDetailsService{
 
     List<PatientVisitDetails> getAllByEpisodeId(String episodeId, int offset, int max)
 
+    List<PatientVisitDetails> getAllLastVisitOfClinic(String clinicId, int offset, int max)
+
     PatientVisitDetails getByPack(Pack pack)
 
     List<PatientVisitDetails> getARVDailyReport(String clinicId, Date startDate, Date endDate, String clinicalServiceId)

@@ -93,6 +93,10 @@ class PatientVisitDetailsController extends RestfulController{
         render status: NO_CONTENT
     }
 
+    def getAllLastVisitOfClinic(String clinicId, int offset, int max) {
+        render JSONSerializer.setObjectListJsonResponse(patientVisitDetailsService.getAllLastVisitOfClinic(clinicId, offset, max)) as JSON
+    }
+
     def getAllByClinicId(String clinicId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(patientVisitDetailsService.getAllByClinicId(clinicId, offset, max)) as JSON
     }

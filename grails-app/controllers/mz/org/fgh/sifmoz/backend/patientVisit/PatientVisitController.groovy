@@ -104,4 +104,8 @@ class PatientVisitController extends RestfulController{
     def getLastVisitOfPatient(String patientId) {
         render JSONSerializer.setJsonObjectResponse(patientVisitService.getLastVisitOfPatient(patientId)) as JSON
     }
+
+    def getAllLastVisitWithScreeningOfClinic(String clinicId, int offset, int max) {
+        render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllLastWithScreening(clinicId, offset, max)) as JSON
+    }
 }
