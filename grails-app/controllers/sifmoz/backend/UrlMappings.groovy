@@ -72,6 +72,8 @@ class UrlMappings {
 
         get "/api/patientVisitDetails/AllLastOfClinic/$clinicId(.$format)?"(controller:'patientVisitDetails', action:'getAllLastVisitOfClinic')
         get "/api/patientVisit/AllLastWithScreeningOfClinic/$clinicId(.$format)?"(controller:'patientVisit', action:'getAllLastVisitWithScreeningOfClinic')
+        get "/api/pack/AllLastOfClinic/$clinicId(.$format)?"(controller:'pack', action:'getAllLastPackOfClinic')
+        get "/api/prescription/AllLastOfClinic/$clinicId(.$format)?"(controller:'prescription', action:'getAllLastPrescriptionOfClinic')
         post "/api/secrUserRole/(.$format)?"(controller:'secUserRole', action:'save')
        // "/"(controller: 'application', action:'index')
         //"/"(controller: 'application', action:'index')

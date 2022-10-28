@@ -113,4 +113,8 @@ class PackController extends RestfulController{
         Clinic clinic = clinicService.get(clinicId)
         render JSONSerializer.setObjectListJsonResponse(Pack.findAllByClinic(clinic, offset, max)) as JSON
     }
+
+    def getAllLastPackOfClinic(String clinicId, int offset, int max) {
+        render JSONSerializer.setObjectListJsonResponse(packService.getAllLastPackOfClinic(clinicId, offset, max)) as JSON
+    }
 }

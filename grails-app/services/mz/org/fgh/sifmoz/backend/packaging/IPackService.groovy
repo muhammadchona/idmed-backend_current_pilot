@@ -4,6 +4,7 @@ import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 
@@ -23,6 +24,8 @@ interface IPackService {
     List<Pack> getPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate)
 
     int countPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate)
+
+    List<Pack> getAllLastPackOfClinic(String clinicId, int offset, int max)
 
     List<Pack> getPacksOfReferredPatientsByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService,Clinic clinic,Date startDate, Date endDate)
 
