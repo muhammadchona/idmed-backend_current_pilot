@@ -49,6 +49,29 @@ class DrugStockFileService {
         return drugStockFileEventArrayList
     }
 
+
+    def List<DrugStockFileEvent> getDrugSumaryEventsMobile(String clinicId, String drugId) {
+        List<DrugStockFileEvent> drugStockFileEventArrayList = new ArrayList<>()
+        Session session = sessionFactory.getCurrentSession()
+
+        String queryString ="select *  " +
+                "from drug_stock_summary_mobile_vw  " +
+                "where drug_id = :drug " +
+                "   and clinic_id = :clinic "
+
+
+        def query = session.createSQLQuery(queryString)
+        query.setParameter("drug", drugId)
+        query.setParameter("clinic", clinicId)
+        List<Object[]> result = query.list()
+
+        if (Utilities.listHasElements(result as ArrayList<?>)) {
+            initStockEventMobile(result, drugStockFileEventArrayList)
+        }
+
+        return drugStockFileEventArrayList
+    }
+
     def List<DrugStockFileEvent> getDrugBatchSumaryEvents(String clinicId, String stockId) {
         List<DrugStockFileEvent> drugStockFileEventArrayList = new ArrayList<>()
 
@@ -68,6 +91,31 @@ class DrugStockFileService {
 
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             initStockEvent(result, drugStockFileEventArrayList)
+        }
+
+        return drugStockFileEventArrayList
+    }
+
+
+    def List<DrugStockFileEvent> getDrugBatchSumaryEventsMobile(String clinicId, String stockId) {
+        List<DrugStockFileEvent> drugStockFileEventArrayList = new ArrayList<>()
+
+        Session session = sessionFactory.getCurrentSession()
+
+        String queryString ="select *  " +
+                "from drug_stock_batch_summary_mobile_vw  " +
+                "where stock = :stock " +
+                "   and clinic_id = :clinic " +
+                "order by event_date asc"
+
+
+        def query = session.createSQLQuery(queryString)
+        query.setParameter("stock", stockId)
+        query.setParameter("clinic", clinicId)
+        List<Object[]> result = query.list()
+
+        if (Utilities.listHasElements(result as ArrayList<?>)) {
+            initStockEventMobile(result, drugStockFileEventArrayList)
         }
 
         return drugStockFileEventArrayList
@@ -97,4 +145,23 @@ class DrugStockFileService {
             drugStockFileEventArrayList.add(drugStockFileEvent)
         }
     }
+
+    private void initStockEventMobile(List result, ArrayList<DrugStockFileEvent> drugStockFileEventArrayList) {
+        for (int i = 0; i < result.size(); i++) {
+            DrugStockFileEvent drugStockFileEvent = new DrugStockFileEvent()
+            drugStockFileEvent.moviment = String.valueOf(result[i][3])
+            drugStockFileEvent.incomes = Long.valueOf(String.valueOf(result[i][5]))
+            drugStockFileEvent.outcomes = Long.valueOf(String.valueOf(result[i][6]))
+            drugStockFileEvent.posetiveAdjustment = Long.valueOf(String.valueOf(result[i][7]))
+            drugStockFileEvent.negativeAdjustment = Long.valueOf(String.valueOf(result[i][8]))
+            drugStockFileEvent.loses = Long.valueOf(String.valueOf(result[i][9]))
+            drugStockFileEvent.code = String.valueOf(result[i][11])
+            drugStockFileEvent.stockId = String.valueOf(result[i][12])
+            drugStockFileEvent.notes =  String.valueOf(result[i][13])
+            drugStockFileEvent.calculateBalance(0)
+            drugStockFileEventArrayList.add(drugStockFileEvent)
+        }
+    }
+
+
 }
