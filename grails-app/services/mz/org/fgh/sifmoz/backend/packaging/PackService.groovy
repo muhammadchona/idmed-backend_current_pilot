@@ -4,11 +4,35 @@ import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import org.hibernate.Session
+import org.hibernate.SessionFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(Pack)
 abstract class PackService implements IPackService{
+
+    @Autowired
+    SessionFactory sessionFactory
+
+    @Override
+    List<Pack> getAllLastPackOfClinic(String clinicId, int offset, int max) {
+        Session session = sessionFactory.getCurrentSession()
+
+        String queryString ="select *  " +
+                "from patient_last_pack_vw  " +
+                "where clinic_id = :clinic offset :offset limit :max "
+
+
+        def query = session.createSQLQuery(queryString).addEntity(Pack.class)
+        query.setParameter("clinic", clinicId)
+        query.setParameter("offset", offset)
+        query.setParameter("max", max)
+        List<Pack> result = query.list()
+        return result
+    }
 
     @Override
     int countPacksByDispenseTypeAndServiceOnPeriod(DispenseType dispenseType, ClinicalService service, Clinic clinic, Date startDate, Date endDate) {
