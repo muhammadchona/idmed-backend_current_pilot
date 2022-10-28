@@ -65,6 +65,8 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
 
             Pack pack = getMigratedRecord()
 
+            if (isDuplicatedPack(this.pickupdatepack, patient)) throw new RuntimeException("O paciente ja possui um registo de dispensa na data [" + this.pickupdatepack + "], impossivel gravar esta dispensa.")
+
             pack.setReasonForPackageReturn(this.reasonforpackagereturn)
             pack.setPickupDate(this.pickupdatepack)
             pack.setPackageReturned(this.packagereturnedpack ? 1 : 0)
@@ -145,5 +147,10 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
     @Override
     MigratedRecord initMigratedRecord() {
         return new Pack()
+    }
+
+    boolean isDuplicatedPack(Date pickUpDate, Patient patient) {
+        PatientVisit patientVisit = PatientVisit.findByPatientAndVisitDate(patient, pickupdatepack)
+        return patientVisit != null
     }
 }

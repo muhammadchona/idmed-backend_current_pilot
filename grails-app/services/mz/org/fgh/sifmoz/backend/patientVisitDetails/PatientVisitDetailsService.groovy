@@ -7,13 +7,37 @@ import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation.DrugQuantityTemp
 import mz.org.fgh.sifmoz.backend.stock.Stock
+import org.hibernate.Session
+import org.hibernate.SessionFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 @Transactional
 @Service(PatientVisitDetails)
 abstract class PatientVisitDetailsService implements IPatientVisitDetailsService{
+
+    @Autowired
+    SessionFactory sessionFactory
+
     @Override
     List<PatientVisitDetails> getAllByClinicId(String clinicId, int offset, int max) {
         return PatientVisitDetails.findAllByClinic(Clinic.findById(clinicId), [offset: offset, max: max])
+    }
+
+    @Override
+    List<PatientVisitDetails> getAllLastVisitOfClinic(String clinicId, int offset, int max) {
+        Session session = sessionFactory.getCurrentSession()
+
+        String queryString ="select *  " +
+                            "from patient_last_visit_details_vw  " +
+                            "where clinic_id = :clinic offset :offset limit :max "
+
+
+        def query = session.createSQLQuery(queryString).addEntity(PatientVisitDetails.class)
+        query.setParameter("clinic", clinicId)
+        query.setParameter("offset", offset)
+        query.setParameter("max", max)
+        List<PatientVisitDetails> result = query.list()
+        return result
     }
 
     @Override
