@@ -27,4 +27,9 @@ class DrugStockFileController {
     def getDrugBatchSumaryEventsMobile(String clinicId, String stockId) {
         respond drugStockFileService.getDrugBatchSumaryEventsMobile(clinicId, stockId)
     }
+
+    def getDrugFileMobile(String clinicId) {
+        respond drugStockFileService.getDrugFileMobile(clinicId)
+
+    }
 }

@@ -71,6 +71,7 @@ class UrlMappings {
         get "/api/drugStockFile/batchsumary/$clinicId/$stockId(.$format)?"(controller:'drugStockFile', action:'getDrugBatchSumaryEvents')
         get "/api/drugStockFile/sumarymobile/$clinicId/$drugId(.$format)?"(controller:'drugStockFile', action:'getDrugSumaryEventsMobile')
         get "/api/drugStockFile/batchsumarymobile/$clinicId/$stockId(.$format)?"(controller:'drugStockFile', action:'getDrugBatchSumaryEventsMobile')
+        get "/api/drugStockFile/drugfilemobile/$clinicId(.$format)?"(controller:'drugStockFile', action:'getDrugFileMobile')
 
         post "/api/secrUserRole/(.$format)?"(controller:'secUserRole', action:'save')
        // "/"(controller: 'application', action:'index')
