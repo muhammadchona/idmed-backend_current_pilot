@@ -77,6 +77,7 @@ class UrlMappings {
         get "/api/pack/AllLastOfClinic/$clinicId(.$format)?"(controller:'pack', action:'getAllLastPackOfClinic')
         get "/api/prescription/AllLastOfClinic/$clinicId(.$format)?"(controller:'prescription', action:'getAllLastPrescriptionOfClinic')
         post "/api/secrUserRole/(.$format)?"(controller:'secUserRole', action:'save')
+        get "/api/clinic/uuid/$uuid(.$format)?"(controller:'clinic', action:'getByUUID')
        // "/"(controller: 'application', action:'index')
         //"/"(controller: 'application', action:'index')
         "/"(view:"/login/auth")

@@ -90,6 +90,10 @@ class ClinicController extends RestfulController{
         render status: NO_CONTENT
     }
 
+    def getByUUID(String uuid) {
+        render JSONSerializer.setJsonObjectResponse(Clinic.findByUuid(uuid)) as JSON
+    }
+
     def searchClinicsByDistrictId(String districtId){
         District district = District.findById(districtId)
         render JSONSerializer.setObjectListJsonResponse(Clinic.findAllByDistrictAndActive(district,true)) as JSON
