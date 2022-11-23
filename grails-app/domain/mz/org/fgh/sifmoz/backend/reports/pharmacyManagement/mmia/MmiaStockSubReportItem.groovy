@@ -13,6 +13,7 @@ class MmiaStockSubReportItem {
     int lossesAdjustments
     int inventory
     Date expireDate
+    MmiaReport mmiaReport
 
     MmiaStockSubReportItem() {
     }
@@ -32,5 +33,6 @@ class MmiaStockSubReportItem {
     }
 
     static constraints = {
+        mmiaReport nullable: true
     }
 }

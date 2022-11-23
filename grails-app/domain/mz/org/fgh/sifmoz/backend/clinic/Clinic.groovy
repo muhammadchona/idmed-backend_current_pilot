@@ -7,6 +7,8 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 import mz.org.fgh.sifmoz.backend.nationalClinic.NationalClinic
 import mz.org.fgh.sifmoz.backend.protection.Menu
+import mz.org.fgh.sifmoz.backend.protection.SecUser
+import mz.org.fgh.sifmoz.backend.reports.pharmacyManagement.mmia.MmiaReport
 
 class Clinic extends BaseEntity {
     String id
@@ -22,7 +24,7 @@ class Clinic extends BaseEntity {
     String uuid
 
     static belongsTo = [nationalClinic: NationalClinic]
-    static hasMany = [sectors: ClinicSector]
+    static hasMany = [users: SecUser, sectors: ClinicSector, mmiaReports: MmiaReport]
 
     static mapping = {
         id generator: "assigned"

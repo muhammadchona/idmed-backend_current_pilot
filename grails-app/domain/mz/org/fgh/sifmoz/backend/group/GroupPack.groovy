@@ -7,7 +7,7 @@ import mz.org.fgh.sifmoz.backend.protection.Menu
 class GroupPack extends BaseEntity {
     String id
     Pack pack
-    static hasOne = [Pack]
+//    static hasOne = [Pack]
     static belongsTo = [header: GroupPackHeader]
 
     static mapping = {

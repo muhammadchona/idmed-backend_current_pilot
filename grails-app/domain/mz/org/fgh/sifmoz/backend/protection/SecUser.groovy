@@ -27,6 +27,7 @@ class SecUser implements Serializable {
 
     static transients = ['roles']
 
+    static belongsTo = [Clinic, ClinicSector]
     static hasMany = [clinics: Clinic, clinicSectors: ClinicSector]
 
 

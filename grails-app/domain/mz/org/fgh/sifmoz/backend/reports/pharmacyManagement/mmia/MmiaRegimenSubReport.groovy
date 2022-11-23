@@ -11,6 +11,7 @@ class MmiaRegimenSubReport {
     String lineCode
     int totalPatients
     int cumunitaryClinic
+    MmiaReport mmiaReport
 
     MmiaRegimenSubReport() {
 
@@ -28,6 +29,7 @@ class MmiaRegimenSubReport {
         id generator: "uuid"
     }
     static constraints = {
+        mmiaReport nullable: true
     }
 
     def addpatient() {

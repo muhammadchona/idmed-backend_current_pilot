@@ -10,10 +10,11 @@ class Menu extends BaseEntity{
     String description
 
     Menu(String code,String description){
-       // this()
         this.code = code
         this.description = description
     }
+
+    static hasMany = [role: Role]
 
     static constraints = {
         code nullable: false, blank: false, unique: true
