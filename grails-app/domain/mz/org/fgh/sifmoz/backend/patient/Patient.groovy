@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.PostoAdministrativo
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.group.GroupInfo
+import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
@@ -44,7 +45,8 @@ class Patient extends BaseEntity {
             attributes: PatientAttribute,
             identifiers: PatientServiceIdentifier,
             appointments: Appointment,
-            groups: GroupInfo,
+            //            groups: GroupInfo,
+            groups: GroupMember,
             patientVisits: PatientVisit,
             patientTransReference: PatientTransReference
     ]
@@ -79,33 +81,6 @@ class Patient extends BaseEntity {
         hisLocationName nullable: true
     }
 
-//    @Override
-//    public String toString() {
-//        return "Patient{" +
-//                "appointments=" + appointments +
-//                ", identifiers=" + identifiers +
-//                ", patientVisits=" + patientVisits +
-//                ", groups=" + groups +
-//                ", attributes=" + attributes +
-//                ", clinic=" + clinic +
-//                ", id='" + id + '\'' +
-//                ", firstNames='" + firstNames + '\'' +
-//                ", middleNames='" + middleNames + '\'' +
-//                ", lastNames='" + lastNames + '\'' +
-//                ", gender='" + gender + '\'' +
-//                ", dateOfBirth=" + dateOfBirth +
-//                ", cellphone='" + cellphone + '\'' +
-//                ", alternativeCellphone='" + alternativeCellphone + '\'' +
-//                ", address='" + address + '\'' +
-//                ", addressReference='" + addressReference + '\'' +
-//                ", accountstatus=" + accountstatus +
-//                ", province=" + province +
-//                ", bairro=" + bairro +
-//                ", district=" + district +
-//                ", postoAdministrativo=" + postoAdministrativo +
-//                '}';
-//    }
-
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
@@ -117,8 +92,8 @@ class Patient extends BaseEntity {
 
     boolean isActiveOnGroup(String serviceCode) {
         if (!Utilities.listHasElements(this.groups as ArrayList<?>)) return false
-        for (GroupInfo groupInfo : this.groups) {
-            if (groupInfo.service.code == serviceCode && groupInfo.isActive()) return true
+        for (GroupMember groupInfo : this.groups) {
+            if (groupInfo?.group?.service?.code == serviceCode && groupInfo?.group?.isActive()) return true
         }
         return false
     }

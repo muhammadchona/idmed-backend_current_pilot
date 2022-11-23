@@ -6,6 +6,8 @@ import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 import mz.org.fgh.sifmoz.backend.protection.Menu
+import mz.org.fgh.sifmoz.backend.protection.SecUser
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 class ClinicSector extends BaseEntity {
     String id
@@ -17,7 +19,9 @@ class ClinicSector extends BaseEntity {
 
     @JsonIgnore
     Clinic clinic
-    static belongsTo = [Clinic]
+    static belongsTo = [ClinicalService]
+
+    static  hasMany = [users: SecUser, clinicalService: ClinicalService]
 
     static mapping = {
         id generator: "assigned"

@@ -52,6 +52,7 @@ class MmiaReport extends BaseEntity{
 
     int dM
 
+    static belongsTo = Clinic
     static hasMany = [mmiaRegimenSubReportList: MmiaRegimenSubReport, mmiaStockSubReportItemList: MmiaStockSubReportItem, clinic: Clinic]
 
     static mapping = {

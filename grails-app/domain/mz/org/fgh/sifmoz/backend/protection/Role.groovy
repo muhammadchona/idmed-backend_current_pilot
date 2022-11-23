@@ -19,6 +19,7 @@ class Role implements Serializable {
 	String description
 	boolean active
 
+	static belongsTo = Menu
 	static hasMany = [menus: Menu]
 
 	Role(String authority,String name,String description, boolean active){

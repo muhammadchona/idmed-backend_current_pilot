@@ -22,10 +22,10 @@ class ServicePatient {
 
 
     static belongsTo = [patient: Patient]
-    static hasMany = [
-            episodes: Episode,
-            identifiers: PatientServiceIdentifier
-    ]
+//    static hasMany = [
+//            episodes: Episode,
+//            identifiers: PatientServiceIdentifier
+//    ]
     static constraints = {
         startReason nullable: false
         startNotes nullable: false

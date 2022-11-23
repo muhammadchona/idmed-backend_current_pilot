@@ -86,7 +86,7 @@ class BootStrap {
 
         TherapeuticRegimen.withTransaction { initTherapeuticRegimen() }
 
-        Drug.withTransaction {
+        Drug.withNewTransaction {
             initDrug()
             initRegimenDrugAssossiation()
         }
@@ -205,7 +205,7 @@ class BootStrap {
 
     void initFacilityType() {
         for (facilityTypeObject in listFacilityType()) {
-            if (!FacilityType.findById(facilityTypeObject.id)) {
+            if (!FacilityType.findByCode(facilityTypeObject.code)) {
                 FacilityType facilityType = new FacilityType()
                 facilityType.id = facilityTypeObject.id
                 facilityType.code = facilityTypeObject.code
@@ -217,7 +217,7 @@ class BootStrap {
 
     void initIdentifierType() {
         for (identifierTypeObject in listIdentifierType()) {
-            if (!IdentifierType.findById(identifierTypeObject.id)) {
+            if (!IdentifierType.findByCode(identifierTypeObject.code)) {
                 IdentifierType identifierType = new IdentifierType()
                 identifierType.id = identifierTypeObject.id
                 identifierType.code = identifierTypeObject.code
@@ -230,7 +230,7 @@ class BootStrap {
 
     void initClinicSectorType() {
         for (clinicSectorTypeObject in listClinicSectorType()) {
-            if (!ClinicSectorType.findById(clinicSectorTypeObject.id)) {
+            if (!ClinicSectorType.findByCode(clinicSectorTypeObject.code)) {
                 ClinicSectorType clinicSectorType = new ClinicSectorType()
                 clinicSectorType.id = clinicSectorTypeObject.id
                 clinicSectorType.code = clinicSectorTypeObject.code
@@ -242,7 +242,7 @@ class BootStrap {
 
     void initClinicalServiceAttributeType() {
         for (clinicalServiceAttributeTypeObject in listClinicalServiceAttributeType()) {
-            if (!ClinicalServiceAttributeType.findById(clinicalServiceAttributeTypeObject.id)) {
+            if (!ClinicalServiceAttributeType.findByCode(clinicalServiceAttributeTypeObject.code)) {
                 ClinicalServiceAttributeType clinicalServiceAttributeType = new ClinicalServiceAttributeType()
                 clinicalServiceAttributeType.id = clinicalServiceAttributeTypeObject.id
                 clinicalServiceAttributeType.code = clinicalServiceAttributeTypeObject.code
@@ -254,7 +254,7 @@ class BootStrap {
 
     void initClinicalServiceAttribute() {
         for (clinicalServiceAttributeObject in listClinicalServiceAttribute()) {
-            if (!ClinicalServiceAttribute.findById(clinicalServiceAttributeObject.id)) {
+            if (!ClinicalServiceAttribute.findByCode(clinicalServiceAttributeObject.code)) {
                 ClinicalServiceAttribute clinicalServiceAttribute = new ClinicalServiceAttribute()
                 clinicalServiceAttribute.id = clinicalServiceAttributeObject.id
                 clinicalServiceAttribute.clinicalService = ClinicalService.findById(clinicalServiceAttributeObject.clinicalService)
@@ -267,7 +267,7 @@ class BootStrap {
 
     void initDispenseMode() {
         for (dispenseModeObject in listDispenseMode()) {
-            if (!DispenseMode.findById(dispenseModeObject.id)) {
+            if (!DispenseMode.findByCode(dispenseModeObject.code)) {
                 DispenseMode dispenseMode = new DispenseMode()
                 dispenseMode.id = dispenseModeObject.id
                 dispenseMode.code = dispenseModeObject.code
@@ -280,7 +280,7 @@ class BootStrap {
 
     void initDispenseType() {
         for (dispenseTypeObject in listDispenseType()) {
-            if (!DispenseType.findById(dispenseTypeObject.id)) {
+            if (!DispenseType.findByCode(dispenseTypeObject.code)) {
                 DispenseType dispenseType = new DispenseType()
                 dispenseType.id = dispenseTypeObject.id
                 dispenseType.code = dispenseTypeObject.code
@@ -292,7 +292,7 @@ class BootStrap {
 
     void initForm() {
         for (formObject in listForm()) {
-            if (!Form.findById(formObject.id)) {
+            if (!Form.findByCode(formObject.code)) {
                 Form form = new Form()
                 form.id = formObject.id
                 form.code = formObject.code
@@ -304,7 +304,7 @@ class BootStrap {
 
     void initDuration() {
         for (durationObject in listDuration()) {
-            if (!Duration.findById(durationObject.id)) {
+            if (!Duration.findByWeeks(durationObject.weeks)) {
                 Duration duration = new Duration()
                 duration.id = durationObject.id
                 duration.weeks = durationObject.weeks
@@ -329,7 +329,7 @@ class BootStrap {
 
     void initGroupType() {
         for (groupTypeObject in listGroupType()) {
-            if (!GroupType.findById(groupTypeObject.id)) {
+            if (!GroupType.findByCode(groupTypeObject.code)) {
                 GroupType groupType = new GroupType()
                 groupType.id = groupTypeObject.id
                 groupType.code = groupTypeObject.code
@@ -341,7 +341,7 @@ class BootStrap {
 
     void initTherapeuticLine() {
         for (therapeuticLineObject in listTherapeuticLine()) {
-            if (!TherapeuticLine.findById(therapeuticLineObject.id)) {
+            if (!TherapeuticLine.findByCode(therapeuticLineObject.code)) {
                 TherapeuticLine therapeuticLine = new TherapeuticLine()
                 therapeuticLine.id = therapeuticLineObject.id
                 therapeuticLine.code = therapeuticLineObject.code
@@ -354,7 +354,7 @@ class BootStrap {
 
     void initEpisodeType() {
         for (episodeTypeObject in listEpisodeType()) {
-            if (!EpisodeType.findById(episodeTypeObject.id)) {
+            if (!EpisodeType.findByCode(episodeTypeObject.code)) {
                 EpisodeType episodeType = new EpisodeType()
                 episodeType.id = episodeTypeObject.id
                 episodeType.code = episodeTypeObject.code
@@ -366,7 +366,7 @@ class BootStrap {
 
     void initClinicalService() {
         for (clinicalServiceObject in listClinicalService()) {
-            if (!ClinicalService.findById(clinicalServiceObject.id)) {
+            if (!ClinicalService.findByCode(clinicalServiceObject.code)) {
                 ClinicalService clinicalService = new ClinicalService()
                 clinicalService.id = clinicalServiceObject.id
                 clinicalService.code = clinicalServiceObject.code
@@ -379,7 +379,7 @@ class BootStrap {
 
     void initSpetialPrescriptionMotive() {
         for (spetialPrescriptionMotiveObject in listSpetialPrescriptionMotive()) {
-            if (!SpetialPrescriptionMotive.findById(spetialPrescriptionMotiveObject.id)) {
+            if (!SpetialPrescriptionMotive.findByCode(spetialPrescriptionMotiveObject.code)) {
                 SpetialPrescriptionMotive spetialPrescriptionMotive = new SpetialPrescriptionMotive()
                 spetialPrescriptionMotive.id = spetialPrescriptionMotiveObject.id
                 spetialPrescriptionMotive.code = spetialPrescriptionMotiveObject.code
@@ -404,7 +404,7 @@ class BootStrap {
 
     void initInteroperabilityType() {
         for (interoperabilityTypeObject in listInteroperabilityType()) {
-            if (!InteroperabilityType.findById(interoperabilityTypeObject.id)) {
+            if (!InteroperabilityType.findByCode(interoperabilityTypeObject.code)) {
                 InteroperabilityType interoperabilityType = new InteroperabilityType()
                 interoperabilityType.id = interoperabilityTypeObject.id
                 interoperabilityType.code = interoperabilityTypeObject.code
@@ -430,7 +430,7 @@ class BootStrap {
 
     void initProvince() {
         for (provinceObject in listProvince()) {
-            if (!Province.findById(provinceObject.id)) {
+            if (!Province.findByCode(provinceObject.code)) {
                 Province province = new Province()
                 province.id = provinceObject.id
                 province.code = provinceObject.code
@@ -442,7 +442,7 @@ class BootStrap {
 
     void initDistrict() {
         for (districtObject in listDistrict()) {
-            if (!District.findById(districtObject.id)) {
+            if (!District.findByCode(districtObject.code)) {
                 District district = new District()
                 district.id = districtObject.id
                 district.code = districtObject.code
@@ -455,7 +455,7 @@ class BootStrap {
 
     void initTherapeuticRegimen() {
         for (therapeuticRegimenObject in listTherapeuticRegimen()) {
-            if (!TherapeuticRegimen.findById(therapeuticRegimenObject.id)) {
+            if (!TherapeuticRegimen.findByCode(therapeuticRegimenObject.code)) {
                 TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
                 therapeuticRegimen.id = therapeuticRegimenObject.id
                 therapeuticRegimen.code = therapeuticRegimenObject.code
@@ -600,7 +600,7 @@ class BootStrap {
 
     void initMigrationStage() {
         for (migrationStageObject in listMigrationStage()) {
-            if (!MigrationStage.findById(migrationStageObject.id)) {
+            if (!MigrationStage.findByCode(migrationStageObject.code)) {
                 MigrationStage migrationStage = new MigrationStage()
                 migrationStage.id = migrationStageObject.id
                 migrationStage.value = migrationStageObject.value
@@ -612,7 +612,7 @@ class BootStrap {
 
     void initStockOperationType() {
         for (stockOperationTypeObject in listStockOperationType()) {
-            if (!StockOperationType.findById(stockOperationTypeObject.id)) {
+            if (!StockOperationType.findByCode(stockOperationTypeObject.code)) {
                 StockOperationType stockOperationType = new StockOperationType()
                 stockOperationType.id = stockOperationTypeObject.id
                 stockOperationType.description = stockOperationTypeObject.description
@@ -624,7 +624,7 @@ class BootStrap {
 
     void initPatientTransReferenceType() {
         for (patientTransReferenceTypeObject in listPatientTransReferenceType()) {
-            if (!PatientTransReferenceType.findById(patientTransReferenceTypeObject.id)) {
+            if (!PatientTransReferenceType.findByCode(patientTransReferenceTypeObject.code)) {
                 PatientTransReferenceType patientTransReferenceType = new PatientTransReferenceType()
                 patientTransReferenceType.id = patientTransReferenceTypeObject.id
                 patientTransReferenceType.description = patientTransReferenceTypeObject.description
@@ -636,7 +636,7 @@ class BootStrap {
 
     void initProvincialServer() {
         for (provincialServerObject in listProvincialServer()) {
-            if (!ProvincialServer.findById(provincialServerObject.id)) {
+            if (!ProvincialServer.findByCode(provincialServerObject.code)) {
                 ProvincialServer provincialServer = new ProvincialServer()
                 provincialServer.id = provincialServerObject.id
                 provincialServer.urlPath = provincialServerObject.urlPath

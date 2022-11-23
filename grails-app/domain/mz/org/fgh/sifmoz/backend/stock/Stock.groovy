@@ -4,6 +4,7 @@ import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.protection.Menu
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
@@ -22,7 +23,8 @@ class Stock extends BaseEntity {
     Drug drug
     StockCenter center
     Clinic clinic
-    static hasMany = [packagedDrugs: PackagedDrug, adjustments: StockAdjustment]
+   // static hasMany = [packagedDrugs: PackagedDrug, adjustments: StockAdjustment]
+    static hasMany = [packagedDrugs: PackagedDrugStock, adjustments: StockAdjustment]
     static belongsTo = [entrance: StockEntrance]
 
 
@@ -39,27 +41,6 @@ class Stock extends BaseEntity {
         packagedDrugs nullable: true
         adjustments nullable: true
     }
-
-
-    /*
-    @Override
-    String toString() {
-        return "Stock{" +
-                ", id='" + id + '\'' +
-                ", expireDate=" + expireDate +
-                ", modified=" + modified +
-                ", shelfNumber='" + shelfNumber + '\'' +
-                ", unitsReceived=" + unitsReceived +
-                ", stockMoviment=" + stockMoviment +
-                ", manufacture='" + manufacture + '\'' +
-                ", batchNumber='" + batchNumber + '\'' +
-                ", hasUnitsRemaining=" + hasUnitsRemaining +
-                ", drug=" + drug +
-                ", center=" + center +
-                ", clinic=" + clinic +
-                '}'
-    }
-     */
 
     @Override
     List<Menu> hasMenus() {
