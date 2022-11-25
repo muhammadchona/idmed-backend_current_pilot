@@ -8,7 +8,7 @@ class StockOperationType extends BaseEntity {
     String code
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -17,11 +17,11 @@ class StockOperationType extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "StockOperationType{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", code='" + code + '\'' +
-                '}';
+                '}'
     }
 }

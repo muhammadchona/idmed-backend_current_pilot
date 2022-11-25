@@ -44,7 +44,7 @@ class StockReportTemp {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "StockReportTemp{" +
                 "id='" + id + '\'' +
                 ", reportId='" + reportId + '\'' +
@@ -66,6 +66,6 @@ class StockReportTemp {
                 ", unitsReceived=" + unitsReceived +
                 ", manufacture='" + manufacture + '\'' +
                 ", batchNumber='" + batchNumber + '\'' +
-                '}';
+                '}'
     }
 }

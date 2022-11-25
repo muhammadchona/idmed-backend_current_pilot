@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.groupType
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
 class GroupType extends BaseEntity {
@@ -25,11 +25,11 @@ class GroupType extends BaseEntity {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "GroupType{" +
                 "id='" + id + '\'' +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
-                '}';
+                '}'
     }
 }

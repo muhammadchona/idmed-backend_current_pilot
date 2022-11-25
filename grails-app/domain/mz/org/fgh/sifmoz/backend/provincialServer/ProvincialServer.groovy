@@ -21,13 +21,13 @@ class ProvincialServer {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "ProvincialServer{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", urlPath='" + urlPath + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                '}';
+                '}'
     }
 }

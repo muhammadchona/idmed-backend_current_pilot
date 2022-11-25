@@ -1,15 +1,11 @@
 package mz.org.fgh.sifmoz.backend.drug
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
-import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.doctor.Doctor
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.form.Form
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
-import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 class Drug extends BaseEntity {
     String id

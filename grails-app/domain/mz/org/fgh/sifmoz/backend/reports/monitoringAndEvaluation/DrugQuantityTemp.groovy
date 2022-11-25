@@ -1,7 +1,5 @@
 package mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-
 class DrugQuantityTemp {
     String id
     String drugName
@@ -22,12 +20,12 @@ class DrugQuantityTemp {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "DrugQuantityTemp{" +
                 "id=" + id +
                 ", version=" + version +
                 ", drugName='" + drugName + '\'' +
                 ", quantity=" + quantity +
-                '}';
+                '}'
     }
 }

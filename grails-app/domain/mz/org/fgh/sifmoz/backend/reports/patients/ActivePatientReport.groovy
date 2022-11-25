@@ -61,7 +61,7 @@ class ActivePatientReport {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "ActivePatientReport{" +
                 " Id='" + id + '\'' +
                 ", reportId='" + reportId + '\'' +
@@ -81,6 +81,6 @@ class ActivePatientReport {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", periodType='" + periodType + '\'' +
-                '}';
+                '}'
     }
 }

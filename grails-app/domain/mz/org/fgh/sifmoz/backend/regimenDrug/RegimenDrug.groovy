@@ -1,8 +1,6 @@
 package mz.org.fgh.sifmoz.backend.regimenDrug
 
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
-import mz.org.fgh.sifmoz.backend.drug.Drug
-import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
 class RegimenDrug extends BaseEntity {
     String id
@@ -15,7 +13,7 @@ class RegimenDrug extends BaseEntity {
   //  TherapeuticRegimen therapeuticRegimen
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

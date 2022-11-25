@@ -13,7 +13,7 @@ class PackagedDrugStock extends BaseEntity {
     static belongsTo = [packagedDrug: PackagedDrug]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

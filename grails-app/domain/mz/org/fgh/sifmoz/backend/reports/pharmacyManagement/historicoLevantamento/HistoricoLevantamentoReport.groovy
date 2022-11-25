@@ -28,7 +28,7 @@ class HistoricoLevantamentoReport {
     String clinic
     String patientType
 
-    public HistoricoLevantamentoReport(){
+    HistoricoLevantamentoReport(){
 
     }
 
@@ -46,7 +46,7 @@ class HistoricoLevantamentoReport {
         this.clinicalService = clinicalService
     }
     static constraints = {
-        id generator: "uuid"
+        id generator: "assigned"
         periodType nullable: false , inList: ['MONTH','QUARTER','SEMESTER','ANNUAL', 'SPECIFIC']
         startDate nullable: true
         endDate nullable: true
@@ -54,7 +54,7 @@ class HistoricoLevantamentoReport {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "HistoricoLevantamentoReport{" +
                 " id='" + id + '\'' +
                 ", reportId='" + reportId + '\'' +
@@ -78,6 +78,6 @@ class HistoricoLevantamentoReport {
                 ", dispenseMode='" + dispenseMode + '\'' +
                 ", clinicalService='" + clinicalService + '\'' +
                 ", clinic='" + clinic + '\'' +
-                '}';
+                '}'
     }
 }

@@ -1,9 +1,7 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class TBScreening extends BaseEntity {
@@ -25,7 +23,7 @@ class TBScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -34,7 +32,7 @@ class TBScreening extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "TBScreening{" +
                 "parentTBTreatment=" + parentTBTreatment +
                 ", cough=" + cough +
@@ -45,6 +43,6 @@ class TBScreening extends BaseEntity {
                 ", startTreatmentDate=" + startTreatmentDate +
                 ", fatigueOrTirednessLastTwoWeeks=" + fatigueOrTirednessLastTwoWeeks +
                 ", sweating=" + sweating +
-                '}';
+                '}'
     }
 }

@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.nationalClinic
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
@@ -17,7 +17,7 @@ class NationalClinic extends BaseEntity {
     static belongsTo = [province: Province]
     static hasMany = [clinics: Clinic]
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

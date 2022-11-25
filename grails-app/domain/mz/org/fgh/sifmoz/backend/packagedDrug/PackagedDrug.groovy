@@ -1,11 +1,10 @@
 package mz.org.fgh.sifmoz.backend.packagedDrug
 
-import com.fasterxml.jackson.annotation.JsonBackReference
+
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
-import mz.org.fgh.sifmoz.backend.stock.Stock
 
 class PackagedDrug extends BaseEntity {
     String id
@@ -21,7 +20,7 @@ class PackagedDrug extends BaseEntity {
     static hasMany = [packagedDrugStocks: PackagedDrugStock]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

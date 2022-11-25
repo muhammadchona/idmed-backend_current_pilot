@@ -106,7 +106,7 @@ public class SyncTempPatient {
         this.accountstatus = accountstatus;
     }
 
-    public String getCellphone() {
+    String getCellphone() {
         return cellphone;
     }
 
@@ -130,7 +130,7 @@ public class SyncTempPatient {
         this.clinic = clinic;
     }
 
-    public String getClinicname() {
+    String getClinicname() {
         return clinicname;
     }
 
@@ -138,7 +138,7 @@ public class SyncTempPatient {
         this.clinicname = clinicname;
     }
 
-    public String getClinicuuid() {
+    String getClinicuuid() {
         return clinicuuid;
     }
 
@@ -154,7 +154,7 @@ public class SyncTempPatient {
         this.mainclinic = mainclinic;
     }
 
-    public String getMainclinicname() {
+    String getMainclinicname() {
         return mainclinicname;
     }
 
@@ -162,7 +162,7 @@ public class SyncTempPatient {
         this.mainclinicname = mainclinicname;
     }
 
-    public String getMainclinicuuid() {
+    String getMainclinicuuid() {
         return mainclinicuuid;
     }
 
@@ -170,7 +170,7 @@ public class SyncTempPatient {
         this.mainclinicuuid = mainclinicuuid;
     }
 
-    public String getFirstnames() {
+    String getFirstnames() {
         return firstnames;
     }
 
@@ -178,7 +178,7 @@ public class SyncTempPatient {
         this.firstnames = firstnames;
     }
 
-    public String getHomephone() {
+    String getHomephone() {
         return homephone;
     }
 
@@ -186,7 +186,7 @@ public class SyncTempPatient {
         this.homephone = homephone;
     }
 
-    public String getLastname() {
+    String getLastname() {
         return lastname;
     }
 
@@ -202,7 +202,7 @@ public class SyncTempPatient {
         this.modified = modified;
     }
 
-    public String getPatientid() {
+    String getPatientid() {
         return patientid;
     }
 
@@ -210,7 +210,7 @@ public class SyncTempPatient {
         this.patientid = patientid;
     }
 
-    public String getProvince() {
+    String getProvince() {
         return province;
     }
 
@@ -218,7 +218,7 @@ public class SyncTempPatient {
         this.province = province;
     }
 
-    public String getSex() {
+    String getSex() {
         return sex;
     }
 
@@ -234,7 +234,7 @@ public class SyncTempPatient {
         this.syncstatus = syncstatus;
     }
 
-    public String getWorkphone() {
+    String getWorkphone() {
         return workphone;
     }
 
@@ -242,7 +242,7 @@ public class SyncTempPatient {
         this.workphone = workphone;
     }
 
-    public String getAddress1() {
+    String getAddress1() {
         return address1;
     }
 
@@ -250,7 +250,7 @@ public class SyncTempPatient {
         this.address1 = address1;
     }
 
-    public String getAddress2() {
+    String getAddress2() {
         return address2;
     }
 
@@ -258,7 +258,7 @@ public class SyncTempPatient {
         this.address2 = address2;
     }
 
-    public String getAddress3() {
+    String getAddress3() {
         return address3;
     }
 
@@ -266,7 +266,7 @@ public class SyncTempPatient {
         this.address3 = address3;
     }
 
-    public String getNextofkinname() {
+    String getNextofkinname() {
         return nextofkinname;
     }
 
@@ -274,7 +274,7 @@ public class SyncTempPatient {
         this.nextofkinname = nextofkinname;
     }
 
-    public String getNextofkinphone() {
+    String getNextofkinphone() {
         return nextofkinphone;
     }
 
@@ -282,7 +282,7 @@ public class SyncTempPatient {
         this.nextofkinphone = nextofkinphone;
     }
 
-    public String getRace() {
+    String getRace() {
         return race;
     }
 
@@ -290,7 +290,7 @@ public class SyncTempPatient {
         this.race = race;
     }
 
-    public String getUuidopenmrs() {
+    String getUuidopenmrs() {
         return uuidopenmrs;
     }
 
@@ -306,7 +306,7 @@ public class SyncTempPatient {
         this.datainiciotarv = datainiciotarv;
     }
 
-    public String getSyncuuid() {
+    String getSyncuuid() {
         return syncuuid;
     }
 
@@ -338,7 +338,7 @@ public class SyncTempPatient {
         this.prescriptionenddate = prescriptionenddate;
     }
 
-    public String getRegimenome() {
+    String getRegimenome() {
         return regimenome;
     }
 
@@ -346,7 +346,7 @@ public class SyncTempPatient {
         this.regimenome = regimenome;
     }
 
-    public String getLinhanome() {
+    String getLinhanome() {
         return linhanome;
     }
 
@@ -370,7 +370,7 @@ public class SyncTempPatient {
         this.dispensasemestral = dispensasemestral;
     }
 
-    public String getPrescriptionid() {
+    String getPrescriptionid() {
         return prescriptionid;
     }
 
@@ -378,7 +378,7 @@ public class SyncTempPatient {
         this.prescriptionid = prescriptionid;
     }
 
-    public String getPrescricaoespecial() {
+    String getPrescricaoespecial() {
         return prescricaoespecial;
     }
 
@@ -386,7 +386,7 @@ public class SyncTempPatient {
         this.prescricaoespecial = prescricaoespecial;
     }
 
-    public String getMotivocriacaoespecial() {
+    String getMotivocriacaoespecial() {
         return motivocriacaoespecial;
     }
 
@@ -394,7 +394,7 @@ public class SyncTempPatient {
         this.motivocriacaoespecial = motivocriacaoespecial;
     }
 
-    public String getJsonprescribeddrugs() {
+    String getJsonprescribeddrugs() {
         return jsonprescribeddrugs;
     }
 
@@ -402,7 +402,7 @@ public class SyncTempPatient {
         this.jsonprescribeddrugs = jsonprescribeddrugs;
     }
 
-    public String getEstadopaciente() {
+    String getEstadopaciente() {
         return estadopaciente;
     }
 

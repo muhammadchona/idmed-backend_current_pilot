@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.appointment
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
@@ -14,7 +14,7 @@ class Appointment extends BaseEntity{
     static belongsTo = [patient: Patient]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

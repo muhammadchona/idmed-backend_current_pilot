@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.facilityType
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 
 class FacilityType extends BaseEntity {

@@ -9,8 +9,6 @@ import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
-import mz.org.fgh.sifmoz.backend.prescription.Prescription
-import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
 
 class Episode extends BaseEntity {
@@ -38,7 +36,7 @@ class Episode extends BaseEntity {
     static hasMany = [patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         episodeDate(nullable: false, blank: false, validator: { episodeDate, urc ->
@@ -48,7 +46,7 @@ class Episode extends BaseEntity {
     }
 
 //    @Override
-//    public String toString() {
+//    String toString() {
 //        return "Episode{" +
 //                "patientVisitDetails=" + patientVisitDetails +
 //                ", patientServiceIdentifier=" + patientServiceIdentifier +

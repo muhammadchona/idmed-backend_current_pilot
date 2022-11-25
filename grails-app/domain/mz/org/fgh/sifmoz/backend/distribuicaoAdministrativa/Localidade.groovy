@@ -10,7 +10,7 @@ class Localidade extends BaseEntity {
     static belongsTo = [postoAdministrativo: PostoAdministrativo]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         code nullable: false, unique: true

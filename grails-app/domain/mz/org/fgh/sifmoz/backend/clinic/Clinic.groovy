@@ -25,7 +25,7 @@ class Clinic extends BaseEntity {
     static hasMany = [sectors: ClinicSector]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         code nullable: false

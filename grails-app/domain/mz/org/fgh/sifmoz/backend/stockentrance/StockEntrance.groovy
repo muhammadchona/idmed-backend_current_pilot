@@ -12,7 +12,7 @@ class StockEntrance extends BaseEntity {
     static hasMany = [stocks: Stock]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -23,13 +23,13 @@ class StockEntrance extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "StockEntrance{" +
                 "stocks=" + stocks +
                 ", id='" + id + '\'' +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", dateReceived=" + dateReceived +
                 ", clinic=" + clinic +
-                '}';
+                '}'
     }
 }

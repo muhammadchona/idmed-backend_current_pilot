@@ -25,7 +25,7 @@ class PatientServiceIdentifier extends BaseEntity {
     static hasMany = [episodes: Episode]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -39,7 +39,7 @@ class PatientServiceIdentifier extends BaseEntity {
 
 
 //    @Override
-//    public String toString() {
+//    String toString() {
 //        return "PatientServiceIdentifier{" +
 //                "patient=" + patient +
 //                ", episodes=" + episodes +

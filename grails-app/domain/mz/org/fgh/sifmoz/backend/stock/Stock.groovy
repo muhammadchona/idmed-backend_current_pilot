@@ -26,7 +26,7 @@ class Stock extends BaseEntity {
 
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -42,7 +42,7 @@ class Stock extends BaseEntity {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "Stock{" +
                 ", id='" + id + '\'' +
                 ", expireDate=" + expireDate +
@@ -56,6 +56,6 @@ class Stock extends BaseEntity {
                 ", drug=" + drug +
                 ", center=" + center +
                 ", clinic=" + clinic +
-                '}';
+                '}'
     }
 }

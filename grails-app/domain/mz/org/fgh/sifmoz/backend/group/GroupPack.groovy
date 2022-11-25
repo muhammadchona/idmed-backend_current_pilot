@@ -10,16 +10,16 @@ class GroupPack extends BaseEntity {
     static belongsTo = [header: GroupPackHeader]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
     }
 
     @Override
-    public String toString() {
+     String toString() {
         return "GroupPack{" +
                 "id='" + id + '\'' +
                 ", pack=" + pack +
-                '}';
+                '}'
     }
 }

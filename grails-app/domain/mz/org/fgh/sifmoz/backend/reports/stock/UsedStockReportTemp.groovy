@@ -44,7 +44,7 @@ class UsedStockReportTemp {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "UsedStockReportTemp{" +
                 "id='" + id + '\'' +
                 "drugName='" + drugName + '\'' +
@@ -66,6 +66,6 @@ class UsedStockReportTemp {
                 ", destroyedStock=" + destroyedStock +
                 ", adjustment=" + adjustment +
                 ", actualStock=" + actualStock +
-                '}';
+                '}'
     }
 }

@@ -3,7 +3,6 @@ package mz.org.fgh.sifmoz.backend.service
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen

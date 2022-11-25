@@ -9,7 +9,7 @@ class PatientTransReferenceType extends BaseEntity {
     String code
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         description(nullable: false, maxSize: 50, blank: false)
@@ -17,11 +17,11 @@ class PatientTransReferenceType extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "PatientTransReferenceType{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", code='" + code + '\'' +
-                '}';
+                '}'
     }
 }
