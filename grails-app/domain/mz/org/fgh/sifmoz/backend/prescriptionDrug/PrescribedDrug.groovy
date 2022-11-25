@@ -1,7 +1,6 @@
 package mz.org.fgh.sifmoz.backend.prescriptionDrug
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.drug.Drug
@@ -21,7 +20,7 @@ class PrescribedDrug extends BaseEntity {
     static belongsTo = [Prescription]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         timesPerDay(min: 1)

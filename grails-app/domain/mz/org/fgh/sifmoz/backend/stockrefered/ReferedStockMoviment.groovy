@@ -1,9 +1,8 @@
 package mz.org.fgh.sifmoz.backend.stockrefered
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
-import mz.org.fgh.sifmoz.backend.stockadjustment.StockAdjustment
 import mz.org.fgh.sifmoz.backend.stockadjustment.StockReferenceAdjustment
 
 class ReferedStockMoviment extends BaseEntity {
@@ -17,7 +16,7 @@ class ReferedStockMoviment extends BaseEntity {
     static hasMany = [adjustments : StockReferenceAdjustment]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -30,13 +29,13 @@ class ReferedStockMoviment extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "ReferedStockMoviment{" +
                 "date=" + date +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", origin='" + origin + '\'' +
                 ", quantity=" + quantity +
                 ", updateStatus=" + updateStatus +
-                '}';
+                '}'
     }
 }

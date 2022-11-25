@@ -6,12 +6,7 @@ import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
-import mz.org.fgh.sifmoz.backend.screening.AdherenceScreening
-import mz.org.fgh.sifmoz.backend.screening.PregnancyScreening
-import mz.org.fgh.sifmoz.backend.screening.RAMScreening
-import mz.org.fgh.sifmoz.backend.screening.TBScreening
-import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
-import org.springframework.cglib.proxy.Mixin
+import mz.org.fgh.sifmoz.backend.screening.*
 
 class PatientVisit extends BaseEntity {
     String id
@@ -29,7 +24,7 @@ class PatientVisit extends BaseEntity {
 
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
 

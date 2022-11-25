@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stocklevel
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.stock.Stock
@@ -14,18 +14,18 @@ class StockLevel extends BaseEntity {
     Stock stock
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "StockLevel{" +
                 "bacth=" + bacth +
                 ", fullContainerRemaining=" + fullContainerRemaining +
                 ", loosePillsRemaining=" + loosePillsRemaining +
-                '}';
+                '}'
     }
 }

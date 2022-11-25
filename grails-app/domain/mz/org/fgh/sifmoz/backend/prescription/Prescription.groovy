@@ -1,13 +1,10 @@
 package mz.org.fgh.sifmoz.backend.prescription
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.duration.Duration
-import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
@@ -31,7 +28,7 @@ class Prescription extends BaseEntity{
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
         patientVisitDetails lazy: true
         prescribedDrugs lazy: true
         prescriptionDetails lazy: true
@@ -46,17 +43,17 @@ class Prescription extends BaseEntity{
         patientType nullable: true
     }
 
-    public void generateNextSeq() {
-        long lastSeq = 0;
+     void generateNextSeq() {
+        long lastSeq = 0
         try{
             if (Utilities.stringHasValue(this.prescriptionSeq)){
-                lastSeq = Long.parseLong(this.prescriptionSeq);
+                lastSeq = Long.parseLong(this.prescriptionSeq)
             }else {
-                lastSeq = 0;
+                lastSeq = 0
             }
         }catch (Exception e){
-            e.printStackTrace();
+            e.printStackTrace()
         }
-        setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)));
+        setPrescriptionSeq(String.valueOf(Utilities.garantirXCaracterOnNumber(lastSeq+1, 4)))
     }
 }

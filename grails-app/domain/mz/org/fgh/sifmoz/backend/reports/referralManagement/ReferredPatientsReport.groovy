@@ -32,7 +32,7 @@ class ReferredPatientsReport {
     Date lastPickUpDate
 
     static constraints = {
-        id generator: "uuid"
+        id generator: "assigned"
         pharmacyId nullable: true
         provinceId nullable: true
         districtId nullable: true

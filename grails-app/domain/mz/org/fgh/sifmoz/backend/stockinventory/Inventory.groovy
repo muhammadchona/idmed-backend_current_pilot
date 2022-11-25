@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stockinventory
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
@@ -18,7 +18,7 @@ class Inventory extends BaseEntity {
     List<Drug> inventoryDrugs
     Clinic clinic
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -30,23 +30,23 @@ class Inventory extends BaseEntity {
         adjustments( nulable: true)
     }
 
-    public int  generateSequence(){
-        return 0;
+     int  generateSequence(){
+        return 0
     }
 
-    public void close() {
+     void close() {
         this.open = false
         this.endDate = new Date()
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "Inventory{" +
                 "startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", open=" + open +
                 ", sequence=" + sequence +
-                '}';
+                '}'
     }
 
 }

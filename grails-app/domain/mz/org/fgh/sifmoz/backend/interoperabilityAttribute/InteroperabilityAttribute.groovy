@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class InteroperabilityAttribute extends BaseEntity {
 

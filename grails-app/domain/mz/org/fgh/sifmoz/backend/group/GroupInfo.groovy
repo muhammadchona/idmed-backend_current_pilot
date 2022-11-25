@@ -1,11 +1,10 @@
 package mz.org.fgh.sifmoz.backend.group
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.groupType.GroupType
-import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 
 class GroupInfo extends BaseEntity {
@@ -20,7 +19,7 @@ class GroupInfo extends BaseEntity {
 
     static hasMany = [members: GroupMember, packHeaders: GroupPackHeader]
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
         table 'group_info'
     }
 
@@ -36,7 +35,7 @@ class GroupInfo extends BaseEntity {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "GroupInfo{" +
                 "id='" + id + '\'' +
                 ", code='" + code + '\'' +
@@ -46,6 +45,6 @@ class GroupInfo extends BaseEntity {
                 ", clinic=" + clinic +
                 ", groupType=" + groupType +
                 ", service=" + service +
-                '}';
+                '}'
     }
 }

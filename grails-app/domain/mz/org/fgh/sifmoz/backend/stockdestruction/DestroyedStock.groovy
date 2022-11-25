@@ -13,7 +13,7 @@ class DestroyedStock extends BaseEntity {
     static hasMany = [adjustments : StockDestructionAdjustment]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -21,10 +21,10 @@ class DestroyedStock extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "DestroyedStock{" +
                 "notes='" + notes + '\'' +
                 ", updateStatus='" + updateStatus + '\'' +
-                '}';
+                '}'
     }
 }

@@ -18,7 +18,7 @@ class PrescriptionDetail extends BaseEntity {
     static belongsTo = [Prescription]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

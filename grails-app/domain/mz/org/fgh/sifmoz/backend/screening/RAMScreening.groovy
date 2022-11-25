@@ -1,9 +1,7 @@
 package mz.org.fgh.sifmoz.backend.screening
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 
 class RAMScreening extends BaseEntity {
@@ -17,7 +15,7 @@ class RAMScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -25,11 +23,11 @@ class RAMScreening extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "RAMScreening{" +
                 "adverseReaction='" + adverseReaction + '\'' +
                 ", adverseReactionMedicine=" + adverseReactionMedicine +
-                ", referedToUSRam=" + referedToUSRam +
-                '}';
+                ", referedToUSRam=" +
+                '}'
     }
 }

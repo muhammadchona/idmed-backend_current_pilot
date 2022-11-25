@@ -14,7 +14,7 @@ class GroupPackHeader extends BaseEntity {
     static hasMany = [groupPacks: GroupPack]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -22,7 +22,7 @@ class GroupPackHeader extends BaseEntity {
 
 
     @Override
-    public String toString() {
+    String toString() {
         return "GroupPackHeader{" +
                 "group=" + group +
                 ", groupPacks=" + groupPacks +
@@ -30,6 +30,6 @@ class GroupPackHeader extends BaseEntity {
                 ", packDate=" + packDate +
                 ", duration=" + duration +
                 ", nextPickUpDate=" + nextPickUpDate +
-                '}';
+                '}'
     }
 }

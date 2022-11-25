@@ -52,7 +52,7 @@ public class SyncTempEpisode {
         this.stopdate = stopdate;
     }
 
-    public String getStartreason() {
+    String getStartreason() {
         return startreason;
     }
 
@@ -60,7 +60,7 @@ public class SyncTempEpisode {
         this.startreason = startreason;
     }
 
-    public String getStopreason() {
+    String getStopreason() {
         return stopreason;
     }
 
@@ -68,7 +68,7 @@ public class SyncTempEpisode {
         this.stopreason = stopreason;
     }
 
-    public String getStartnotes() {
+    String getStartnotes() {
         return startnotes;
     }
 
@@ -76,7 +76,7 @@ public class SyncTempEpisode {
         this.startnotes = startnotes;
     }
 
-    public String getStopnotes() {
+    String getStopnotes() {
         return stopnotes;
     }
 
@@ -84,7 +84,7 @@ public class SyncTempEpisode {
         this.stopnotes = stopnotes;
     }
 
-    public String getPatientuuid() {
+    String getPatientuuid() {
         return patientuuid;
     }
 
@@ -100,7 +100,7 @@ public class SyncTempEpisode {
         this.syncstatus = syncstatus;
     }
 
-    public String getUsuuid() {
+    String getUsuuid() {
         return usuuid;
     }
 
@@ -108,7 +108,7 @@ public class SyncTempEpisode {
         this.usuuid = usuuid;
     }
 
-    public String getClinicuuid() {
+    String getClinicuuid() {
         return clinicuuid;
     }
 

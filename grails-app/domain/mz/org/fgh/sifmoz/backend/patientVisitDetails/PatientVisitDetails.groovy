@@ -1,8 +1,6 @@
 package mz.org.fgh.sifmoz.backend.patientVisitDetails
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.episode.Episode
@@ -22,7 +20,7 @@ class PatientVisitDetails extends BaseEntity {
     static belongsTo = [patientVisit:PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
         pack nullable: false

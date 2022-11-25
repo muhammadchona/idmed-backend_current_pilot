@@ -11,7 +11,7 @@ class StockCenter extends BaseEntity {
     String code
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {
@@ -20,10 +20,10 @@ class StockCenter extends BaseEntity {
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "StockCenter{" +
                 "name='" + name + '\'' +
                 ", prefered=" + prefered +
-                '}';
+                '}'
     }
 }

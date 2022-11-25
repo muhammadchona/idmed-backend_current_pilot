@@ -60,11 +60,11 @@ class ArvDailyRegisterReportTemp {
 
     }
     void setDrugQuantityTemps(List<DrugQuantityTemp> items){
-        this.drugQuantityTemps= items;
+        this.drugQuantityTemps= items
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return "ArvDailyRegisterReportTemp{" +
                 "drugQuantities=" + drugQuantityTemps +
                 ", id='" + id + '\'' +
@@ -93,6 +93,6 @@ class ArvDailyRegisterReportTemp {
                 ", therapeuticLine='" + therapeuticLine + '\'' +
                 ", pickupDate=" + pickupDate +
                 ", nextPickupDate=" + nextPickupDate +
-                '}';
+                '}'
     }
 }

@@ -1,6 +1,6 @@
 package mz.org.fgh.sifmoz.backend.stockadjustment
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stockdestruction.DestroyedStock
 
@@ -17,7 +17,7 @@ class StockDestructionAdjustment extends StockAdjustment{
     }
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

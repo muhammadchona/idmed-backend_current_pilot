@@ -19,7 +19,7 @@ class ReportProcessMonitor extends BaseEntity {
     }
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
     static constraints = {
     }

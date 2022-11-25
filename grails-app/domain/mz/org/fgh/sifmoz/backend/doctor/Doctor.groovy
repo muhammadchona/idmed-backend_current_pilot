@@ -1,12 +1,10 @@
 package mz.org.fgh.sifmoz.backend.doctor
 
-import com.fasterxml.jackson.annotation.JsonBackReference
+
 import com.fasterxml.jackson.annotation.JsonIgnore
-import grails.rest.Resource
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
-import mz.org.fgh.sifmoz.backend.stock.Stock
 
 class Doctor extends BaseEntity {
     String id
@@ -23,7 +21,7 @@ class Doctor extends BaseEntity {
     static hasMany = [prescriptions: Prescription]
 
     static mapping = {
-        id generator: "uuid"
+        id generator: "assigned"
     }
 
     static constraints = {

@@ -1,8 +1,7 @@
 package mz.org.fgh.sifmoz.backend.dispenseType
 
-import grails.rest.Resource
+
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
-import mz.org.fgh.sifmoz.backend.clinic.Clinic
 
 class DispenseType extends BaseEntity {
     public static final String DM = "DM"

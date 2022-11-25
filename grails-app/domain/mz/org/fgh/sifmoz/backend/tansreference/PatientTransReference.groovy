@@ -4,7 +4,6 @@ import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
-import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 
 class PatientTransReference extends BaseEntity{
 
@@ -29,7 +28,7 @@ class PatientTransReference extends BaseEntity{
 
     def beforeInsert() {
         if (matchId == null) {
-            matchId = PatientTransReference.findAll( [sort: ['matchId': 'desc']]).get(0).matchId++
+            matchId = findAll( [sort: ['matchId': 'desc']]).get(0).matchId++
         }
     }
 }
