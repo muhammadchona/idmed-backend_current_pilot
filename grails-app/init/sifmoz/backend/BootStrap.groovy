@@ -254,7 +254,7 @@ class BootStrap {
 
     void initClinicalServiceAttribute() {
         for (clinicalServiceAttributeObject in listClinicalServiceAttribute()) {
-            if (!ClinicalServiceAttribute.findByCode(clinicalServiceAttributeObject.code)) {
+            if (!ClinicalServiceAttribute.findByClinicalServiceAndClinicalServiceAttributeType(ClinicalService.findById(clinicalServiceAttributeObject.clinicalService), ClinicalServiceAttributeType.findById(clinicalServiceAttributeObject.clinicalServiceAttributeType))) {
                 ClinicalServiceAttribute clinicalServiceAttribute = new ClinicalServiceAttribute()
                 clinicalServiceAttribute.id = clinicalServiceAttributeObject.id
                 clinicalServiceAttribute.clinicalService = ClinicalService.findById(clinicalServiceAttributeObject.clinicalService)
@@ -442,7 +442,7 @@ class BootStrap {
 
     void initDistrict() {
         for (districtObject in listDistrict()) {
-            if (!District.findByCode(districtObject.code)) {
+            if (!District.findById(districtObject.id)) {
                 District district = new District()
                 district.id = districtObject.id
                 district.code = districtObject.code
