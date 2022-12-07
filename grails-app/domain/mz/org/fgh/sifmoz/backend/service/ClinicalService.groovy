@@ -20,7 +20,6 @@ class ClinicalService extends BaseEntity {
 
     @JsonManagedReference
     static hasMany = [attributes: ClinicalServiceAttribute,
-                      therapeuticRegimens: TherapeuticRegimen,
                        clinicSectors: ClinicSector]
 
     static mapping = {
@@ -37,7 +36,6 @@ class ClinicalService extends BaseEntity {
         code nullable: false, unique: true
         description nullable: false
         attributes nullable: true
-        therapeuticRegimens nullable: true
         clinicSectors nullable: true
     }
 
