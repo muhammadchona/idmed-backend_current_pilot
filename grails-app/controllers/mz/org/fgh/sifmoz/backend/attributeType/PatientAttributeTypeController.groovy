@@ -34,11 +34,19 @@ class PatientAttributeTypeController extends RestfulController {
     }
 
     @Transactional
-    def save(PatientAttributeType attributeType) {
-        if (attributeType == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        PatientAttributeType attributeType = new PatientAttributeType()
+        def objectJSON = request.JSON
+        attributeType = objectJSON as PatientAttributeType
+
+        attributeType.beforeInsert()
+        attributeType.validate()
+
+        if(objectJSON.id){
+            attributeType.id = UUID.fromString(objectJSON.id)
         }
+
         if (attributeType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond attributeType.errors

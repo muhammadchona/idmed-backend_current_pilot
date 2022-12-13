@@ -29,7 +29,7 @@ class Pack extends BaseEntity {
 
     static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -45,6 +45,12 @@ class Pack extends BaseEntity {
         groupPack nullable: true
         patientVisitDetails nullable: true
         reasonForPackageReturn(nullable: true,maxSize: 500)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

@@ -46,11 +46,19 @@ class PackController extends RestfulController{
     }
 
     @Transactional
-    def save(Pack pack) {
-        if (pack == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        Pack pack = new Pack()
+        def objectJSON = request.JSON
+        pack = objectJSON as Pack
+
+        pack.beforeInsert()
+        pack.validate()
+
+        if(objectJSON.id){
+            pack.id = UUID.fromString(objectJSON.id)
         }
+
         if (pack.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond pack.errors

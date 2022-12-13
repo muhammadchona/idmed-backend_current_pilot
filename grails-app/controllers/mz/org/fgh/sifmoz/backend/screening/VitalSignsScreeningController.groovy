@@ -35,10 +35,16 @@ class VitalSignsScreeningController extends RestfulController{
     }
 
     @Transactional
-    def save(VitalSignsScreening vitalSignsScreening) {
-        if (vitalSignsScreening == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        VitalSignsScreening vitalSignsScreening = new VitalSignsScreening()
+        def objectJSON = request.JSON
+        vitalSignsScreening = objectJSON as VitalSignsScreening
+
+        vitalSignsScreening.beforeInsert()
+        vitalSignsScreening.validate()
+
+        if(objectJSON.id){
+            vitalSignsScreening.id = UUID.fromString(objectJSON.id)
         }
         if (vitalSignsScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()

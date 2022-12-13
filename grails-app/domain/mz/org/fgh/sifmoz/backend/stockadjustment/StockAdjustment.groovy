@@ -31,7 +31,7 @@ abstract class StockAdjustment extends BaseEntity {
     }
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {

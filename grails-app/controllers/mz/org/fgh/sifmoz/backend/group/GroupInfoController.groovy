@@ -39,11 +39,19 @@ class GroupInfoController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupInfo group) {
-        if (group == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        GroupInfo group = new GroupInfo()
+        def objectJSON = request.JSON
+        group = objectJSON as GroupInfo
+
+        group.beforeInsert()
+        group.validate()
+
+        if(objectJSON.id){
+            group.id = UUID.fromString(objectJSON.id)
         }
+
         if (group.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond group.errors

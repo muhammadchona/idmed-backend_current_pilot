@@ -10,7 +10,7 @@ class InventoryStockAdjustment extends StockAdjustment{
     static hasOne = [inventory: Inventory]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     InventoryStockAdjustment() {
@@ -23,6 +23,13 @@ class InventoryStockAdjustment extends StockAdjustment{
 
     static constraints = {
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
 
     @Override
     List<Menu> hasMenus() {

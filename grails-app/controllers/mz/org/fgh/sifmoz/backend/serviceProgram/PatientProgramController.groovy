@@ -34,11 +34,15 @@ class PatientProgramController extends RestfulController{
     }
 
     @Transactional
-    def save(ServicePatient patientProgram) {
-        if (patientProgram == null) {
-            render status: NOT_FOUND
-            return
-        }
+    def save() {
+
+        ServicePatient patientProgram = new ServicePatient()
+        def objectJSON = request.JSON
+        patientProgram = objectJSON as ServicePatient
+
+        patientProgram.beforeInsert()
+        patientProgram.validate()
+
         if (patientProgram.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond patientProgram.errors

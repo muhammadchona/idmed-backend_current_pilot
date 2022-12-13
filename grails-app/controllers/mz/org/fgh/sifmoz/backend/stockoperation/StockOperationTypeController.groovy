@@ -35,11 +35,16 @@ class StockOperationTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(StockOperationType stockOperationType) {
+    def save() {
+        StockOperationType stockOperationType = new StockOperationType()
+        def objectJSON = request.JSON
+        stockOperationType = objectJSON as StockOperationType
+
         stockOperationType.beforeInsert()
-        if (stockOperationType == null) {
-            render status: NOT_FOUND
-            return
+        stockOperationType.validate()
+
+        if(objectJSON.id){
+            stockOperationType.id = UUID.fromString(objectJSON.id)
         }
         if (stockOperationType.hasErrors()) {
             transactionStatus.setRollbackOnly()

@@ -35,10 +35,16 @@ class AdherenceScreeningController extends RestfulController{
     }
 
     @Transactional
-    def save(AdherenceScreening adherenceScreening) {
-        if (adherenceScreening == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        AdherenceScreening adherenceScreening = new AdherenceScreening()
+        def objectJSON = request.JSON
+        adherenceScreening = objectJSON as AdherenceScreening
+
+        adherenceScreening.beforeInsert()
+        adherenceScreening.validate()
+
+        if(objectJSON.id){
+            adherenceScreening.id = UUID.fromString(objectJSON.id)
         }
         if (adherenceScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()

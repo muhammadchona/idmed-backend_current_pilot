@@ -35,11 +35,18 @@ class StockLevelController extends RestfulController{
     }
 
     @Transactional
-    def save(StockLevel stockLevel) {
-        if (stockLevel == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        StockLevel stockLevel = new StockLevel()
+        def objectJSON = request.JSON
+        stockLevel = objectJSON as StockLevel
+
+        stockLevel.beforeInsert()
+        stockLevel.validate()
+
+        if(objectJSON.id){
+            stockLevel.id = UUID.fromString(objectJSON.id)
         }
+
         if (stockLevel.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond stockLevel.errors

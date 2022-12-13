@@ -14,7 +14,7 @@ class Menu extends BaseEntity{
         this.description = description
     }
 
-    static hasMany = [role: Role]
+//    static hasMany = [role: Role]
 
     static constraints = {
         code nullable: false, blank: false, unique: true

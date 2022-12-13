@@ -35,47 +35,53 @@ class RAMScreeningController extends RestfulController{
     }
 
     @Transactional
-    def save(RAMScreening RAMScreening) {
-        if (RAMScreening == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        RAMScreening rAMScreening = new RAMScreening()
+        def objectJSON = request.JSON
+        rAMScreening = objectJSON as RAMScreening
+
+        rAMScreening.beforeInsert()
+        rAMScreening.validate()
+
+        if(objectJSON.id){
+            rAMScreening.id = UUID.fromString(objectJSON.id)
         }
-        if (RAMScreening.hasErrors()) {
+        if (rAMScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond RAMScreening.errors
+            respond rAMScreening.errors
             return
         }
 
         try {
-            RAMScreeningService.save(RAMScreening)
+            RAMScreeningService.save(rAMScreening)
         } catch (ValidationException e) {
-            respond RAMScreening.errors
+            respond rAMScreening.errors
             return
         }
 
-        respond RAMScreening, [status: CREATED, view:"show"]
+        respond rAMScreening, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(RAMScreening RAMScreening) {
+    def update(RAMScreening rAMScreening) {
         if (RAMScreening == null) {
             render status: NOT_FOUND
             return
         }
-        if (RAMScreening.hasErrors()) {
+        if (rAMScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond RAMScreening.errors
+            respond rAMScreening.errors
             return
         }
 
         try {
-            RAMScreeningService.save(RAMScreening)
+            RAMScreeningService.save(rAMScreening)
         } catch (ValidationException e) {
-            respond RAMScreening.errors
+            respond rAMScreening.errors
             return
         }
 
-        respond RAMScreening, [status: OK, view:"show"]
+        respond rAMScreening, [status: OK, view:"show"]
     }
 
     @Transactional

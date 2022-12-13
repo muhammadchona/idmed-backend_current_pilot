@@ -39,10 +39,16 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     @Transactional
-    def save(PatientVisitDetails patientVisitDetails) {
-        if (patientVisitDetails == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        PatientVisitDetails patientVisitDetails = new PatientVisitDetails()
+        def objectJSON = request.JSON
+        patientVisitDetails = objectJSON as PatientVisitDetails
+
+        patientVisitDetails.beforeInsert()
+        patientVisitDetails.validate()
+
+        if(objectJSON.id){
+            patientVisitDetails.id = UUID.fromString(objectJSON.id)
         }
         if (patientVisitDetails.hasErrors()) {
             transactionStatus.setRollbackOnly()

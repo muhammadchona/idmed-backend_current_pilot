@@ -22,10 +22,16 @@ class PrescribedDrug extends BaseEntity {
     static belongsTo = [Prescription]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
     static constraints = {
         timesPerDay(min: 1)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

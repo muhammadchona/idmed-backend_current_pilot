@@ -47,11 +47,19 @@ class groupMemberPrescriptionController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupMemberPrescription groupPrescription) {
-        if (groupPrescription == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        GroupMemberPrescription groupPrescription = new GroupMemberPrescription()
+        def objectJSON = request.JSON
+        groupPrescription = objectJSON as GroupMemberPrescription
+
+        groupPrescription.beforeInsert()
+        groupPrescription.validate()
+
+        if(objectJSON.id){
+            groupPrescription.id = UUID.fromString(objectJSON.id)
         }
+
         if (groupPrescription.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond groupPrescription.errors

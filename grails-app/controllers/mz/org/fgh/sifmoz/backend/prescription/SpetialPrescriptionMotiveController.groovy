@@ -32,11 +32,16 @@ class SpetialPrescriptionMotiveController extends RestfulController {
     }
 
     @Transactional
-    def save(SpetialPrescriptionMotive spetialPrescriptionMotive) {
+    def save() {
+        SpetialPrescriptionMotive spetialPrescriptionMotive = new SpetialPrescriptionMotive()
+        def objectJSON = request.JSON
+        spetialPrescriptionMotive = objectJSON as SpetialPrescriptionMotive
+
         spetialPrescriptionMotive.beforeInsert()
-        if (spetialPrescriptionMotive == null) {
-            render status: NOT_FOUND
-            return
+        spetialPrescriptionMotive.validate()
+
+        if(objectJSON.id){
+            spetialPrescriptionMotive.id = UUID.fromString(objectJSON.id)
         }
         if (spetialPrescriptionMotive.hasErrors()) {
             transactionStatus.setRollbackOnly()

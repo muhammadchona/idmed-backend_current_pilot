@@ -18,11 +18,17 @@ class PregnancyScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         lastMenstruation(nullable: true, blank: true)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

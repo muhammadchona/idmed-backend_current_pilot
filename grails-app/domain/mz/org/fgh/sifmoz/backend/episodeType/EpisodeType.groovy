@@ -25,6 +25,7 @@ class EpisodeType extends BaseEntity {
         description nullable: false
     }
 
+
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()

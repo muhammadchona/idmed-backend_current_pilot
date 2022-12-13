@@ -31,10 +31,16 @@ class ClinicalServiceAttributeController extends RestfulController{
     }
 
     @Transactional
-    def save(ClinicalServiceAttribute clinicalServiceAttribute) {
-        if (clinicalServiceAttribute == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        ClinicalServiceAttribute clinicalServiceAttribute = new ClinicalServiceAttribute()
+        def objectJSON = request.JSON
+        clinicalServiceAttribute = objectJSON as ClinicalServiceAttribute
+
+        clinicalServiceAttribute.beforeInsert()
+        clinicalServiceAttribute.validate()
+
+        if(objectJSON.id){
+            clinicalServiceAttribute.id = UUID.fromString(objectJSON.id)
         }
         if (clinicalServiceAttribute.hasErrors()) {
             transactionStatus.setRollbackOnly()

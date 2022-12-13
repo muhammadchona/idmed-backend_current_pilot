@@ -28,12 +28,9 @@ class PatientVisit extends BaseEntity {
     static hasMany = [patientVisitDetails: PatientVisitDetails, adherenceScreening: AdherenceScreening, vitalSigns: VitalSignsScreening,
                       pregnancyScreening : PregnancyScreening, tbScreening: TBScreening, ramScreening: RAMScreening]
 
-
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
-
-
 
     static constraints = {
         adherenceScreening nullable: true
@@ -41,6 +38,12 @@ class PatientVisit extends BaseEntity {
         pregnancyScreening nullable: true
         tbScreening nullable: true
         ramScreening nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

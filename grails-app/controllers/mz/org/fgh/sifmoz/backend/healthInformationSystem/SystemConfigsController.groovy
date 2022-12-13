@@ -37,11 +37,16 @@ class SystemConfigsController {
     }
 
     @Transactional
-    def save(SystemConfigs systemConfigs) {
+    def save() {
+        SystemConfigs systemConfigs = new SystemConfigs()
+        def objectJSON = request.JSON
+        systemConfigs = objectJSON as SystemConfigs
+
         systemConfigs.beforeInsert()
-        if (systemConfigs == null) {
-            render status: NOT_FOUND
-            return
+        systemConfigs.validate()
+
+        if(objectJSON.id){
+            systemConfigs.id = UUID.fromString(objectJSON.id)
         }
         if (systemConfigs.hasErrors()) {
             transactionStatus.setRollbackOnly()

@@ -19,12 +19,20 @@ class StockReferenceAdjustment extends StockAdjustment{
     }
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         reference nullable: false
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
+
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()

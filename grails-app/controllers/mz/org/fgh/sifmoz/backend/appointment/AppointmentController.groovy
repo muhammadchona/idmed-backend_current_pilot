@@ -35,11 +35,19 @@ class AppointmentController extends RestfulController{
     }
 
     @Transactional
-    def save(Appointment appointment) {
-        if (appointment == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        Appointment appointment = new Appointment()
+        def objectJSON = request.JSON
+        appointment = objectJSON as Appointment
+
+        appointment.beforeInsert()
+        appointment.validate()
+
+        if(objectJSON.id){
+            appointment.id = UUID.fromString(objectJSON.id)
         }
+
         if (appointment.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond appointment.errors

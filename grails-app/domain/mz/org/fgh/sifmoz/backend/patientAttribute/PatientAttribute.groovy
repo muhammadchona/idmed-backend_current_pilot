@@ -14,11 +14,17 @@ class PatientAttribute extends BaseEntity {
     static belongsTo = [patient: Patient]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
     static constraints = {
         attributeType nullable: false
         value nullable: false, blank: false
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

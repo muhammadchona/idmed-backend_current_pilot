@@ -26,12 +26,18 @@ class TBScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         startTreatmentDate(nullable: true, blank: true)
         visit(nullable: true, blank: true)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

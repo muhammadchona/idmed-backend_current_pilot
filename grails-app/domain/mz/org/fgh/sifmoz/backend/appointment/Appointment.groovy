@@ -15,7 +15,7 @@ class Appointment extends BaseEntity{
     static belongsTo = [patient: Patient]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -25,6 +25,12 @@ class Appointment extends BaseEntity{
         visitDate(nullable: true, blank: true, validator: { visitDate, urc ->
             return visitDate <= new Date()
         })
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

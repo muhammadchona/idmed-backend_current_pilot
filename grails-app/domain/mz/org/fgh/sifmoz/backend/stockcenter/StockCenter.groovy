@@ -12,7 +12,7 @@ class StockCenter extends BaseEntity {
     String code
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -26,6 +26,12 @@ class StockCenter extends BaseEntity {
                 "name='" + name + '\'' +
                 ", prefered=" + prefered +
                 '}';
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

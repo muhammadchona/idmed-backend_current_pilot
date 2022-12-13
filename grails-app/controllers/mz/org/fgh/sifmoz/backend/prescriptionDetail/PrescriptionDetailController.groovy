@@ -33,11 +33,19 @@ class PrescriptionDetailController extends RestfulController{
     }
 
     @Transactional
-    def save(PrescriptionDetail prescriptionDetail) {
-        if (prescriptionDetail == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
+        def objectJSON = request.JSON
+        prescriptionDetail = objectJSON as PrescriptionDetail
+
+        prescriptionDetail.beforeInsert()
+        prescriptionDetail.validate()
+
+        if(objectJSON.id){
+            prescriptionDetail.id = UUID.fromString(objectJSON.id)
         }
+
         if (prescriptionDetail.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond prescriptionDetail.errors

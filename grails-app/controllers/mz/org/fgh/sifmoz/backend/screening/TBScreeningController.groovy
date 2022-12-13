@@ -35,47 +35,53 @@ class TBScreeningController extends RestfulController{
     }
 
     @Transactional
-    def save(TBScreening TBScreening) {
-        if (TBScreening == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        TBScreening tBScreening = new TBScreening()
+        def objectJSON = request.JSON
+        tBScreening = objectJSON as TBScreening
+
+        tBScreening.beforeInsert()
+        tBScreening.validate()
+
+        if(objectJSON.id){
+            tBScreening.id = UUID.fromString(objectJSON.id)
         }
-        if (TBScreening.hasErrors()) {
+        if (tBScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond TBScreening.errors
+            respond tBScreening.errors
             return
         }
 
         try {
-            TBScreeningService.save(TBScreening)
+            TBScreeningService.save(tBScreening)
         } catch (ValidationException e) {
-            respond TBScreening.errors
+            respond tBScreening.errors
             return
         }
 
-        respond TBScreening, [status: CREATED, view:"show"]
+        respond tBScreening, [status: CREATED, view:"show"]
     }
 
     @Transactional
-    def update(TBScreening TBScreening) {
+    def update(TBScreening tBScreening) {
         if (TBScreening == null) {
             render status: NOT_FOUND
             return
         }
-        if (TBScreening.hasErrors()) {
+        if (tBScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond TBScreening.errors
+            respond tBScreening.errors
             return
         }
 
         try {
-            TBScreeningService.save(TBScreening)
+            TBScreeningService.save(tBScreening)
         } catch (ValidationException e) {
-            respond TBScreening.errors
+            respond tBScreening.errors
             return
         }
 
-        respond TBScreening, [status: OK, view:"show"]
+        respond tBScreening, [status: OK, view:"show"]
     }
 
     @Transactional

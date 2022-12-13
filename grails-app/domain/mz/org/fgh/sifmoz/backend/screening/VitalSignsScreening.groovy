@@ -20,11 +20,17 @@ class VitalSignsScreening extends BaseEntity {
 
     static belongsTo = [PatientVisit]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         distort (nullable: false)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

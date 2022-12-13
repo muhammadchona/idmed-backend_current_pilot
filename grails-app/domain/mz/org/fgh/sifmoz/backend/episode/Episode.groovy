@@ -39,7 +39,7 @@ class Episode extends BaseEntity {
     static hasMany = [patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static fetchMode = [patientVisitDetails: 'lazy']
@@ -49,6 +49,12 @@ class Episode extends BaseEntity {
             return episodeDate <= new Date()
         })
         referralClinic nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
 //    @Override

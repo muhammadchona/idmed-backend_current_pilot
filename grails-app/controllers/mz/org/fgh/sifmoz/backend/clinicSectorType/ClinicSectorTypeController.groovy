@@ -28,12 +28,19 @@ class ClinicSectorTypeController {
     }
 
     @Transactional
-    def save(ClinicSectorType clinicSectorType) {
+    def save() {
+
+        ClinicSectorType clinicSectorType = new ClinicSectorType()
+        def objectJSON = request.JSON
+        clinicSectorType = objectJSON as ClinicSectorType
+
         clinicSectorType.beforeInsert()
-        if (clinicSectorType == null) {
-            render status: NOT_FOUND
-            return
+        clinicSectorType.validate()
+
+        if(objectJSON.id){
+            clinicSectorType.id = UUID.fromString(objectJSON.id)
         }
+
         if (clinicSectorType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond clinicSectorType.errors

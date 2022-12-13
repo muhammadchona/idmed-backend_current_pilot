@@ -35,11 +35,16 @@ class GroupTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupType groupType) {
+    def save() {
+        GroupType groupType = new GroupType()
+        def objectJSON = request.JSON
+        groupType = objectJSON as GroupType
+
         groupType.beforeInsert()
-        if (groupType == null) {
-            render status: NOT_FOUND
-            return
+        groupType.validate()
+
+        if(objectJSON.id){
+            groupType.id = UUID.fromString(objectJSON.id)
         }
         if (groupType.hasErrors()) {
             transactionStatus.setRollbackOnly()

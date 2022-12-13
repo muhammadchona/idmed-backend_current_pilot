@@ -32,10 +32,17 @@ class GroupPackController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupPack groupPack) {
-        if (groupPack == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        GroupPack groupPack = new GroupPack()
+        def objectJSON = request.JSON
+        groupPack = objectJSON as GroupPack
+
+        groupPack.beforeInsert()
+        groupPack.validate()
+
+        if(objectJSON.id){
+            groupPack.id = UUID.fromString(objectJSON.id)
         }
         if (groupPack.hasErrors()) {
             transactionStatus.setRollbackOnly()

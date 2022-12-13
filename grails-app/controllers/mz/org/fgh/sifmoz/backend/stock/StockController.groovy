@@ -34,10 +34,16 @@ class StockController extends RestfulController{
     }
 
     @Transactional
-    def save(Stock stock) {
-        if (stock == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        Stock stock = new Stock()
+        def objectJSON = request.JSON
+        stock = objectJSON as Stock
+
+        stock.beforeInsert()
+        stock.validate()
+
+        if(objectJSON.id){
+            stock.id = UUID.fromString(objectJSON.id)
         }
         if (stock.hasErrors()) {
             transactionStatus.setRollbackOnly()

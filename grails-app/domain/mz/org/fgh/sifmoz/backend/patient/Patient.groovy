@@ -52,7 +52,7 @@ class Patient extends BaseEntity {
     ]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
         patientVisits: lazy:true
     }
 
@@ -79,6 +79,12 @@ class Patient extends BaseEntity {
         his nullable: true
         hisLocation nullable: true
         hisLocationName nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

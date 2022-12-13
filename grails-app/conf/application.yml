@@ -106,7 +106,7 @@ environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:5432/idmed
+            url: jdbc:postgresql://localhost:5432/idmedTest
     test:
         dataSource:
             dbCreate: update

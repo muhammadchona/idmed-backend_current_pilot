@@ -15,12 +15,17 @@ class GroupPackHeader extends BaseEntity {
     static hasMany = [groupPacks: GroupPack]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
     }
 
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
 
     @Override
     public String toString() {

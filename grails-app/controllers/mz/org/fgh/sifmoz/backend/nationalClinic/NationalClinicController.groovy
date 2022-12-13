@@ -35,11 +35,19 @@ class NationalClinicController extends RestfulController{
     }
 
     @Transactional
-    def save(NationalClinic nationalClinic) {
-        if (nationalClinic == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        NationalClinic nationalClinic = new NationalClinic()
+        def objectJSON = request.JSON
+        nationalClinic = objectJSON as NationalClinic
+
+        nationalClinic.beforeInsert()
+        nationalClinic.validate()
+
+        if(objectJSON.id){
+            nationalClinic.id = UUID.fromString(objectJSON.id)
         }
+
         if (nationalClinic.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond nationalClinic.errors

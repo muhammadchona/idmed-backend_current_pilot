@@ -35,12 +35,19 @@ class DurationController extends RestfulController{
     }
 
     @Transactional
-    def save(Duration duration) {
+    def save() {
+
+        Duration duration = new Duration()
+        def objectJSON = request.JSON
+        duration = objectJSON as Duration
+
         duration.beforeInsert()
-        if (duration == null) {
-            render status: NOT_FOUND
-            return
+        duration.validate()
+
+        if(objectJSON.id){
+            duration.id = UUID.fromString(objectJSON.id)
         }
+
         if (duration.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond duration.errors

@@ -14,7 +14,7 @@ class DestroyedStock extends BaseEntity {
     static hasMany = [adjustments : StockDestructionAdjustment]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -28,6 +28,13 @@ class DestroyedStock extends BaseEntity {
                 ", updateStatus='" + updateStatus + '\'' +
                 '}';
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()

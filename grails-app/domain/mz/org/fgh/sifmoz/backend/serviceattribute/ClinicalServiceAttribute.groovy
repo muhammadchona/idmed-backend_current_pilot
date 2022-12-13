@@ -17,10 +17,16 @@ class ClinicalServiceAttribute extends BaseEntity {
     static belongsTo = [ClinicalService]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

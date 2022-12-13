@@ -11,7 +11,7 @@ class Localidade extends BaseEntity {
     static belongsTo = [postoAdministrativo: PostoAdministrativo, district: District]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
     static constraints = {
         code nullable: false, unique: true
@@ -19,6 +19,13 @@ class Localidade extends BaseEntity {
         postoAdministrativo nullable: true
         district nullable: true
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()

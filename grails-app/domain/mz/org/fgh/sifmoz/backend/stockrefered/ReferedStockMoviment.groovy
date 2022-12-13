@@ -18,7 +18,7 @@ class ReferedStockMoviment extends BaseEntity {
     static hasMany = [adjustments : StockReferenceAdjustment]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -28,6 +28,12 @@ class ReferedStockMoviment extends BaseEntity {
         orderNumber(nullable: false, blank: false, maxSize: 100)
         origin(nullable: false, blank: false, maxSize: 100)
         quantity(min: 1)
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override
