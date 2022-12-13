@@ -35,10 +35,16 @@ class GroupMemberController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupMember groupMember) {
-        if (groupMember == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        GroupMember groupMember = new GroupMember()
+        def objectJSON = request.JSON
+        groupMember = objectJSON as GroupMember
+
+        groupMember.beforeInsert()
+        groupMember.validate()
+
+        if(objectJSON.id){
+            groupMember.id = UUID.fromString(objectJSON.id)
         }
         if (groupMember.hasErrors()) {
             transactionStatus.setRollbackOnly()

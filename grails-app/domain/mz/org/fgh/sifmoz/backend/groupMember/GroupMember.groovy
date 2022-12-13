@@ -17,7 +17,7 @@ class GroupMember extends BaseEntity {
 
     static belongsTo = [patient: Patient]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -26,6 +26,12 @@ class GroupMember extends BaseEntity {
             return startDate != null ? startDate <= new Date() : null
         })
         endDate nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

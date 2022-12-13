@@ -11,11 +11,17 @@ class PostoAdministrativo extends BaseEntity {
     static hasMany = [localidades: Localidade]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

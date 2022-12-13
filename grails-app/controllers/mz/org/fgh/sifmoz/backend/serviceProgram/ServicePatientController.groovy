@@ -31,11 +31,14 @@ class ServicePatientController {
     }
 
     @Transactional
-    def save(ServicePatient servicePatient) {
-        if (servicePatient == null) {
-            render status: NOT_FOUND
-            return
-        }
+    def save() {
+        ServicePatient servicePatient = new ServicePatient()
+        def objectJSON = request.JSON
+        servicePatient = objectJSON as ServicePatient
+
+        servicePatient.beforeInsert()
+        servicePatient.validate()
+
         if (servicePatient.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond servicePatient.errors

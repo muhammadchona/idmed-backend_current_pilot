@@ -35,12 +35,19 @@ class DistrictController extends RestfulController{
     }
 
     @Transactional
-    def save(District district) {
+    def save() {
+
+        District district = new District()
+        def objectJSON = request.JSON
+        district = objectJSON as District
+
         district.beforeInsert()
-        if (district == null) {
-            render status: NOT_FOUND
-            return
+        district.validate()
+
+        if(objectJSON.id){
+            district.id = UUID.fromString(objectJSON.id)
         }
+
         if (district.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond district.errors

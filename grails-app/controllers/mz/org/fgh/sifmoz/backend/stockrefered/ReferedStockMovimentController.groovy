@@ -35,10 +35,16 @@ class ReferedStockMovimentController extends RestfulController{
     }
 
     @Transactional
-    def save(ReferedStockMoviment referedStockMoviment) {
-        if (referedStockMoviment == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        ReferedStockMoviment referedStockMoviment = new ReferedStockMoviment()
+        def objectJSON = request.JSON
+        referedStockMoviment = objectJSON as ReferedStockMoviment
+
+        referedStockMoviment.beforeInsert()
+        referedStockMoviment.validate()
+
+        if(objectJSON.id){
+            referedStockMoviment.id = UUID.fromString(objectJSON.id)
         }
         if (referedStockMoviment.hasErrors()) {
             transactionStatus.setRollbackOnly()

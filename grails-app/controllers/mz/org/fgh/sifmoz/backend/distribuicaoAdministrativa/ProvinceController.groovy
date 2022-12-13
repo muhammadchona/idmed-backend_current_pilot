@@ -37,12 +37,19 @@ class ProvinceController extends RestfulController{
     }
 
     @Transactional
-    def save(Province province) {
+    def save() {
+
+        Province province = new Province()
+        def objectJSON = request.JSON
+        province = objectJSON as Province
+
         province.beforeInsert()
-        if (province == null) {
-            render status: NOT_FOUND
-            return
+        province.validate()
+
+        if(objectJSON.id){
+            province.id = UUID.fromString(objectJSON.id)
         }
+
         if (province.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond province.errors

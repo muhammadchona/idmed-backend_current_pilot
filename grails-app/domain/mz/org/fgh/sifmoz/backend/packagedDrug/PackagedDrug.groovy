@@ -22,13 +22,19 @@ class PackagedDrug extends BaseEntity {
     static hasMany = [packagedDrugStocks: PackagedDrugStock]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         quantitySupplied(min: 0)
         nextPickUpDate nullable: true
         creationDate nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

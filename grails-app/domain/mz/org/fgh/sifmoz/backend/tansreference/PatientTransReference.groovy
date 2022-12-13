@@ -21,11 +21,17 @@ class PatientTransReference extends BaseEntity{
 
     static belongsTo = [patient: Patient]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         matchId nullable: true
+    }
+
+    def beforeInsertId() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     def beforeInsert() {

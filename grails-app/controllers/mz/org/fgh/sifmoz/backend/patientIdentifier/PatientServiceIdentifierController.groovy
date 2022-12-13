@@ -33,10 +33,16 @@ class PatientServiceIdentifierController extends RestfulController{
     }
 
     @Transactional
-    def save(PatientServiceIdentifier patientServiceIdentifier) {
-        if (patientServiceIdentifier == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        PatientServiceIdentifier patientServiceIdentifier = new PatientServiceIdentifier()
+        def objectJSON = request.JSON
+        patientServiceIdentifier = objectJSON as PatientServiceIdentifier
+
+        patientServiceIdentifier.beforeInsert()
+        patientServiceIdentifier.validate()
+
+        if(objectJSON.id){
+            patientServiceIdentifier.id = UUID.fromString(objectJSON.id)
         }
         if (patientServiceIdentifier.hasErrors()) {
             transactionStatus.setRollbackOnly()

@@ -27,11 +27,16 @@ class ProvincialServerController {
     }
 
     @Transactional
-    def save(ProvincialServer provincialServer) {
+    def save() {
+        ProvincialServer provincialServer = new ProvincialServer()
+        def objectJSON = request.JSON
+        provincialServer = objectJSON as ProvincialServer
+
         provincialServer.beforeInsert()
-        if (provincialServer == null) {
-            render status: NOT_FOUND
-            return
+        provincialServer.validate()
+
+        if(objectJSON.id){
+            provincialServer.id = UUID.fromString(objectJSON.id)
         }
         if (provincialServer.hasErrors()) {
             transactionStatus.setRollbackOnly()

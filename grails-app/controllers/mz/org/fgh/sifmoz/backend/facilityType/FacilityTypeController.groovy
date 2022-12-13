@@ -36,12 +36,19 @@ class FacilityTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(FacilityType facilityType) {
+    def save() {
+
+        FacilityType facilityType = new FacilityType()
+        def objectJSON = request.JSON
+        facilityType = objectJSON as FacilityType
+
         facilityType.beforeInsert()
-        if (facilityType == null) {
-            render status: NOT_FOUND
-            return
+        facilityType.validate()
+
+        if(objectJSON.id){
+            facilityType.id = UUID.fromString(objectJSON.id)
         }
+
         if (facilityType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond facilityType.errors

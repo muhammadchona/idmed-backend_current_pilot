@@ -13,7 +13,7 @@ class StockEntrance extends BaseEntity {
     static hasMany = [stocks: Stock]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -33,6 +33,13 @@ class StockEntrance extends BaseEntity {
                 ", clinic=" + clinic +
                 '}';
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
 
     @Override
     List<Menu> hasMenus() {

@@ -35,12 +35,19 @@ class EpisodeTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(EpisodeType episodeType) {
+    def save() {
+
+        EpisodeType episodeType = new EpisodeType()
+        def objectJSON = request.JSON
+        episodeType = objectJSON as EpisodeType
+
         episodeType.beforeInsert()
-        if (episodeType == null) {
-            render status: NOT_FOUND
-            return
+        episodeType.validate()
+
+        if(objectJSON.id){
+            episodeType.id = UUID.fromString(objectJSON.id)
         }
+
         if (episodeType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond episodeType.errors

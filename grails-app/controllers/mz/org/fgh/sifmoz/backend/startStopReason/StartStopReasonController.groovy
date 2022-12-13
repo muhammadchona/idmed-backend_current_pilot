@@ -35,11 +35,16 @@ class StartStopReasonController extends RestfulController{
     }
 
     @Transactional
-    def save(StartStopReason startStopReason) {
+    def save() {
+        StartStopReason startStopReason = new StartStopReason()
+        def objectJSON = request.JSON
+        startStopReason = objectJSON as StartStopReason
+
         startStopReason.beforeInsert()
-        if (startStopReason == null) {
-            render status: NOT_FOUND
-            return
+        startStopReason.validate()
+
+        if(objectJSON.id){
+            startStopReason.id = UUID.fromString(objectJSON.id)
         }
         if (startStopReason.hasErrors()) {
             transactionStatus.setRollbackOnly()

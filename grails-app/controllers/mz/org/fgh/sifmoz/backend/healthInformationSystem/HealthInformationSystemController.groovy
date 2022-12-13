@@ -33,11 +33,16 @@ class HealthInformationSystemController extends RestfulController{
     }
 
     @Transactional
-    def save(HealthInformationSystem healthInformationSystem) {
+    def save() {
+        HealthInformationSystem healthInformationSystem = new HealthInformationSystem()
+        def objectJSON = request.JSON
+        healthInformationSystem = objectJSON as HealthInformationSystem
+
         healthInformationSystem.beforeInsert()
-        if (healthInformationSystem == null) {
-            render status: NOT_FOUND
-            return
+        healthInformationSystem.validate()
+
+        if(objectJSON.id){
+            HealthInformationSystem.id = UUID.fromString(objectJSON.id)
         }
         if (healthInformationSystem.hasErrors()) {
             transactionStatus.setRollbackOnly()

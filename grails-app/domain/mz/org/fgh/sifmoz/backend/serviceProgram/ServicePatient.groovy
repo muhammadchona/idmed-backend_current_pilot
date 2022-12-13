@@ -41,4 +41,11 @@ class ServicePatient {
         })
     }
 
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
+
 }

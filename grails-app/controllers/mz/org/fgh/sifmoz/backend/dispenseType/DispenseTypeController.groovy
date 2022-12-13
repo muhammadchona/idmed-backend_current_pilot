@@ -35,12 +35,19 @@ class DispenseTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(DispenseType dispenseType) {
+    def save() {
+
+        DispenseType dispenseType = new DispenseType()
+        def objectJSON = request.JSON
+        dispenseType = objectJSON as DispenseType
+
         dispenseType.beforeInsert()
-        if (dispenseType == null) {
-            render status: NOT_FOUND
-            return
+        dispenseType.validate()
+
+        if(objectJSON.id){
+            dispenseType.id = UUID.fromString(objectJSON.id)
         }
+
         if (dispenseType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond dispenseType.errors

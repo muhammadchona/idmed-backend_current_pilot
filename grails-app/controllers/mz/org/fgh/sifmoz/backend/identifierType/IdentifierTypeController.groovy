@@ -35,11 +35,16 @@ class IdentifierTypeController extends RestfulController{
     }
 
     @Transactional
-    def save(IdentifierType identifierType) {
+    def save() {
+        IdentifierType identifierType = new IdentifierType()
+        def objectJSON = request.JSON
+        identifierType = objectJSON as IdentifierType
+
         identifierType.beforeInsert()
-        if (identifierType == null) {
-            render status: NOT_FOUND
-            return
+        identifierType.validate()
+
+        if(objectJSON.id){
+            identifierType.id = UUID.fromString(objectJSON.id)
         }
         if (identifierType.hasErrors()) {
             transactionStatus.setRollbackOnly()

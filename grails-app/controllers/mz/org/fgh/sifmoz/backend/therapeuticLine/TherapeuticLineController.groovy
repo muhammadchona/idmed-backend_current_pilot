@@ -35,11 +35,16 @@ class TherapeuticLineController extends RestfulController{
     }
 
     @Transactional
-    def save(TherapeuticLine therapeuticLine) {
+    def save() {
+        TherapeuticLine therapeuticLine = new TherapeuticLine()
+        def objectJSON = request.JSON
+        therapeuticLine = objectJSON as TherapeuticLine
+
         therapeuticLine.beforeInsert()
-        if (therapeuticLine == null) {
-            render status: NOT_FOUND
-            return
+        therapeuticLine.validate()
+
+        if(objectJSON.id){
+            therapeuticLine.id = UUID.fromString(objectJSON.id)
         }
         if (therapeuticLine.hasErrors()) {
             transactionStatus.setRollbackOnly()

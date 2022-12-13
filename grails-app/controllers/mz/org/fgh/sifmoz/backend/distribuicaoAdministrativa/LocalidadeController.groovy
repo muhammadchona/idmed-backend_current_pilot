@@ -31,11 +31,19 @@ class LocalidadeController {
     }
 
     @Transactional
-    def save(Localidade localidade) {
-        if (localidade == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        Localidade localidade = new Localidade()
+        def objectJSON = request.JSON
+        localidade = objectJSON as Localidade
+
+        localidade.beforeInsert()
+        localidade.validate()
+
+        if(objectJSON.id){
+            province.id = UUID.fromString(objectJSON.id)
         }
+
         if (localidade.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond localidade.errors

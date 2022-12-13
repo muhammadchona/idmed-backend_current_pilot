@@ -23,11 +23,18 @@ class PatientVisitDetails extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
     static constraints = {
         pack nullable: false
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
 
     @Override
     List<Menu> hasMenus() {

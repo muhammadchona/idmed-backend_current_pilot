@@ -29,11 +29,19 @@ class GroupPackHeaderController extends RestfulController{
     }
 
     @Transactional
-    def save(GroupPackHeader groupPackHeader) {
-        if (groupPackHeader == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        GroupPackHeader groupPackHeader = new GroupPackHeader()
+        def objectJSON = request.JSON
+        groupPackHeader = objectJSON as GroupPackHeader
+
+        groupPackHeader.beforeInsert()
+        groupPackHeader.validate()
+
+        if(objectJSON.id){
+            groupPackHeader.id = UUID.fromString(objectJSON.id)
         }
+
         if (groupPackHeader.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond groupPackHeader.errors

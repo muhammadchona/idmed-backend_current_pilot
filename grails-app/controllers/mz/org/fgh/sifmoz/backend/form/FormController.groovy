@@ -36,11 +36,16 @@ class FormController extends RestfulController{
     }
 
     @Transactional
-    def save(Form form) {
+    def save() {
+        Form form = new Form()
+        def objectJSON = request.JSON
+        form = objectJSON as Form
+
         form.beforeInsert()
-        if (form == null) {
-            render status: NOT_FOUND
-            return
+        form.validate()
+
+        if(objectJSON.id){
+            form.id = UUID.fromString(objectJSON.id)
         }
         if (form.hasErrors()) {
             transactionStatus.setRollbackOnly()

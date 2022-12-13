@@ -14,10 +14,16 @@ class PackagedDrugStock extends BaseEntity {
     static belongsTo = [packagedDrug: PackagedDrug]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

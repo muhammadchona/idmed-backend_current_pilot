@@ -36,11 +36,18 @@ class PregnancyScreeningController extends RestfulController{
     }
 
     @Transactional
-    def save(PregnancyScreening pregnancyScreening) {
-        if (pregnancyScreening == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        PregnancyScreening pregnancyScreening = new PregnancyScreening()
+        def objectJSON = request.JSON
+        pregnancyScreening = objectJSON as PregnancyScreening
+
+        pregnancyScreening.beforeInsert()
+        pregnancyScreening.validate()
+
+        if(objectJSON.id){
+            pregnancyScreening.id = UUID.fromString(objectJSON.id)
         }
+
         if (pregnancyScreening.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond pregnancyScreening.errors

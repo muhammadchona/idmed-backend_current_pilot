@@ -51,7 +51,7 @@ class Prescription extends BaseEntity{
         return ((this.duration.weeks - usedDuration) / 4)
     }
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
         patientVisitDetails lazy: true
         prescribedDrugs lazy: true
         prescriptionDetails lazy: true
@@ -64,6 +64,12 @@ class Prescription extends BaseEntity{
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
         patientType nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     void generateNextSeq() {

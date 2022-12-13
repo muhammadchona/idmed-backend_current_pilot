@@ -27,7 +27,7 @@ class PatientServiceIdentifier extends BaseEntity {
     static hasMany = [episodes: Episode]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -60,6 +60,13 @@ class PatientServiceIdentifier extends BaseEntity {
 //                ", clinic=" + clinic +
 //                '}';
 //    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
     @Override
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()

@@ -35,10 +35,16 @@ class PatientTransReferenceController extends RestfulController{
     }
 
     @Transactional
-    def save(PatientTransReference patientTransReference) {
-        if (patientTransReference == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        PatientTransReference patientTransReference = new PatientTransReference()
+        def objectJSON = request.JSON
+        patientTransReference = objectJSON as PatientTransReference
+
+        patientTransReference.beforeInsertId()
+        patientTransReference.validate()
+
+        if(objectJSON.id){
+            patientTransReference.id = UUID.fromString(objectJSON.id)
         }
         if (patientTransReference.hasErrors()) {
             transactionStatus.setRollbackOnly()

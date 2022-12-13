@@ -29,7 +29,7 @@ class Stock extends BaseEntity {
 
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -40,6 +40,12 @@ class Stock extends BaseEntity {
         manufacture(nullable: true)
         packagedDrugs nullable: true
         adjustments nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

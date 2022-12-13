@@ -31,11 +31,19 @@ class PostoAdministrativoController {
     }
 
     @Transactional
-    def save(PostoAdministrativo postoAdministrativo) {
-        if (postoAdministrativo == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+
+        PostoAdministrativo postoAdministrativo = new PostoAdministrativo()
+        def objectJSON = request.JSON
+        postoAdministrativo = objectJSON as PostoAdministrativo
+
+        postoAdministrativo.beforeInsert()
+        postoAdministrativo.validate()
+
+        if(objectJSON.id){
+            postoAdministrativo.id = UUID.fromString(objectJSON.id)
         }
+
         if (postoAdministrativo.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond postoAdministrativo.errors

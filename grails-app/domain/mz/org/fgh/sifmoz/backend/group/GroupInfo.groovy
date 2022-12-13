@@ -21,7 +21,7 @@ class GroupInfo extends BaseEntity {
 
     static hasMany = [members: GroupMember, packHeaders: GroupPackHeader]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
         table 'group_info'
     }
 
@@ -38,6 +38,13 @@ class GroupInfo extends BaseEntity {
     public boolean isActive() {
         return this.endDate == null
     }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
+    }
+
 
     @Override
     public String toString() {

@@ -19,7 +19,7 @@ class Inventory extends BaseEntity {
     List<Drug> inventoryDrugs
     Clinic clinic
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -48,6 +48,12 @@ class Inventory extends BaseEntity {
                 ", open=" + open +
                 ", sequence=" + sequence +
                 '}';
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

@@ -35,11 +35,16 @@ class TherapeuticRegimenController extends RestfulController{
     }
 
     @Transactional
-    def save(TherapeuticRegimen therapeuticRegimen) {
+    def save() {
+        TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
+        def objectJSON = request.JSON
+        therapeuticRegimen = objectJSON as TherapeuticRegimen
+
         therapeuticRegimen.beforeInsert()
-        if (therapeuticRegimen == null) {
-            render status: NOT_FOUND
-            return
+        therapeuticRegimen.validate()
+
+        if(objectJSON.id){
+            province.id = UUID.fromString(objectJSON.id)
         }
         if (therapeuticRegimen.hasErrors()) {
             transactionStatus.setRollbackOnly()

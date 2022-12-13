@@ -32,10 +32,16 @@ class PackagedDrugStockController extends RestfulController{
     }
 
     @Transactional
-    def save(PackagedDrugStock packagedDrugStock) {
-        if (packagedDrugStock == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        PackagedDrugStock packagedDrugStock = new PackagedDrugStock()
+        def objectJSON = request.JSON
+        packagedDrugStock = objectJSON as PackagedDrugStock
+
+        packagedDrugStock.beforeInsert()
+        packagedDrugStock.validate()
+
+        if(objectJSON.id){
+            packagedDrugStock.id = UUID.fromString(objectJSON.id)
         }
         if (packagedDrugStock.hasErrors()) {
             transactionStatus.setRollbackOnly()

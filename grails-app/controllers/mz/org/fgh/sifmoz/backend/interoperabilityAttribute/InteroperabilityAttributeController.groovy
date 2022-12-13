@@ -33,11 +33,16 @@ class InteroperabilityAttributeController extends RestfulController{
     }
 
     @Transactional
-    def save(InteroperabilityAttribute interoperabilityAttribute) {
+    def save(I) {
+        InteroperabilityAttribute interoperabilityAttribute = new InteroperabilityAttribute()
+        def objectJSON = request.JSON
+        interoperabilityAttribute = objectJSON as InteroperabilityAttribute
+
         interoperabilityAttribute.beforeInsert()
-        if (interoperabilityAttribute == null) {
-            render status: NOT_FOUND
-            return
+        interoperabilityAttribute.validate()
+
+        if(objectJSON.id){
+            interoperabilityAttribute.id = UUID.fromString(objectJSON.id)
         }
         if (interoperabilityAttribute.hasErrors()) {
             transactionStatus.setRollbackOnly()

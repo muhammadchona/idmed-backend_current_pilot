@@ -22,7 +22,7 @@ class Doctor extends BaseEntity {
     boolean active
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -35,6 +35,12 @@ class Doctor extends BaseEntity {
         telephone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         email nullable: true
 
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

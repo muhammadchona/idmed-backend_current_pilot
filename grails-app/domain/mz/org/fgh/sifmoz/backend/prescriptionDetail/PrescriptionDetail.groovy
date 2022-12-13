@@ -19,7 +19,7 @@ class PrescriptionDetail extends BaseEntity {
     static belongsTo = [Prescription]
 
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
@@ -27,6 +27,12 @@ class PrescriptionDetail extends BaseEntity {
         therapeuticRegimen nullable: true
         therapeuticLine nullable: true
         spetialPrescriptionMotive nullable: true
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

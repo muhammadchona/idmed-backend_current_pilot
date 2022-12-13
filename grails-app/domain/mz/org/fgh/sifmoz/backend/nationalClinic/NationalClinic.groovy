@@ -18,13 +18,19 @@ class NationalClinic extends BaseEntity {
     static belongsTo = [province: Province]
     static hasMany = [clinics: Clinic]
     static mapping = {
-        id generator: "uuid"
+       id generator: "assigned"
     }
 
     static constraints = {
         code nullable: false, unique: true
         facilityName nullable: false, blank: false, unique: ['province']
         telephone nullable: true, matches: /\d+/, maxSize: 12, minSize: 9
+    }
+
+    def beforeInsert() {
+        if (!id) {
+            id = UUID.randomUUID()
+        }
     }
 
     @Override

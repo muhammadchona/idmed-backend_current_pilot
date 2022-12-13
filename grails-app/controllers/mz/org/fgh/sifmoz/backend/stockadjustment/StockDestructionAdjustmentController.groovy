@@ -34,10 +34,16 @@ class StockDestructionAdjustmentController extends RestfulController{
     }
 
     @Transactional
-    def save(StockDestructionAdjustment stockDestructionAdjustment) {
-        if (stockDestructionAdjustment == null) {
-            render status: NOT_FOUND
-            return
+    def save() {
+        StockDestructionAdjustment stockDestructionAdjustment = new StockDestructionAdjustment()
+        def objectJSON = request.JSON
+        stockDestructionAdjustment = objectJSON as StockDestructionAdjustment
+
+        stockDestructionAdjustment.beforeInsert()
+        stockDestructionAdjustment.validate()
+
+        if(objectJSON.id){
+            stockDestructionAdjustment.id = UUID.fromString(objectJSON.id)
         }
         if (stockDestructionAdjustment.hasErrors()) {
             transactionStatus.setRollbackOnly()
