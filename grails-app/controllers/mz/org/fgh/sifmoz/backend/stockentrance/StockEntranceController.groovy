@@ -53,7 +53,6 @@ class StockEntranceController extends RestfulController{
             respond stockEntrance.errors
             return
         }
-
         try {
             stockEntranceService.save(stockEntrance)
         } catch (ValidationException e) {

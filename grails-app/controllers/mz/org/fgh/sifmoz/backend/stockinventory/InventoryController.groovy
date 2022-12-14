@@ -82,7 +82,6 @@ class InventoryController extends RestfulController{
             respond inventory.errors
             return
         }
-
         respond inventory, [status: CREATED, view:"show"]
     }
 
