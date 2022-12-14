@@ -62,6 +62,9 @@ class InventoryController extends RestfulController{
         inventory = objectJSON as Inventory
 
         inventory.beforeInsert()
+        inventory.adjustments.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.adjustments[index].id)
+        }
         inventory.validate()
 
         if(objectJSON.id){
