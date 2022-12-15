@@ -41,6 +41,9 @@ class ReferedStockMovimentController extends RestfulController{
         referedStockMoviment = objectJSON as ReferedStockMoviment
 
         referedStockMoviment.beforeInsert()
+        referedStockMoviment.adjustments.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.adjustments[index].id)
+        }
         referedStockMoviment.validate()
 
         if(objectJSON.id){

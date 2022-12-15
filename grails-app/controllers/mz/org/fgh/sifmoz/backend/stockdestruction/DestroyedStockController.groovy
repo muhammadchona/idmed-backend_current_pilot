@@ -41,6 +41,9 @@ class DestroyedStockController extends RestfulController{
         destroyedStock = objectJSON as DestroyedStock
 
         destroyedStock.beforeInsert()
+        destroyedStock.adjustments.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.adjustments[index].id)
+        }
         destroyedStock.validate()
 
         if(objectJSON.id){
