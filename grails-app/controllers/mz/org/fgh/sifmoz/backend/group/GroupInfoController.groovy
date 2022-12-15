@@ -5,6 +5,7 @@ import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
+import mz.org.fgh.sifmoz.backend.patient.IPatientService
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
@@ -44,12 +45,16 @@ class GroupInfoController extends RestfulController{
         GroupInfo group = new GroupInfo()
         def objectJSON = request.JSON
         group = objectJSON as GroupInfo
+        print(objectJSON.members[0].id)
 
         group.beforeInsert()
         group.validate()
 
         if(objectJSON.id){
             group.id = UUID.fromString(objectJSON.id)
+            group.members.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.members[index].id)
+            }
         }
 
         if (group.hasErrors()) {
