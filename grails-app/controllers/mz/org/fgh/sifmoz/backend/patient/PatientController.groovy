@@ -117,7 +117,11 @@ class PatientController extends RestfulController {
             //respond patientService.getAllByClinicId(clinicId, offset, max)
         }
 
-    def search(Patient patient) {
+    def search() {
+        Patient patient = new Patient()
+        def objectJSON = request.JSON
+        patient = objectJSON as Patient
+
         List<Patient> patientList = patientService.search(patient)
         render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
