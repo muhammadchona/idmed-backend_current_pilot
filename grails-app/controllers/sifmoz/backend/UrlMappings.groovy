@@ -71,6 +71,7 @@ class UrlMappings {
         get "/api/drugStockFile/batchsumary/$clinicId/$stockId(.$format)?"(controller:'drugStockFile', action:'getDrugBatchSumaryEvents')
         get "/api/drugStockFile/sumarymobile/$clinicId/$drugId(.$format)?"(controller:'drugStockFile', action:'getDrugSumaryEventsMobile')
         get "/api/drugStockFile/batchsumarymobile/$clinicId/$stockId(.$format)?"(controller:'drugStockFile', action:'getDrugBatchSumaryEventsMobile')
+        get "/api/drugStockFile/drugfilemobile/$clinicId(.$format)?"(controller:'drugStockFile', action:'getDrugFileMobile')
 
         get "/api/patientVisitDetails/AllLastOfClinic/$clinicId(.$format)?"(controller:'patientVisitDetails', action:'getAllLastVisitOfClinic')
         get "/api/patientVisit/AllLastWithScreeningOfClinic/$clinicId(.$format)?"(controller:'patientVisit', action:'getAllLastVisitWithScreeningOfClinic')
