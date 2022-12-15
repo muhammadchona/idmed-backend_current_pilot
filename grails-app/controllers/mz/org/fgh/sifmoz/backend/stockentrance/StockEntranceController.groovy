@@ -40,6 +40,9 @@ class StockEntranceController extends RestfulController{
         stockEntrance = objectJSON as StockEntrance
 
         stockEntrance.beforeInsert()
+        stockEntrance.stocks.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.stocks[index].id)
+        }
         stockEntrance.validate()
 
         if(objectJSON.id){
@@ -50,7 +53,6 @@ class StockEntranceController extends RestfulController{
             respond stockEntrance.errors
             return
         }
-
         try {
             stockEntranceService.save(stockEntrance)
         } catch (ValidationException e) {

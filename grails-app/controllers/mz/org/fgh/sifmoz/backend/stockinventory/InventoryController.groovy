@@ -62,6 +62,9 @@ class InventoryController extends RestfulController{
         inventory = objectJSON as Inventory
 
         inventory.beforeInsert()
+        inventory.adjustments.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.adjustments[index].id)
+        }
         inventory.validate()
 
         if(objectJSON.id){
@@ -79,7 +82,6 @@ class InventoryController extends RestfulController{
             respond inventory.errors
             return
         }
-
         respond inventory, [status: CREATED, view:"show"]
     }
 
