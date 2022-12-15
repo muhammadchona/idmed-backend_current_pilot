@@ -49,7 +49,7 @@ class RoleController {
         }
         if (role.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond role.errors7
+            respond role.errors
             return
         }
 7
@@ -70,9 +70,11 @@ class RoleController {
                                 println(name)
                                 println(requestMap)
                                 String actualConfigAttribute = requestMap.configAttribute
-                                String newConfigAttribute = role.authority+","+actualConfigAttribute
-                                requestMap.setConfigAttribute(newConfigAttribute)
-                                requestmapService.save(requestMap)
+                                if(!actualConfigAttribute.contains(role.authority)) {
+                                    String newConfigAttribute = role.authority + "," + actualConfigAttribute
+                                    requestMap.setConfigAttribute(newConfigAttribute)
+                                    requestmapService.save(requestMap)
+                                }
                             }
                         }
                     }

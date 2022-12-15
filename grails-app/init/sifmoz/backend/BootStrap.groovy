@@ -153,7 +153,7 @@ class BootStrap {
         for (String key : maps.keySet()) {
             def url = '/api' + '/' + key + '/**'
 
-            if (key == 'clinic' || key == 'province' || key == 'district' || key == 'systemConfigs') {
+            if (key == 'clinic' || key == 'province' || key == 'district' || key == 'systemConfigs' || key == 'menu') {
                 new Requestmap(url: url, configAttribute: 'IS_AUTHENTICATED_ANONYMOUSLY').save(flush: true, failOnError: false);
             } else {
                 new Requestmap(url: url, configAttribute: 'ROLE_ADMIN,IS_AUTHENTICATED_REMEMBERED').save(flush: true, failOnError: false);

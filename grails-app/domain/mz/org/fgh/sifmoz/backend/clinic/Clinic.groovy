@@ -24,7 +24,7 @@ class Clinic extends BaseEntity {
     String uuid
 
     static belongsTo = [nationalClinic: NationalClinic]
-    static hasMany = [users: SecUser, sectors: ClinicSector, mmiaReports: MmiaReport]
+    static hasMany = [sectors: ClinicSector, mmiaReports: MmiaReport]
 
     static mapping = {
         id generator: "assigned"
