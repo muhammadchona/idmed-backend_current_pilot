@@ -12,7 +12,7 @@ import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 class SecUser implements Serializable {
 
     private static final long serialVersionUID = 1
-
+    // Long id
     String username
     String password
     String openmrsPassword
@@ -55,5 +55,7 @@ class SecUser implements Serializable {
 
     static mapping = {
 	    password column: '`password`'
+     //   id generator: "assigned"
     }
+
 }
