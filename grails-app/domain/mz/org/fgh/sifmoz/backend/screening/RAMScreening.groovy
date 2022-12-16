@@ -36,7 +36,6 @@ class RAMScreening extends BaseEntity {
         return "RAMScreening{" +
                 "adverseReaction='" + adverseReaction + '\'' +
                 ", adverseReactionMedicine=" + adverseReactionMedicine +
-                ", referedToUSRam=" + referedToUSRam +
                 '}';
     }
 
