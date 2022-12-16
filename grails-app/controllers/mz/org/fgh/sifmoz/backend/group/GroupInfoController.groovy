@@ -5,6 +5,8 @@ import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
+import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
+import mz.org.fgh.sifmoz.backend.groupMember.GroupMemberService
 import mz.org.fgh.sifmoz.backend.patient.IPatientService
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
@@ -22,6 +24,7 @@ class GroupInfoController extends RestfulController{
 
     IGroupService groupService
     IEpisodeService episodeService
+    GroupMemberService groupMemberService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -45,9 +48,7 @@ class GroupInfoController extends RestfulController{
         GroupInfo group = new GroupInfo()
         def objectJSON = request.JSON
         group = objectJSON as GroupInfo
-        print(objectJSON.members[0].id)
 
-        group.beforeInsert()
         group.validate()
 
         if(objectJSON.id){
@@ -62,10 +63,17 @@ class GroupInfoController extends RestfulController{
             respond group.errors
             return
         }
-
+        group.beforeInsert()
         try {
+            HashSet<GroupMember> memberList = group.members
+            group.members = null
             groupService.save(group)
+            for (GroupMember member : memberList) {
+                member.group = group
+                groupMemberService.save(member)
+            }
         } catch (ValidationException e) {
+            transactionStatus.setRollbackOnly()
             respond group.errors
             return
         }

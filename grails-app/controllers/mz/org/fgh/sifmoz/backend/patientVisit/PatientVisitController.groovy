@@ -5,6 +5,7 @@ import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
 import mz.org.fgh.sifmoz.backend.screening.AdherenceScreeningService
