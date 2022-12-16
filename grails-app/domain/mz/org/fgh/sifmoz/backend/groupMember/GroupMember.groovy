@@ -12,10 +12,11 @@ class GroupMember extends BaseEntity {
     String id
     Date startDate
     Date endDate
-    GroupInfo group
+    // GroupInfo group
     Clinic clinic
+    Patient patient
 
-    static belongsTo = [patient: Patient]
+    static belongsTo = [group: GroupInfo]
     static mapping = {
        id generator: "assigned"
     }
