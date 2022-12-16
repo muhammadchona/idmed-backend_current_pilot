@@ -4,6 +4,8 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.LocalidadeService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
@@ -27,6 +29,7 @@ import grails.gorm.transactions.Transactional
 class PatientController extends RestfulController {
 
     IPatientService patientService
+    LocalidadeService localidadeService
 
     def SessionFactory sessionFactory
 
@@ -67,6 +70,13 @@ class PatientController extends RestfulController {
             }
 
             try {
+                if (patient.bairro) {
+                    Localidade localidade = Localidade.findByCode(patient.bairro.code)
+                    if (!localidade) {
+                        patient.bairro.id = objectJSON.bairro.id
+                        localidadeService.save(patient.bairro)
+                    }
+                }
                 patientService.save(patient)
             } catch (ValidationException e) {
                 respond patient.errors
