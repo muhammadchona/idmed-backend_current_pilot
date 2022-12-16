@@ -52,6 +52,12 @@ class PrescriptionController extends RestfulController{
 
         if(objectJSON.id){
             prescription.id = UUID.fromString(objectJSON.id)
+            prescription.prescribedDrugs.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescribedDrugs[index].id)
+            }
+            prescription.prescriptionDetails.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescriptionDetails[index].id)
+            }
         }
         if (prescription.hasErrors()) {
             transactionStatus.setRollbackOnly()

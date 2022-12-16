@@ -57,6 +57,13 @@ class PackController extends RestfulController{
 
         if(objectJSON.id){
             pack.id = UUID.fromString(objectJSON.id)
+            pack.packagedDrugs.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.packagedDrugs[index].id)
+                item.drug.stockList = null
+                item.packagedDrugStocks.eachWithIndex{ item2, index2 ->
+                    item2.id = UUID.fromString(objectJSON.packagedDrugs[index].packagedDrugStocks[index2].id)
+                }
+            }
         }
 
         if (pack.hasErrors()) {

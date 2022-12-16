@@ -3,10 +3,18 @@ package mz.org.fgh.sifmoz.backend.patientVisit
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.packaging.IPackService
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
-import mz.org.fgh.sifmoz.backend.screening.TBScreening
+import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
+import mz.org.fgh.sifmoz.backend.screening.AdherenceScreeningService
+import mz.org.fgh.sifmoz.backend.screening.PregnancyScreeningService
+import mz.org.fgh.sifmoz.backend.screening.RAMScreeningService
+import mz.org.fgh.sifmoz.backend.screening.TBScreeningService
+import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreeningService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
+import org.springframework.beans.factory.annotation.Autowired
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -18,6 +26,15 @@ import grails.gorm.transactions.Transactional
 class PatientVisitController extends RestfulController{
 
     IPatientVisitService patientVisitService
+    IPrescriptionService prescriptionService
+    IPackService packService
+    VitalSignsScreeningService vitalSignsScreeningService
+    @Autowired
+    TBScreeningService tbScreeningService
+    AdherenceScreeningService adherenceScreeningService
+    @Autowired
+    RAMScreeningService ramScreeningService
+    PregnancyScreeningService pregnancyScreeningService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -50,6 +67,39 @@ class PatientVisitController extends RestfulController{
 
         if(objectJSON.id){
             visit.id = UUID.fromString(objectJSON.id)
+            visit.patientVisitDetails.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.patientVisitDetails[index].id)
+                item.prescription.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.id)
+                item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
+                    item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
+                }
+                item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
+                    item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
+                }
+                item.pack.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.id)
+                item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
+                    item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
+                    item4.drug.stockList = null
+                    item4.packagedDrugStocks.eachWithIndex{ item5, index5 ->
+                        item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
+                    }
+                }
+            }
+            visit.adherenceScreening.eachWithIndex{  item, index ->
+                item.id = UUID.fromString(objectJSON.adherenceScreening[index].id)
+            }
+            visit.vitalSigns.eachWithIndex{  item, index ->
+                item.id = UUID.fromString(objectJSON.vitalSigns[index].id)
+            }
+            visit.pregnancyScreening.eachWithIndex{  item, index ->
+                item.id = UUID.fromString(objectJSON.pregnancyScreening[index].id)
+            }
+            visit.tbScreening.eachWithIndex{  item, index ->
+                item.id = UUID.fromString(objectJSON.tbScreening[index].id)
+            }
+            visit.ramScreening.eachWithIndex{  item, index ->
+                item.id = UUID.fromString(objectJSON.ramScreening[index].id)
+            }
         }
         if (visit.hasErrors()) {
             transactionStatus.setRollbackOnly()
@@ -58,7 +108,41 @@ class PatientVisitController extends RestfulController{
         }
 
         try {
-            patientVisitService.save(visit)
+            PatientVisit existingPatientVisit = PatientVisit.findByVisitDateAndPatient(visit.visitDate, visit.patient)
+            if (existingPatientVisit != null) {
+                visit.vitalSigns.each {item ->
+                    item.visit = existingPatientVisit
+                    vitalSignsScreeningService.save(item)
+                }
+
+                visit.pregnancyScreening.each {item ->
+                    item.visit = existingPatientVisit
+                    pregnancyScreeningService.save(item)
+                }
+                visit.ramScreening.each {item ->
+                    item.visit = existingPatientVisit
+                    ramScreeningService.save(item)
+                }
+                visit.adherenceScreening.each {item ->
+                    item.visit = existingPatientVisit
+                    adherenceScreeningService.save(item)
+                }
+                visit.tbScreening.each {item ->
+                    item.visit = existingPatientVisit
+                    tbScreeningService.save(item)
+                }
+              visit.patientVisitDetails.each {item ->
+                  item.patientVisit = existingPatientVisit
+                    prescriptionService.save(item.prescription)
+                    packService.save(item.pack)
+                }
+            } else {
+                visit.patientVisitDetails.each {item ->
+                    prescriptionService.save(item.prescription)
+                    packService.save(item.pack)
+                }
+                patientVisitService.save(visit)
+            }
         } catch (ValidationException e) {
             respond visit.errors
             return
