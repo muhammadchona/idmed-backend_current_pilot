@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.screening.AdherenceScreeningService
 import mz.org.fgh.sifmoz.backend.screening.PregnancyScreeningService
 import mz.org.fgh.sifmoz.backend.screening.RAMScreeningService
@@ -134,12 +135,14 @@ class PatientVisitController extends RestfulController{
                 }
               visit.patientVisitDetails.each {item ->
                   item.patientVisit = existingPatientVisit
-                    prescriptionService.save(item.prescription)
+                  Prescription existingPrescription = Prescription.findById(item.prescription.id)
+                  if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
                 }
             } else {
                 visit.patientVisitDetails.each {item ->
-                    prescriptionService.save(item.prescription)
+                    Prescription existingPrescription = Prescription.findById(item.prescription.id)
+                    if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
                 }
                 patientVisitService.save(visit)
