@@ -86,7 +86,7 @@ class StockEntranceController extends RestfulController{
     }
 
     @Transactional
-    def delete(Long id) {
+    def delete(String id) {
         if (id == null || stockEntranceService.delete(id) == null) {
             render status: NOT_FOUND
             return
