@@ -3,7 +3,10 @@ package mz.org.fgh.sifmoz.backend.patientVisit
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
+import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
@@ -14,6 +17,7 @@ import mz.org.fgh.sifmoz.backend.screening.PregnancyScreeningService
 import mz.org.fgh.sifmoz.backend.screening.RAMScreeningService
 import mz.org.fgh.sifmoz.backend.screening.TBScreeningService
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreeningService
+import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +43,7 @@ class PatientVisitController extends RestfulController{
     PregnancyScreeningService pregnancyScreeningService
 
     static responseFormats = ['json', 'xml']
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PATCH", delete: "DELETE"]
 
     PatientVisitController() {
         super(PatientVisit)
@@ -148,6 +152,7 @@ class PatientVisitController extends RestfulController{
                 patientVisitService.save(visit)
             }
         } catch (ValidationException e) {
+            transactionStatus.setRollbackOnly()
             respond visit.errors
             return
         }
@@ -156,10 +161,32 @@ class PatientVisitController extends RestfulController{
     }
 
     @Transactional
-    def update(PatientVisit visit) {
+    def update() {
+        PatientVisit visit = new PatientVisit()
+        def objectJSON = request.JSON
+        visit = objectJSON as PatientVisit
         if (visit == null) {
             render status: NOT_FOUND
             return
+        }
+        visit.id = UUID.fromString(objectJSON.id)
+        visit.patientVisitDetails.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.patientVisitDetails[index].id)
+            item.prescription.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.id)
+            item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
+                item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
+            }
+            item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
+                item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
+            }
+            item.pack.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.id)
+            item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
+                item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
+                item4.drug.stockList = null
+                item4.packagedDrugStocks.eachWithIndex{ item5, index5 ->
+                    item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
+                }
+            }
         }
         if (visit.hasErrors()) {
             transactionStatus.setRollbackOnly()
@@ -168,6 +195,8 @@ class PatientVisitController extends RestfulController{
         }
 
         try {
+            restoreStock(visit.patientVisitDetails.getAt(0).pack)
+            savePackageDrugs(visit.patientVisitDetails.getAt(0).pack)
             patientVisitService.save(visit)
         } catch (ValidationException e) {
             respond visit.errors
@@ -201,5 +230,20 @@ class PatientVisitController extends RestfulController{
 
     def getAllLastVisitWithScreeningOfClinic(String clinicId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllLastWithScreening(clinicId, offset, max)) as JSON
+    }
+
+    void savePackageDrugs(Pack pack) {
+        // remover todas packageDrugs e respectivas packageDrugsStock antigas
+        // inserir as novas packageDrugs e respectivas packageDrugsStock
+        // descontar novamente o stock
+    }
+
+    void restoreStock(Pack pack) {
+        for (PackagedDrug packagedDrug : pack.packagedDrugs) {
+            for (PackagedDrugStock packagedDrugStock : packagedDrug.packagedDrugStocks) {
+                Stock stock = Stock.findById(packagedDrugStock.stock.id)
+                stock.stockMoviment += stock
+            }
+        }
     }
 }
