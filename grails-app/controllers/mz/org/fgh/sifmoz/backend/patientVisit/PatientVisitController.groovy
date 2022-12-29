@@ -18,6 +18,7 @@ import mz.org.fgh.sifmoz.backend.screening.RAMScreeningService
 import mz.org.fgh.sifmoz.backend.screening.TBScreeningService
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreeningService
 import mz.org.fgh.sifmoz.backend.stock.Stock
+import mz.org.fgh.sifmoz.backend.stock.StockService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,9 +42,10 @@ class PatientVisitController extends RestfulController{
     @Autowired
     RAMScreeningService ramScreeningService
     PregnancyScreeningService pregnancyScreeningService
+    StockService stockService
 
     static responseFormats = ['json', 'xml']
-    static allowedMethods = [save: "POST", update: "PATCH", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     PatientVisitController() {
         super(PatientVisit)
@@ -142,12 +144,14 @@ class PatientVisitController extends RestfulController{
                   Prescription existingPrescription = Prescription.findById(item.prescription.id)
                   if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
+                    reduceStock(item.pack)
                 }
             } else {
                 visit.patientVisitDetails.each {item ->
                     Prescription existingPrescription = Prescription.findById(item.prescription.id)
                     if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
+                    reduceStock(item.pack)
                 }
                 patientVisitService.save(visit)
             }
@@ -162,48 +166,43 @@ class PatientVisitController extends RestfulController{
 
     @Transactional
     def update() {
-        PatientVisit visit = new PatientVisit()
         def objectJSON = request.JSON
-        visit = objectJSON as PatientVisit
-        if (visit == null) {
+        PatientVisit patientVisitDB = PatientVisit.get(objectJSON.id)
+        if (patientVisitDB == null) {
             render status: NOT_FOUND
             return
         }
-        visit.id = UUID.fromString(objectJSON.id)
-        visit.patientVisitDetails.eachWithIndex { item, index ->
-            item.id = UUID.fromString(objectJSON.patientVisitDetails[index].id)
-            item.prescription.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.id)
-            item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
-                item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
-            }
-            item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
-                item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
-            }
-            item.pack.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.id)
+        //updating db object
+        patientVisitDB.properties = objectJSON
+        //Only updated pack and packagedDrugs (refazer dispensa)
+        patientVisitDB.patientVisitDetails.eachWithIndex { item, index ->
             item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
                 item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
                 item4.drug.stockList = null
-                item4.packagedDrugStocks.eachWithIndex{ item5, index5 ->
+                item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
                     item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
                 }
             }
         }
-        if (visit.hasErrors()) {
+        if (patientVisitDB.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond visit.errors
             return
         }
-
         try {
-            restoreStock(visit.patientVisitDetails.getAt(0).pack)
-            savePackageDrugs(visit.patientVisitDetails.getAt(0).pack)
-            patientVisitService.save(visit)
+            patientVisitDB.patientVisitDetails.each {item->
+                restoreStock(item.pack)
+                reduceStock(item.pack)
+                packService.save(item.pack)
+            }
+
+            patientVisitService.save(patientVisitDB)
         } catch (ValidationException e) {
-            respond visit.errors
+            respond patientVisitDB.errors
             return
         }
 
-        respond visit, [status: OK, view:"show"]
+        respond patientVisitDB, [status: OK, view:"show"]
     }
 
     @Transactional
@@ -232,18 +231,29 @@ class PatientVisitController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllLastWithScreening(clinicId, offset, max)) as JSON
     }
 
-    void savePackageDrugs(Pack pack) {
-        // remover todas packageDrugs e respectivas packageDrugsStock antigas
-        // inserir as novas packageDrugs e respectivas packageDrugsStock
-        // descontar novamente o stock
+    void restoreStock(Pack pack) {
+           List<PackagedDrug> packagedDrugsDb = PackagedDrug.findAllByPack(pack)
+            List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrugsDb)
+                for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
+                Stock stock = Stock.findById(packagedDrugStock.stock.id)
+                stock.stockMoviment += packagedDrugStock.quantitySupplied
+                stockService.save(stock)
+                packagedDrugStock.delete()
+            }
+        packagedDrugsDb.each {item ->
+            item.delete()
+        }
     }
 
-    void restoreStock(Pack pack) {
-        for (PackagedDrug packagedDrug : pack.packagedDrugs) {
-            for (PackagedDrugStock packagedDrugStock : packagedDrug.packagedDrugStocks) {
-                Stock stock = Stock.findById(packagedDrugStock.stock.id)
-                stock.stockMoviment += stock
-            }
+    void reduceStock(Pack pack) {
+        if(pack.syncStatus == 'N') {
+            pack.packagedDrugs.each { pcDrugs ->
+                pcDrugs.packagedDrugStocks.each { pcdStock ->
+                    Stock stock = Stock.findById(pcdStock.stock.id)
+                    stock.stockMoviment -= pcdStock.quantitySupplied
+                    stockService.save(stock)
+                }
+        }
         }
     }
 }

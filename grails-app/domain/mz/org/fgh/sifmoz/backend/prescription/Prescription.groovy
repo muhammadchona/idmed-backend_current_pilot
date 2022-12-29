@@ -53,8 +53,8 @@ class Prescription extends BaseEntity{
     static mapping = {
        id generator: "assigned"
         patientVisitDetails lazy: true
-        prescribedDrugs lazy: true
-        prescriptionDetails lazy: true
+   //     prescribedDrugs lazy: true
+    //    prescriptionDetails lazy: true
     }
     static constraints = {
         prescriptionDate(nullable: false, blank: false,  validator: { prescriptionDate, urc ->

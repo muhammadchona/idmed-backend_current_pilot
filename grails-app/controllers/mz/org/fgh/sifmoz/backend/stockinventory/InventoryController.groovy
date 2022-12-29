@@ -87,9 +87,14 @@ class InventoryController extends RestfulController{
 
     @Transactional
     def update(Inventory inventory) {
+        Inventory inventoryBack = inventoryService.get(inventory.getId())
+
         if (inventory == null) {
             render status: NOT_FOUND
             return
+        }
+        if (!inventoryBack.isOpen()) {
+            throw new RuntimeException("O inventário já se encontra fechado.")
         }
         if (inventory.hasErrors()) {
             transactionStatus.setRollbackOnly()
