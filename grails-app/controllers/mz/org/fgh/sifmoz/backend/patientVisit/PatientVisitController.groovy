@@ -232,16 +232,18 @@ class PatientVisitController extends RestfulController{
     }
 
     void restoreStock(Pack pack) {
-           List<PackagedDrug> packagedDrugsDb = PackagedDrug.findAllByPack(pack)
+        if(pack.syncStatus == 'N') {
+            List<PackagedDrug> packagedDrugsDb = PackagedDrug.findAllByPack(pack)
             List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrugsDb)
-                for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
+            for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
                 Stock stock = Stock.findById(packagedDrugStock.stock.id)
                 stock.stockMoviment += packagedDrugStock.quantitySupplied
                 stockService.save(stock)
                 packagedDrugStock.delete()
             }
-        packagedDrugsDb.each {item ->
-            item.delete()
+            packagedDrugsDb.each { item ->
+                item.delete()
+            }
         }
     }
 

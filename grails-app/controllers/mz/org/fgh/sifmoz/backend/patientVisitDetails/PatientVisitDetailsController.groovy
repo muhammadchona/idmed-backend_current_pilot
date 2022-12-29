@@ -105,7 +105,7 @@ class PatientVisitDetailsController extends RestfulController{
             patientVisitService.delete(patientVisit.id)
             patientVisit.patientVisitDetails.each {item ->
                 Pack pack = Pack.findById(item.packId)
-                this.restoreStock(pack)
+                restoreStock(pack)
                 packService.delete(item.packId)
                 prescriptionService.delete(item.prescriptionId)
             }
@@ -115,7 +115,7 @@ class PatientVisitDetailsController extends RestfulController{
         else {
             patientVisitDetail.each {item ->
                 packService.delete(item.packId)
-                this.restoreStock(pack)
+                restoreStock(pack)
                 prescriptionService.delete(item.prescriptionId)
             }
             patientVisit.patientVisitDetails.remove(patientVisitDetail)
@@ -173,12 +173,14 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     void restoreStock(Pack pack) {
-        for (PackagedDrug packagedDrug : pack.packagedDrugs) {
-            List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrug)
-            for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
-                Stock stock = Stock.findById(packagedDrugStock.stock.id)
-                stock.stockMoviment = packagedDrugStock.quantitySupplied + stock.stockMoviment
-                stockService.save(stock)
+        if(pack.syncStatus == 'N') {
+            for (PackagedDrug packagedDrug : pack.packagedDrugs) {
+                List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrug)
+                for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
+                    Stock stock = Stock.findById(packagedDrugStock.stock.id)
+                    stock.stockMoviment = packagedDrugStock.quantitySupplied + stock.stockMoviment
+                    stockService.save(stock)
+                }
             }
         }
     }
