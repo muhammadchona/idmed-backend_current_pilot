@@ -44,7 +44,6 @@ class GroupInfoController extends RestfulController{
 
     @Transactional
     def save() {
-
         GroupInfo group = new GroupInfo()
         def objectJSON = request.JSON
         group = objectJSON as GroupInfo
@@ -82,11 +81,23 @@ class GroupInfoController extends RestfulController{
     }
 
     @Transactional
-    def update(GroupInfo group) {
-        if (group == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+
+        GroupInfo group
+        def objectJSON = request.JSON
+
+        if(objectJSON.id){
+            group = GroupInfo.get(objectJSON.id)
+            if (group == null) {
+                render status: NOT_FOUND
+                return
+            }
+            group.properties = objectJSON
+            group.members.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.members[index].id)
+            }
         }
+
         if (group.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond group.errors
@@ -94,6 +105,10 @@ class GroupInfoController extends RestfulController{
         }
 
         try {
+            group.members.each { item ->
+                groupMemberService.save(item)
+            }
+
             groupService.save(group)
         } catch (ValidationException e) {
             respond group.errors
