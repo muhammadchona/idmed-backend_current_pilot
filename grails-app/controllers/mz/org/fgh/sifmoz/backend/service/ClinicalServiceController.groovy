@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.service
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -61,11 +62,21 @@ class ClinicalServiceController extends RestfulController{
     }
 
     @Transactional
-    def update(ClinicalService clinicalService) {
-        if (clinicalService == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        ClinicalService clinicalService
+        def objectJSON = request.JSON
+
+        println(objectJSON)
+
+        if(objectJSON.id){
+            clinicalService = ClinicalService.get(objectJSON.id)
+            if (clinicalService == null) {
+                render status: NOT_FOUND
+                return
+            }
+            clinicalService.properties = objectJSON
         }
+
         if (clinicalService.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond clinicalService.errors
@@ -80,6 +91,25 @@ class ClinicalServiceController extends RestfulController{
         }
 
         respond clinicalService, [status: OK, view:"show"]
+
+//        if (clinicalService == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (clinicalService.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond clinicalService.errors
+//            return
+//        }
+//
+//        try {
+//            clinicalServiceService.save(clinicalService)
+//        } catch (ValidationException e) {
+//            respond clinicalService.errors
+//            return
+//        }
+//
+//        respond clinicalService, [status: OK, view:"show"]
     }
 
     @Transactional

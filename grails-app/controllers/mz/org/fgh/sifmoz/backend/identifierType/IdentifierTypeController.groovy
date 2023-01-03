@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.identifierType
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -63,11 +64,21 @@ class IdentifierTypeController extends RestfulController{
     }
 
     @Transactional
-    def update(IdentifierType identifierType) {
-        if (identifierType == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        IdentifierType identifierType
+        def objectJSON = request.JSON
+
+        println(objectJSON)
+
+        if(objectJSON.id){
+            identifierType = IdentifierType.get(objectJSON.id)
+            if (identifierType == null) {
+                render status: NOT_FOUND
+                return
+            }
+            identifierType.properties = objectJSON
         }
+
         if (identifierType.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond identifierType.errors
@@ -82,6 +93,25 @@ class IdentifierTypeController extends RestfulController{
         }
 
         respond identifierType, [status: OK, view:"show"]
+
+//        if (identifierType == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (identifierType.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond identifierType.errors
+//            return
+//        }
+//
+//        try {
+//            identifierTypeService.save(identifierType)
+//        } catch (ValidationException e) {
+//            respond identifierType.errors
+//            return
+//        }
+//
+//        respond identifierType, [status: OK, view:"show"]
     }
 
     @Transactional
