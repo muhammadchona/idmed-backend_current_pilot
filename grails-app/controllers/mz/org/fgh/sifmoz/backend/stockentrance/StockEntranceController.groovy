@@ -64,25 +64,31 @@ class StockEntranceController extends RestfulController{
     }
 
     @Transactional
-    def update(StockEntrance stockEntrance) {
-        if (stockEntrance == null) {
+    def update() {
+        def objectJSON = request.JSON
+        StockEntrance stockEntranceDb = StockEntrance.get(objectJSON.id)
+        if (stockEntranceDb == null) {
             render status: NOT_FOUND
             return
         }
-        if (stockEntrance.hasErrors()) {
+        stockEntranceDb.properties = objectJSON
+        stockEntranceDb.stocks.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.stocks[index].id)
+        }
+        if (stockEntranceDb.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond stockEntrance.errors
+            respond stockEntranceDb.errors
             return
         }
 
         try {
-            stockEntranceService.save(stockEntrance)
+            stockEntranceService.save(stockEntranceDb)
         } catch (ValidationException e) {
-            respond stockEntrance.errors
+            respond stockEntranceDb.errors
             return
         }
 
-        respond stockEntrance, [status: OK, view:"show"]
+        respond stockEntranceDb, [status: OK, view:"show"]
     }
 
     @Transactional

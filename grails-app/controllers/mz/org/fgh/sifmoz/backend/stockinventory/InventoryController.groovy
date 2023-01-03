@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
+import mz.org.fgh.sifmoz.backend.stockentrance.StockEntrance
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
@@ -86,30 +87,36 @@ class InventoryController extends RestfulController{
     }
 
     @Transactional
-    def update(Inventory inventory) {
-        Inventory inventoryBack = inventoryService.get(inventory.getId())
+    def update() {
+        def objectJSON = request.JSON
+        Inventory inventoryDb = Inventory.get(objectJSON.id)
 
-        if (inventory == null) {
+        if (inventoryDb == null) {
             render status: NOT_FOUND
             return
         }
-        if (!inventoryBack.isOpen()) {
+
+        inventoryDb.properties = objectJSON
+        inventoryDb.adjustments.eachWithIndex { item, index ->
+            item.id = UUID.fromString(objectJSON.adjustments[index].id)
+        }
+        if (!inventoryDb.isOpen()) {
             throw new RuntimeException("O inventário já se encontra fechado.")
         }
-        if (inventory.hasErrors()) {
+        if (inventoryDb.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond inventory.errors
+            respond inventoryDb.errors
             return
         }
 
         try {
-            inventoryService.save(inventory)
+            inventoryService.save(inventoryDb)
         } catch (ValidationException e) {
-            respond inventory.errors
+            respond inventoryDb.errors
             return
         }
 
-        respond inventory, [status: OK, view:"show"]
+        respond inventoryDb, [status: OK, view:"show"]
     }
 
     @Transactional
