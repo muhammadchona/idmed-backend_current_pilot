@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -46,6 +47,8 @@ class DoctorController extends RestfulController{
         doctor.beforeInsert()
         doctor.validate()
 
+//        println(objectJSON)
+
         if(objectJSON.id){
             doctor.id = UUID.fromString(objectJSON.id)
         }
@@ -67,11 +70,19 @@ class DoctorController extends RestfulController{
     }
 
     @Transactional
-    def update(Doctor doctor) {
-        if (doctor == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        Doctor doctor
+        def objectJSON = request.JSON
+
+        if(objectJSON.id){
+            doctor = Doctor.get(objectJSON.id)
+            if (doctor == null) {
+                render status: NOT_FOUND
+                return
+            }
+            doctor.properties = objectJSON
         }
+
         if (doctor.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond doctor.errors
@@ -86,6 +97,25 @@ class DoctorController extends RestfulController{
         }
 
         respond doctor, [status: OK, view:"show"]
+
+//        if (doctor == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (doctor.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond doctor.errors
+//            return
+//        }
+//
+//        try {
+//            doctorService.save(doctor)
+//        } catch (ValidationException e) {
+//            respond doctor.errors
+//            return
+//        }
+//
+//        respond doctor, [status: OK, view:"show"]
     }
 
     @Transactional

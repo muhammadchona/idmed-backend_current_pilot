@@ -6,6 +6,8 @@ import grails.validation.ValidationException
 
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
+import mz.org.fgh.sifmoz.backend.group.GroupInfo
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -66,11 +68,20 @@ class ClinicController extends RestfulController{
     }
 
     @Transactional
-    def update(Clinic clinic) {
-        if (clinic == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+
+        Clinic clinic
+        def objectJSON = request.JSON
+
+        if(objectJSON.id){
+            clinic = Clinic.get(objectJSON.id)
+            if (clinic == null) {
+                render status: NOT_FOUND
+                return
+            }
+            clinic.properties = objectJSON
         }
+
         if (clinic.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond clinic.errors

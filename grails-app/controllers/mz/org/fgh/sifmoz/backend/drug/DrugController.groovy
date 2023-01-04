@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.drug
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -63,11 +64,19 @@ class DrugController extends RestfulController{
     }
 
     @Transactional
-    def update(Drug drug) {
-        if (drug == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        Drug drug
+        def objectJSON = request.JSON
+        println(objectJSON)
+        if(objectJSON.id){
+            drug = Drug.get(objectJSON.id)
+            if (drug == null) {
+                render status: NOT_FOUND
+                return
+            }
+            drug.properties = objectJSON
         }
+
         if (drug.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond drug.errors
@@ -82,6 +91,25 @@ class DrugController extends RestfulController{
         }
 
         respond drug, [status: OK, view:"show"]
+
+//        if (drug == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (drug.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond drug.errors
+//            return
+//        }
+//
+//        try {
+//            drugService.save(drug)
+//        } catch (ValidationException e) {
+//            respond drug.errors
+//            return
+//        }
+//
+//        respond drug, [status: OK, view:"show"]
     }
 
     @Transactional

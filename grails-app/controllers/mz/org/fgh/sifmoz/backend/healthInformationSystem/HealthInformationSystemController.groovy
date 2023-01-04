@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.healthInformationSystem
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -61,11 +62,21 @@ class HealthInformationSystemController extends RestfulController{
     }
 
     @Transactional
-    def update(HealthInformationSystem healthInformationSystem) {
-        if (healthInformationSystem == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        HealthInformationSystem healthInformationSystem
+        def objectJSON = request.JSON
+
+        println(objectJSON)
+
+        if(objectJSON.id){
+            healthInformationSystem = HealthInformationSystem.get(objectJSON.id)
+            if (healthInformationSystem == null) {
+                render status: NOT_FOUND
+                return
+            }
+            healthInformationSystem.properties = objectJSON
         }
+
         if (healthInformationSystem.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond healthInformationSystem.errors
@@ -80,6 +91,24 @@ class HealthInformationSystemController extends RestfulController{
         }
 
         respond healthInformationSystem, [status: OK, view:"show"]
+//        if (healthInformationSystem == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (healthInformationSystem.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond healthInformationSystem.errors
+//            return
+//        }
+//
+//        try {
+//            healthInformationSystemService.save(healthInformationSystem)
+//        } catch (ValidationException e) {
+//            respond healthInformationSystem.errors
+//            return
+//        }
+//
+//        respond healthInformationSystem, [status: OK, view:"show"]
     }
 
     @Transactional

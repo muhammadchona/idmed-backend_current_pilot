@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.therapeuticRegimen
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -63,11 +64,19 @@ class TherapeuticRegimenController extends RestfulController{
     }
 
     @Transactional
-    def update(TherapeuticRegimen therapeuticRegimen) {
-        if (therapeuticRegimen == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        TherapeuticRegimen therapeuticRegimen
+        def objectJSON = request.JSON
+
+        if(objectJSON.id){
+            therapeuticRegimen = TherapeuticRegimen.get(objectJSON.id)
+            if (therapeuticRegimen == null) {
+                render status: NOT_FOUND
+                return
+            }
+            therapeuticRegimen.properties = objectJSON
         }
+
         if (therapeuticRegimen.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond therapeuticRegimen.errors
@@ -82,6 +91,25 @@ class TherapeuticRegimenController extends RestfulController{
         }
 
         respond therapeuticRegimen, [status: OK, view:"show"]
+
+//        if (therapeuticRegimen == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (therapeuticRegimen.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond therapeuticRegimen.errors
+//            return
+//        }
+//
+//        try {
+//            therapeuticRegimenService.save(therapeuticRegimen)
+//        } catch (ValidationException e) {
+//            respond therapeuticRegimen.errors
+//            return
+//        }
+//
+//        respond therapeuticRegimen, [status: OK, view:"show"]
     }
 
     @Transactional

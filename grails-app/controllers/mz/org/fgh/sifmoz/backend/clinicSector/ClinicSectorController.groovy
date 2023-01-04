@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.clinicSector
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -36,15 +37,15 @@ class ClinicSectorController extends RestfulController{
     @Transactional
     def save() {
 
-        ClinicSector clinicSectore = new ClinicSector()
+        ClinicSector clinicSector = new ClinicSector()
         def objectJSON = request.JSON
-        clinicSectore = objectJSON as ClinicSector
+        clinicSector = objectJSON as ClinicSector
 
-        clinicSectore.beforeInsert()
-        clinicSectore.validate()
+        clinicSector.beforeInsert()
+        clinicSector.validate()
 
         if(objectJSON.id){
-            clinicSectore.id = UUID.fromString(objectJSON.id)
+            clinicSector.id = UUID.fromString(objectJSON.id)
         }
 
         if (clinicSector.hasErrors()) {
@@ -64,11 +65,19 @@ class ClinicSectorController extends RestfulController{
     }
 
     @Transactional
-    def update(ClinicSector clinicSector) {
-        if (clinicSector == null) {
-            render status: NOT_FOUND
-            return
+    def update() {
+        ClinicSector clinicSector
+        def objectJSON = request.JSON
+
+        if(objectJSON.id){
+            clinicSector = ClinicSector.get(objectJSON.id)
+            if (clinicSector == null) {
+                render status: NOT_FOUND
+                return
+            }
+            clinicSector.properties = objectJSON
         }
+
         if (clinicSector.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond clinicSector.errors
@@ -83,6 +92,25 @@ class ClinicSectorController extends RestfulController{
         }
 
         respond clinicSector, [status: OK, view:"show"]
+
+//        if (clinicSector == null) {
+//            render status: NOT_FOUND
+//            return
+//        }
+//        if (clinicSector.hasErrors()) {
+//            transactionStatus.setRollbackOnly()
+//            respond clinicSector.errors
+//            return
+//        }
+//
+//        try {
+//            clinicSectorService.save(clinicSector)
+//        } catch (ValidationException e) {
+//            respond clinicSector.errors
+//            return
+//        }
+//
+//        respond clinicSector, [status: OK, view:"show"]
     }
 
     @Transactional
