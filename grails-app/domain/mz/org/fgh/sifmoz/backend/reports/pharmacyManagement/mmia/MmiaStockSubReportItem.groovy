@@ -13,10 +13,8 @@ class MmiaStockSubReportItem {
     int lossesAdjustments
     int inventory
     Date expireDate
-    MmiaReport mmiaReport
 
-    MmiaStockSubReportItem() {
-    }
+    static belongsTo = [mmiaReport: MmiaReport]
 
     MmiaStockSubReportItem(String reportId, String fnmCode, String drugName, String unit, int initialEntrance, int outcomes, int lossesAdjustments, int inventory) {
         this.reportId = reportId

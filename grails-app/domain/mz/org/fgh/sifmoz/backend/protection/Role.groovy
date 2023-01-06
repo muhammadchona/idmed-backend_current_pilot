@@ -39,5 +39,6 @@ class Role implements Serializable {
 
 	static mapping = {
 		cache true
+		menus joinTable: [name:"role_menu", key:"role_menus_id", column:"menus_id"]
 	}
 }

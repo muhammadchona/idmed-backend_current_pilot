@@ -24,6 +24,7 @@ class ClinicalService extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
+        clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
     }
 
     def beforeInsert() {

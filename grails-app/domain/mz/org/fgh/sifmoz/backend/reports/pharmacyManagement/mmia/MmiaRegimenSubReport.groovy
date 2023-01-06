@@ -11,11 +11,8 @@ class MmiaRegimenSubReport {
     String lineCode
     int totalPatients
     int cumunitaryClinic
-    MmiaReport mmiaReport
 
-    MmiaRegimenSubReport() {
-
-    }
+        static belongsTo = [mmiaReport: MmiaReport]
 
     MmiaRegimenSubReport (PrescriptionDetail detail, String reportId, boolean isReferido) {
         this.reportId = reportId
