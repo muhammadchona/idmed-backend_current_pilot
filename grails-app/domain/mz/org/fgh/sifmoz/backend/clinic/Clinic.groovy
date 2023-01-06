@@ -24,10 +24,12 @@ class Clinic extends BaseEntity {
     String uuid
 
     static belongsTo = [nationalClinic: NationalClinic]
-    static hasMany = [sectors: ClinicSector, mmiaReports: MmiaReport]
+    static hasMany = [sectors: ClinicSector, mmiaReports: MmiaReport, users: SecUser]
 
     static mapping = {
         id generator: "assigned"
+        mmiaReports joinTable: [name:"mmia_report_clinic", key:"clinic_id", column:"mmia_report_clinic_id"]
+        users  joinTable: [name: "clinic_users", key: "clinic_id", column: "sec_user_id"]
     }
     def beforeInsert() {
         if (!id) {
