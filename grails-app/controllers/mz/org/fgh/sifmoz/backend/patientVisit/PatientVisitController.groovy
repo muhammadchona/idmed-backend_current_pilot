@@ -68,6 +68,7 @@ class PatientVisitController extends RestfulController{
     def save() {
         PatientVisit visit = new PatientVisit()
         def objectJSON = request.JSON
+        def syncStatus = objectJSON["syncStatus"]
         visit = objectJSON as PatientVisit
 
         visit.beforeInsert()
@@ -144,14 +145,14 @@ class PatientVisitController extends RestfulController{
                   Prescription existingPrescription = Prescription.findById(item.prescription.id)
                   if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
-                    reduceStock(item.pack)
+                    reduceStock(item.pack, syncStatus)
                 }
             } else {
                 visit.patientVisitDetails.each {item ->
                     Prescription existingPrescription = Prescription.findById(item.prescription.id)
                     if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
-                    reduceStock(item.pack)
+                    reduceStock(item.pack, syncStatus)
                 }
                 patientVisitService.save(visit)
             }
@@ -168,6 +169,7 @@ class PatientVisitController extends RestfulController{
     def update() {
         def objectJSON = request.JSON
         PatientVisit patientVisitDB = PatientVisit.get(objectJSON.id)
+        def syncStatus = objectJSON["syncStatus"]
         if (patientVisitDB == null) {
             render status: NOT_FOUND
             return
@@ -191,8 +193,8 @@ class PatientVisitController extends RestfulController{
         }
         try {
             patientVisitDB.patientVisitDetails.each {item->
-                restoreStock(item.pack)
-                reduceStock(item.pack)
+                restoreStock(item.pack,syncStatus)
+                reduceStock(item.pack,syncStatus)
                 packService.save(item.pack)
             }
 
@@ -231,8 +233,8 @@ class PatientVisitController extends RestfulController{
         render JSONSerializer.setObjectListJsonResponse(patientVisitService.getAllLastWithScreening(clinicId, offset, max)) as JSON
     }
 
-    void restoreStock(Pack pack) {
-        if(pack.syncStatus == 'N') {
+    void restoreStock(Pack pack, def syncStatus) {
+        if(pack.syncStatus == 'N' && syncStatus == '') {
             List<PackagedDrug> packagedDrugsDb = PackagedDrug.findAllByPack(pack)
             List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrugsDb)
             for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
@@ -247,8 +249,8 @@ class PatientVisitController extends RestfulController{
         }
     }
 
-    void reduceStock(Pack pack) {
-        if(pack.syncStatus == 'N') {
+    void reduceStock(Pack pack, def syncStatus) {
+        if(pack.syncStatus == 'N' && syncStatus == '') {
             pack.packagedDrugs.each { pcDrugs ->
                 pcDrugs.packagedDrugStocks.each { pcdStock ->
                     Stock stock = Stock.findById(pcdStock.stock.id)
