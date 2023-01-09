@@ -17,6 +17,9 @@ class ClinicalService extends BaseEntity {
     @JsonManagedReference
     IdentifierType identifierType
     boolean active
+    List<TherapeuticRegimen> therapeuticRegimens
+
+    static transients = ['therapeuticRegimens']
 
     @JsonManagedReference
     static hasMany = [attributes: ClinicalServiceAttribute,

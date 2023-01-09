@@ -4,6 +4,11 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
+import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttributeService
+import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
+import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimenService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -17,6 +22,8 @@ import grails.gorm.transactions.Transactional
 class ClinicalServiceController extends RestfulController{
 
     ClinicalServiceService clinicalServiceService
+    ClinicalServiceAttributeService clinicalServiceAttributeService
+    TherapeuticRegimenService therapeuticRegimenService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -44,6 +51,12 @@ class ClinicalServiceController extends RestfulController{
 
         if(objectJSON.id){
             clinicalService.id = UUID.fromString(objectJSON.id)
+            clinicalService.attributes.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.attributes[index].id)
+            }
+         //   clinicalService.clinicSectors.eachWithIndex { item, index ->
+         //       item.id = UUID.fromString(objectJSON.clinicSectors[index].id)
+         //   }
         }
         if (clinicalService.hasErrors()) {
             transactionStatus.setRollbackOnly()
@@ -52,6 +65,16 @@ class ClinicalServiceController extends RestfulController{
         }
 
         try {
+            clinicalService.therapeuticRegimens = new ArrayList<>()
+            for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
+                TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
+                clinicalService.therapeuticRegimens.add(therapeuticRegimen)
+            }
+            clinicalService.therapeuticRegimens.each {item ->
+                    item.clinicalService = clinicalService
+                    therapeuticRegimenService.save(item)
+
+            }
             clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
             respond clinicalService.errors
@@ -63,18 +86,31 @@ class ClinicalServiceController extends RestfulController{
 
     @Transactional
     def update() {
-        ClinicalService clinicalService
         def objectJSON = request.JSON
-
-        println(objectJSON)
-
+        ClinicalService clinicalService = ClinicalService.get(objectJSON.id)
+        clinicalService.attributes.each {item ->
+            clinicalServiceAttributeService.delete(item.id)
+        }
+        // println(objectJSON)
+     //   List<TherapeuticRegimen> therapeuticRegimens = objectJSON.therapeuticRegimens
+        clinicalService.properties = objectJSON
+    //    clinicalService.therapeuticRegimens = therapeuticRegimens
         if(objectJSON.id){
             clinicalService = ClinicalService.get(objectJSON.id)
+            clinicalService.therapeuticRegimens = new ArrayList<>()
+            clinicalService.attributes.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.attributes[index].id)
+            //   item.clinicalServiceAttributeType.id = UUID.fromString(objectJSON.attributes[index].clinicalServiceAttributeType.id)
+            }
+            for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
+                TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
+                clinicalService.therapeuticRegimens.add(therapeuticRegimen)
+            }
             if (clinicalService == null) {
                 render status: NOT_FOUND
                 return
             }
-            clinicalService.properties = objectJSON
+
         }
 
         if (clinicalService.hasErrors()) {
@@ -84,6 +120,21 @@ class ClinicalServiceController extends RestfulController{
         }
 
         try {
+            List<TherapeuticRegimen> regimensByClinicalServiceDb = TherapeuticRegimen.findAllByClinicalService(clinicalService)
+            regimensByClinicalServiceDb.each {item ->
+                if (!clinicalService.therapeuticRegimens.contains(item)) {
+                    item.clinicalService = null
+                    therapeuticRegimenService.save(item)
+                }
+            }
+            clinicalService.therapeuticRegimens.each {item ->
+                if (!regimensByClinicalServiceDb.contains(item)) {
+                    TherapeuticRegimen therapeuticRegimenDB= item.get(item.id)
+                    therapeuticRegimenDB.clinicalService = clinicalService
+                    therapeuticRegimenService.save(therapeuticRegimenDB)
+                }
+
+            }
             clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
             respond clinicalService.errors
