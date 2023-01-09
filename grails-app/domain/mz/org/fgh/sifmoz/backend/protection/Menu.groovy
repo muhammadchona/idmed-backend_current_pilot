@@ -14,7 +14,7 @@ class Menu extends BaseEntity{
         this.description = description
     }
 
-//    static hasMany = [role: Role]
+    static hasMany = [roles: Role]
 
     static constraints = {
         code nullable: false, blank: false, unique: true
@@ -23,6 +23,7 @@ class Menu extends BaseEntity{
 
     static mapping = {
         id generator: "uuid"
+        roles joinTable: [name:"role_menu", key:"menu_id", column:"role_menus_id"]
     }
 
     @Override

@@ -57,6 +57,7 @@ class MmiaReport extends BaseEntity{
 
     static mapping = {
         id generator: "uuid"
+        clinic joinTable: [name:"mmia_report_clinic", key:"mmia_report_clinic_id", column:"clinic_id"]
     }
 
     static constraints = {

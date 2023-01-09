@@ -122,6 +122,7 @@ class PatientController extends RestfulController {
             List<String> toIncludeProps = new ArrayList<>()
             toIncludeProps.add("identifiers")
             toIncludeProps.add("clinic")
+           // patientService.getAllByClinicId(clinicId, offset, max)
             //render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
             render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
             //respond patientService.getAllByClinicId(clinicId, offset, max)
@@ -133,7 +134,12 @@ class PatientController extends RestfulController {
         patient = objectJSON as Patient
 
         List<Patient> patientList = patientService.search(patient)
-        render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
+      //  def include = ['province' , 'district','episodes']
+        def childInclude = ['name', 'code']
+        def exclude = []
+     //   render patientList as JSON, include: include ,exclude: exclude
+        render JSONSerializer.setLightObjectListJsonResponse(patientList) as JSON
+       // render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
 
     def searchByParam(String searchString, String clinicId) {
