@@ -94,24 +94,6 @@ class IdentifierTypeController extends RestfulController{
 
         respond identifierType, [status: OK, view:"show"]
 
-//        if (identifierType == null) {
-//            render status: NOT_FOUND
-//            return
-//        }
-//        if (identifierType.hasErrors()) {
-//            transactionStatus.setRollbackOnly()
-//            respond identifierType.errors
-//            return
-//        }
-//
-//        try {
-//            identifierTypeService.save(identifierType)
-//        } catch (ValidationException e) {
-//            respond identifierType.errors
-//            return
-//        }
-//
-//        respond identifierType, [status: OK, view:"show"]
     }
 
     @Transactional

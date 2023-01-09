@@ -98,24 +98,6 @@ class DoctorController extends RestfulController{
 
         respond doctor, [status: OK, view:"show"]
 
-//        if (doctor == null) {
-//            render status: NOT_FOUND
-//            return
-//        }
-//        if (doctor.hasErrors()) {
-//            transactionStatus.setRollbackOnly()
-//            respond doctor.errors
-//            return
-//        }
-//
-//        try {
-//            doctorService.save(doctor)
-//        } catch (ValidationException e) {
-//            respond doctor.errors
-//            return
-//        }
-//
-//        respond doctor, [status: OK, view:"show"]
     }
 
     @Transactional

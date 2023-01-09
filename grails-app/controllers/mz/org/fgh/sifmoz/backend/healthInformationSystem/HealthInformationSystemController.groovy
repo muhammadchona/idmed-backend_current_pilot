@@ -91,24 +91,6 @@ class HealthInformationSystemController extends RestfulController{
         }
 
         respond healthInformationSystem, [status: OK, view:"show"]
-//        if (healthInformationSystem == null) {
-//            render status: NOT_FOUND
-//            return
-//        }
-//        if (healthInformationSystem.hasErrors()) {
-//            transactionStatus.setRollbackOnly()
-//            respond healthInformationSystem.errors
-//            return
-//        }
-//
-//        try {
-//            healthInformationSystemService.save(healthInformationSystem)
-//        } catch (ValidationException e) {
-//            respond healthInformationSystem.errors
-//            return
-//        }
-//
-//        respond healthInformationSystem, [status: OK, view:"show"]
     }
 
     @Transactional
