@@ -92,24 +92,6 @@ class ClinicalServiceController extends RestfulController{
 
         respond clinicalService, [status: OK, view:"show"]
 
-//        if (clinicalService == null) {
-//            render status: NOT_FOUND
-//            return
-//        }
-//        if (clinicalService.hasErrors()) {
-//            transactionStatus.setRollbackOnly()
-//            respond clinicalService.errors
-//            return
-//        }
-//
-//        try {
-//            clinicalServiceService.save(clinicalService)
-//        } catch (ValidationException e) {
-//            respond clinicalService.errors
-//            return
-//        }
-//
-//        respond clinicalService, [status: OK, view:"show"]
     }
 
     @Transactional

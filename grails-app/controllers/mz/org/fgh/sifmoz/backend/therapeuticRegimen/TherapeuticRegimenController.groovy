@@ -92,24 +92,6 @@ class TherapeuticRegimenController extends RestfulController{
 
         respond therapeuticRegimen, [status: OK, view:"show"]
 
-//        if (therapeuticRegimen == null) {
-//            render status: NOT_FOUND
-//            return
-//        }
-//        if (therapeuticRegimen.hasErrors()) {
-//            transactionStatus.setRollbackOnly()
-//            respond therapeuticRegimen.errors
-//            return
-//        }
-//
-//        try {
-//            therapeuticRegimenService.save(therapeuticRegimen)
-//        } catch (ValidationException e) {
-//            respond therapeuticRegimen.errors
-//            return
-//        }
-//
-//        respond therapeuticRegimen, [status: OK, view:"show"]
     }
 
     @Transactional
