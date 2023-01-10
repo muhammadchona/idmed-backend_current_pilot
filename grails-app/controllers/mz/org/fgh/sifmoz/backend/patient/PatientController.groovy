@@ -134,11 +134,11 @@ class PatientController extends RestfulController {
         patient = objectJSON as Patient
 
         List<Patient> patientList = patientService.search(patient)
-      //  def include = ['province' , 'district','episodes']
+        def include = ['province' , 'district','episodes']
         def childInclude = ['name', 'code']
         def exclude = []
      //   render patientList as JSON, include: include ,exclude: exclude
-        render JSONSerializer.setLightObjectListJsonResponse(patientList) as JSON
+        render JSONSerializer.setLightObjectListJsonResponse(patientList, include ) as JSON
        // render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
 

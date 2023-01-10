@@ -54,9 +54,9 @@ class ClinicalServiceController extends RestfulController{
             clinicalService.attributes.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.attributes[index].id)
             }
-         //   clinicalService.clinicSectors.eachWithIndex { item, index ->
-         //       item.id = UUID.fromString(objectJSON.clinicSectors[index].id)
-         //   }
+            clinicalService.clinicSectors.eachWithIndex { item, index ->
+               item.id = UUID.fromString(objectJSON.clinicSectors[index].id)
+            }
         }
         if (clinicalService.hasErrors()) {
             transactionStatus.setRollbackOnly()
@@ -101,6 +101,9 @@ class ClinicalServiceController extends RestfulController{
             clinicalService.attributes.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.attributes[index].id)
             //   item.clinicalServiceAttributeType.id = UUID.fromString(objectJSON.attributes[index].clinicalServiceAttributeType.id)
+            }
+            clinicalService.clinicSectors.eachWithIndex { item, index ->
+                item.id = objectJSON.clinicSectors[index].id
             }
             for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
                 TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)

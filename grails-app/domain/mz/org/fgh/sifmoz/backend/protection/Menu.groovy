@@ -13,8 +13,8 @@ class Menu extends BaseEntity{
         this.code = code
         this.description = description
     }
-
-    static hasMany = [roles: Role]
+    static belongsTo = Role
+       static hasMany = [roles: Role]
 
     static constraints = {
         code nullable: false, blank: false, unique: true
@@ -23,7 +23,7 @@ class Menu extends BaseEntity{
 
     static mapping = {
         id generator: "uuid"
-        roles joinTable: [name:"role_menu", key:"menu_id", column:"role_menus_id"]
+        roles joinTable: [name:"role_menu", key:"menus_id", column:"roles_id"]
     }
 
     @Override
