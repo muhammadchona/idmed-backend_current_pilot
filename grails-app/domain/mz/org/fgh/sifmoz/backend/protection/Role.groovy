@@ -19,7 +19,7 @@ class Role implements Serializable {
 	String description
 	boolean active
 
-	static belongsTo = Menu
+
 	static hasMany = [menus: Menu]
 
 	Role(String authority,String name,String description, boolean active){
@@ -39,6 +39,6 @@ class Role implements Serializable {
 
 	static mapping = {
 		cache true
-		menus joinTable: [name:"role_menu", key:"role_menus_id", column:"menus_id"]
+		menus joinTable: [name:"role_menu", key:"roles_id", column:"menus_id"]
 	}
 }

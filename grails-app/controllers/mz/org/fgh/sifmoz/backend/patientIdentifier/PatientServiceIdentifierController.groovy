@@ -3,6 +3,10 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -38,17 +42,25 @@ class PatientServiceIdentifierController extends RestfulController{
         def objectJSON = request.JSON
         patientServiceIdentifier = objectJSON as PatientServiceIdentifier
 
-        patientServiceIdentifier.beforeInsert()
         patientServiceIdentifier.validate()
 
         if(objectJSON.id){
+//            patientServiceIdentifier.id = UUID.fromString(objectJSON.id)
+            patientServiceIdentifier.properties = request.JSON
             patientServiceIdentifier.id = UUID.fromString(objectJSON.id)
+//            patientServiceIdentifier.identifierType = IdentifierType.get(objectJSON.identifierType.id).lock()
+//            patientServiceIdentifier.service = ClinicalService.get(objectJSON.service.id).lock()
+//            patientServiceIdentifier.clinic = Clinic.get(objectJSON.clinic.id).lock()
+//            patientServiceIdentifier.patient = Patient.get(objectJSON.patient.id).lock()
         }
+
         if (patientServiceIdentifier.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond patientServiceIdentifier.errors
             return
         }
+
+        patientServiceIdentifier.beforeInsert()
 
         try {
             patientServiceIdentifierService.save(patientServiceIdentifier)
