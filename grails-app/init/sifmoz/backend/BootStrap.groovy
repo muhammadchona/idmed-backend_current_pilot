@@ -372,6 +372,7 @@ class BootStrap {
                 clinicalService.code = clinicalServiceObject.code
                 clinicalService.description = clinicalServiceObject.description
                 clinicalService.identifierType = clinicalServiceObject.identifierType
+                clinicalService.active = clinicalServiceObject.active
                 clinicalService.save(flush: true, failOnError: true)
             }
         }

@@ -66,14 +66,16 @@ class ClinicalServiceController extends RestfulController{
 
         try {
             clinicalService.therapeuticRegimens = new ArrayList<>()
-            for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
-                TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
-                clinicalService.therapeuticRegimens.add(therapeuticRegimen)
-            }
-            clinicalService.therapeuticRegimens.each {item ->
+            if(objectJSON.therapeuticRegimens != null) {
+                for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
+                    TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
+                    clinicalService.therapeuticRegimens.add(therapeuticRegimen)
+                }
+                clinicalService.therapeuticRegimens.each {item ->
                     item.clinicalService = clinicalService
                     therapeuticRegimenService.save(item)
 
+                }
             }
             clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
@@ -88,26 +90,32 @@ class ClinicalServiceController extends RestfulController{
     def update() {
         def objectJSON = request.JSON
         ClinicalService clinicalService = ClinicalService.get(objectJSON.id)
-        clinicalService.attributes.each {item ->
-            clinicalServiceAttributeService.delete(item.id)
+        boolean clinicalServiceInitialState = clinicalService.active
+        if(objectJSON.active == true && clinicalServiceInitialState == true) {
+            clinicalService.attributes.each { item ->
+                clinicalServiceAttributeService.delete(item.id)
+            }
         }
-        // println(objectJSON)
-     //   List<TherapeuticRegimen> therapeuticRegimens = objectJSON.therapeuticRegimens
+
         clinicalService.properties = objectJSON
-    //    clinicalService.therapeuticRegimens = therapeuticRegimens
+
         if(objectJSON.id){
-            clinicalService = ClinicalService.get(objectJSON.id)
+          //  clinicalService = ClinicalService.get(objectJSON.id)
             clinicalService.therapeuticRegimens = new ArrayList<>()
-            clinicalService.attributes.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.attributes[index].id)
-            //   item.clinicalServiceAttributeType.id = UUID.fromString(objectJSON.attributes[index].clinicalServiceAttributeType.id)
+            if(objectJSON.active == true && clinicalServiceInitialState == true) {
+                clinicalService.attributes.eachWithIndex { item, index ->
+                    item.id = UUID.fromString(objectJSON.attributes[index].id)
+                    //   item.clinicalServiceAttributeType.id = UUID.fromString(objectJSON.attributes[index].clinicalServiceAttributeType.id)
+                }
             }
             clinicalService.clinicSectors.eachWithIndex { item, index ->
                 item.id = objectJSON.clinicSectors[index].id
             }
-            for (int i=0;i < objectJSON.therapeuticRegimens.length();i++) {
-                TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
-                clinicalService.therapeuticRegimens.add(therapeuticRegimen)
+            if(objectJSON.therapeuticRegimens != null) {
+                for (int i = 0; i < objectJSON.therapeuticRegimens.length(); i++) {
+                    TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
+                    clinicalService.therapeuticRegimens.add(therapeuticRegimen)
+                }
             }
             if (clinicalService == null) {
                 render status: NOT_FOUND
@@ -136,7 +144,6 @@ class ClinicalServiceController extends RestfulController{
                     therapeuticRegimenDB.clinicalService = clinicalService
                     therapeuticRegimenService.save(therapeuticRegimenDB)
                 }
-
             }
             clinicalServiceService.save(clinicalService)
         } catch (ValidationException e) {
