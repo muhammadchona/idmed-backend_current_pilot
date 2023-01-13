@@ -8,6 +8,7 @@ import mz.org.fgh.sifmoz.backend.clinicSectorType.ClinicSectorType
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.stockcenter.StockCenter
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
@@ -106,6 +107,7 @@ class SystemConfigsController {
                 mainClinic.save(flush: true, insert: true, failOnError: true)
                 initClinicSector()
                 initStockCenter(mainClinic)
+                associateClinicSectorToClinicalService()
             }
         }
     }
@@ -152,5 +154,13 @@ class SystemConfigsController {
             stockCenter.setPrefered(true)
             stockCenter.save(flush: true, failOnError: true)
         }
+    }
+
+    def associateClinicSectorToClinicalService() {
+        //id for TARV
+        ClinicalService clinicalService = ClinicalService.get("80A7852B-57DF-4E40-90EC-ABDE8403E01F")
+        ClinicSector clinicSector = ClinicSector.get("8a8a823b81900fee0181902674b20004")
+        clinicalService.clinicSectors = new HashSet<>(Arrays.asList(clinicSector))
+        clinicalService.save(flush: true, failOnError: true)
     }
 }
