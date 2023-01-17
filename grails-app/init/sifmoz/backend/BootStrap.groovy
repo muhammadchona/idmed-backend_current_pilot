@@ -795,6 +795,7 @@ class BootStrap {
 
     List<Object> listDispenseType() {
         List<Object> dispenseTypeList = new ArrayList<>()
+        dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190005', code: 'FR', description: 'Fluxo Rapido'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf78a8c0006', code: 'DM', description: 'Dispensa Mensal'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf7ca4e0007', code: 'DT', description: 'Dispensa Trimestral'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf8044f0008', code: 'DS', description: 'Dispensa Semestral'))
