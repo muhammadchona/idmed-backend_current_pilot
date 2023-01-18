@@ -26,7 +26,7 @@ class ProvincialServer extends BaseEntity{
 
     static constraints = {
         urlPath(nullable: false, blank: false)
-        code(nullable: false, maxSize: 50, blank: false,unique: ['code', 'destination'])
+        code(nullable: false, maxSize: 50, blank: false,unique: ['destination'])
         username(nullable: false,blank: false)
         password(nullable: false,blank: false)
     }

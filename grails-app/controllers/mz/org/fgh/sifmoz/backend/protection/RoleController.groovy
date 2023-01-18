@@ -52,8 +52,8 @@ class RoleController {
             respond role.errors
             return
         }
-7
-        try {77
+
+        try {
 
             if(role.active == true) {
                 for(Menu menu: role.menus) {
