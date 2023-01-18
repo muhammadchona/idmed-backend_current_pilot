@@ -40,6 +40,9 @@ class GroupPackHeaderController extends RestfulController{
 
         if(objectJSON.id){
             groupPackHeader.id = UUID.fromString(objectJSON.id)
+            groupPackHeader.groupPacks.eachWithIndex { item, index  ->
+                item.id = UUID.fromString(objectJSON.groupPacks[index].id)
+            }
         }
 
         if (groupPackHeader.hasErrors()) {
