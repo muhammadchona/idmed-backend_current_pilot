@@ -637,7 +637,7 @@ class BootStrap {
 
     void initProvincialServer() {
         for (provincialServerObject in listProvincialServer()) {
-            if (!ProvincialServer.findByCode(provincialServerObject.code)) {
+            if (!ProvincialServer.findByCodeAndDestination(provincialServerObject.code, provincialServerObject.destination)) {
                 ProvincialServer provincialServer = new ProvincialServer()
                 provincialServer.id = provincialServerObject.id
                 provincialServer.urlPath = provincialServerObject.urlPath
@@ -689,6 +689,7 @@ class BootStrap {
         provincialServerList.add(new LinkedHashMap(id: '4489B1B6-A485-439A-B966-1C752873BF79', code: '09', urlPath: 'idartgaza.fgh.org.mz:', port: '3009', destination: 'MOBILE', username: 'postgres', password: 'postgres'))
         provincialServerList.add(new LinkedHashMap(id: 'A5336E44-A9DC-4019-8B33-9F0738DB2D55', code: '10', urlPath: 'idartmaputo-prov.fgh.org.mz:', port: '3010', destination: 'MOBILE', username: 'postgres', password: 'postgres'))
         provincialServerList.add(new LinkedHashMap(id: 'F21B5D3F-9C70-40A0-BE2F-66F4A458655F', code: '11', urlPath: 'idartmaputo.cid.fgh.org.mz:', port: '3011', destination: 'MOBILE', username: 'postgres', password: 'postgres'))
+        provincialServerList.add(new LinkedHashMap(id: 'F86C6280-0D36-4E5E-9C2C-D68002DB7A51', code: '12', urlPath: 'dev.fgh.org.mz:', port: '3910', destination: 'MOBILE', username: 'postgres', password: 'postgres'))
 
         provincialServerList.add(new LinkedHashMap(id: '0231B69C-A7AC-4024-8DF7-E75E2828E578', code: '01', urlPath: 'idartniassa.fgh.org.mz:', port: '5001', destination: 'IDMED', username: 'postgres', password: 'postgres'))
         provincialServerList.add(new LinkedHashMap(id: '2C3B00F3-C8CB-4071-A070-54819C2F0962', code: '02', urlPath: 'idartcabodelegado.fgh.org.mz:', port: '5002', destination: 'IDMED', username: 'postgres', password: 'postgres'))
@@ -801,6 +802,8 @@ class BootStrap {
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf7ca4e0007', code: 'DT', description: 'Dispensa Trimestral'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf8044f0008', code: 'DS', description: 'Dispensa Semestral'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190009', code: 'DA', description: 'Dispensa Anual'))
+
+
 
         return dispenseTypeList
 
