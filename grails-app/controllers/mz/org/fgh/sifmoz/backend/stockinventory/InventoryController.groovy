@@ -100,9 +100,9 @@ class InventoryController extends RestfulController{
         inventoryDb.adjustments.eachWithIndex { item, index ->
             item.id = UUID.fromString(objectJSON.adjustments[index].id)
         }
-        if (!inventoryDb.isOpen()) {
+        /*if (!inventoryDb.isOpen()) {
             throw new RuntimeException("O inventário já se encontra fechado.")
-        }
+        }*/
         if (inventoryDb.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond inventoryDb.errors

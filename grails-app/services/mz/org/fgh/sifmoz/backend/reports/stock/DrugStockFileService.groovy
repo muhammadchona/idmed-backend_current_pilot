@@ -50,7 +50,7 @@ class DrugStockFileService {
             initStockEvent(result, drugStockFileEventArrayList)
         }
 
-        return drugStockFileEventArrayList
+        return drugStockFileEventArrayList.reverse()
     }
 
 
@@ -73,7 +73,7 @@ class DrugStockFileService {
             initStockEventMobile(result, drugStockFileEventArrayList)
         }
 
-        return drugStockFileEventArrayList
+        return drugStockFileEventArrayList.reverse()
     }
 
     def List<DrugStockFileEvent> getDrugBatchSumaryEvents(String clinicId, String stockId) {
@@ -97,7 +97,7 @@ class DrugStockFileService {
             initStockEvent(result, drugStockFileEventArrayList)
         }
 
-        return drugStockFileEventArrayList
+        return drugStockFileEventArrayList.reverse()
     }
 
 
@@ -122,7 +122,7 @@ class DrugStockFileService {
             initStockEventMobile(result, drugStockFileEventArrayList)
         }
 
-        return drugStockFileEventArrayList
+        return drugStockFileEventArrayList.reverse()
     }
 
     def List<DrugFile> getDrugFileMobile(String clinicId) {
