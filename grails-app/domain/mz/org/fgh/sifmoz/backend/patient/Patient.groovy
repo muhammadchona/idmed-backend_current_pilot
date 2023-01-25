@@ -42,12 +42,12 @@ class Patient extends BaseEntity {
     static belongsTo = [Clinic]
 
     static hasMany = [
-            attributes: PatientAttribute,
-            identifiers: PatientServiceIdentifier,
-            appointments: Appointment,
+            attributes           : PatientAttribute,
+            identifiers          : PatientServiceIdentifier,
+            appointments         : Appointment,
             //            groups: GroupInfo,
-            groups: GroupMember,
-            patientVisits: PatientVisit,
+            groupMembers         : GroupMember,
+            patientVisits        : PatientVisit,
             patientTransReference: PatientTransReference
     ]
 
@@ -72,7 +72,7 @@ class Patient extends BaseEntity {
         attributes nullable: true
         identifiers nullable: true
         appointments nullable: true
-        groups nullable: true
+        groupMembers nullable: true
         clinic nullable: false
         patientVisits nullable: true
         hisUuid nullable: true
@@ -96,10 +96,10 @@ class Patient extends BaseEntity {
         return menus
     }
 
-    boolean isActiveOnGroup(String serviceCode) {
-        if (!Utilities.listHasElements(this.groups as ArrayList<?>)) return false
-        for (GroupMember groupInfo : this.groups) {
-            if (groupInfo?.group?.service?.code == serviceCode && groupInfo?.group?.isActive()) return true
+    boolean isActiveOnGroup(String serviceCode , Set <GroupInfo> patientActiveGroups)  {
+        if (!Utilities.listHasElements(patientActiveGroups as ArrayList<?>)) return false
+        for (GroupInfo groupInfo : patientActiveGroups) {
+            if (groupInfo?.service?.code == serviceCode && groupInfo?.isActive()) return true
         }
         return false
     }

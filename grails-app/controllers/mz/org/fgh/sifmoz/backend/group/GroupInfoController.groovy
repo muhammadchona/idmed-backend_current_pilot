@@ -7,12 +7,9 @@ import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMemberService
-import mz.org.fgh.sifmoz.backend.patient.IPatientService
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
-import static org.springframework.http.HttpStatus.ACCEPTED
-import static org.springframework.http.HttpStatus.CONFLICT
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -94,8 +91,14 @@ class GroupInfoController extends RestfulController{
             }
             group.properties = objectJSON
             group.members.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.members[index].id)
+                objectJSON.members.eachWithIndex { item2 ,index2 ->
+                    if (item.patientId == objectJSON.members[index2].patient_id) {
+                        item.id = UUID.fromString(objectJSON.members[index2].id)
+                    }
+                }
+
             }
+
         }
 
         if (group.hasErrors()) {
@@ -105,10 +108,13 @@ class GroupInfoController extends RestfulController{
         }
 
         try {
+       /*
             group.members.each { item ->
-                groupMemberService.save(item)
+                if (GroupMember.get(item.id) == null) {
+                    groupMemberService.save(item)
+                }
             }
-
+*/
             groupService.save(group)
         } catch (ValidationException e) {
             respond group.errors
@@ -135,7 +141,8 @@ class GroupInfoController extends RestfulController{
 
     def validadePatient(String patientId, String serviceCode) {
         Patient patient = Patient.findById(patientId)
-        patient.setGroups(groupService.getAllActiveOfPatientOnService(patient, serviceCode))
+        Set <GroupInfo> patientActiveGroups = groupService.getAllActiveOfPatientOnService(patient, serviceCode)
+       // patient.setGroupMembers(groupService.getAllActiveOfPatientOnService(patient, serviceCode))
         String msg = "Accepted"
 
         Episode lastPatientEpisode = episodeService.getLastEpisodeByIdentifier(patient, serviceCode)
@@ -147,7 +154,7 @@ class GroupInfoController extends RestfulController{
             msg = "O Último episódio do paciente não é de inicio."
             render msg
         }else
-        if (patient.isActiveOnGroup(serviceCode)) {
+        if (patient.isActiveOnGroup(serviceCode, patientActiveGroups)) {
             msg = "O paciente selecionado ja se encontra associado a um grupo activo do serviço [" + serviceCode + "]"
             render msg
         }
