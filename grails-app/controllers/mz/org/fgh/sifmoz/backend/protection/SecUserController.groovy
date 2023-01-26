@@ -42,17 +42,14 @@ class SecUserController {
         }
 
         try {
-
             secUserService.save(secUser)
-            if ( secUser.roles != null) {
-            if(secUser.accountLocked == false && secUser.roles.length > 0) {
-                SecUserRole.removeAll(secUser)
-                for(String role : secUser.roles) {
-                    Role secRole= Role.findByAuthority(role)
-                    SecUserRole.create(secUser, secRole)
-                }
-            }
-            }
+                    if( secUser.roles != null && secUser.accountLocked == false && secUser.roles.length > 0) {
+                        SecUserRole.removeAll(secUser)
+                        for(String role : secUser.roles) {
+                            Role secRole= Role.findByAuthority(role)
+                            SecUserRole.create(secUser, secRole)
+                        }
+                    }
         } catch (ValidationException e) {
             respond secUser.errors
             return
