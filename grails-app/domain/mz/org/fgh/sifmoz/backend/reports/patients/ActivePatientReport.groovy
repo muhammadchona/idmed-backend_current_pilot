@@ -55,7 +55,7 @@ class ActivePatientReport extends BaseEntity{
         startDate nullable: true
         endDate nullable: true
         year nullable: true
-        dispenseType nullable: false
+        dispenseType nullable: true
     }
 
     static mapping = {

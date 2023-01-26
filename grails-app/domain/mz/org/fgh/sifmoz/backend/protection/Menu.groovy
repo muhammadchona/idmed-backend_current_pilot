@@ -30,7 +30,7 @@ class Menu extends BaseEntity{
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(administrationMenuCode,homeMenuCode))
+         //   menus = Menu.findAllByCodeInList(Arrays.asList(administrationMenuCode,homeMenuCode))
         }
         return menus
     }
