@@ -19,11 +19,11 @@ class Clinic extends BaseEntity {
     Province province
     District district
     FacilityType facilityType
+    Boolean nationalClinic
     boolean mainClinic
     boolean active
     String uuid
-
-    static belongsTo = [nationalClinic: NationalClinic]
+    static belongsTo = [NationalClinic, SecUser]
     static hasMany = [sectors: ClinicSector, mmiaReports: MmiaReport, users: SecUser]
 
     static mapping = {
