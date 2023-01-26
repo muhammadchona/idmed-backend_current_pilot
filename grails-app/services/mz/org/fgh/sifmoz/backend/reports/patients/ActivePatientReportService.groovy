@@ -7,6 +7,7 @@ import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
@@ -24,6 +25,9 @@ import java.text.SimpleDateFormat
 abstract class ActivePatientReportService implements IActivePatientReportService {
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
+
+    @Autowired
+    IPackService packService
 
     @Autowired
     SessionFactory sessionFactory
@@ -69,12 +73,12 @@ abstract class ActivePatientReportService implements IActivePatientReportService
 //
         String reportId = reportSearchParams.getId()
         //---------------
-        String clinicalService = ClinicalService.findById(reportSearchParams.getClinicalService()).code
+    //    String clinicalService = ClinicalService.findById(reportSearchParams.getClinicalService()).code
         Clinic clinic = Clinic.findById(reportSearchParams.clinicId)
-        String province_id = clinic.province.id
+     //   String province_id = clinic.province.id
         //---------------
 
-        def queryString =
+       // def queryString =
 //                'SELECT ' +
 //                'pat.first_names, ' +
 //                'pat.middle_names, ' +
@@ -87,6 +91,7 @@ abstract class ActivePatientReportService implements IActivePatientReportService
 //                'FROM patient pat ' +
 //                'INNER JOIN patient_service_identifier psi ' +
 //                'ON psi.patient_id = pat.id '
+                /*
                 "SELECT pat.first_names, " +
                         "pat.middle_names, " +
                         "pat.last_names, " +
@@ -132,22 +137,27 @@ abstract class ActivePatientReportService implements IActivePatientReportService
                         "ON pred.therapeutic_line_id = lt.id " +
                         "where DATE(pack.next_pick_up_date) + :days >= :endDate " +
                         "group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18"
-
+                       */
+/*
         Session session = sessionFactory.getCurrentSession()
         def query = session.createSQLQuery(queryString)
         query.setParameter("endDate", reportSearchParams.endDate)
         query.setParameter("days", 3)
         List<Object[]> result = query.list()
+ */
 
+        def result = packService.getActivePatientsReportDataByReportParams(reportSearchParams)
+
+        println(result)
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
 
             for (item in result) {
-                System.out.println(item[14])
-                ActivePatientReport activePatientReport = setGenericInfo(reportSearchParams, clinic, item[14] as Date)
+                // System.out.println(item[14])
+                ActivePatientReport activePatientReport = setGenericInfo(reportSearchParams, clinic, item[4] as Date)
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
-                generateAndSaveActivePacient(item as List, reportSearchParams, activePatientReport, reportId)
+                generateAndSaveActivePacient(item as List, activePatientReport, reportId)
                 println(activePatientReport)
                 resultList.add(activePatientReport)
             }
@@ -184,41 +194,25 @@ abstract class ActivePatientReportService implements IActivePatientReportService
         return activePatientReport
     }
 
-    void generateAndSaveActivePacient(List item, ReportSearchParams reportSearchParams, ActivePatientReport activePatientReport, String reportId) {
+    void generateAndSaveActivePacient(List item, ActivePatientReport activePatientReport, String reportId) {
 
         activePatientReport.setReportId(reportId)
         activePatientReport.setFirstNames(item[0].toString())
         activePatientReport.setMiddleNames(item[1].toString())
         activePatientReport.setLastNames(item[2].toString())
         activePatientReport.setGender(item[3].toString())
-        item[4] == null? activePatientReport.setCellphone("") : activePatientReport.setCellphone(item[4].toString())
-        activePatientReport.setTherapeuticRegimen(item[11].toString())
-        activePatientReport.setTherapeuticLine(item[12].toString())
-        activePatientReport.setDispenseType(item[13].toString())
-        item[15] == null? activePatientReport.setPatientType('') : activePatientReport.setPatientType(item[15].toString())
-
-        // set PickUpDate
-        if (item[8] != null) {
-            Date pickUpDate = formatter.parse(item[8].toString())
+        item[5] == null ? activePatientReport.setCellphone("") : activePatientReport.setCellphone(item[5].toString())
+        activePatientReport.setNid(item[6].toString())
+            Date pickUpDate = formatter.parse(item[7].toString())
             activePatientReport.setPickupDate(pickUpDate)
-        }
-        // set nextPickUpDate
-        if (item[9] != null) {
-            Date nextPickUpDate = formatter.parse(item[9].toString())
+            Date nextPickUpDate = formatter.parse(item[8].toString())
             activePatientReport.setNextPickUpDate(nextPickUpDate)
-        }
-
-        // Setting nid
-        if (item[5] != null) {
-            if (item[5]) {
-                activePatientReport.setNid(item[6].toString())
-            } else {
-                activePatientReport.setNid(item[7].toString())
-            }
-        }
-
-
+        activePatientReport.setTherapeuticRegimen(item[9].toString())
+        activePatientReport.setTherapeuticLine(item[10].toString())
+            activePatientReport.setPatientType(item[11].toString())
+        //   activePatientReport.setDispenseType(item[13].toString())
         save(activePatientReport)
 
     }
+
 }

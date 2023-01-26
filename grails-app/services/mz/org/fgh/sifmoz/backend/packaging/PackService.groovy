@@ -4,7 +4,10 @@ import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
+import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
+import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import org.hibernate.Session
 import org.hibernate.SessionFactory
@@ -199,6 +202,51 @@ abstract class PackService implements IPackService{
                 "where psi.patient = psi3.patient and s3.code = :serviceCode and pk2.nextPickUpDate  >= :startDate and pk2.nextPickUpDate <= :endDate)",
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate,days: 3])
 
+        return list
+    }
+
+    List<Pack> getActivePatientsReportDataByReportParams (ReportSearchParams reportSearchParams) {
+        def list =  Pack.executeQuery("select Distinct pat.firstNames," +
+                "pat.middleNames," +
+                "pat.lastNames," +
+                "pat.gender," +
+                "pat.dateOfBirth," +
+                "pat.cellphone," +
+                "psi.value," +
+                "(select max(pk4.pickupDate) from Pack pk4 " +
+                "inner join pk4.patientVisitDetails as pvd2 " +
+                "inner join pvd2.patientVisit as pv2 " +
+                "inner join pvd2.episode as ep3 "+
+                "inner join ep3.patientServiceIdentifier as psi3 "+
+                "inner join psi3.service as s3 "  +
+                "where psi.patient = psi3.patient and s3.code = 'TARV') as pickupDate, " +
+                "(select max(pk4.nextPickUpDate) from Pack pk4 " +
+                "inner join pk4.patientVisitDetails as pvd2 " +
+                "inner join pvd2.patientVisit as pv2 " +
+                "inner join pvd2.episode as ep3 "+
+                "inner join ep3.patientServiceIdentifier as psi3 "+
+                "inner join psi3.service as s3 "  +
+                "where psi.patient = psi3.patient and s3.code = 'TARV') as nextPickUpDate, " +
+                "regimenThe.description," +
+                "lineThe.description, " +
+                "pre.patientType " +
+                "from Pack p inner join p.patientVisitDetails pvd " +
+                "inner join pvd.patientVisit pv " +
+                "inner join pv.patient pat " +
+                "inner join pvd.episode ep " +
+                "inner join ep.patientServiceIdentifier psi " +
+                "inner join psi.identifierType idt " +
+                "inner join psi.service cs " +
+                "inner join ep.startStopReason ssr " +
+                "inner join pvd.prescription pre " +
+                "inner join pre.prescriptionDetails pdl " +
+                "inner join pdl.therapeuticLine lineThe " +
+                "inner join pdl.therapeuticRegimen regimenThe " +
+                "inner join ep.clinic cli " +
+                "where ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO') " +
+                "and cs.code = 'TARV' and idt.code = 'NID' and p.nextPickUpDate >= :endDate and DATE(p.nextPickUpDate) + :days >= :endDate and cli.id = :clinicId " +
+                "order by pat.firstNames asc" ,
+                [clinicId:reportSearchParams.clinicId,endDate:reportSearchParams.endDate,days: 3])
         return list
     }
 }
