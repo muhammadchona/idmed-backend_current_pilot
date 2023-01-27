@@ -217,13 +217,15 @@ abstract class PackService implements IPackService{
                 "ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','VOLTOU_REFERENCIA') " +
                 "AND (pack.next_pick_up_date + INTERVAL '3 days') < :endDate " +
                 "AND EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '3 days'))) < 60 " +
-                "AND cs.code = 'TARV' AND idt.code = 'NID' " +
+                "AND cs.code = :csCode AND idt.code = :idCode " +
                 "group by 1,2,3,4,6,7"
 
         Session session = sessionFactory.getCurrentSession()
         def query = session.createSQLQuery(queryString)
         query.setParameter("endDate", endDate)
-      //  query.setParameter("days", 3)
+    //    query.setParameter("days", 3)
+        query.setParameter("csCode", clinicalService.code)
+        query.setParameter("idCode", clinicalService.identifierType.code)
         List<Object[]> list = query.list()
         return list
     }
