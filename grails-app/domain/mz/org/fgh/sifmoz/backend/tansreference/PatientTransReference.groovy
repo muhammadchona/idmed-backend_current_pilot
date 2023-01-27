@@ -36,7 +36,13 @@ class PatientTransReference extends BaseEntity{
 
     def beforeInsert() {
         if (matchId == null) {
-            matchId = PatientTransReference.findAll( [sort: ['matchId': 'desc']]).get(0).matchId++
+         def  patientTransReference =  PatientTransReference.findAll( [sort: ['matchId': 'desc']])
+            if (patientTransReference.size() == 0) {
+                matchId = 1
+            } else {
+                matchId = patientTransReference.get(0).matchId++
+            }
+
         }
     }
 
