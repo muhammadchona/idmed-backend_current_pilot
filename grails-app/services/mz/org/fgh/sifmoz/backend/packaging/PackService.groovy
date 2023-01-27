@@ -168,16 +168,10 @@ abstract class PackService implements IPackService{
     @Override
     List getAbsentPatientsByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService, Clinic clinic, Date startDate, Date endDate){
 
+        /*
         def list = Pack.executeQuery("select ep as episode," +
                 "pk.nextPickUpDate as dateMissedPickUp, " +
-                "p.cellphone as contact, " +
-                "(select pk4.pickupDate from Pack pk4 " +
-                "inner join pk4.patientVisitDetails as pvd2 " +
-                "inner join pvd2.patientVisit as pv2 " +
-                "inner join pvd2.episode as ep3 " +
-                "inner join ep3.patientServiceIdentifier as psi3 " +
-                "inner join psi3.service as s3 " +
-                "where psi.patient = psi3.patient and s3.code = :serviceCode and pk4.pickupDate > pk.nextPickUpDate and pk4.pickupDate <= :endDate) as returnedPickUp " +
+                "p.cellphone as contact " +
                 "from Pack pk " +
                 "inner join pk.patientVisitDetails as pvd " +
                 "inner join pvd.patientVisit as pv " +
@@ -187,12 +181,11 @@ abstract class PackService implements IPackService{
                 "inner join psi.patient as p " +
                 "inner join psi.service as s " +
                 "inner join ep.clinic c " +
+                "inner join psi.identifierType idt " +
                 "where s.code = :serviceCode and c.id = :clinicId and pk.nextPickUpDate >= :startDate and pk.nextPickUpDate <= :endDate and DATE(pk.nextPickUpDate) + :days <= :endDate " +
-                "and psi.id in (select psi2.id from Episode ep2 " +
-                "inner join ep2.patientServiceIdentifier as psi2 " +
-                "inner join ep2.startStopReason as stp2 " +
-                "inner join psi2.service as s2 " +
-                "where stp.isStartReason = true and s2.code = :serviceCode and ep2.episodeDate >= :startDate and ep2.episodeDate <= :endDate) " +
+                "and DATE_DIFF('day', pk.nextPickUpDate, :endDate) > 60 " +
+                "and stp.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','VOLTOU_REFERENCIA') " +
+                "and idt.code = 'NID' " +
                 "and pk.nextPickUpDate in (select max(pk2.nextPickUpDate) from Pack pk2 " +
                 "inner join pk2.patientVisitDetails as pvd2 " +
                 "inner join pvd2.patientVisit as pv2 " +
@@ -201,7 +194,37 @@ abstract class PackService implements IPackService{
                 "inner join psi3.service as s3 " +
                 "where psi.patient = psi3.patient and s3.code = :serviceCode and pk2.nextPickUpDate  >= :startDate and pk2.nextPickUpDate <= :endDate)",
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate,days: 3])
+   */
+        def queryString = "SELECT distinct psi.value," +
+                "pat.first_names," +
+                "pat.middle_Names, " +
+                "pat.last_Names, " +
+                "max(pack.pickup_date) as dateMissedPickUp," +
+                "pat.cellphone as contact," +
+                "EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '0 days'))) as dayssinceexpected " +
+                "FROM pack pack " +
+                "INNER JOIN patient_visit_details pvd on pvd.pack_id = pack.id " +
+                "INNER JOIN patient_visit pv on pv.id = pvd.patient_visit_id " +
+                "INNER JOIN patient pat on pat.id = pv.patient_id " +
+                "INNER JOIN patient_service_identifier psi ON psi.patient_id = pat.id " +
+                "INNER JOIN identifier_type idt ON psi.identifier_type_id = idt.id " +
+                "INNER JOIN clinical_service cs ON psi.service_id = cs.id " +
+                "INNER JOIN prescription pre on pre.id = pvd.prescription_id " +
+                "INNER JOIN prescription_detail pred on pred.prescription_id = pre.id " +
+                "INNER JOIN episode ep on ep.id = pvd.episode_id " +
+                "INNER JOIN start_stop_reason ssr on ssr.id = ep.start_stop_reason_id " +
+                "where " +
+                "ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','VOLTOU_REFERENCIA') " +
+                "AND (pack.next_pick_up_date + INTERVAL '3 days') < :endDate " +
+                "AND EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '3 days'))) < 60 " +
+                "AND cs.code = 'TARV' AND idt.code = 'NID' " +
+                "group by 1,2,3,4,6,7"
 
+        Session session = sessionFactory.getCurrentSession()
+        def query = session.createSQLQuery(queryString)
+        query.setParameter("endDate", endDate)
+      //  query.setParameter("days", 3)
+        List<Object[]> list = query.list()
         return list
     }
 

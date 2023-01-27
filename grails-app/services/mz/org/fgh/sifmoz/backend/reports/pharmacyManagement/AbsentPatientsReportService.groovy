@@ -43,29 +43,29 @@ abstract class AbsentPatientsReportService implements IAbsentPatientsReportServi
         }
         for (int i = 0; i < absentReferredPatients.size(); i ++) {
             Object item = absentReferredPatients[i]
-            Episode episode = (Episode) item[0]
+            //Episode episode = (Episode) item[0]
             AbsentPatientsReport absentPatient = new AbsentPatientsReport()
             absentPatient.setClinic(clinic.clinicName)
             absentPatient.setStartDate(searchParams.startDate)
             absentPatient.setEndDate(searchParams.endDate)
-            absentPatient.setClinicalServiceId(episode.patientServiceIdentifier.service.code)
+            absentPatient.setClinicalServiceId(clinicalService.code)
             absentPatient.setReportId(searchParams.id)
             absentPatient.setPeriodType(searchParams.periodType)
             absentPatient.setReportId(searchParams.id)
-            absentPatient.setNid(episode.patientServiceIdentifier.value)
-            absentPatient.setName(episode.patientServiceIdentifier.patient.firstNames +' '+episode.patientServiceIdentifier.patient.lastNames)
+            absentPatient.setNid(item[0])
+            absentPatient.setName(String.valueOf(item[1]) +' '+String.valueOf(item[3]))
 
-            absentPatient.setDateMissedPickUp(item[1] as Date)
+            absentPatient.setDateMissedPickUp(item[4] as Date)
             Date abandonmentDate = ConvertDateUtils.addDaysDate(absentPatient.dateMissedPickUp,60)
             if(searchParams.endDate.after(abandonmentDate)) {
                 absentPatient.setDateIdentifiedAbandonment(abandonmentDate)
             }
-            if(item[2] != null){
-                absentPatient.setContact(String.valueOf(item[2]))
+            if(item[5] != null){
+                absentPatient.setContact(String.valueOf(item[5]))
             }
-            if(item[3] != null) {
-                absentPatient.setReturnedPickUp(item[3] as Date)
-            }
+     //       if(item[3] != null) {
+      //          absentPatient.setReturnedPickUp(item[3] as Date)
+       //     }
             save(absentPatient)
             processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
             if (100 == processMonitor.progress.intValue() || 99 == processMonitor.progress.intValue()) {
