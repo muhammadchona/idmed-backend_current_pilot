@@ -199,7 +199,7 @@ abstract class PackService implements IPackService{
                 "pat.first_names," +
                 "pat.middle_Names, " +
                 "pat.last_Names, " +
-                "max(pack.pickup_date) as dateMissedPickUp," +
+                "max(pack.next_pick_up_date) as dateMissedPickUp," +
                 "pat.cellphone as contact," +
                 "EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '0 days'))) as dayssinceexpected " +
                 "FROM pack pack " +
