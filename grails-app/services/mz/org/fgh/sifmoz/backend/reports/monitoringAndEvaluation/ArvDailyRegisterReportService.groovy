@@ -55,7 +55,7 @@ abstract class ArvDailyRegisterReportService implements IArvDailyRegisterReportS
             reportTemp.setNid(item.getEpisode().getPatientServiceIdentifier().getValue())
             reportTemp.setPatientName((patient.getFirstNames() + " " + patient.getMiddleNames() + " " + patient.getLastNames()))
             reportTemp.setPatientType(item.getPrescription().getPatientType())
-            double age = ConvertDateUtils.getAgeBetweenTwoDates(item.getPack().getPickupDate(), searchParams.getEndDate())
+            double age = ConvertDateUtils.getAgeBetweenTwoDates(patient.getDateOfBirth(), searchParams.getEndDate())
             reportTemp.setAgeGroup_0_4(age >= 0 && age < 4 ? "Sim" : "Nao") //TODO
             reportTemp.setAgeGroup_5_9(age >= 5 && age <= 9 ? "Sim" : "Nao")
             reportTemp.setAgeGroup_10_14(age >= 10 && age <= 14 ? "Sim" : "Nao")
