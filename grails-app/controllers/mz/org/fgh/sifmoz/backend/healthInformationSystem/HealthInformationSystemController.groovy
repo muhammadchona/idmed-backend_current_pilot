@@ -43,7 +43,10 @@ class HealthInformationSystemController extends RestfulController{
         healthInformationSystem.validate()
 
         if(objectJSON.id){
-            HealthInformationSystem.id = UUID.fromString(objectJSON.id)
+            healthInformationSystem.id = UUID.fromString(objectJSON.id)
+            healthInformationSystem.interoperabilityAttributes.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.interoperabilityAttributes[index].id)
+            }
         }
         if (healthInformationSystem.hasErrors()) {
             transactionStatus.setRollbackOnly()
