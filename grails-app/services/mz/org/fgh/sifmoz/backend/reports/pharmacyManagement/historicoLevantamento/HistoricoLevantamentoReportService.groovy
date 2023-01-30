@@ -7,6 +7,7 @@ import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
+import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
@@ -26,6 +27,9 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
 
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
+
+    @Autowired
+    IPackService packService
 
     @Autowired
     SessionFactory sessionFactory
@@ -61,6 +65,7 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
     List<HistoricoLevantamentoReport> processamentoDados(ReportSearchParams reportSearchParams, ReportProcessMonitor processMonitor) {
         Clinic clinic = Clinic.findById(reportSearchParams.clinicId)
         ClinicalService clinicalService = ClinicalService.findById(reportSearchParams.clinicalService)
+      /*
         def queryString =
                 "SELECT    " +
                         "    pat.id,    " +
@@ -107,12 +112,14 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
         query.setParameter("endDate", reportSearchParams.endDate)
         query.setParameter("serv_clinico", clinicalService.code)
         List<Object[]> result = query.list()
-
+*/
+        def result = packService.getPacksByClinicalServiceAndClinicOnPeriod(clinicalService,clinic,
+                reportSearchParams.startDate,reportSearchParams.endDate)
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
 
             for (item in result) {
-                HistoricoLevantamentoReport historicoLevantamentoReport = setGenericInfo(reportSearchParams, clinic, item[13] as Date)
+                HistoricoLevantamentoReport historicoLevantamentoReport = setGenericInfo(reportSearchParams, clinic, item[4] as Date)
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
                 generateAndSaveHistory(item as List, reportSearchParams, historicoLevantamentoReport)
@@ -142,45 +149,37 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
         historicoLevantamentoReport.setReportId(searchParams.id)
         historicoLevantamentoReport.setYear(searchParams.year)
         historicoLevantamentoReport.setAge(ConvertDateUtils.getAge(dateOfBirth).intValue() as String)
+        historicoLevantamentoReport.setClinicalService(ClinicalService.findById(searchParams.clinicalService).code)
         def province = Province.findById(clinic.province.id.toString())
         province == null? historicoLevantamentoReport.setProvince(" "):historicoLevantamentoReport.setProvince(province.description)
         historicoLevantamentoReport.setProvince(province.description)
-        def district = District.findById(clinic.district)
+        def district = District.findById(clinic.district.id)
         district == null? historicoLevantamentoReport.setDistrict(""):historicoLevantamentoReport.setDistrict(district.description)
         return historicoLevantamentoReport
     }
 
     void generateAndSaveHistory(List item, ReportSearchParams reportSearchParams, HistoricoLevantamentoReport historicoLevantamentoReport) {
 
+        item[0] == null? historicoLevantamentoReport.setNid("") : historicoLevantamentoReport.setNid(item[0].toString())
         item[1] == null? historicoLevantamentoReport.setFirstNames("") : historicoLevantamentoReport.setFirstNames(item[1].toString())
         item[2] == null? historicoLevantamentoReport.setMiddleNames("") : historicoLevantamentoReport.setMiddleNames(item[2].toString())
         item[3] == null? historicoLevantamentoReport.setLastNames("") : historicoLevantamentoReport.setLastNames(item[3].toString())
-        item[4] == null? historicoLevantamentoReport.setCellphone(" ") : historicoLevantamentoReport.setCellphone(item[4].toString())
-        item[5] == null? historicoLevantamentoReport.setTipoTarv(" ") : historicoLevantamentoReport.setTipoTarv(item[5].toString())
-        item[6] == null? historicoLevantamentoReport.setStartReason("") : historicoLevantamentoReport.setStartReason(item[6].toString())
+        item[5] == null? historicoLevantamentoReport.setCellphone(" ") : historicoLevantamentoReport.setCellphone(item[5].toString())
+        item[6] == null? historicoLevantamentoReport.setTipoTarv(" ") : historicoLevantamentoReport.setTipoTarv(item[6].toString())
+      //  item[6] == null? historicoLevantamentoReport.setStartReason("") : historicoLevantamentoReport.setStartReason(item[6].toString())
         item[7] == null? historicoLevantamentoReport.setTherapeuticalRegimen("") : historicoLevantamentoReport.setTherapeuticalRegimen(item[7].toString())
         item[8] == null? historicoLevantamentoReport.setDispenseType("") : historicoLevantamentoReport.setDispenseType(item[8].toString())
         item[9] == null? historicoLevantamentoReport.setDispenseMode("") : historicoLevantamentoReport.setDispenseMode(item[9].toString())
-        item[10] == null? historicoLevantamentoReport.setClinicalService(" ") : historicoLevantamentoReport.setClinicalService(item[10].toString())
-        item[17] == null? historicoLevantamentoReport.setPatientType(" ") : historicoLevantamentoReport.setPatientType(item[17].toString())
 
-        // Setting nid
-        if (item[14] != null) {
-            if (item[14]) {
-                historicoLevantamentoReport.setNid(item[15])
-            } else {
-                historicoLevantamentoReport.setNid(item[16])
-            }
-        }
 
         // set pickUpDate
-        if (item[11] != null) {
-            Date pickUpDate = formatter.parse(item[11].toString())
+        if (item[10] != null) {
+            Date pickUpDate = formatter.parse(item[10].toString())
             historicoLevantamentoReport.setPickUpDate(pickUpDate)
         }
         // set nextPickUpDate
-        if (item[12] != null) {
-            Date nextPickUpDate = formatter.parse(item[12].toString())
+        if (item[11] != null) {
+            Date nextPickUpDate = formatter.parse(item[11].toString())
             historicoLevantamentoReport.setNexPickUpDate(nextPickUpDate)
         }
         save(historicoLevantamentoReport)

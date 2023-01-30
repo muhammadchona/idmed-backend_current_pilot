@@ -53,6 +53,8 @@ class HistoricoLevantamentoReport extends BaseEntity {
         periodType nullable: false , inList: ['MONTH','QUARTER','SEMESTER','ANNUAL', 'SPECIFIC']
         startDate nullable: true
         endDate nullable: true
+        startReason nullable: true
+        patientType nullable: true
     }
 
 

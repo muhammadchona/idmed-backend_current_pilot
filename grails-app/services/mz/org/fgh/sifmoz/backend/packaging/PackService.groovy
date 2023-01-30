@@ -230,6 +230,7 @@ abstract class PackService implements IPackService{
         return list
     }
 
+    @Override
     List<Pack> getActivePatientsReportDataByReportParams (ReportSearchParams reportSearchParams) {
         def list =  Pack.executeQuery("select Distinct pat.firstNames," +
                 "pat.middleNames," +
@@ -273,5 +274,41 @@ abstract class PackService implements IPackService{
                 "order by pat.firstNames asc" ,
                 [clinicId:reportSearchParams.clinicId,endDate:reportSearchParams.endDate,days: 3])
         return list
+    }
+
+    //Historico de Levantamentos
+    @Override
+    List<Pack> getPacksByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService,Clinic clinic,Date startDate, Date endDate) {
+
+        return Pack.executeQuery("select " +
+                "psi.value," +
+                "p.firstNames," +
+                "p.middleNames," +
+                "p.lastNames," +
+                "p.dateOfBirth," +
+                "p.cellphone," +
+                "pre.patientStatus, " +
+                "regimenThe.description," +
+                "dt.description, " +
+                "dm.description, " +
+                "pk.pickupDate, " +
+                "pk.nextPickUpDate " +
+                "from Pack pk " +
+                "inner join pk.patientVisitDetails as pvd " +
+                "inner join pvd.patientVisit as pv " +
+                "inner join pvd.episode as ep " +
+                "inner join ep.startStopReason as stp " +
+                "inner join ep.patientServiceIdentifier as psi " +
+                "inner join psi.patient as p " +
+                "inner join psi.service as s " +
+                "inner join ep.clinic c " +
+                "inner join pvd.prescription pre " +
+                "inner join pre.prescriptionDetails pdl " +
+                "inner join pdl.therapeuticRegimen regimenThe " +
+                "inner join pdl.dispenseType dt " +
+                "inner join pk.dispenseMode dm " +
+                "where s.code = :serviceCode and c.id = :clinicId and pk.pickupDate >= :startDate and pk.pickupDate <= :endDate " +
+                "order by p.firstNames asc",
+                [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate])
     }
 }
