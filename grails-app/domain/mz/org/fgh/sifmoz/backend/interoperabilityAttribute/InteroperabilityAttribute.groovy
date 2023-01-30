@@ -15,10 +15,7 @@ class InteroperabilityAttribute extends BaseEntity {
     InteroperabilityType interoperabilityType
     String value
 
-    @JsonBackReference
-    HealthInformationSystem healthInformationSystem
-
-    static mapping = {
+       static mapping = {
         id generator: "assigned"
     }
 
@@ -31,7 +28,7 @@ class InteroperabilityAttribute extends BaseEntity {
     static belongsTo = [healthInformationSystem : HealthInformationSystem]
 
     static constraints = {
-        value nullable: false, blank: false, unique: ['healthInformationSystem','interoperabilityType']
+        value nullable: false, blank: false
     }
 
     @Override
