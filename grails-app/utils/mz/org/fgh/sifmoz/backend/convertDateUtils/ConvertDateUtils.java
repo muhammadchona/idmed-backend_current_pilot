@@ -712,8 +712,10 @@ public class ConvertDateUtils {
     }
 
     public static double getAgeBetweenTwoDates(Date startDate, Date endDate) throws ParseException {
+        Date dataMenorAux = ConvertDateUtils.createDate(ConvertDateUtils.formatToDDMMYYYY(startDate), ConvertDateUtils.DDMM_DATE_FORMAT);
+        Date dataMaiorAux = ConvertDateUtils.createDate(ConvertDateUtils.formatToDDMMYYYY(endDate), ConvertDateUtils.DDMM_DATE_FORMAT);
         try {
-            return dateDiff(startDate, endDate, "dd-MM-yyyy");
+            return dateDiff(dataMaiorAux, dataMenorAux, ConvertDateUtils.YEAR_FORMAT);
         } catch (Exception e) {
             return 0;
         }

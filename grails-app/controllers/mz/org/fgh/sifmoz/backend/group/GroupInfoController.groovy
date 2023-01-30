@@ -108,13 +108,16 @@ class GroupInfoController extends RestfulController{
         }
 
         try {
-       /*
+          List<GroupMember> membersToRemove = new ArrayList<>()
             group.members.each { item ->
-                if (GroupMember.get(item.id) == null) {
-                    groupMemberService.save(item)
+         GroupMember existingGroupMember = GroupMember.findByPatientAndGroup(item.getPatient(),group)
+                if (existingGroupMember != null && existingGroupMember.endDate != null) {
+                    existingGroupMember.properties = item
+                   groupMemberService.save(existingGroupMember)
+                    membersToRemove.add(item)
                 }
             }
-*/
+           group.members.removeAll(membersToRemove)
             groupService.save(group)
         } catch (ValidationException e) {
             respond group.errors

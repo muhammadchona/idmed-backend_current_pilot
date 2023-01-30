@@ -22,7 +22,7 @@ abstract class GroupService implements IGroupService{
         def list = GroupInfo.executeQuery("select g " +
                                                 "from GroupInfo g " +
                                                 "inner join g.members gm " +
-                                                "where gm.patient = :patient and g.service = :service and g.endDate is null ",
+                                                "where gm.patient = :patient and g.service = :service and g.endDate is null and gm.endDate is null",
                                                 [patient: patient, service: ClinicalService.findByCode(serviceCode)])
 
         return list
