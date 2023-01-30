@@ -88,10 +88,12 @@ class PatientController extends RestfulController {
 
         @Transactional
         def update(Patient patient) {
+
             if (patient == null) {
                 render status: NOT_FOUND
                 return
             }
+
             if (patient.hasErrors()) {
                 transactionStatus.setRollbackOnly()
                 respond patient.errors
@@ -99,6 +101,14 @@ class PatientController extends RestfulController {
             }
 
             try {
+                if (patient.bairro) {
+                    Localidade localidade = Localidade.findByCode(patient.bairro.code)
+                    if (!localidade) {
+                        patient.bairro.id = patient.bairro.id
+                        localidadeService.save(patient.bairro)
+                    }
+                }
+
                 patientService.save(patient)
             } catch (ValidationException e) {
                 respond patient.errors

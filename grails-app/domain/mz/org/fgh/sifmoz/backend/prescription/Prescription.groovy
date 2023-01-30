@@ -37,7 +37,9 @@ class Prescription extends BaseEntity{
     Clinic clinic
     Doctor doctor
     Duration duration
-
+    byte[] photo
+    String photoName
+    String photoContentType
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
     public int getLeftDuration () {
@@ -64,6 +66,9 @@ class Prescription extends BaseEntity{
         prescriptionSeq(nullable: true)
         duration(nullable: false, blank: false)
         patientType nullable: true
+        photo nullable: true, blank: true, maxSize: 1024 * 1024 * 20 //20MB
+        photoName nullable: true, blank: true
+        photoContentType nullable: true, blank: true
     }
 
     def beforeInsert() {
