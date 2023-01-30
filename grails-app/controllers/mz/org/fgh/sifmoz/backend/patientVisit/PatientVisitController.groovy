@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.patientVisit
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
@@ -17,6 +18,7 @@ import mz.org.fgh.sifmoz.backend.screening.PregnancyScreeningService
 import mz.org.fgh.sifmoz.backend.screening.RAMScreeningService
 import mz.org.fgh.sifmoz.backend.screening.TBScreeningService
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreeningService
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stock.StockService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
@@ -119,6 +121,7 @@ class PatientVisitController extends RestfulController{
         try {
             PatientVisit existingPatientVisit = PatientVisit.findByVisitDateAndPatient(visit.visitDate, visit.patient)
             if (existingPatientVisit != null) {
+
                 visit.vitalSigns.each {item ->
                     item.visit = existingPatientVisit
                     vitalSignsScreeningService.save(item)
@@ -147,15 +150,31 @@ class PatientVisitController extends RestfulController{
                     packService.save(item.pack)
                     reduceStock(item.pack, syncStatus)
                 }
+                existingPatientVisit.vitalSigns = visit.vitalSigns
+                existingPatientVisit.pregnancyScreening = visit.pregnancyScreening
+                existingPatientVisit.ramScreening = visit.ramScreening
+                existingPatientVisit.adherenceScreening = visit.adherenceScreening
+                existingPatientVisit.tbScreening = visit.tbScreening
+                existingPatientVisit.patientVisitDetails = visit.patientVisitDetails
+
+                visit = existingPatientVisit
+
             } else {
                 visit.patientVisitDetails.each {item ->
                     Prescription existingPrescription = Prescription.findById(item.prescription.id)
                     if (existingPrescription == null) prescriptionService.save(item.prescription)
+
+                    item.pack.packagedDrugs.each { packagedDrugs ->
+                        def clinicalService = item.episode.patientServiceIdentifier.service
+                        if (!packagedDrugs.drug.clinicalService) {
+                            packagedDrugs.drug.clinicalService = clinicalService
+                        }
+                    }
                     packService.save(item.pack)
                     reduceStock(item.pack, syncStatus)
                 }
-                patientVisitService.save(visit)
             }
+            patientVisitService.save(visit)
         } catch (ValidationException e) {
             transactionStatus.setRollbackOnly()
             respond visit.errors
