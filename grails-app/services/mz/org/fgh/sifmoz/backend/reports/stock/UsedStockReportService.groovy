@@ -62,7 +62,7 @@ abstract class UsedStockReportService implements IUsedStockReportService {
                 "                                   inner join sa.operation sot  " +
                 "           where sa.class = StockDestructionAdjustment and (rf.date >= :startDate and rf.date <= :endDate) and rf.clinic = :clinic" +
                 "           )) as ajustes," +
-                "           ((select coalesce(sum(s.stockMoviment),0) as r from Stock s inner join s.entrance se where s.expireDate < :endDate and se.dateReceived <= :endDate and s.drug = dr and s.clinic = :clinic) -" +
+                "           ((select coalesce(sum(s.stockMoviment),0) as r from Stock s inner join s.entrance se where DATE(s.expireDate) - 28 > :endDate and se.dateReceived <= :endDate and s.drug = dr and s.clinic = :clinic) -" +
                 "           (select coalesce(sum(pd.quantitySupplied),0) as s from PackagedDrug pd inner join pd.pack pk where pk.pickupDate >= :startDate and pk.pickupDate <= :endDate and pd.drug = dr and pk.clinic = :clinic) +" +
                 "           ((select coalesce(SUM(CASE sot.code WHEN 'AJUSTE_NEGATIVO' THEN sa.adjustedValue ELSE (-1*sa.adjustedValue) END),0) as adjustedValue" +
                 "           from StockAdjustment sa inner join sa.adjustedStock st with st.drug = dr" +
