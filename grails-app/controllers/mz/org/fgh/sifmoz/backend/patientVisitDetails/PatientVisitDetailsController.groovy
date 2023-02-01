@@ -102,28 +102,34 @@ class PatientVisitDetailsController extends RestfulController{
         PatientVisitDetails patientVisitDetail = PatientVisitDetails.findById(id)
         PatientVisit patientVisit = PatientVisit.findById(patientVisitDetail.patientVisit.id)
         if (patientVisit.patientVisitDetails.size() == 1) {
-            patientVisitService.delete(patientVisit.id)
             patientVisit.patientVisitDetails.each {item ->
                 Pack pack = Pack.findById(item.packId)
+                Prescription prescription = Prescription.get(item.prescriptionId)
                 restoreStock(pack)
-                packService.delete(item.packId)
-                prescriptionService.delete(item.prescriptionId)
+                pack.delete()
+                item.delete()
+              //  prescription.delete()
+//                packService.delete(item.packId)
+//                patientVisitDetailsService.delete(item.id)
+//                prescriptionService.delete(item.prescriptionId)
             }
+  //          patientVisitService.delete(patientVisit.id)
+            patientVisit.delete()
             render status: NO_CONTENT
             return
         }
         else {
             patientVisitDetail.each {item ->
+                restoreStock(item.pack)
                 packService.delete(item.packId)
-                restoreStock(pack)
                 prescriptionService.delete(item.prescriptionId)
             }
-            patientVisit.patientVisitDetails.remove(patientVisitDetail)
+        }
+        patientVisit.patientVisitDetails.remove(patientVisitDetail)
             if (id == null || patientVisitDetailsService.delete(id) == null) {
                 render status: NOT_FOUND
                 return
             }
-        }
         render status: NO_CONTENT
     }
 
