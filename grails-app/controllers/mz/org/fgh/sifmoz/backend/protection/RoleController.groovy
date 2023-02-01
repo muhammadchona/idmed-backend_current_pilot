@@ -56,6 +56,7 @@ class RoleController {
         try {
 
             if(role.active == true) {
+                role.menus.add(Menu.findByCode("08"))
                 for(Menu menu: role.menus) {
                     List<Class> clazzes =  grailsApplication.getArtefacts("Domain")*.clazz
 
