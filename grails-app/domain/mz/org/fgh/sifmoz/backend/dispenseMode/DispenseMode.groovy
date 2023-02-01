@@ -25,7 +25,7 @@ class DispenseMode extends BaseEntity {
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode,groupsMenuCode,stockMenuCode,dashboardMenuCode,administrationMenuCode))
+            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode,groupsMenuCode,stockMenuCode,dashboardMenuCode,administrationMenuCode,homeMenuCode))
         }
         return menus
     }

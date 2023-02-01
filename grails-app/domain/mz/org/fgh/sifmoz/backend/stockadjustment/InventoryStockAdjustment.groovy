@@ -35,7 +35,7 @@ class InventoryStockAdjustment extends StockAdjustment{
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(dashboardMenuCode,stockMenuCode))
+            menus = Menu.findAllByCodeInList(Arrays.asList(dashboardMenuCode,stockMenuCode,homeMenuCode))
         }
         return menus
     }

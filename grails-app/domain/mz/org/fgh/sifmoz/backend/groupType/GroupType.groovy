@@ -28,7 +28,7 @@ class GroupType extends BaseEntity {
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(groupsMenuCode))
+            menus = Menu.findAllByCodeInList(Arrays.asList(groupsMenuCode,homeMenuCode))
         }
         return menus
     }
