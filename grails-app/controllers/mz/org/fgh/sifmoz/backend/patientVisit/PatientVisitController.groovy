@@ -126,10 +126,12 @@ class PatientVisitController extends RestfulController{
                     item.visit = existingPatientVisit
                     vitalSignsScreeningService.save(item)
                 }
-
-                visit.pregnancyScreening.each {item ->
-                    item.visit = existingPatientVisit
-                    pregnancyScreeningService.save(item)
+                if(visit.patient.gender.startsWith('F')) {
+                    visit.pregnancyScreening.each { item ->
+                        item.visit = existingPatientVisit
+                        pregnancyScreeningService.save(item)
+                    }
+                    existingPatientVisit.pregnancyScreening = visit.pregnancyScreening
                 }
                 visit.ramScreening.each {item ->
                     item.visit = existingPatientVisit
@@ -151,7 +153,6 @@ class PatientVisitController extends RestfulController{
                     reduceStock(item.pack, syncStatus)
                 }
                 existingPatientVisit.vitalSigns = visit.vitalSigns
-                existingPatientVisit.pregnancyScreening = visit.pregnancyScreening
                 existingPatientVisit.ramScreening = visit.ramScreening
                 existingPatientVisit.adherenceScreening = visit.adherenceScreening
                 existingPatientVisit.tbScreening = visit.tbScreening
@@ -174,6 +175,7 @@ class PatientVisitController extends RestfulController{
                     reduceStock(item.pack, syncStatus)
                 }
             }
+
             patientVisitService.save(visit)
         } catch (ValidationException e) {
             transactionStatus.setRollbackOnly()
