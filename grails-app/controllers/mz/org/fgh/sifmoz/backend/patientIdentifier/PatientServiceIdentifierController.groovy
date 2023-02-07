@@ -4,8 +4,11 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.drug.Drug
+import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
@@ -42,11 +45,10 @@ class PatientServiceIdentifierController extends RestfulController{
         def objectJSON = request.JSON
         patientServiceIdentifier = objectJSON as PatientServiceIdentifier
 
+        patientServiceIdentifier.beforeInsert()
         patientServiceIdentifier.validate()
 
         if(objectJSON.id){
-//            patientServiceIdentifier.id = UUID.fromString(objectJSON.id)
-            patientServiceIdentifier.properties = request.JSON
             patientServiceIdentifier.id = UUID.fromString(objectJSON.id)
 //            patientServiceIdentifier.identifierType = IdentifierType.get(objectJSON.identifierType.id).lock()
 //            patientServiceIdentifier.service = ClinicalService.get(objectJSON.service.id).lock()
@@ -60,8 +62,6 @@ class PatientServiceIdentifierController extends RestfulController{
             return
         }
 
-        patientServiceIdentifier.beforeInsert()
-
         try {
             patientServiceIdentifierService.save(patientServiceIdentifier)
         } catch (ValidationException e) {
@@ -73,11 +73,24 @@ class PatientServiceIdentifierController extends RestfulController{
     }
 
     @Transactional
-    def update(PatientServiceIdentifier patientServiceIdentifier) {
+    def update( ) {
+        def objectJSON = request.JSON
+        PatientServiceIdentifier patientServiceIdentifier = PatientServiceIdentifier.get(objectJSON.id)
+        def syncStatus = objectJSON["syncStatus"]
         if (patientServiceIdentifier == null) {
             render status: NOT_FOUND
             return
         }
+        patientServiceIdentifier.properties = objectJSON
+        patientServiceIdentifier.episodes.eachWithIndex { Episode episode, int i ->
+            episode.id = UUID.fromString(objectJSON.episodes[i].id)
+        }
+
+        if (patientServiceIdentifier == null) {
+            render status: NOT_FOUND
+            return
+        }
+
         if (patientServiceIdentifier.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond patientServiceIdentifier.errors

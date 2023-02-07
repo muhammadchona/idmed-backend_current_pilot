@@ -17,6 +17,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -45,14 +46,17 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    //@Scheduled(cron = "0 0 */2 * * ?")
+    @Scheduled(fixedDelay = 30000L)
     void execute() {
 
-        if(this.isProvincial()) {
+        if(!this.isProvincial()) {
+            Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
             List <PatientTransReferenceType> patientTransReferenceTypes = PatientTransReferenceType.findAllByCodeInList(Arrays.asList('REFERENCIA_FP','REFERENCIA_DC'))
             List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationTypeInList('P',patientTransReferenceTypes)
 
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")
+            // Alterar para a linha abaixo quando for em Producao
+//            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.code , "MOBILE")
+            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12" , "MOBILE")
 
             char SyncP = 'P'
             char SyncS = 'S'
@@ -74,7 +78,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                     Episode episode = episodeService.getLastInitialEpisodeByIdentifier(pt.identifier.id)
                     PatientVisitDetails lastVisitDetails = visitDetailsService.getLastVisitByEpisodeId(episode.id)
 
-                    syncTempPatient.setId(pt.matchId)
+                    syncTempPatient.setId(Integer.parseInt( pt.matchId.toString()))
                     syncTempPatient.setAccountstatus(false)
                     syncTempPatient.setCellphone(pt.identifier.patient.cellphone)
                     syncTempPatient.setDateofbirth(pt.identifier.patient.dateOfBirth)
@@ -113,7 +117,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                     syncTempPatient.setAddress3('')
                     syncTempPatient.setRace('')
                     syncTempPatient.setUuidopenmrs(pt.identifier.patient.hisUuid)
-                    syncTempPatient.setDatainiciotarv(pt.identifier.startDate)
+                    syncTempPatient.setDatainiciotarv(Utilities.dateformatToYYYYMMDD(pt.identifier.startDate))
                     syncTempPatient.setSyncuuid(UUID.randomUUID().toString())
                     syncTempPatient.setPrescriptiondate(lastVisitDetails.prescription.prescriptionDate)
                     syncTempPatient.setDuration(lastVisitDetails.prescription.duration.weeks)
@@ -151,17 +155,20 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                             pd.put("timesperday", prescribedDrugs.getTimesPerDay())
                             listPD.add(pd);
                         }
-                        syncTempPatient.setJsonprescribeddrugs(listPD.toString());
+                        syncTempPatient.setJsonprescribeddrugs(listPD.toString().replace("[[","[").replace("]]","]"));
                         syncTempPatient.setEstadopaciente('Activo');
                         syncTempPatient.setExclusaopaciente(false);
                         syncTempPatient.setModified(False)
                         def obj = Utilities.parseToJSON(syncTempPatient)
-                     def response =  restProvincialServerClient.postRequestProvincialServerClient(provincialServer,"/sync_temp_patients",obj)
-                        if (Integer.parseInt(response) == HttpURLConnection.HTTP_CREATED) {
-                        // def ptToUpdate = PatientTransReference.findById(pt.id)
-                            pt.syncStatus = SyncS
-                           patientTransReferenceService.save(pt)
+                     def response =  restProvincialServerClient.postRequestProvincialServerClient(provincialServer,"/sync_temp_patients", obj)
+                        if(!response.contains("Wrong")){
+                            if (Integer.parseInt(response) == HttpURLConnection.HTTP_CREATED) {
+                                // def ptToUpdate = PatientTransReference.findById(pt.id)
+                                pt.syncStatus = SyncS
+                                patientTransReferenceService.save(pt)
+                            }
                         }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace()
