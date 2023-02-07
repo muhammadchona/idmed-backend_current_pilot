@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
 import mz.org.fgh.sifmoz.backend.clinic.Clinic;
+import org.apache.http.entity.StringEntity;
 import org.grails.web.json.JSONArray;
 
 import java.math.BigInteger;
@@ -13,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Collator;
 import java.text.Normalizer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,11 +112,19 @@ public class Utilities {
         return formatedNumber;
     }
 
-    public static String parseToJSON(Object object) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return objectMapper.writeValueAsString(object);
+    public static StringEntity parseToJSON(Object object) throws JsonProcessingException {
+
+        Gson g = new Gson();
+        String restObject = g.toJson(object);
+        StringEntity inputAddPatient = new StringEntity(restObject, "UTF-8");
+        inputAddPatient.setContentType("application/json");
+
+        return inputAddPatient;
+
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//        return objectMapper.writeValueAsString(object);
     }
 
     public static String formatToYYYYMMDD (Date date ) {
@@ -121,6 +132,20 @@ public class Utilities {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         String strDate = dateFormat.format(date);
+
+        return strDate;
+    }
+
+    public static Date dateformatToYYYYMMDD (Date date ) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        java.sql.Date strDate = null;
+        try {
+            strDate = (java.sql.Date) dateFormat.parse(formatToYYYYMMDD(date));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
 
         return strDate;
     }

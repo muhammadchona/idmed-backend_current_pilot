@@ -584,6 +584,23 @@ class BootStrap {
                 clinic.save(flush: true, failOnError: true)
             }
         }
+
+        for (clinicObject in listClinic4()) {
+            if (!Clinic.findById(clinicObject.uuid)) {
+                Clinic clinic = new Clinic()
+                clinic.id = clinicObject.uuid
+                clinic.code = clinicObject.site_nid
+                clinic.notes = "SISMA CODE: ".concat(clinicObject.sisma_id)
+                clinic.clinicName = clinicObject.sitename
+                clinic.province = Province.findByCode(clinicObject.provinceCode)
+                clinic.district = District.findByCodeAndProvince(clinicObject.districtCode, Province.findByCode(clinicObject.provinceCode))
+                clinic.facilityType = FacilityType.findByCode("FP")
+                clinic.mainClinic = false
+                clinic.active = true
+                clinic.uuid = clinicObject.uuid
+                clinic.save(flush: true, failOnError: true)
+            }
+        }
     }
 
     void initSystemConfigs() {
@@ -2369,8 +2386,22 @@ class BootStrap {
         return clinicList
     }
 
+    List<Object> listClinic4() {
+        List<Object> clinicList = new ArrayList<>()
 
-    List<Object> listMenus() {
+        clinicList.add(new LinkedHashMap(uuid: "51bc78ed-c5a2-4211-ba17-76420da796ba", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Lisboa", site_nid: "04001"))
+        clinicList.add(new LinkedHashMap(uuid: "0a2690ff-f3d9-425e-b303-0d31a4a4cee4", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Artur 3", site_nid: "04003"))
+        clinicList.add(new LinkedHashMap(uuid: "d194fbf2-ba94-4506-b757-9a19b77e4f77", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Abdala", site_nid: "04004"))
+        clinicList.add(new LinkedHashMap(uuid: "0e9999b6-6edc-472d-9eb4-22a80cd8aec2", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Contente", site_nid: "04006"))
+        clinicList.add(new LinkedHashMap(uuid: "36ee873f-9af2-4a81-b048-6f52ad48518c", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Chabeco 786", site_nid: "04007"))
+        clinicList.add(new LinkedHashMap(uuid: "f1454a21-8e4e-460e-886b-55729f307410", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Muzinga", site_nid: "04005"))
+        clinicList.add(new LinkedHashMap(uuid: "oc9nWB75I1wFseXID18XC", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "01", district: "Alto Molócue", sitename: "Farmácia Mundial", site_nid: "0001"))
+        clinicList.add(new LinkedHashMap(uuid: "a14f4e9f-89cb-4492-8fc2-9959e68e99b6", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Quelimane", site_nid: "04002"))
+
+        return clinicList
+    }
+
+        List<Object> listMenus() {
         List<Object> menus = new ArrayList<>()
         menus.add(new Menu(code: '01', description: 'Pacientes'))
         menus.add(new Menu(code: '02', description: 'Grupos'))
