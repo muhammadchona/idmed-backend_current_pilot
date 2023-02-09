@@ -55,6 +55,7 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
             prescribedDrug.setTimesPerDay(this.timesperday)
             prescribedDrug.setForm(prescribedDrug.getDrug().getDefaultPeriodTreatment())
             if (!prescribedDrug.hasErrors()) {
+                prescribedDrug.setId(UUID.randomUUID().toString())
                 prescribedDrug.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, prescribedDrug.getErrors().toString()))

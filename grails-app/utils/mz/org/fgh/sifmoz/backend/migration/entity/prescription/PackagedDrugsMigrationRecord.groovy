@@ -64,10 +64,12 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             packagedDrugStock.setCreationDate(new Date())
             packagedDrugStock.setPackagedDrug(packagedDrug)
             packagedDrugStock.setQuantitySupplied(this.amount)
+            packagedDrugStock.setId(UUID.randomUUID().toString())
             packagedDrug.getPackagedDrugStocks().add(packagedDrugStock)
             packagedDrug.validate()
 
             if (!packagedDrug.hasErrors()) {
+                packagedDrug.setId(UUID.randomUUID().toString())
                 packagedDrug.save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, packagedDrug.getErrors().toString()))

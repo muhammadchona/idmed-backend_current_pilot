@@ -119,7 +119,7 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
             double percUnit = 100 / result.size()
 
             for (item in result) {
-                HistoricoLevantamentoReport historicoLevantamentoReport = setGenericInfo(reportSearchParams, clinic, item[4] as Date)
+                HistoricoLevantamentoReport historicoLevantamentoReport = setGenericInfo(reportSearchParams, clinic, item[4])
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
                 generateAndSaveHistory(item as List, reportSearchParams, historicoLevantamentoReport)
@@ -139,7 +139,7 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
 
     }
 
-    private HistoricoLevantamentoReport setGenericInfo(ReportSearchParams searchParams, Clinic clinic, Date dateOfBirth) {
+    private HistoricoLevantamentoReport setGenericInfo(ReportSearchParams searchParams, Clinic clinic, Double age) {
         HistoricoLevantamentoReport historicoLevantamentoReport = new HistoricoLevantamentoReport()
         historicoLevantamentoReport.setClinic(clinic.getClinicName())
         historicoLevantamentoReport.setStartDate(searchParams.startDate)
@@ -148,7 +148,7 @@ abstract class HistoricoLevantamentoReportService implements IHistoricoLevantame
         historicoLevantamentoReport.setPeriodType(searchParams.periodType)
         historicoLevantamentoReport.setReportId(searchParams.id)
         historicoLevantamentoReport.setYear(searchParams.year)
-        historicoLevantamentoReport.setAge(ConvertDateUtils.getAge(dateOfBirth).intValue() as String)
+        historicoLevantamentoReport.setAge(age!= null ? age.intValue() as String : 0 as String)
         historicoLevantamentoReport.setClinicalService(ClinicalService.findById(searchParams.clinicalService).code)
         def province = Province.findById(clinic.province.id.toString())
         province == null? historicoLevantamentoReport.setProvince(" "):historicoLevantamentoReport.setProvince(province.description)

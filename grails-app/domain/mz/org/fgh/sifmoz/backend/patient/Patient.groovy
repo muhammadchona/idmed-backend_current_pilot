@@ -79,6 +79,7 @@ class Patient extends BaseEntity {
         his nullable: true
         hisLocation nullable: true
         hisLocationName nullable: true
+        id nullable: false , minSize: 5
     }
 
     def beforeInsert() {

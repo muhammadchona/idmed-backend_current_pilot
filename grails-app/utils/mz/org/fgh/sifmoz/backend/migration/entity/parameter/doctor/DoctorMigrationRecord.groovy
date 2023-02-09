@@ -50,6 +50,7 @@ class DoctorMigrationRecord extends AbstractMigrationRecord {
 
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
+                getMigratedRecord().setId(UUID.randomUUID().toString())
                 getMigratedRecord().save(flush: true)
             } else {
                 logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
