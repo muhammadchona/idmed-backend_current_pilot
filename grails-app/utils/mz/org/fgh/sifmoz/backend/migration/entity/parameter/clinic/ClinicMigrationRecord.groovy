@@ -45,7 +45,7 @@ class ClinicMigrationRecord extends AbstractMigrationRecord {
             getMigratedRecord().setTelephone(this.telephone)
             getMigratedRecord().setMainClinic(this.mainclinic)
             getMigratedRecord().setClinicName(this.clinicname)
-            getMigratedRecord().setProvince(Province.findByDescription(this.province))
+            getMigratedRecord().setProvince(Province.findByDescription(this.province.length() == 0 ? Clinic.findByMainClinic(true).province.description:this.province))
             getMigratedRecord().setDistrict(District.findByDescriptionIlike("%"+this.district+"%"))
             getMigratedRecord().setFacilityType(FacilityType.findByDescriptionIlike("%"+this.facilitytype+"%"))
             getMigratedRecord().setMainClinic(false)

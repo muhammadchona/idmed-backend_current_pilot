@@ -96,6 +96,7 @@ class StockAdjustmentMigrationRecord extends AbstractMigrationRecord {
             if(getMigratedRecord().hasErrors()) {
                 logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
             } else {
+                if (getMigratedRecord().id == null)  getMigratedRecord().setId(UUID.randomUUID().toString())
                 getMigratedRecord().save(flush:true)
             }
 

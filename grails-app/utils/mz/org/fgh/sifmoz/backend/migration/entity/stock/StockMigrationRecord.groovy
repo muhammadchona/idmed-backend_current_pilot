@@ -124,6 +124,7 @@ class StockMigrationRecord extends AbstractMigrationRecord {
                 if (stockEntrance.hasErrors()) {
                     logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
                 } else {
+                if (stockEntrance.id == null)  stockEntrance.setId(UUID.randomUUID().toString())
                     def createStockEntrance = stockEntrance.save(flush: true)
                     getMigratedRecord().setEntrance(createStockEntrance)
                 }
@@ -132,6 +133,7 @@ class StockMigrationRecord extends AbstractMigrationRecord {
                 if (getMigratedRecord().hasErrors()) {
                     logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
                 } else {
+                    if (getMigratedRecord().id == null)  getMigratedRecord().setId(UUID.randomUUID().toString())
                     getMigratedRecord().save(flush: true)
                 }
 

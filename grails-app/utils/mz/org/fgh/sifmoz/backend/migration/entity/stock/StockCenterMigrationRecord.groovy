@@ -43,6 +43,7 @@ class StockCenterMigrationRecord extends AbstractMigrationRecord {
             }
 
             if (logs.size() == 0){
+                getMigratedRecord().setId(UUID.randomUUID().toString())
                 getMigratedRecord().save(flush: true)
             }
 

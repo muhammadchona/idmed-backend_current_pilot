@@ -51,6 +51,7 @@ public class StockTakeMigrationRecord extends AbstractMigrationRecord {
                 logs.addAll(generateUnknowMigrationLog(this, getMigratedRecord().getErrors().toString()))
             }
             else {
+                if (getMigratedRecord().id == null)  getMigratedRecord().setId(UUID.randomUUID().toString())
                 def createdInventory = getMigratedRecord().save(flush: true)
             }
         }

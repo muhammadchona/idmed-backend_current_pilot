@@ -279,7 +279,7 @@ abstract class PackService implements IPackService{
     //Historico de Levantamentos
     @Override
     List<Pack> getPacksByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService,Clinic clinic,Date startDate, Date endDate) {
-
+/*
         return Pack.executeQuery("select " +
                 "psi.value," +
                 "p.firstNames," +
@@ -307,8 +307,69 @@ abstract class PackService implements IPackService{
                 "inner join pdl.therapeuticRegimen regimenThe " +
                 "inner join pdl.dispenseType dt " +
                 "inner join pk.dispenseMode dm " +
-                "where s.code = :serviceCode and c.id = :clinicId and pk.pickupDate >= :startDate and pk.pickupDate <= :endDate " +
-                "order by p.firstNames asc",
+                "where s.code = :serviceCode and c.id = :clinicId and (pk.pickupDate >= :startDate and pk.pickupDate <= :endDate) " +
+                "OR (pk.pickupDate >= :startDate and DATE(pk.pickupDate) - 30 >= :startDate and DATE(pk.pickupDate) + 30 <= :endDate) " +
+                "order by pk.pickupDate asc",
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate])
+ */
+        def queryString = "select psi.value," +
+                "p.first_names," +
+                "p.middle_names," +
+                "p.last_names," +
+                "EXTRACT(year FROM age(:endDate, p.date_of_birth)) as idade," +
+                "p.cellphone," +
+                "prc.patient_type," +
+                "tr.description as regimeDescription," +
+                " CASE  " +
+                "  WHEN dt.code = 'DT' THEN " +
+                "    CASE WHEN  pack2.pickup_date >= :startDate THEN 'DT' " +
+                "       ELSE 'DT - TRANSPORTE'" +
+                "         END " +
+                "     WHEN dt.code = 'DS' THEN " +
+                "       CASE WHEN  pack2.pickup_date >= :startDate THEN 'DS' " +
+                "         ELSE 'DS - TRANSPORTE'" +
+                "           END " +
+                "        WHEN dt.code = 'DM' THEN " +
+                "        CASE WHEN  pack2.pickup_date >= :startDate THEN 'DS' " +
+                "          ELSE 'DM - TRANSPORTE' " +
+                "          END " +
+                "     END AS tipodispensa," +
+                "dm.description as dispenseMode," +
+                "pack2.pickup_date," +
+                "pack2.next_pick_up_date " +
+                "from patient p " +
+                "inner join patient_service_identifier psi on psi.patient_id = p.id " +
+                "INNER JOIN clinical_service cs ON psi.service_id = cs.id " +
+                "inner join episode ep on ep.patient_service_identifier_id = psi.id " +
+                "inner join patient_visit_details pvd ON pvd.episode_id = ep.id " +
+                "INNER JOIN patient_visit pv on pv.id = pvd.patient_visit_id " +
+                "inner join patient ON patient.id = psi.patient_id " +
+                "inner join pack pack2 ON pack2.id = pvd.pack_id " +
+                "inner join prescription prc ON prc.id = pvd.prescription_id " +
+                "INNER JOIN start_stop_reason ssr on ssr.id = ep.start_stop_reason_id " +
+                "INNER JOIN prescription_detail pred on pred.prescription_id = prc.id " +
+                "inner join therapeutic_regimen tr on tr.id = pred.therapeutic_regimen_id " +
+                "inner join dispense_type dt ON dt.id = pred.dispense_type_id " +
+                "inner join dispense_mode dm ON dm.id = pack2.dispense_mode_id " +
+                "inner join clinic c on c.id = ep.clinic_id " +
+                "where " +
+                "((Date(pack2.pickup_date) BETWEEN :startDate AND :endDate) OR " +
+                "pg_catalog.date(pack2.pickup_date) < :startDate and pg_catalog.date(pack2.next_pick_up_date) > :endDate AND " +
+                "DATE(pack2.pickup_date + (INTERVAL '1 month'* cast (date_part('day',  cast (:endDate as timestamp) - cast (pack2.pickup_date as timestamp))/30 as integer))) >= :startDate " +
+                "and DATE(pack2.pickup_date + (INTERVAL '1 month'*cast (date_part('day', cast (:endDate as timestamp) - cast (pack2.pickup_date as timestamp))/30 as integer))) <= :endDate) " +
+                "and cs.code = :serviceCode " +
+                "and c.id = :clinicId " +
+                "and ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO') " +
+                "group by 1,2,3,4,5,6,7,8,9,10,11,12 " +
+                "ORDER BY PACK2.pickup_date asc"
+
+        Session session = sessionFactory.getCurrentSession()
+        def query = session.createSQLQuery(queryString)
+        query.setParameter("endDate", endDate)
+        query.setParameter("startDate", startDate)
+        query.setParameter("serviceCode", clinicalService.code)
+        query.setParameter("clinicId", clinic.id)
+        List<Object[]> list = query.list()
+        return list
     }
 }

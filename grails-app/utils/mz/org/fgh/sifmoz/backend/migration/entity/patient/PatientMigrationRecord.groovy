@@ -56,7 +56,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         String firstName = names[0]
         String midleName = null
         if (names.length > 1) {
-            for (int h = 1; names.length; h++) {
+            for (int h = 1; h < names.length ; h++) {
                 if (!Utilities.stringHasValue(midleName)) midleName = names[h]
                 else midleName += " "+names[h]
             }
@@ -74,6 +74,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
         getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
         if (Utilities.listHasElements(logs)) return logs
+            if (getMigratedRecord().id == null || getMigratedRecord().id.length() <= 0)  getMigratedRecord().setId(UUID.randomUUID().toString())
             getMigratedRecord().validate()
             if (!getMigratedRecord().hasErrors()) {
                 getMigratedRecord().save(flush: true)

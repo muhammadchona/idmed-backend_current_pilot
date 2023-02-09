@@ -2,30 +2,20 @@ package mz.org.fgh.sifmoz.backend.migration.entity.prescription
 
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
-import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
 import mz.org.fgh.sifmoz.backend.doctor.Doctor
-import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.duration.Duration
 import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.migration.base.record.AbstractMigrationRecord
 import mz.org.fgh.sifmoz.backend.migration.base.record.MigratedRecord
-import mz.org.fgh.sifmoz.backend.migration.common.MigrationError
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog
-import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
-import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
-import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
-import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
-import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.startStopReason.StartStopReason
-import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.therapeuticLine.TherapeuticLine
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
@@ -43,8 +33,8 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private int durationprescription
     private char modifiedprescription
     private Date enddateprescription
-    private int dispensaTrimestral
-    private int dispensaSemestral
+    private int dispensatrimestral
+    private int dispensasemestral
     private String tipodoenca
     private char tb
     private char saaj
@@ -188,6 +178,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             TherapeuticRegimen regimen = TherapeuticRegimen.findByCode(StringUtils.trim(therapeuticregimencode))
             prescriptionDetail.setTherapeuticRegimen(regimen)
             prescriptionDetail.setDispenseType(DispenseType.findByCode(getTipoDispensa()))
+            prescriptionDetail.setId(UUID.randomUUID().toString())
             prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
             prescription.getPrescriptionDetails().add(prescriptionDetail)
 
@@ -196,6 +187,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             if (!Utilities.stringHasValue(psi.id)) {
                 psi.validate()
                 if (!psi.hasErrors()) {
+                    if (psi.id == null)  psi.setId(UUID.randomUUID().toString())
                     psi.save(flush: true)
                 } else {
                     logs.addAll(generateUnknowMigrationLog(this, psi.getErrors().toString()))
@@ -205,6 +197,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             if (!Utilities.stringHasValue(episode.id)) {
                 episode.validate()
                 if (!episode.hasErrors()) {
+                    if (episode.id == null)  episode.setId(UUID.randomUUID().toString())
                     episode.save(flush: true)
                     if (this.episodeid > 0) episodeMigrationRecord.setAsMigratedSuccessfully(getRestService())
                 } else {
@@ -214,6 +207,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             }
             if (!prescription.hasErrors()) {
                 try {
+                    if (prescription.id == null)  prescription.setId(UUID.randomUUID().toString())
                     prescription.save(flush: true)
                 } catch(Exception e) {
                     e.printStackTrace()
@@ -262,9 +256,9 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     }
 
     String getTipoDispensa() {
-        if (this.dispensaSemestral == 1 && this.dispensaTrimestral == 1) return "DM"
-        else if (this.dispensaSemestral == 1) return "DS"
-        else if (this.dispensaTrimestral == 1) return "DT"
+        if (this.dispensasemestral == 1 && this.dispensatrimestral == 1) return "DM"
+        else if (this.dispensasemestral == 1) return "DS"
+        else if (this.dispensatrimestral == 1) return "DT"
         return "DM"
     }
 
