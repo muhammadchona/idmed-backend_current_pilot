@@ -26,7 +26,7 @@ interface IPatientVisitDetailsService{
 
     List<PatientVisitDetails> getARVDailyReport(String clinicId, Date startDate, Date endDate, String clinicalServiceId)
 
-    List<DrugQuantityTemp> getProducts(String patientVisitDetailId, String clinicId, Date startDate, Date endDate)
+    List<DrugQuantityTemp> getProducts(String patientVisitDetailId, String clinicId)
 
     PatientVisitDetails getLastVisitByEpisodeId(String episodeId)
 
