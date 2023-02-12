@@ -38,6 +38,7 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
     private Integer patientid
     private String clinicuuid
     private String tipodedoenca
+    private String episodeStartdate
 
     @Override
     List<MigrationLog> migrate() {
@@ -49,6 +50,7 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
             Episode episode
             if (this.episodeid > 0) {
                     episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
+
             }
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             if (prescriptionMigrationLog == null) throw new RuntimeException("MigrationLog of Prescription " + this.prescriptionid + " not found.")
@@ -117,7 +119,7 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
 
             //Date nxtPickDt = ConvertDateUtils.createDate(StringUtils.replace(this.nextpickupdate, " ", "-"), "dd-MMM-yyyy")
             pack.setNextPickUpDate(this.nextpickupdate)
-           // pack.setPatientVisitDetails(patientVisitDetailsSet)
+           Set<PatientVisitDetails> patientVisitDetailsSet = new HashSet<>();
             DispenseMode dsmode = DispenseMode.findById(modedispenseuuid)
             if (existingPatientVisit == null) {
                 PatientVisit patientVisit = new PatientVisit()
@@ -125,10 +127,8 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
                 patientVisit.setClinic(clinic)
                 patientVisit.setVisitDate(this.pickupdatepack)
                 patientVisit.setPatient(patient)
-                Set<PatientVisitDetails> patientVisitDetailsSet = new HashSet<>();
-                patientVisitDetailsSet.add(patientVisitDetails)
                 patientVisitDetails.setPatientVisit(patientVisit)
-                pack.setPatientVisitDetails(patientVisitDetailsSet)
+              //  pack.setPatientVisitDetails(patientVisitDetailsSet)
                 patientVisit.validate()
                 if (!patientVisit.hasErrors()) {
                     patientVisit.save(flush: true)
@@ -137,9 +137,12 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
                     return logs
                 }
             } else {
+                patientVisitDetails.setPatientVisit(existingPatientVisit)
+             //   pack.setPatientVisitDetails(patientVisitDetailsSet)
              //   existingPatientVisit.patientVisitDetails.add(patientVisitDetails)
             }
-
+            pack.setPatientVisitDetails(patientVisitDetailsSet)
+            patientVisitDetailsSet.add(patientVisitDetails)
             pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
             pack.setClinic(clinic)
 
