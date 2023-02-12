@@ -37,6 +37,7 @@ class ArvDailyRegisterReportTemp extends BaseEntity{
     String startReason
     String prep
     String ppe
+    String patientVisitDetailId
     static hasMany = ['drugQuantityTemps': DrugQuantityTemp]
 
 
@@ -60,6 +61,7 @@ class ArvDailyRegisterReportTemp extends BaseEntity{
         prep nullable: true
         ppe nullable: true
         packId nullable: true
+        patientVisitDetailId nullable: true
 
     }
     void setDrugQuantityTemps(List<DrugQuantityTemp> items){
