@@ -27,6 +27,7 @@ class ClinicalService extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
         clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
     }
 

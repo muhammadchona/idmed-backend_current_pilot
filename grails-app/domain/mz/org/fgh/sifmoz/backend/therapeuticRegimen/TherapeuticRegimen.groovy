@@ -24,6 +24,7 @@ class TherapeuticRegimen extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
     }
 
     def beforeInsert() {

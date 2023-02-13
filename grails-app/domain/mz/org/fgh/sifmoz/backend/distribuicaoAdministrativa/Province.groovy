@@ -16,6 +16,7 @@ class Province extends BaseEntity {
     static hasMany = [districts: District]
     static mapping = {
         id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
     }
 
     def beforeInsert() {

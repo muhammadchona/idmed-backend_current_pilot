@@ -20,6 +20,7 @@ class StockReferenceAdjustment extends StockAdjustment{
 
     static mapping = {
        id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
     }
 
     static constraints = {

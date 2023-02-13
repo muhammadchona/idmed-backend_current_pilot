@@ -22,6 +22,7 @@ class GroupInfo extends BaseEntity {
     static hasMany = [members: GroupMember, packHeaders: GroupPackHeader]
     static mapping = {
        id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
         table 'group_info'
     }
 
