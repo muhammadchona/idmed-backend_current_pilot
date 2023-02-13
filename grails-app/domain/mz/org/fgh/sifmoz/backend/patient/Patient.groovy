@@ -53,6 +53,7 @@ class Patient extends BaseEntity {
 
     static mapping = {
        id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
         patientVisits: lazy:true
     }
 

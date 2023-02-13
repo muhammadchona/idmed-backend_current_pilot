@@ -6,7 +6,7 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.protection.Menu
 
-class Appointment extends BaseEntity{
+class Appointment extends BaseEntity {
     String id
     Date appointmentDate
     Date visitDate
@@ -15,7 +15,8 @@ class Appointment extends BaseEntity{
     static belongsTo = [patient: Patient]
 
     static mapping = {
-       id generator: "assigned"
+        id generator: "assigned"
+        id column: 'id', index: 'Pk_Idx'
     }
 
     static constraints = {
@@ -38,7 +39,7 @@ class Appointment extends BaseEntity{
 
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode,groupsMenuCode))
+            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode, groupsMenuCode))
         }
         return menus
     }

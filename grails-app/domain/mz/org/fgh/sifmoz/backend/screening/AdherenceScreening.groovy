@@ -21,6 +21,7 @@ class AdherenceScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
     static mapping = {
        id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
     }
 
     static constraints = {

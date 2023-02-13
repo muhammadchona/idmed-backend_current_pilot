@@ -57,6 +57,7 @@ class SecUser implements Serializable {
         clinics  joinTable: [name: "clinic_users", key: "sec_user_id", column: "clinic_id"]
         clinicSectors  joinTable: [name: "clinic_sector_users", key: "sec_user_id", column: "clinic_sector_id"]
      //   id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
     }
 
 }

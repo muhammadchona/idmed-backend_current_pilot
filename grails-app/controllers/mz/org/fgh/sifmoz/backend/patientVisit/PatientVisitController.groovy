@@ -199,14 +199,17 @@ class PatientVisitController extends RestfulController{
         patientVisitDB.properties = objectJSON
         //Only updated pack and packagedDrugs (refazer dispensa)
         patientVisitDB.patientVisitDetails.eachWithIndex { item, index ->
-            item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
-                item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
-                item4.drug.stockList = null
-                item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
-                    item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
+            if (item.pack) {
+                item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
+                    item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
+                    item4.drug.stockList = null
+                    item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
+                        item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
+                    }
                 }
             }
         }
+
         if (patientVisitDB.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond visit.errors

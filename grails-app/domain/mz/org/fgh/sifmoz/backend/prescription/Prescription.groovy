@@ -54,6 +54,7 @@ class Prescription extends BaseEntity{
     }
     static mapping = {
        id generator: "assigned"
+id column: 'id', index: 'Pk_Idx'
         patientVisitDetails lazy: true
    //     prescribedDrugs lazy: true
     //    prescriptionDetails lazy: true
