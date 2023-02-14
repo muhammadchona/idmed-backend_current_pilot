@@ -131,7 +131,7 @@ abstract class PatientVisitDetailsService implements IPatientVisitDetailsService
         list.each { item ->
             def drugName = item[0]
             def quantity = item[1]
-            listDrugTemp.add(new DrugQuantityTemp(String.valueOf(drugName), Long.valueOf(quantity)))
+            listDrugTemp.add(new DrugQuantityTemp(String.valueOf(drugName), Double.valueOf(quantity).longValue()))
         }
         return listDrugTemp
     }

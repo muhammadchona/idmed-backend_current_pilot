@@ -84,7 +84,7 @@ abstract class ArvDailyRegisterReportService implements IArvDailyRegisterReportS
         arvTemp.setOrderNumber(orderNumber.toString())
         arvTemp.setNid item[0] == null ? "":(item[0].toString())
         arvTemp.setPatientName(item[1] +" "+item[2] +" " +item[3] )
-        Integer age =  item[5] == null? 0 :  ConvertDateUtils.getAgeBetweenTwoDates(item[5] as Date, reportSearchParams.getEndDate())
+        Integer age =  item[5] == null? 0 :  ConvertDateUtils.getAgeByLocalDates(item[5] as Date, reportSearchParams.getEndDate())
         arvTemp.setAgeGroup_0_4(age >= 0 && age < 4 ? "Sim" : "Nao")
         arvTemp.setAgeGroup_5_9(age >= 5 && age <= 9 ? "Sim" : "Nao")
         arvTemp.setAgeGroup_10_14(age >= 10 && age <= 14 ? "Sim" : "Nao")

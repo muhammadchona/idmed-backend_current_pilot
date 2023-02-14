@@ -8,7 +8,7 @@ import mz.org.fgh.sifmoz.backend.stock.Stock
 class PackagedDrugStock extends BaseEntity {
     String id
     Drug drug
-    int quantitySupplied
+    double quantitySupplied
     Date creationDate
     Stock stock
     static belongsTo = [packagedDrug: PackagedDrug]

@@ -242,7 +242,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
 
         PackagedDrug packagedDrug = new PackagedDrug()
         packagedDrug.setDrug(Drug.findByName(dispense.getAt('drugname').toString()))
-        packagedDrug.setQuantitySupplied(Integer.parseInt(inHand))
+        packagedDrug.setQuantitySupplied(Double.parseDouble(inHand))
         packagedDrug.setPack(dispenseIdmed)
         return packagedDrug
     }

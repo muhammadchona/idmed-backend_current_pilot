@@ -52,7 +52,7 @@ class RestOpenMRSClient {
                             "person\":\"" + patient.hisUuid + "\"," +
                             "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
                             "\"concept\":\"e1de2ca0-1d5f-11e0-b929-000c29ad1d07\"," +
-                            "\"value\":\"" + pd.quantitySupplied + "\"," +
+                            "\"value\":\"" + pd.quantitySupplied.intValue() + "\"," +
                             "\"comment\":\"IDART\"" +
                             "}"
 
@@ -84,7 +84,7 @@ class RestOpenMRSClient {
                     customizedDosage.concat(pd.getDrug().getDefaultPeriodTreatment())
 
                     //Dispensed amount
-                    packSize = packSize + pd.getQuantitySupplied()
+                    packSize = packSize + pd.getQuantitySupplied().intValue()
                 }
 
                 for (String group : obsGroups) {

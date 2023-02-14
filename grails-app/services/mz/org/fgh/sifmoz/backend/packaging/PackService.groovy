@@ -66,12 +66,12 @@ abstract class PackService implements IPackService{
                 "inner join pk.patientVisitDetails as pvd " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as rsn " +
-                "inner join pvd.patientVisit as pv " +
-                "inner join pvd.prescription as pr " +
-                "inner join pr.prescriptionDetails as prd " +
-                "inner join pv.patient as pt " +
-                "inner join pt.identifiers as pid " +
-                "inner join pid.service as svc " +
+              //  "inner join pvd.patientVisit as pv " +
+              //  "inner join pvd.prescription as pr " +
+              //  "inner join pr.prescriptionDetails as prd " +
+            //    "inner join pv.patient as pt " +
+             //   "inner join pt.identifiers as pid " +
+            //    "inner join pid.service as svc " +
                 "where pk.pickupDate >= :startDate " +
                 "       and pk.pickupDate <= :endDate " +
                 "       and pk.clinic= :clinic " +

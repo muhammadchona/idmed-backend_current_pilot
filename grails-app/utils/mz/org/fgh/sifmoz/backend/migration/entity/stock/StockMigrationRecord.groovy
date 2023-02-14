@@ -85,7 +85,7 @@ class StockMigrationRecord extends AbstractMigrationRecord {
             if(this.fullcontainersremaining != null){
                 getMigratedRecord().setStockMoviment(this.fullcontainersremaining)
             } else {
-                getMigratedRecord().setStockMoviment(0)
+                getMigratedRecord().setStockMoviment(this.unitsreceived)
             }
 
             //LOGS

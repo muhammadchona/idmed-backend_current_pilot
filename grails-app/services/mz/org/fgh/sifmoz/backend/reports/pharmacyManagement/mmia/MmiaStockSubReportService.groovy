@@ -50,8 +50,8 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
                 "                                   inner join sa.operation sot  " +
                 "           where sa.class = StockDestructionAdjustment and (rf.date >= :startDate and rf.date <= :endDate) and rf.clinic = :clinic" +
                 "           )) as ajustes," +
-                "           ((select coalesce(sum(s.stockMoviment),0) as r from Stock s inner join s.entrance se where s.expireDate > :endDate and DATE(s.expireDate) - 28 > :endDate and se.dateReceived <= :endDate and s.drug = dr and s.clinic = :clinic) -" +
-                "           (select coalesce(sum(pd.quantitySupplied),0) as s from PackagedDrug pd inner join pd.pack pk where pk.pickupDate >= :startDate and pk.pickupDate <= :endDate and pd.drug = dr and pk.clinic = :clinic) +" +
+                "           ((select coalesce(sum(s.unitsReceived),0) as r from Stock s inner join s.entrance se where s.expireDate >= :endDate and se.dateReceived <= :endDate and s.drug = dr and s.clinic = :clinic) -" +
+                "           (select coalesce(sum(pd.quantitySupplied),0) as s from PackagedDrug pd inner join pd.pack pk where pk.pickupDate <= :endDate and pd.drug = dr and pk.clinic = :clinic) +" +
                 "           ((select coalesce(SUM(CASE sot.code WHEN 'AJUSTE_NEGATIVO' THEN sa.adjustedValue ELSE (-1*sa.adjustedValue) END),0) as adjustedValue" +
                 "           from StockAdjustment sa inner join sa.adjustedStock st with st.drug = dr" +
                 "                                   inner join sa.inventory i " +
@@ -96,7 +96,8 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
                 "       and dr.clinicalService = :clinicalService" +
                 "       and exists (select s " +
                 "                   from Stock s inner join s.entrance se " +
-                "                   where s.drug = dr and s.clinic = :clinic)",
+                "                   where s.drug = dr and s.clinic = :clinic)" +
+                " order by dr.name asc",
                 [startDate: searchParams.getStartDate(), endDate: searchParams.getEndDate(), clinic: clinic, clinicalService: service])
 
         double percUnit = 0
@@ -129,11 +130,11 @@ abstract class MmiaStockSubReportService implements IMmiaStockSubReportService {
         stockSubReportItem.setFnmCode(String.valueOf(item[1]))
         stockSubReportItem.setDrugName(String.valueOf(item[2]))
         stockSubReportItem.setInitialEntrance(Integer.valueOf(String.valueOf(item[4])))
-        stockSubReportItem.setOutcomes(Integer.valueOf(String.valueOf(item[5])))
+        stockSubReportItem.setOutcomes(String.valueOf(item[5].toString()).toDouble().intValue())
         stockSubReportItem.setLossesAdjustments(Integer.valueOf(String.valueOf(item[6])))
-        stockSubReportItem.setInventory(Integer.valueOf(String.valueOf(item[7])))
+        stockSubReportItem.setInventory(String.valueOf(item[7].toString()).toDouble().intValue())
         stockSubReportItem.setExpireDate(item[8] as Date)
-        stockSubReportItem.setBalance(Integer.valueOf(String.valueOf(item[9])))
+        stockSubReportItem.setBalance(String.valueOf(item[9].toString()).toDouble().intValue())
         save(stockSubReportItem)
         mmiaStockSubReportItems.add(stockSubReportItem)
     }

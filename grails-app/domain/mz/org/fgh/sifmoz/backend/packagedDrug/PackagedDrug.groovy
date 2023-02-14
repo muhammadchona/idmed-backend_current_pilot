@@ -12,7 +12,7 @@ class PackagedDrug extends BaseEntity {
     String id
     @JsonManagedReference
     Drug drug
-    int quantitySupplied
+    double quantitySupplied
     Date nextPickUpDate
     boolean toContinue
     Date creationDate
@@ -27,7 +27,7 @@ id column: 'id', index: 'Pk_Idx'
     }
 
     static constraints = {
-        quantitySupplied(min: 0)
+       // quantitySupplied(min:0.0, max: 9999.99, scale: 2)
         nextPickUpDate nullable: true
         creationDate nullable: true
     }

@@ -145,7 +145,7 @@ abstract class PatientTransReferenceService implements IPatientTransReferenceSer
 
       for (PackagedDrug packageDrug : lastVisitDetails.pack.packagedDrugs) {
        packagedDrugs.put("drugCode", packageDrug.drug.fnmCode)
-       packagedDrugs.put("quantitySupplied", packageDrug.quantitySupplied)
+       packagedDrugs.put("quantitySupplied", packageDrug.quantitySupplied.intValue())
        packagedDrugs.put("nextPickUpDate", packageDrug.nextPickUpDate)
        packagedDrugs.put("toContinue", packageDrug.toContinue)
        listPackD.add(packageDrug);
