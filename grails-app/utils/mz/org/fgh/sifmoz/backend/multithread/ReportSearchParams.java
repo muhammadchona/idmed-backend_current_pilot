@@ -51,7 +51,7 @@ public class ReportSearchParams implements Validateable {
     public void determineStartEndDate() {
         switch (getPeriodType()) {
             case PERIOD_TYPE_SPECIFIC:
-                setStartDate(ConvertDateUtils.createDate(getStartDateParam(),"dd-MM-yyyy"));
+                setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.createDate(getStartDateParam(),"dd-MM-yyyy")));
                 setEndDate(ConvertDateUtils.createDate(getEndDateParam(),"dd-MM-yyyy"));
                 break;
             case PERIOD_TYPE_MONTH:
@@ -59,21 +59,21 @@ public class ReportSearchParams implements Validateable {
                 Date startDateTemp = DateUtils.addMonths(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, month, getYear()), -1);
                 int yearStartDate = DateUtils.toCalendar(startDateTemp).get(Calendar.YEAR);
                 int monthStartDate = DateUtils.toCalendar(startDateTemp).get(Calendar.MONTH);
-                setStartDate(startDateTemp);
+                setStartDate(ConvertDateUtils.getDateAtStartOfDay(startDateTemp));
                 setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, month, getYear()));
                 break;
             case PERIOD_TYPE_QUARTER:
                 switch (getPeriod()) {
                     case "1":
-                        setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1));
+                        setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1)));
                         setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 4, getYear()));
                         break;
                     case "2":
-                        setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 4, getYear() - 1));
+                        setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 4, getYear() - 1)));
                         setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 8, getYear()));
                         break;
                     case "3":
-                        setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 8, getYear() - 1));
+                        setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 8, getYear() - 1)));
                         setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 12, getYear()));
                         break;
                 }
@@ -81,17 +81,17 @@ public class ReportSearchParams implements Validateable {
             case PERIOD_TYPE_SEMESTER:
                 switch (getPeriod()) {
                     case "1":
-                        setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1));
+                        setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1)));
                         setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 6, getYear()));
                         break;
                     case "2":
-                        setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 6, getYear() - 1));
+                        setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 6, getYear() - 1)));
                         setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 12, getYear()));
                         break;
                 }
                 break;
             case PERIOD_TYPE_ANNUAL:
-                setStartDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1));
+                setStartDate(ConvertDateUtils.getDateAtStartOfDay(ConvertDateUtils.getDateFromDayAndMonthAndYear(21, 12, getYear() - 1)));
                 setEndDate(ConvertDateUtils.getDateFromDayAndMonthAndYear(20, 12, getYear()));
                 break;
         }

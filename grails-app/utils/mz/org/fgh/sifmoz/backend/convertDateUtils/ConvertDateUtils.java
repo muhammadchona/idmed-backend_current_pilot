@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.*;
@@ -739,5 +741,16 @@ public class ConvertDateUtils {
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
         return calendar.getTime();
+    }
+
+    public static int getAgeByLocalDates (Date startDate, Date endDate) {
+        LocalDate localDateStartDate = startDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        LocalDate localDateEndDate = endDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+      return Period.between(localDateStartDate , localDateEndDate).getYears();
     }
 }

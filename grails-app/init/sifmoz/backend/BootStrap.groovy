@@ -2397,6 +2397,8 @@ class BootStrap {
         clinicList.add(new LinkedHashMap(uuid: "f1454a21-8e4e-460e-886b-55729f307410", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Muzinga", site_nid: "04005"))
         clinicList.add(new LinkedHashMap(uuid: "oc9nWB75I1wFseXID18XC", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "01", district: "Alto Molócue", sitename: "Farmácia Mundial", site_nid: "0001"))
         clinicList.add(new LinkedHashMap(uuid: "a14f4e9f-89cb-4492-8fc2-9959e68e99b6", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmacia Quelimane", site_nid: "04002"))
+        clinicList.add(new LinkedHashMap(uuid: "f5d006db-1e88-4469-a0a7-dc444fa9764a", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmac Universal", site_nid: "04008"))
+        clinicList.add(new LinkedHashMap(uuid: "4a93cbf1-da0d-4657-bc41-93b30cd93b8e", sisma_id: "N/A", provinceCode: "04", province: "Zambezia", districtCode: "22", district: "Quelimane", sitename: "Farmac Moçambique", site_nid: "04009"))
 
         return clinicList
     }

@@ -48,7 +48,7 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
             if (pack == null) throw new RuntimeException("Não foi encontrado o respectivo registo PACK.")
 
             PackagedDrug packagedDrug = getMigratedRecord() as PackagedDrug
-            packagedDrug.setQuantitySupplied(this.amount / stock.getDrug().getPackSize() as int)
+            packagedDrug.setQuantitySupplied(this.amount / stock.getDrug().getPackSize())
             packagedDrug.setNextPickUpDate(pack.getNextPickUpDate())
             packagedDrug.setDrug(stock.getDrug())
             packagedDrug.setCreationDate(new Date())
@@ -58,12 +58,11 @@ public class PackagedDrugsMigrationRecord extends AbstractMigrationRecord {
 
             //PackageDrugStock
             PackagedDrugStock packagedDrugStock = new PackagedDrugStock()
-            packagedDrugStock.setQuantitySupplied(amount)
+            packagedDrugStock.setQuantitySupplied(this.amount / stock.getDrug().getPackSize())
             packagedDrugStock.setDrug(stock.getDrug())
             packagedDrugStock.setStock(stock)
             packagedDrugStock.setCreationDate(new Date())
             packagedDrugStock.setPackagedDrug(packagedDrug)
-            packagedDrugStock.setQuantitySupplied(this.amount)
             packagedDrugStock.setId(UUID.randomUUID().toString())
             packagedDrug.getPackagedDrugStocks().add(packagedDrugStock)
             packagedDrug.validate()
