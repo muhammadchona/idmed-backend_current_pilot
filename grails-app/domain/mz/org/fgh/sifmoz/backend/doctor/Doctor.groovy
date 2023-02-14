@@ -14,7 +14,6 @@ class Doctor extends BaseEntity {
     String firstnames
     String lastname
     String gender
-    Date dateofbirth
     String telephone
     String email
     @JsonIgnore
@@ -29,9 +28,6 @@ class Doctor extends BaseEntity {
         firstnames nullable: false
         lastname nullable: false
         gender nullable: false
-        dateofbirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
-            return dateofbirth != null ? dateofbirth <= new Date() : null
-        })
         telephone(nullable: true, matches: /\d+/, maxSize: 12, minSize: 9)
         email nullable: true
 
