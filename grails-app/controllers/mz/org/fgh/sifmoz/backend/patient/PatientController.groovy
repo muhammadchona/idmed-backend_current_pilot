@@ -10,6 +10,7 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifierService
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
@@ -30,6 +31,7 @@ class PatientController extends RestfulController {
 
     IPatientService patientService
     LocalidadeService localidadeService
+    PatientServiceIdentifierService patientServiceIdentifierService
 
     def SessionFactory sessionFactory
 
@@ -56,13 +58,17 @@ class PatientController extends RestfulController {
             Patient patient = new Patient()
             def objectJSON = request.JSON
             patient = objectJSON as Patient
+            def patientAux = patient
 
             patient.beforeInsert()
+            patient.identifiers = []
             patient.validate()
+//            patient = patientAux
 
             if(objectJSON.id){
                 patient.id = UUID.fromString(objectJSON.id)
             }
+
             if (patient.hasErrors()) {
                 transactionStatus.setRollbackOnly()
                 respond patient.errors
@@ -77,7 +83,20 @@ class PatientController extends RestfulController {
                         localidadeService.save(patient.bairro)
                     }
                 }
+
                 patientService.save(patient)
+
+                if (!patientAux.identifiers.isEmpty()) {
+                    patientAux.identifiers.each { item ->
+                        if(item){
+                            item.id = UUID.randomUUID().toString()
+                            item.patient = patient
+                            patientServiceIdentifierService.save(item)
+                        }
+                    }
+                }
+
+
             } catch (ValidationException e) {
                 respond patient.errors
                 return
@@ -104,7 +123,10 @@ class PatientController extends RestfulController {
                 if (patient.bairro) {
                     Localidade localidade = Localidade.findByCode(patient.bairro.code)
                     if (!localidade) {
+                        if (!patient.bairro.id)
+                            patient.bairro.id = UUID.randomUUID().toString()
                         patient.bairro.id = patient.bairro.id
+
                         localidadeService.save(patient.bairro)
                     }
                 }
