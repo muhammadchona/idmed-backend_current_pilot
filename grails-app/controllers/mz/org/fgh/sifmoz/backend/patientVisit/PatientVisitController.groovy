@@ -97,19 +97,19 @@ class PatientVisitController extends RestfulController {
                 }
             }
             visit.adherenceScreening.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.adherenceScreening[index].id)
+                    item.id = UUID.fromString(objectJSON.adherenceScreening[index].id)
             }
             visit.vitalSigns.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.vitalSigns[index].id)
+                    item.id = UUID.fromString(objectJSON.vitalSigns[index].id)
             }
             visit.pregnancyScreening.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.pregnancyScreening[index].id)
+                    item.id = UUID.fromString(objectJSON.pregnancyScreening[index].id)
             }
             visit.tbScreening.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.tbScreening[index].id)
+                    item.id = UUID.fromString(objectJSON.tbScreening[index].id)
             }
             visit.ramScreening.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.ramScreening[index].id)
+                    item.id = UUID.fromString(objectJSON.ramScreening[index].id)
             }
         }
         if (visit.hasErrors()) {
@@ -121,13 +121,14 @@ class PatientVisitController extends RestfulController {
         try {
             PatientVisit existingPatientVisit = PatientVisit.findByVisitDateAndPatient(visit.visitDate, visit.patient)
             if (existingPatientVisit != null) {
-
                 visit.vitalSigns.each { item ->
-                    item.visit = existingPatientVisit
-                    vitalSignsScreeningService.save(item)
+                        item.visit = existingPatientVisit
+                        vitalSignsScreeningService.save(item)
+
                 }
                 if (visit.patient.gender.startsWith('F')) {
                     visit.pregnancyScreening.each { item ->
+
                         item.visit = existingPatientVisit
                         pregnancyScreeningService.save(item)
                     }
