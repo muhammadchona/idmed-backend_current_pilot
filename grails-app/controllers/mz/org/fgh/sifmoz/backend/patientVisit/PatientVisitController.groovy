@@ -32,7 +32,7 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class PatientVisitController extends RestfulController{
+class PatientVisitController extends RestfulController {
 
     IPatientVisitService patientVisitService
     IPrescriptionService prescriptionService
@@ -62,7 +62,7 @@ class PatientVisitController extends RestfulController{
         render JSONSerializer.setJsonObjectResponse(patientVisitService.get(id)) as JSON
     }
 
-    def saveRecord(PatientVisit visit){
+    def saveRecord(PatientVisit visit) {
         render JSONSerializer.setJsonObjectResponse(visit) as JSON
     }
 
@@ -76,7 +76,7 @@ class PatientVisitController extends RestfulController{
         visit.beforeInsert()
         visit.validate()
 
-        if(objectJSON.id){
+        if (objectJSON.id) {
             visit.id = UUID.fromString(objectJSON.id)
             visit.patientVisitDetails.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.patientVisitDetails[index].id)
@@ -91,24 +91,24 @@ class PatientVisitController extends RestfulController{
                 item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
                     item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
                     item4.drug.stockList = null
-                    item4.packagedDrugStocks.eachWithIndex{ item5, index5 ->
+                    item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
                         item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
                     }
                 }
             }
-            visit.adherenceScreening.eachWithIndex{  item, index ->
+            visit.adherenceScreening.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.adherenceScreening[index].id)
             }
-            visit.vitalSigns.eachWithIndex{  item, index ->
+            visit.vitalSigns.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.vitalSigns[index].id)
             }
-            visit.pregnancyScreening.eachWithIndex{  item, index ->
+            visit.pregnancyScreening.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.pregnancyScreening[index].id)
             }
-            visit.tbScreening.eachWithIndex{  item, index ->
+            visit.tbScreening.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.tbScreening[index].id)
             }
-            visit.ramScreening.eachWithIndex{  item, index ->
+            visit.ramScreening.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.ramScreening[index].id)
             }
         }
@@ -122,33 +122,33 @@ class PatientVisitController extends RestfulController{
             PatientVisit existingPatientVisit = PatientVisit.findByVisitDateAndPatient(visit.visitDate, visit.patient)
             if (existingPatientVisit != null) {
 
-                visit.vitalSigns.each {item ->
+                visit.vitalSigns.each { item ->
                     item.visit = existingPatientVisit
                     vitalSignsScreeningService.save(item)
                 }
-                if(visit.patient.gender.startsWith('F')) {
+                if (visit.patient.gender.startsWith('F')) {
                     visit.pregnancyScreening.each { item ->
                         item.visit = existingPatientVisit
                         pregnancyScreeningService.save(item)
                     }
                     existingPatientVisit.pregnancyScreening = visit.pregnancyScreening
                 }
-                visit.ramScreening.each {item ->
+                visit.ramScreening.each { item ->
                     item.visit = existingPatientVisit
                     ramScreeningService.save(item)
                 }
-                visit.adherenceScreening.each {item ->
+                visit.adherenceScreening.each { item ->
                     item.visit = existingPatientVisit
                     adherenceScreeningService.save(item)
                 }
-                visit.tbScreening.each {item ->
+                visit.tbScreening.each { item ->
                     item.visit = existingPatientVisit
                     tbScreeningService.save(item)
                 }
-              visit.patientVisitDetails.each {item ->
-                  item.patientVisit = existingPatientVisit
-                  Prescription existingPrescription = Prescription.findById(item.prescription.id)
-                  if (existingPrescription == null) prescriptionService.save(item.prescription)
+                visit.patientVisitDetails.each { item ->
+                    item.patientVisit = existingPatientVisit
+                    Prescription existingPrescription = Prescription.findById(item.prescription.id)
+                    if (existingPrescription == null) prescriptionService.save(item.prescription)
                     packService.save(item.pack)
                     reduceStock(item.pack, syncStatus)
                 }
@@ -161,7 +161,7 @@ class PatientVisitController extends RestfulController{
                 visit = existingPatientVisit
 
             } else {
-                visit.patientVisitDetails.each {item ->
+                visit.patientVisitDetails.each { item ->
                     Prescription existingPrescription = Prescription.findById(item.prescription.id)
                     if (existingPrescription == null) prescriptionService.save(item.prescription)
 
@@ -183,7 +183,7 @@ class PatientVisitController extends RestfulController{
             return
         }
 
-        respond visit, [status: CREATED, view:"show"]
+        respond visit, [status: CREATED, view: "show"]
     }
 
     @Transactional
@@ -197,6 +197,29 @@ class PatientVisitController extends RestfulController{
         }
         //updating db object
         patientVisitDB.properties = objectJSON
+
+        patientVisitDB.adherenceScreening.eachWithIndex { item, index ->
+            if (item)
+                item.id = UUID.fromString(objectJSON.adherenceScreening[index].id)
+        }
+        patientVisitDB.vitalSigns.eachWithIndex { item, index ->
+            if (item)
+                item.id = UUID.fromString(objectJSON.vitalSigns[index].id)
+        }
+        patientVisitDB.pregnancyScreening.eachWithIndex { item, index ->
+            if (item)
+                item.id = UUID.fromString(objectJSON.pregnancyScreening[index].id)
+        }
+        patientVisitDB.tbScreening.eachWithIndex { item, index ->
+            if (item)
+                item.id = UUID.fromString(objectJSON.tbScreening[index].id)
+        }
+        patientVisitDB.ramScreening.eachWithIndex { item, index ->
+            if (item)
+                item.id = UUID.fromString(objectJSON.ramScreening[index].id)
+        }
+
+
         //Only updated pack and packagedDrugs (refazer dispensa)
         patientVisitDB.patientVisitDetails.eachWithIndex { item, index ->
             if (item.pack) {
@@ -216,19 +239,20 @@ class PatientVisitController extends RestfulController{
             return
         }
         try {
-            patientVisitDB.patientVisitDetails.each {item->
-                restoreStock(item.pack,syncStatus)
-                reduceStock(item.pack,syncStatus)
-                packService.save(item.pack)
+            patientVisitDB.patientVisitDetails.each { item ->
+                if (item.pack) {
+                    restoreStock(item.pack, syncStatus)
+                    reduceStock(item.pack, syncStatus)
+                    packService.save(item.pack)
+                }
             }
-
             patientVisitService.save(patientVisitDB)
         } catch (ValidationException e) {
             respond patientVisitDB.errors
             return
         }
 
-        respond patientVisitDB, [status: OK, view:"show"]
+        respond patientVisitDB, [status: OK, view: "show"]
     }
 
     @Transactional
@@ -258,7 +282,7 @@ class PatientVisitController extends RestfulController{
     }
 
     void restoreStock(Pack pack, def syncStatus) {
-        if(pack.syncStatus == 'N' && syncStatus == '') {
+        if (pack.syncStatus == 'N' && syncStatus == '') {
             List<PackagedDrug> packagedDrugsDb = PackagedDrug.findAllByPack(pack)
             List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrugsDb)
             for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {
@@ -274,14 +298,14 @@ class PatientVisitController extends RestfulController{
     }
 
     void reduceStock(Pack pack, def syncStatus) {
-        if(pack.syncStatus == 'N' && syncStatus == '') {
+        if (pack.syncStatus == 'N' && syncStatus == '') {
             pack.packagedDrugs.each { pcDrugs ->
                 pcDrugs.packagedDrugStocks.each { pcdStock ->
                     Stock stock = Stock.findById(pcdStock.stock.id)
                     stock.stockMoviment -= pcdStock.quantitySupplied
                     stockService.save(stock)
                 }
-        }
+            }
         }
     }
 }
