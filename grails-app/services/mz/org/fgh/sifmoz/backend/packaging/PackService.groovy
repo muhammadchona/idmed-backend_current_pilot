@@ -52,9 +52,9 @@ abstract class PackService implements IPackService{
                 "where pk.pickupDate >= :startDate " +
                 "       and pk.pickupDate <= :endDate " +
                 "       and cl.id = :clinic " +
-                "       and prd.dispenseType.code = :serviceCode " +
+                "       and prd.dispenseType.code = :dispenseTypeCode " +
                 "       and ep.patientServiceIdentifier.service.code = :serviceCode ",
-                [startDate:startDate, endDate:endDate, serviceCode: service.getCode(), clinic: clinic.getId()])
+                [startDate:startDate, endDate:endDate, serviceCode: service.getCode(), clinic: clinic.getId(), dispenseTypeCode: dispenseType.getCode()])
         value = Integer.valueOf(count.get(0).toString())
         return value
     }
@@ -214,11 +214,18 @@ abstract class PackService implements IPackService{
                 "INNER JOIN episode ep on ep.id = pvd.episode_id " +
                 "INNER JOIN start_stop_reason ssr on ssr.id = ep.start_stop_reason_id " +
                 "where " +
-                "ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','VOLTOU_REFERENCIA') " +
+                "ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','VOLTOU_REFERENCIA','OUTRO') " +
                 "AND (pack.next_pick_up_date + INTERVAL '3 days') < :endDate " +
                 "AND EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '3 days'))) < 60 " +
                 "AND cs.code = :csCode AND idt.code = :idCode " +
-                "group by 1,2,3,4,6,7"
+                "and pack.next_pick_up_date = " +
+                "(select max(pck.next_pick_up_date) from pack pck " +
+                "INNER JOIN patient_visit_details pvd1 on pvd1.pack_id = pck.id " +
+                "                INNER JOIN patient_visit pv1 on pv1.id = pvd1.patient_visit_id " +
+                "                INNER JOIN patient pat1 on pat1.id = pv1.patient_id  where pat1.id = pat.id and (pack.next_pick_up_date +  INTERVAL '3 days') < :endDate" +
+                "                AND EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '3 days'))) < 60)  " +
+                "group by 1,2,3,4,6,7 " +
+                "order by dateMissedPickUp asc"
 
         Session session = sessionFactory.getCurrentSession()
         def query = session.createSQLQuery(queryString)
@@ -359,7 +366,7 @@ abstract class PackService implements IPackService{
                 "and DATE(pack2.pickup_date + (INTERVAL '1 month'*cast (date_part('day', cast (:endDate as timestamp) - cast (pack2.pickup_date as timestamp))/30 as integer))) <= :endDate) " +
                 "and cs.code = :serviceCode " +
                 "and c.id = :clinicId " +
-                "and ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO') " +
+                "and ssr.code in ('NOVO_PACIENTE','INICIO_CCR','TRANSFERIDO_DE','REINICIO_TRATAMETO','MANUNTENCAO','OUTRO') " +
                 "group by 1,2,3,4,5,6,7,8,9,10,11,12 " +
                 "ORDER BY PACK2.pickup_date asc"
 

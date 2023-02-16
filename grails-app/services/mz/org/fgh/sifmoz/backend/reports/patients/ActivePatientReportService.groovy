@@ -148,7 +148,6 @@ abstract class ActivePatientReportService implements IActivePatientReportService
 
         def result = packService.getActivePatientsReportDataByReportParams(reportSearchParams)
 
-        println(result)
         if (Utilities.listHasElements(result as ArrayList<?>)) {
             double percUnit = 100 / result.size()
 
@@ -158,7 +157,6 @@ abstract class ActivePatientReportService implements IActivePatientReportService
                 processMonitor.setProgress(processMonitor.getProgress() + percUnit)
                 reportProcessMonitorService.save(processMonitor)
                 generateAndSaveActivePacient(item as List, activePatientReport, reportId)
-                println(activePatientReport)
                 resultList.add(activePatientReport)
             }
 
@@ -177,7 +175,6 @@ abstract class ActivePatientReportService implements IActivePatientReportService
 
 
     private ActivePatientReport setGenericInfo(ReportSearchParams searchParams, Clinic clinic, Date dateOfBirth) {
-        System.out.println(dateOfBirth)
         ActivePatientReport activePatientReport = new ActivePatientReport()
         activePatientReport.setClinic(clinic.getClinicName())
         activePatientReport.setStartDate(searchParams.startDate)

@@ -67,6 +67,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setCellphone(this.getCellphone())
         getMigratedRecord().setDateOfBirth(this.dateofbirth)
         getMigratedRecord().setHisUuid(this.uuidopenmrs)
+            getMigratedRecord().setHisLocation(this.uuidlocationopenmrs)
         setClinicToMigratedRecord(logs)
         setProvinceToMigratedRecord(logs, this.province)
         getMigratedRecord().setMiddleNames(midleName)
