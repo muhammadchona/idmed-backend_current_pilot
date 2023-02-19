@@ -58,7 +58,7 @@ class PatientController extends RestfulController {
             Patient patient = new Patient()
             def objectJSON = request.JSON
             patient = objectJSON as Patient
-            def patientAux = patient
+            def patientAux = objectJSON as Patient
 
             patient.beforeInsert()
             patient.identifiers = []
@@ -86,8 +86,10 @@ class PatientController extends RestfulController {
 
                 patientService.save(patient)
 
+
                 if (!patientAux.identifiers.isEmpty()) {
-                    patientAux.identifiers.each { item ->
+                    patient.identifiers = patientAux.identifiers
+                    patient.identifiers.each { item ->
                         if(item){
                             item.id = UUID.randomUUID().toString()
                             item.patient = patient
