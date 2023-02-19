@@ -154,7 +154,7 @@ class DrugStockFileService {
             drugStockFileEvent.eventDate = result[i][2] as Date
             drugStockFileEvent.orderNumber = String.valueOf(result[i][4])
             drugStockFileEvent.incomes = Long.valueOf(String.valueOf(result[i][5]))
-            drugStockFileEvent.outcomes = Long.valueOf(String.valueOf(result[i][6]))
+            drugStockFileEvent.outcomes = Double.valueOf(result[i][6]).longValue()
             drugStockFileEvent.posetiveAdjustment = Long.valueOf(String.valueOf(result[i][7]))
             drugStockFileEvent.negativeAdjustment = Long.valueOf(String.valueOf(result[i][8]))
             drugStockFileEvent.loses = Long.valueOf(String.valueOf(result[i][9]))
