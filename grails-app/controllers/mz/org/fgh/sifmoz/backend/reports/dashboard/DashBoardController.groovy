@@ -5,6 +5,8 @@ import grails.rest.*
 import grails.converters.*
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.reports.common.DashBoardService
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.dashboard.StockAlert
 
 class DashBoardController {
 
@@ -51,6 +53,17 @@ class DashBoardController {
 
     def getStockAlert (String clinicId, String serviceCode) {
         respond dashBoardService.getStockAlert(clinicId, serviceCode)
+    }
+
+    def getStockAlertAllServices (String clinicId) {
+        List<ClinicalService> clinicalServices = ClinicalService.findAll()
+        List<StockAlert> results = new ArrayList<>()
+        clinicalServices.each {it ->
+            dashBoardService.getStockAlert(clinicId, it.code).each {item ->
+                results.add(item)
+            }
+        }
+        respond results
     }
 
     def getDashboardServiceButton (int year, String clinicId) {

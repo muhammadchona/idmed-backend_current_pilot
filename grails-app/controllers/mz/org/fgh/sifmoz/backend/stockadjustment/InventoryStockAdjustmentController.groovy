@@ -30,7 +30,12 @@ class InventoryStockAdjustmentController extends RestfulController{
     }
 
     def show(String id) {
-        render JSONSerializer.setJsonObjectResponse(inventoryStockAdjustmentService.get(id)) as JSON
+      def inventorySAdjustment =  inventoryStockAdjustmentService.get(id)
+        if (inventorySAdjustment == null) {
+            render status: NO_CONTENT
+        } else {
+            render JSONSerializer.setJsonObjectResponse(inventorySAdjustment) as JSON
+        }
     }
 
     @Transactional

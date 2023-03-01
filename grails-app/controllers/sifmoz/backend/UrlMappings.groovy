@@ -19,6 +19,7 @@ class UrlMappings {
         get "/api/dashBoard/getDispenseByAge/$year/$clinicId/$serviceCode(.$format)?"(controller:'dashBoard', action:'getDispenseByAge')
         get "/api/dashBoard/getDispensesByGender/$year/$clinicId/$serviceCode(.$format)?"(controller:'dashBoard', action:'getDispensesByGender')
         get "/api/dashBoard/getStockAlert/$clinicId/$serviceCode(.$format)?"(controller:'dashBoard', action:'getStockAlert')
+        get "/api/dashBoard/getStockAlertAll/$clinicId(.$format)?"(controller:'dashBoard', action:'getStockAlertAllServices')
         get "/api/dashBoard/getDashboardServiceButton/$year/$clinicId(.$format)?"(controller:'dashBoard', action:'getDashboardServiceButton')
         get "/api/patient/openmrsSession/$interoperabilityId/$openmrsBase64(.$format)?"(controller:'patient', action:'getOpenMRSSession')
         get "/api/patientVisitDetails/getLastByEpisodeId/$episodeId(.$format)?"(controller:'patientVisitDetails', action:'getLastByEpisodeId')

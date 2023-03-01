@@ -67,7 +67,12 @@ class EpisodeController extends RestfulController{
     }
 
     @Transactional
-    def update(Episode episode) {
+    def update() {
+        def objectJSON = request.JSON
+        Episode episode = Episode.get(objectJSON.id)
+
+        //updating db object
+        episode.properties = objectJSON
         if (episode == null) {
             render status: NOT_FOUND
             return
