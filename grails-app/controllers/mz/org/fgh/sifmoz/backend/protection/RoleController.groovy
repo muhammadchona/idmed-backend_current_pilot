@@ -32,6 +32,9 @@ class RoleController {
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    public static final String  stockMenuCode = "03";
+    public static final String  dashboardMenuCode = "04";
+
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         render JSONSerializer.setObjectListJsonResponse(roleService.list(params)) as JSON
@@ -66,17 +69,13 @@ class RoleController {
                             if(menus.contains(menu)) {
                              //   String name = '%'+clazz.simpleName+'%'
                               //  String camelSimpleName = CaseUtils.toCamelCase(clazz.simpleName,false)
-                                def name = '%'+'/api'+'/'+clazz.simpleName+'/**'+'%'
-                                Requestmap requestMap = Requestmap.findByUrlIlike(name)
-                                println(name)
-                                println(requestMap)
-                                String actualConfigAttribute = requestMap.configAttribute
-                                if(!actualConfigAttribute.contains(role.authority)) {
-                                    String newConfigAttribute = role.authority + "," + actualConfigAttribute
-                                    requestMap.setConfigAttribute(newConfigAttribute)
-                                    requestmapService.save(requestMap)
-                                }
+                                saveRequestMaps(role,clazz.simpleName)
                             }
+                        }
+                    }
+                    if (menu.code == stockMenuCode || menu.code == dashboardMenuCode) {
+                        Arrays.asList('dashBoard','drugStockFile').each {it ->
+                            saveRequestMaps(role,it)
                         }
                     }
                 }
@@ -122,4 +121,15 @@ class RoleController {
 
         render status: NO_CONTENT
     }
+
+   private saveRequestMaps(Role role,String simpleName) {
+       def name = '%'+'/api'+'/'+simpleName+'/**'+'%'
+       Requestmap requestMap = Requestmap.findByUrlIlike(name)
+       String actualConfigAttribute = requestMap.configAttribute
+       if(!actualConfigAttribute.contains(role.authority)) {
+           String newConfigAttribute = role.authority + "," + actualConfigAttribute
+           requestMap.setConfigAttribute(newConfigAttribute)
+           requestmapService.save(requestMap)
+       }
+   }
 }

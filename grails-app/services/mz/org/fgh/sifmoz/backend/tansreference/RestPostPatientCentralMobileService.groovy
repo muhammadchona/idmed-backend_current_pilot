@@ -19,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 
-@Transactional
-@EnableScheduling
-@Slf4j
+//@Transactional
+//@EnableScheduling
+//@Slf4j
 class RestPostPatientCentralMobileService extends SynchronizerTask {
 
     private static final NAME = "PostPatientCentralMobile"
@@ -46,7 +46,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    @Scheduled(fixedDelay = 30000L)
+    //@Scheduled(fixedDelay = 30000L)
     void execute() {
 
         if(!this.isProvincial()) {
