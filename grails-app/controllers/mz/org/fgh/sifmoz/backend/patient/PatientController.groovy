@@ -203,4 +203,16 @@ class PatientController extends RestfulController {
 
     }
 
+    def getOpenMRSPatientProgramDetails(String interoperabilityId, String uuid, String openmrsBase64) {
+
+        HealthInformationSystem healthInformationSystem = HealthInformationSystem.get(interoperabilityId)
+        InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
+        InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
+
+        String urlPath = "programenrollment?patient="+uuid+ "&v=default"
+
+        render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, urlPath, "GET")
+
+    }
+
 }
