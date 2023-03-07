@@ -34,6 +34,9 @@ id column: 'id', index: 'Pk_Idx'
         if (!id) {
             id = UUID.randomUUID()
         }
+        if (!clinic) {
+            clinic = Clinic.findByMainClinic(true)
+        }
     }
 
 
