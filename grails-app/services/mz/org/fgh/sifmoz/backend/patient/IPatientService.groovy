@@ -1,6 +1,7 @@
 package mz.org.fgh.sifmoz.backend.patient
 
 import grails.gorm.services.Service
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 
 
 interface IPatientService {
@@ -22,5 +23,7 @@ interface IPatientService {
     List<Patient> getAllByClinicId(String clinicId, int offset, int max)
 
     Long count(Patient patient)
+
+    List<Patient> getAllPatientsInClinicSector(ClinicSector clinicSector)
 
 }

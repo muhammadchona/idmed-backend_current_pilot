@@ -71,6 +71,14 @@ class RoleController {
                               //  String camelSimpleName = CaseUtils.toCamelCase(clazz.simpleName,false)
                                 saveRequestMaps(role,clazz.simpleName)
                             }
+                        }  else if (clazz.simpleName == 'Role' || clazz.simpleName == 'SecUser') {
+                            print(clazz.simpleName)
+                            List<Menu> menus = clazz.newInstance().hasMenus()
+                            if(menus.contains(menu)) {
+                                //   String name = '%'+clazz.simpleName+'%'
+                                //  String camelSimpleName = CaseUtils.toCamelCase(clazz.simpleName,false)
+                                saveRequestMaps(role,clazz.simpleName)
+                            }
                         }
                     }
                     if (menu.code == stockMenuCode || menu.code == dashboardMenuCode) {

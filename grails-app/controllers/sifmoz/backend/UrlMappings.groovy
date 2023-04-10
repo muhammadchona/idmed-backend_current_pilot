@@ -82,6 +82,8 @@ class UrlMappings {
         get "/api/clinic/uuid/$uuid(.$format)?"(controller:'clinic', action:'getByUUID')
         get "/api/clinic/mainClinic(.$format)?"(controller:'clinic', action:'getMainClinic')
         get "/api/patient/openmrsProgramSearch/$interoperabilityId/$uuid/$openmrsBase64(.$format)?"(controller:'patient', action:'getOpenMRSPatientProgramDetails')
+        get "/api/episode/clinicSector/$clinicSectorId(.$format)?"(controller:'episode', action:'getLastWithVisitByClinicSectors')
+        get "/api/patient/clinicSector/$clinicSectorId(.$format)?"(controller:'patient', action:'getPatientsInClinicSector')
        // "/"(controller: 'application', action:'index')
         //"/"(controller: 'application', action:'index')
         "/"(view:"/login/auth")

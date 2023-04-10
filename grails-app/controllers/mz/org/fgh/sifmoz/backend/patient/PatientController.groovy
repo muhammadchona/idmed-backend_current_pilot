@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.LocalidadeService
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
@@ -213,6 +214,10 @@ class PatientController extends RestfulController {
 
         render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, urlPath, "GET")
 
+    }
+
+    def getPatientsInClinicSector(String clinicSectorId) {
+        render JSONSerializer.setObjectListJsonResponse(patientService.getAllPatientsInClinicSector(ClinicSector.findById(clinicSectorId))) as JSON
     }
 
 }
