@@ -3,15 +3,20 @@ package mz.org.fgh.sifmoz.backend.protection
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import grails.compiler.GrailsCompileStatic
+import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.utilities.IRoleMenu
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
-class SecUser implements Serializable {
+class SecUser implements Serializable, IRoleMenu {
 
     private static final long serialVersionUID = 1
+    public static final String  administrationMenuCode = "06";
+    public static final String  homeMenuCode = "08";
+
     String username
     String password
     String openmrsPassword
@@ -60,4 +65,12 @@ class SecUser implements Serializable {
 id column: 'id', index: 'Pk_Idx'
     }
 
+    @Override
+    List<Menu> hasMenus() {
+        List<Menu> menus = new ArrayList<>()
+        Menu.withTransaction {
+            menus = Menu.findAllByCodeInList(Arrays.asList(administrationMenuCode,homeMenuCode))
+        }
+        return menus
+    }
 }

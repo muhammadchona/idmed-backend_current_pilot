@@ -3,6 +3,10 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
 @Transactional
@@ -66,4 +70,30 @@ abstract class PatientService implements IPatientService{
     List<Patient> getAllByClinicId(String clinicId, int offset, int max) {
         return Patient.findAllByClinic(Clinic.findById(clinicId),[offset: offset, max: max])
     }
+
+    @Override
+    List<Patient> getAllPatientsInClinicSector(ClinicSector clinicSector) {
+
+        def patients = Patient.executeQuery("select p from Episode ep " +
+                "inner join ep.startStopReason stp " +
+                "inner join ep.patientServiceIdentifier psi " +
+                "inner join psi.patient p " +
+                "inner join ep.clinic c " +
+                "where ep.clinicSector = :clinicSector " +
+                "and exists (select pvd from PatientVisitDetails pvd where pvd.episode = ep ) " +
+                "and ep.episodeDate = ( " +
+                "  SELECT MAX(e.episodeDate)" +
+                "  FROM Episode e" +
+                " inner join e.patientServiceIdentifier psi2" +
+                "  WHERE psi2 = ep.patientServiceIdentifier and e.clinicSector = :clinicSector" +
+                ")" +
+                "order by ep.episodeDate desc", [clinicSector: clinicSector])
+
+        patients.each{ p ->
+            p.identifiers = []
+            p.patientVisits = []
+        }
+        return patients
+    }
+
 }

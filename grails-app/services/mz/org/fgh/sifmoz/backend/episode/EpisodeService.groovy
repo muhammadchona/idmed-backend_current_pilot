@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.episode
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
@@ -96,5 +97,32 @@ abstract class EpisodeService implements IEpisodeService{
     Episode getLastEpisodeByIdentifier(Patient patient, String serviceCode) {
         return Episode.findByPatientServiceIdentifier(PatientServiceIdentifier.findByPatientAndService(patient, ClinicalService.findByCode(serviceCode)), [sort: ['episodeDate': 'desc']])
     }
+
+    @Override
+    List<Episode> getLastWithVisitByClinicAndClinicSector(ClinicSector clinicSector) {
+
+        def episodes = Episode.executeQuery("select  ep from Episode ep " +
+                "inner join ep.startStopReason stp " +
+                "inner join ep.patientServiceIdentifier psi " +
+                "inner join psi.patient p" +
+                "inner join ep.clinic c " +
+                "where ep.clinicSector = :clinicSector " +
+                "and exists (select pvd from PatientVisitDetails pvd where pvd.episode = ep ) " +
+                "and ep.episodeDate = ( " +
+                "  SELECT MAX(e.episodeDate)" +
+                "  FROM Episode e" +
+                "  WHERE e.patientServiceIdentifier = ep.patientServiceIdentifier" +
+                ")" +
+                //"and ep.clinic = :clinic" +
+                "order by ep.episodeDate desc", [clinicSector: clinicSector])
+        episodes.each { it ->
+            PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getLastVisitByEpisodeId(it.id)
+            patientVisitDetails.setPrescription(Prescription.findById(patientVisitDetails.prescription.id))
+            it.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
+            it.getPatientVisitDetails().add(patientVisitDetails)
+        }
+        return episodes
+    }
+
 
 }
