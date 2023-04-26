@@ -49,4 +49,24 @@ id column: 'id', index: 'Pk_Idx'
         }
         return menus
     }
+
+    boolean isTARV(){
+        return this.code.compareToIgnoreCase("TARV")
+    }
+
+    boolean isTPT(){
+        return  this.code.compareToIgnoreCase("TPT")
+    }
+
+    boolean isPreP(){
+        return this.code.compareToIgnoreCase("PREP")
+    }
+
+    boolean isTB() {
+        return this.code.compareToIgnoreCase("TB")
+    }
+
+    boolean isPPE() {
+        return this.code.compareToIgnoreCase("PPE")
+    }
 }

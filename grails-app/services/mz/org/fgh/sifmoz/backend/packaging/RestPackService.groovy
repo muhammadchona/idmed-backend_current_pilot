@@ -34,19 +34,16 @@ class RestPackService {
             List<Pack> packList = Pack.findAll().findAll { it.syncStatus == 'R' }
 
             for (Pack pack : packList) {
-                System.out.println('saving {} at {} ' + pack + ' ' + new SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(new Date()))
-
+//                System.out.println('saving {} at {} ' + pack + ' ' + new SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(new Date()))
                 try {
                     RestOpenMRSClient restPost = new RestOpenMRSClient()
                     PatientVisitDetails patientVisitDetails = patientVisitDetailsService.getByPack(pack)
-                    System.out.println('Packing details ' + patientVisitDetails)
                     PatientVisit patientVisit = PatientVisit.get(patientVisitDetails.patientVisit.id)
                     Patient patient = Patient.get(patientVisit.patient.id)
                     if (patient.his == null ) return
                     HealthInformationSystem his = HealthInformationSystem.get(patient.his.id)
                     String urlBase = his.interoperabilityAttributes.find { it.interoperabilityType.code == "URL_BASE" }.value
-                    String convertToJson = restPost.createOpenMRSFILA(pack, patient)
-                    println(urlBase)
+                    String convertToJson = restPost.createOpenMRSDispense(pack, patient)
                     println(convertToJson)
                     String responsePost = restOpenMRSClient.requestOpenMRSClient(pack.providerUuid, convertToJson, urlBase, "encounter", requestMethod_POST)
                     if (responsePost.contains('Green')) {
