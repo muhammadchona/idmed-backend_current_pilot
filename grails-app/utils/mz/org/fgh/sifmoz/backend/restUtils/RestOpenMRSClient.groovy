@@ -1,15 +1,21 @@
 package mz.org.fgh.sifmoz.backend.restUtils
 
 import grails.converters.JSON
+import groovy.util.logging.Log
+import groovy.util.logging.Log4j
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 import org.grails.web.json.JSONObject
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import java.nio.charset.StandardCharsets
+import java.util.logging.Logger
 
 class RestOpenMRSClient {
 
@@ -17,107 +23,32 @@ class RestOpenMRSClient {
 
     }
 
-    String createOpenMRSFILA(Pack pack, Patient patient) {
-
+    String createOpenMRSDispense(Pack pack, Patient patient) {
 
         String inputAddPerson = "{}"
         String customizedDosage = ""
         String obsGroupsJson = null
         String dispenseMod = ""
         int packSize = 0
+
+        Logger logger = Logger.getLogger("Informe")
+
         Patient.withNewSession {
             try {
                 List<String> obsGroups = new ArrayList<>()
                 List<InteroperabilityAttribute> interoperabilityAttributes = Patient.get(patient.id).his.interoperabilityAttributes as List<InteroperabilityAttribute>
-                String filaUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FORM_FILA_UUID" }.value
-                String dispenseModeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSE_MODE_CONCEPT_UUID" }.value
-                String encounterType = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_ENCOUNTER_TYPE_CONCEPT_UUID" }.value
-                String providerUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "UNIVERSAL_PROVIDER_UUID" }.value
-                String regimeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_REGIMEN_CONCEPT_UUID" }.value
-                String dispensedAmountUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSED_AMOUNT_CONCEPT" }.value
-                String dosageUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DOSAGE_CONCEPT_UUID" }.value
-                String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_NEXT_VISIT_CONCEPT_UUID" }.value
-                String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
+                TherapeuticRegimen therapeuticRegimen = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen
 
-                for (PackagedDrug pd : pack.packagedDrugs) {
-                    String formulationString = "{\"" +
-                            "person\":\"" + patient.hisUuid + "\"," +
-                            "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
-                            "\"concept\":\"7956cd89-2ef6-4d25-90f9-f8940507eee8\"," +
-                            "\"value\":\"" + pd.drug.uuidOpenmrs + "\"," +
-                            "\"comment\":\"IDART\"" +
-                            "}"
+                if(therapeuticRegimen){
 
-                    String quantityString = "{\"" +
-                            "person\":\"" + patient.hisUuid + "\"," +
-                            "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
-                            "\"concept\":\"e1de2ca0-1d5f-11e0-b929-000c29ad1d07\"," +
-                            "\"value\":\"" + pd.quantitySupplied.intValue() + "\"," +
-                            "\"comment\":\"IDART\"" +
-                            "}"
-
-                    String dosageString = "{\"" +
-                            "person\":\"" + patient.hisUuid + "\"," +
-                            "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
-                            "\"concept\":\"e1de28ae-1d5f-11e0-b929-000c29ad1d07\"," +
-                            "\"value\":\"" + pd.getDrug().getDefaultTimes() + "\"," +
-                            "\"comment\":\"IDART\"" +
-                            "}"
-
-                    String obsGroup = "{\"" +
-                            "person\":\"" + patient.hisUuid + "\"," +
-                            "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
-                            "\"concept\":\"5ad593a4-bea2-4eef-ac88-11654e79d9da\"," +
-                            "\"comment\":\"IDART\"," +
-                            "\"groupMembers\": [" + formulationString + "," + quantityString + "," + dosageString + "]" +
-                            "}"
-
-                    obsGroups.add(obsGroup)
-                    //posologia
-                    customizedDosage = "Tomar "
-                    customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTreatment()))
-                    customizedDosage.concat(" ")
-                    customizedDosage.concat(pd.getDrug().getForm().getDescription())
-                    customizedDosage.concat(" ")
-                    customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTimes()))
-                    customizedDosage.concat(" ")
-                    customizedDosage.concat(pd.getDrug().getDefaultPeriodTreatment())
-
-                    //Dispensed amount
-                    packSize = packSize + pd.getQuantitySupplied().intValue()
-                }
-
-                for (String group : obsGroups) {
-                    if (!Utilities.stringHasValue(obsGroupsJson))
-                        obsGroupsJson = group
-                    else {
-                        obsGroupsJson = obsGroupsJson + "," + group
+                    if(therapeuticRegimen.isTARV() || therapeuticRegimen.isPPE()){
+                        inputAddPerson =  setOpenMRSFILA(interoperabilityAttributes, pack, patient, customizedDosage, obsGroupsJson, dispenseMod, packSize, obsGroups)
                     }
-                }
+                    if(therapeuticRegimen.isTPT())
+                        inputAddPerson =  setOpenMRSFILT(interoperabilityAttributes, pack, patient)
+                }else
+                    logger.info("Paciente "+ patient.firstNames +" "+ patient.lastNames+" com prescricao sem Regime Terapeutico")
 
-                if (pack.dispenseMode.openmrsUuid) {
-                    dispenseMod = "{\"person\":\""
-                            .concat(patient.hisUuid + "\",")
-                            .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate))
-                            .concat("\",\"concept\":\"" + dispenseModeUuid + "\",\"value\":\"")
-                            .concat(pack.dispenseMode.openmrsUuid + "\",\"comment\":\"IDART\"},")
-                }
-
-                String buildDispenseMap = "{\"encounterDatetime\": \"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\", \"patient\": \"" + patient.hisUuid + "\", \"encounterType\": \"" + encounterType + "\", "
-                        .concat("\"location\":\"" + patient.hisLocation + "\", \"form\":\"" + filaUuid + "\", \"encounterProviders\":[{\"provider\":\"" + providerUuid + "\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], ")
-                        .concat("\"obs\":[")
-                        .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + regimeUuid + "\",\"value\":\"" + strRegimenAnswerUuid + "\", \"comment\":\"IDART\"},")
-                        .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + dispensedAmountUuid + "\",\"value\":\"" + packSize + "\",\"comment\":\"IDART\"},")
-                        .concat("{\"person\":\"" + patient.hisUuid + "\",")
-                        .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + dosageUuid + "\",\"value\":\"" + customizedDosage + "\",\"comment\":\"IDART\"},")
-                        .concat("{\"person\":\"" + patient.hisUuid + "\",")
-                        .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + Utilities.formatToYYYYMMDD(pack.nextPickUpDate) + "\",\"comment\":\"IDART\"},")
-                        .concat(dispenseMod)
-                        .concat(obsGroupsJson)
-                        .concat("]")
-                        .concat("}")
-
-                inputAddPerson = new String(buildDispenseMap.getBytes(), StandardCharsets.UTF_8)
             } catch (Exception e) {
                 e.printStackTrace()
             }
@@ -202,4 +133,164 @@ class RestOpenMRSClient {
         return new JSONObject("{\"sessionId\":null,\"authenticated\":null}")
     }
 
-}
+    String setOpenMRSFILA(List<InteroperabilityAttribute> interoperabilityAttributes, Pack pack, Patient patient,
+                          String customizedDosage, String obsGroupsJson, String dispenseMod, int packSize, List<String> obsGroups){
+
+        String filaUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FORM_FILA_UUID" }.value
+        String dispenseModeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSE_MODE_CONCEPT_UUID" }.value
+        String encounterType = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_ENCOUNTER_TYPE_CONCEPT_UUID" }.value
+        String providerUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "UNIVERSAL_PROVIDER_UUID" }.value
+        String regimeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_REGIMEN_CONCEPT_UUID" }.value
+        String dispensedAmountUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSED_AMOUNT_CONCEPT" }.value
+        String dosageUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DOSAGE_CONCEPT_UUID" }.value
+        String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_NEXT_VISIT_CONCEPT_UUID" }.value
+        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
+
+        for (PackagedDrug pd : pack.packagedDrugs) {
+            String formulationString = "{\"" +
+                    "person\":\"" + patient.hisUuid + "\"," +
+                    "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
+                    "\"concept\":\"7956cd89-2ef6-4d25-90f9-f8940507eee8\"," +
+                    "\"value\":\"" + pd.drug.uuidOpenmrs + "\"," +
+                    "\"comment\":\"IDMED\"" +
+                    "}"
+
+            String quantityString = "{\"" +
+                    "person\":\"" + patient.hisUuid + "\"," +
+                    "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
+                    "\"concept\":\"e1de2ca0-1d5f-11e0-b929-000c29ad1d07\"," +
+                    "\"value\":\"" + pd.quantitySupplied.intValue() + "\"," +
+                    "\"comment\":\"IDMED\"" +
+                    "}"
+
+            String dosageString = "{\"" +
+                    "person\":\"" + patient.hisUuid + "\"," +
+                    "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
+                    "\"concept\":\"e1de28ae-1d5f-11e0-b929-000c29ad1d07\"," +
+                    "\"value\":\"" + pd.getDrug().getDefaultTimes() + "\"," +
+                    "\"comment\":\"IDMED\"" +
+                    "}"
+
+            String obsGroup = "{\"" +
+                    "person\":\"" + patient.hisUuid + "\"," +
+                    "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
+                    "\"concept\":\"5ad593a4-bea2-4eef-ac88-11654e79d9da\"," +
+                    "\"comment\":\"IDMED\"," +
+                    "\"groupMembers\": [" + formulationString + "," + quantityString + "," + dosageString + "]" +
+                    "}"
+
+            obsGroups.add(obsGroup)
+            //posologia
+            customizedDosage = "Tomar "
+            customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTreatment()))
+            customizedDosage.concat(" ")
+            customizedDosage.concat(pd.getDrug().getForm().getDescription())
+            customizedDosage.concat(" ")
+            customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTimes()))
+            customizedDosage.concat(" ")
+            customizedDosage.concat(pd.getDrug().getDefaultPeriodTreatment())
+
+            //Dispensed amount
+            packSize = packSize + pd.getQuantitySupplied().intValue()
+        }
+
+        for (String group : obsGroups) {
+            if (!Utilities.stringHasValue(obsGroupsJson))
+                obsGroupsJson = group
+            else {
+                obsGroupsJson = obsGroupsJson + "," + group
+            }
+        }
+
+        if (pack.dispenseMode.openmrsUuid) {
+            dispenseMod = "{\"person\":\""
+                    .concat(patient.hisUuid + "\",")
+                    .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate))
+                    .concat("\",\"concept\":\"" + dispenseModeUuid + "\",\"value\":\"")
+                    .concat(pack.dispenseMode.openmrsUuid + "\",\"comment\":\"IDMED\"},")
+        }
+
+        String buildDispenseMap = "{\"encounterDatetime\": \"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\", \"patient\": \"" + patient.hisUuid + "\", \"encounterType\": \"" + encounterType + "\", "
+                .concat("\"location\":\"" + patient.hisLocation + "\", \"form\":\"" + filaUuid + "\", \"encounterProviders\":[{\"provider\":\"" + providerUuid + "\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], ")
+                .concat("\"obs\":[")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + regimeUuid + "\",\"value\":\"" + strRegimenAnswerUuid + "\", \"comment\":\"IDMED\"},")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + dispensedAmountUuid + "\",\"value\":\"" + packSize + "\",\"comment\":\"IDMED\"},")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",")
+                .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + dosageUuid + "\",\"value\":\"" + customizedDosage + "\",\"comment\":\"IDMED\"},")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",")
+                .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + Utilities.formatToYYYYMMDD(pack.nextPickUpDate) + "\",\"comment\":\"IDMED\"},")
+                .concat(dispenseMod)
+                .concat(obsGroupsJson)
+                .concat("]")
+                .concat("}")
+
+        return  new String(buildDispenseMap.getBytes(), StandardCharsets.UTF_8)
+    }
+
+
+    String setOpenMRSFILT(List<InteroperabilityAttribute> interoperabilityAttributes, Pack pack, Patient patient) {
+        String filtNextApointmentUuid = "b7c246bc-f2b6-49e5-9325-911cdca7a8b3"
+        String filtUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FORM_FILT_UUID" }.value
+        String dispenseModeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSE_MODE_CONCEPT_UUID" }.value
+        String encounterType = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_ENCOUNTER_TYPE_CONCEPT_UUID" }.value
+        String providerUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "UNIVERSAL_PROVIDER_UUID" }.value
+        String regimeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_REGIMEN_CONCEPT_UUID" }.value
+        String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_NEXT_VISIT_CONCEPT_UUID" }.value
+        String tipoDispensaUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_DISPENSED_TYPE_CONCEPT_UUID" }.value
+        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
+        String strCodeDispenseType = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).dispenseType.code
+        PatientVisitDetails patientVisitDetails = PatientVisitDetails.findByPack(pack)
+        String strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "MONTHLY_DISPENSED_TYPE_CONCEPT_UUID" }.value
+        boolean packContinue = pack.packagedDrugs.first().getToContinue()
+        String nextVisitDate = ""
+        String nextFollowUp = ""
+
+
+        if(strCodeDispenseType.compareToIgnoreCase("DT")){
+            strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "QUARTERLY_DISPENSED_TYPE_CONCEPT_UUID" }.value
+        }
+
+        if(strCodeDispenseType.compareToIgnoreCase("DS")){
+            strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "SEMESTRAL_DISPENSED_TYPE_CONCEPT_UUID" }.value
+        }
+
+        if(patientVisitDetails.episode.getStartStopReason().isNew()){
+            nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_INITIAL_UUID" }.value
+        }else{
+            if(packContinue){
+                nextVisitDate = "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + Utilities.formatToYYYYMMDD(pack.nextPickUpDate) + "\",\"comment\":\"IDMED\"},"
+                nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_CONTINUE_UUID" }.value
+            }else {
+                nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_END_UUID" }.value
+            }
+        }
+
+        if(patientVisitDetails.episode.getStartStopReason().code.startsWith("REIN")){
+            nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_RESTART_UUID" }.value
+        }
+
+
+        if (pack.dispenseMode.openmrsUuid) {
+            def dispenseMod = "{\"person\":\""
+                    .concat(patient.hisUuid + "\",")
+                    .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate))
+                    .concat("\",\"concept\":\"" + dispenseModeUuid + "\",\"value\":\"")
+                    .concat(pack.dispenseMode.openmrsUuid + "\",\"comment\":\"IDMED\"},")
+        }
+
+        String buildDispenseMap = "{\"encounterDatetime\": \"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\", \"patient\": \"" + patient.hisUuid + "\", \"encounterType\": \"" + encounterType + "\", "
+                .concat("\"location\":\"" + patient.hisLocation + "\", \"form\":\"" + filtUuid + "\", \"encounterProviders\":[{\"provider\":\"" + providerUuid + "\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], ")
+                .concat("\"obs\":[")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + regimeUuid + "\",\"value\":\"" + strRegimenAnswerUuid + "\", \"comment\":\"IDMED\"},")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + tipoDispensaUuid + "\",\"value\":\"" + strDispenseType + "\",\"comment\":\"IDMED\"},")
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + filtNextApointmentUuid + "\",\"value\":\"" + nextFollowUp + "\",\"comment\":\"IDMED\"},")
+                .concat(dispenseMod)
+                .concat(nextVisitDate)
+                .concat("]")
+                .concat("}")
+
+        return  new String(buildDispenseMap.getBytes(), StandardCharsets.UTF_8)
+
+    }
+
+    }
