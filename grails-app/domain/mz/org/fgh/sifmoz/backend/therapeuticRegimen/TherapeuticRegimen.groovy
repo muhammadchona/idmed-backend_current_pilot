@@ -24,7 +24,7 @@ class TherapeuticRegimen extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_TherapeuticRegimen_Idx'
     }
 
     def beforeInsert() {
@@ -51,22 +51,26 @@ id column: 'id', index: 'Pk_Idx'
     }
 
     boolean isTARV(){
-        return this.code.compareToIgnoreCase("TARV")
+        return this.clinicalService.code.contains("TARV")
     }
 
     boolean isTPT(){
-        return  this.code.compareToIgnoreCase("TPT")
+        return  this.clinicalService.code.contains("TPT")
     }
 
     boolean isPreP(){
-        return this.code.compareToIgnoreCase("PREP")
+        return this.clinicalService.code.contains("PREP")
     }
 
     boolean isTB() {
-        return this.code.compareToIgnoreCase("TB")
+        return this.clinicalService.code.contains("TB")
     }
 
     boolean isPPE() {
-        return this.code.compareToIgnoreCase("PPE")
+        return this.clinicalService.code.contains("PPE")
+    }
+
+    boolean isMALARIA() {
+        return this.clinicalService.code.contains("MALARIA")
     }
 }

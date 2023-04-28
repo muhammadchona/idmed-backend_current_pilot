@@ -9,10 +9,12 @@ import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
+import org.apache.logging.log4j.LogManager
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 
 import java.text.SimpleDateFormat
+import java.util.logging.Logger
 
 @Slf4j
 @CompileStatic
@@ -44,7 +46,6 @@ class RestPackService {
                     HealthInformationSystem his = HealthInformationSystem.get(patient.his.id)
                     String urlBase = his.interoperabilityAttributes.find { it.interoperabilityType.code == "URL_BASE" }.value
                     String convertToJson = restPost.createOpenMRSDispense(pack, patient)
-                    println(convertToJson)
                     String responsePost = restOpenMRSClient.requestOpenMRSClient(pack.providerUuid, convertToJson, urlBase, "encounter", requestMethod_POST)
                     if (responsePost.contains('Green')) {
                         pack.setSyncStatus('S' as char)
