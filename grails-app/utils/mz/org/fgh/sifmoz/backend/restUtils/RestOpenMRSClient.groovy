@@ -1,9 +1,8 @@
 package mz.org.fgh.sifmoz.backend.restUtils
 
-import grails.converters.JSON
-import groovy.util.logging.Log
-import groovy.util.logging.Log4j
+import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
+import mz.org.fgh.sifmoz.backend.migration.params.stock.StockTakeMigrationSearchParams
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
@@ -11,13 +10,17 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.regimenDrug.RegimenDrug
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
+import org.apache.logging.log4j.LogManager
 import org.grails.web.json.JSONObject
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import java.nio.charset.StandardCharsets
 import java.util.logging.Logger
 
 class RestOpenMRSClient {
+
+    final static org.apache.logging.log4j.Logger logger = LogManager.getLogger(RestOpenMRSClient.class)
 
     RestOpenMRSClient() {
 
@@ -31,23 +34,31 @@ class RestOpenMRSClient {
         String dispenseMod = ""
         int packSize = 0
 
-        Logger logger = Logger.getLogger("Informe")
-
         Patient.withNewSession {
             try {
                 List<String> obsGroups = new ArrayList<>()
                 List<InteroperabilityAttribute> interoperabilityAttributes = Patient.get(patient.id).his.interoperabilityAttributes as List<InteroperabilityAttribute>
-                TherapeuticRegimen therapeuticRegimen = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen
+                PrescriptionDetail prescriptionDetail = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id))
 
-                if(therapeuticRegimen){
+                TherapeuticRegimen therapeuticRegimen = null
 
+                if(prescriptionDetail.therapeuticRegimen){
+                    therapeuticRegimen = TherapeuticRegimen.findById(prescriptionDetail.therapeuticRegimen.id)
                     if(therapeuticRegimen.isTARV() || therapeuticRegimen.isPPE()){
                         inputAddPerson =  setOpenMRSFILA(interoperabilityAttributes, pack, patient, customizedDosage, obsGroupsJson, dispenseMod, packSize, obsGroups)
                     }
                     if(therapeuticRegimen.isTPT())
                         inputAddPerson =  setOpenMRSFILT(interoperabilityAttributes, pack, patient)
-                }else
-                    logger.info("Paciente "+ patient.firstNames +" "+ patient.lastNames+" com prescricao sem Regime Terapeutico")
+                }else{
+                    logger.error("Paciente "+ patient.firstNames +" "+ patient.lastNames+" com prescricao sem Regime Terapeutico")
+                    PrescriptionDetail.withNewTransaction {
+                        List<Drug> drugs = new ArrayList<Drug>()
+                        Drug drug = Drug.findById(pack.packagedDrugs.first().drug.id)
+                        therapeuticRegimen = drug.therapeuticRegimenList.first()
+                        prescriptionDetail.setTherapeuticRegimen(therapeuticRegimen)
+                        prescriptionDetail.save(flush: true, failOnError: true)
+                    }
+                }
 
             } catch (Exception e) {
                 e.printStackTrace()
@@ -87,8 +98,9 @@ class RestOpenMRSClient {
                 result = "-> Green <-\t" + "Code: " + code;
             } else {
                 result = "-> Yellow <-\t" + "Code: " + code;
+                logger.error("Erro no objecto JSON ": object)
             }
-        } catch (Exception e) {
+        } catch (Exception e) {object
             result = "-> Red <-\t" + "Wrong domain - Exception: " + e.getMessage();
         }
         println(result)
@@ -235,32 +247,38 @@ class RestOpenMRSClient {
         String encounterType = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_ENCOUNTER_TYPE_CONCEPT_UUID" }.value
         String providerUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "UNIVERSAL_PROVIDER_UUID" }.value
         String regimeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_REGIMEN_CONCEPT_UUID" }.value
-        String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_NEXT_VISIT_CONCEPT_UUID" }.value
+        String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_TPT_PATIENT_TYPE_UUID" }.value
         String tipoDispensaUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_DISPENSED_TYPE_CONCEPT_UUID" }.value
         String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
         String strCodeDispenseType = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).dispenseType.code
         PatientVisitDetails patientVisitDetails = PatientVisitDetails.findByPack(pack)
         String strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "MONTHLY_DISPENSED_TYPE_CONCEPT_UUID" }.value
         boolean packContinue = pack.packagedDrugs.first().getToContinue()
-        String nextVisitDate = ""
         String nextFollowUp = ""
+        String dispenseMod = ""
 
+        String nextVisitDate = "{\"person\":\""
+                .concat(patient.hisUuid + "\",")
+                .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate))
+                .concat("\",\"concept\":\"" + filtNextApointmentUuid)
+                .concat("\",\"value\":\"" + Utilities.formatToYYYYMMDD(pack.nextPickUpDate))
+                .concat("\",\"comment\":\"IDMED\"},")
 
-        if(strCodeDispenseType.compareToIgnoreCase("DT")){
+        if(!strCodeDispenseType.compareToIgnoreCase("DM")){
             strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "QUARTERLY_DISPENSED_TYPE_CONCEPT_UUID" }.value
         }
 
-        if(strCodeDispenseType.compareToIgnoreCase("DS")){
-            strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "SEMESTRAL_DISPENSED_TYPE_CONCEPT_UUID" }.value
-        }
+//        if(strCodeDispenseType.compareToIgnoreCase("DS")){
+//            strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "SEMESTRAL_DISPENSED_TYPE_CONCEPT_UUID" }.value
+//        }
 
         if(patientVisitDetails.episode.getStartStopReason().isNew()){
             nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_INITIAL_UUID" }.value
         }else{
             if(packContinue){
-                nextVisitDate = "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + Utilities.formatToYYYYMMDD(pack.nextPickUpDate) + "\",\"comment\":\"IDMED\"},"
                 nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_CONTINUE_UUID" }.value
             }else {
+                nextVisitDate = ""
                 nextFollowUp =  interoperabilityAttributes.find { it.interoperabilityType.code == "PATIENT_TYPE_END_UUID" }.value
             }
         }
@@ -271,11 +289,11 @@ class RestOpenMRSClient {
 
 
         if (pack.dispenseMode.openmrsUuid) {
-            def dispenseMod = "{\"person\":\""
+            dispenseMod = "{\"person\":\""
                     .concat(patient.hisUuid + "\",")
                     .concat("\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate))
                     .concat("\",\"concept\":\"" + dispenseModeUuid + "\",\"value\":\"")
-                    .concat(pack.dispenseMode.openmrsUuid + "\",\"comment\":\"IDMED\"},")
+                    .concat(pack.dispenseMode.openmrsUuid + "\",\"comment\":\"IDMED\"}")
         }
 
         String buildDispenseMap = "{\"encounterDatetime\": \"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\", \"patient\": \"" + patient.hisUuid + "\", \"encounterType\": \"" + encounterType + "\", "
@@ -283,9 +301,9 @@ class RestOpenMRSClient {
                 .concat("\"obs\":[")
                 .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + regimeUuid + "\",\"value\":\"" + strRegimenAnswerUuid + "\", \"comment\":\"IDMED\"},")
                 .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + tipoDispensaUuid + "\",\"value\":\"" + strDispenseType + "\",\"comment\":\"IDMED\"},")
-                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + filtNextApointmentUuid + "\",\"value\":\"" + nextFollowUp + "\",\"comment\":\"IDMED\"},")
-                .concat(dispenseMod)
+                .concat("{\"person\":\"" + patient.hisUuid + "\",\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + nextFollowUp + "\",\"comment\":\"IDMED\"},")
                 .concat(nextVisitDate)
+                .concat(dispenseMod)
                 .concat("]")
                 .concat("}")
 
