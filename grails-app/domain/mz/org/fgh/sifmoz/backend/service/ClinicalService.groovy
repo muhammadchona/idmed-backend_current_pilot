@@ -25,10 +25,14 @@ class ClinicalService extends BaseEntity {
     static hasMany = [attributes: ClinicalServiceAttribute,
                        clinicSectors: ClinicSector]
 
+    static fetchMode = [clinicSectors: 'eager', attributes: 'eager'] // Se um service for carregado, vira com seus clinicSectors e seus attributes
+
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_Idx'
         clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
+        clinicSectors cascade :"all-delete-orphan"
+//        attributes cascade :"all-delete-orphan"
     }
 
     def beforeInsert() {

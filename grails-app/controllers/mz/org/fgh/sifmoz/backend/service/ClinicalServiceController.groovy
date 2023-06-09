@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.service
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import groovy.json.JsonSlurper
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
@@ -83,7 +84,8 @@ class ClinicalServiceController extends RestfulController{
             return
         }
 
-        respond clinicalService, [status: CREATED, view:"show"]
+//        respond clinicalService, [status: CREATED, view:"show"]
+        render JSONSerializer.setJsonObjectResponse(ClinicalService.get(clinicalService.id)) as JSON
     }
 
     @Transactional
@@ -96,8 +98,13 @@ class ClinicalServiceController extends RestfulController{
                 clinicalServiceAttributeService.delete(item.id)
             }
         }
+//        clinicalService.attributes.each {attribute ->
+//            attribute.delete(flush: true) }
 
         clinicalService.properties = objectJSON
+
+        clinicalService.attributes = []
+
 
         if(objectJSON.id){
           //  clinicalService = ClinicalService.get(objectJSON.id)
@@ -108,9 +115,10 @@ class ClinicalServiceController extends RestfulController{
                     //   item.clinicalServiceAttributeType.id = UUID.fromString(objectJSON.attributes[index].clinicalServiceAttributeType.id)
                 }
             }
-         //   clinicalService.clinicSectors.eachWithIndex { item, index ->
-         //       item.id = objectJSON.clinicSectors[index].id
-          //  }
+            clinicalService.clinicSectors.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.clinicSectors[index].id)
+//                item.id = objectJSON.clinicSectors[index].id
+            }
             if(objectJSON.therapeuticRegimens != null) {
                 for (int i = 0; i < objectJSON.therapeuticRegimens.length(); i++) {
                     TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.get(objectJSON.therapeuticRegimens[i].id)
@@ -151,7 +159,29 @@ class ClinicalServiceController extends RestfulController{
             return
         }
 
-        respond clinicalService, [status: OK, view:"show"]
+        def sectorsJson = JSONSerializer.setJsonObjectResponse(clinicalService.clinicSectors as List)
+        def attributsJson = JSONSerializer.setJsonObjectResponse(clinicalService.attributes as List)
+        def regimnsJson = JSONSerializer.setJsonObjectResponse(clinicalService.therapeuticRegimens as List)
+
+        def result = JSONSerializer.setJsonObjectResponse(clinicalService)
+
+//        if(sectorsJson)
+//            result.put('clinicSectors', sectorsJson)
+//        else
+//            result.remove('clinicSectors')
+
+//        if(attributsJson)
+//            result.put('attributes', attributsJson)
+//        else
+//            result.remove('attributsJson')
+
+//        if(regimnsJson)
+//            result.put('therapeuticRegimens', regimnsJson)
+//        else
+//            result.remove('regimnsJson')
+
+
+        render result as JSON
 
     }
 
@@ -163,5 +193,9 @@ class ClinicalServiceController extends RestfulController{
         }
 
         render status: NO_CONTENT
+    }
+
+    private static def parseTo(String jsonString) {
+        return new JsonSlurper().parseText(jsonString)
     }
 }

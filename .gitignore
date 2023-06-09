@@ -11,3 +11,5 @@ out/
 .settings
 .classpath
 /.attach_pid250071
+grails-app/conf/application.yml
+grails-app/conf/application.yml
