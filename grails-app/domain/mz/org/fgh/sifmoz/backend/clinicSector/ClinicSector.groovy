@@ -19,7 +19,7 @@ class ClinicSector extends BaseEntity {
 
     @JsonIgnore
     Clinic clinic
-    static belongsTo = [ClinicalService, SecUser]
+    static belongsTo = [ClinicalService]
 
     static  hasMany = [users: SecUser, clinicalService: ClinicalService]
 
