@@ -60,8 +60,8 @@ class GroupInfoController extends RestfulController{
             return
         }
         group.beforeInsert()
+        HashSet<GroupMember> memberList = group.members
         try {
-            HashSet<GroupMember> memberList = group.members
             group.members = null
             groupService.save(group)
             for (GroupMember member : memberList) {
@@ -74,7 +74,14 @@ class GroupInfoController extends RestfulController{
             return
         }
 
-        respond group, [status: CREATED, view:"show"]
+        def memberListJson = JSONSerializer.setObjectListJsonResponse(memberList as List)
+        def result = JSONSerializer.setJsonObjectResponse(group)
+        if (memberListJson)
+            result.put('members', memberListJson)
+        else
+            result.remove('members')
+        render result as JSON
+        //   respond group, [status: CREATED, view:"show"]
     }
 
     @Transactional
