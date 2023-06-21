@@ -58,10 +58,24 @@ class GroupPackHeaderController extends RestfulController{
         groupPackHeader.beforeInsert()
         groupPackHeader.validate()
 
-        if(objectJSON.id){
+        if(objectJSON.id) {
             groupPackHeader.id = UUID.fromString(objectJSON.id)
-            groupPackHeader.groupPacks.eachWithIndex { item, index  ->
+            groupPackHeader.groupPacks.eachWithIndex { item, index ->
                 item.id = UUID.fromString(objectJSON.groupPacks[index].id)
+                item.patientVisit = objectJSON.groupPacks[index].patientVisit as PatientVisit
+                item.pack.id = UUID.fromString(objectJSON.groupPacks[index].pack.id)
+                // item.patientVisit.patientVisitDetails[0].pack.id = UUID.fromString(objectJSON.groupPacks[index].patientVisit.patientVisitDetails[0].pack.id)
+                item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
+                    item4.id = UUID.fromString(objectJSON.groupPacks[index].patientVisit.patientVisitDetails[0].pack.packagedDrugs[index4].id)
+                    item4.drug.stockList = null
+                    item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
+                        item5.id = UUID.fromString(objectJSON.groupPacks[index].patientVisit.patientVisitDetails[0].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
+                    }
+                }
+                item.patientVisit.id = UUID.fromString(objectJSON.groupPacks[index].patientVisit.id)
+                item.patientVisit.patientVisitDetails[0].id = UUID.fromString(objectJSON.groupPacks[index].patientVisit.patientVisitDetails[0].id)
+                item.patientVisit.patientVisitDetails[0].pack = item.pack
+
             }
         }
 
@@ -72,6 +86,14 @@ class GroupPackHeaderController extends RestfulController{
         }
 
         try {
+            groupPackHeader.groupPacks.each {item ->
+                println(item.patientVisit)
+                packService.save(item.pack)
+                patientVisitService.save(item.patientVisit)
+                //  patientVisitController.save(item.patientVisit)
+            }
+
+
             groupPackHeaderService.save(groupPackHeader)
         } catch (ValidationException e) {
             respond groupPackHeader.errors

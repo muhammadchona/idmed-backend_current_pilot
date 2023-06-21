@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.group
 
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.protection.Menu
 
 class GroupPack extends BaseEntity {
@@ -9,6 +10,8 @@ class GroupPack extends BaseEntity {
     Pack pack
 //    static hasOne = [Pack]
     static belongsTo = [header: GroupPackHeader]
+    PatientVisit patientVisit
+    static transients = ['patientVisit']
 
     static mapping = {
        id generator: "assigned"

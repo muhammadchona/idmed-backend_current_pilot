@@ -58,6 +58,13 @@ class groupMemberPrescriptionController extends RestfulController{
 
         if(objectJSON.id){
             groupPrescription.id = UUID.fromString(objectJSON.id)
+            groupPrescription.prescription.id = UUID.fromString(objectJSON.prescription.id)
+            groupPrescription.prescription.prescribedDrugs.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescription.prescribedDrugs[index].id)
+            }
+            groupPrescription.prescription.prescriptionDetails.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescription.prescriptionDetails[index].id)
+            }
         }
 
         if (groupPrescription.hasErrors()) {
@@ -72,8 +79,14 @@ class groupMemberPrescriptionController extends RestfulController{
             respond groupPrescription.errors
             return
         }
-
-        respond groupPrescription, [status: CREATED, view:"show"]
+        def groupMemberPrescriptionJson = JSONSerializer.setJsonObjectResponse(groupPrescription.prescription as Object)
+        def result = JSONSerializer.setJsonObjectResponse(groupPrescription)
+        if (groupMemberPrescriptionJson)
+            result.put('prescription', groupMemberPrescriptionJson)
+        else
+            result.remove('prescription')
+        render result as JSON
+     //   respond groupPrescription, [status: CREATED, view:"show"]
     }
 
     @Transactional

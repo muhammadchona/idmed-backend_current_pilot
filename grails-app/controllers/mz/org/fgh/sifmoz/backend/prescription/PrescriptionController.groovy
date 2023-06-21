@@ -52,11 +52,15 @@ class PrescriptionController extends RestfulController{
 
         if(objectJSON.id){
             prescription.id = UUID.fromString(objectJSON.id)
-            prescription.prescribedDrugs.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.prescribedDrugs[index].id)
+            if (objectJSON.patientVisitDetails[index].prescription.prescribedDrugs != null) {
+                item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
+                    item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
+                }
             }
-            prescription.prescriptionDetails.eachWithIndex { item, index ->
-                item.id = UUID.fromString(objectJSON.prescriptionDetails[index].id)
+            if (objectJSON.patientVisitDetails[index].prescription.prescriptionDetails != null) {
+                item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
+                    item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
+                }
             }
         }
         if (prescription.hasErrors()) {
