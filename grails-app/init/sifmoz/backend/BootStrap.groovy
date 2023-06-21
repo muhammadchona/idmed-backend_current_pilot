@@ -280,13 +280,14 @@ class BootStrap {
 
     void initDispenseType() {
         for (dispenseTypeObject in listDispenseType()) {
-            if (!DispenseType.findByCode(dispenseTypeObject.code)) {
-                DispenseType dispenseType = new DispenseType()
-                dispenseType.id = dispenseTypeObject.id
-                dispenseType.code = dispenseTypeObject.code
-                dispenseType.description = dispenseTypeObject.description
-                dispenseType.save(flush: true, failOnError: true)
+            DispenseType dispenseType = DispenseType.get(dispenseTypeObject.id)
+            if (!dispenseType) {
+                dispenseType = new DispenseType()
             }
+            dispenseType.id = dispenseTypeObject.id
+            dispenseType.code = dispenseTypeObject.code
+            dispenseType.description = dispenseTypeObject.description
+            dispenseType.save(flush: true, failOnError: true)
         }
     }
 
@@ -468,7 +469,6 @@ class BootStrap {
                 therapeuticRegimen1.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
                 therapeuticRegimen1.save(flush: true, failOnError: true)
             }else {
-
             if (!TherapeuticRegimen.findByCode(therapeuticRegimenObject.code.toString().trim())) {
                 TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
                 therapeuticRegimen.id = therapeuticRegimenObject.id
@@ -835,13 +835,13 @@ class BootStrap {
 
     List<Object> listDispenseType() {
         List<Object> dispenseTypeList = new ArrayList<>()
-        dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190005', code: 'FR', description: 'Fluxo Rapido'))
+        dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190004', code: 'DN', description: 'Dispensa Semanal'))
+        dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190005', code: 'FRM', description: 'Fluxo Rapido Mensal'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf78a8c0006', code: 'DM', description: 'Dispensa Mensal'))
+        dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf78a8c0066', code: 'DB', description: 'Dispensa Bimensal'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf7ca4e0007', code: 'DT', description: 'Dispensa Trimestral'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf8044f0008', code: 'DS', description: 'Dispensa Semestral'))
         dispenseTypeList.add(new LinkedHashMap(id: 'ff8081817cbbce66017cbbf823190009', code: 'DA', description: 'Dispensa Anual'))
-
-
 
         return dispenseTypeList
 
@@ -1286,7 +1286,7 @@ class BootStrap {
         therapeuticRegimenList.add(new LinkedHashMap(id: 'c9bddf65-1400-4d76-813f-908efc0350c4', regimen_scheme: 'ABC+3TC+EFV Ped(2DFC+EFV200)', code: 'X5APed', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: false, description: 'ABC+3TC+EFV Ped(2DFC+EFV200)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: 'b3a3b2c4-6832-4b9e-bad0-79b9e967ec74', regimen_scheme: 'TDF+3TC+NVP', code: 'TDF12', openmrs_uuid: '2e44e77e-eac4-4f64-84d2-73d32abf94d5', active: true, description: 'TDF+3TC+NVP', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: 'd513cd89-7b92-433a-82f0-16b9f1b74ee7', regimen_scheme: 'TDF+ABC+LPV/r', code: 'C6A', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+ABC+LPV/r', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '81670de2-6dae-4da7-84f6-f6e2c42025cd', regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', code: 'A2Fped Granulos', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', clinical_service_id: 'c'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '81670de2-6dae-4da7-84f6-f6e2c42025cd', regimen_scheme: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', code: 'A2Fped Granulos', openmrs_uuid: '28b28521-b6cd-454e-9ec5-f2c6c9c58468', active: true, description: 'AZT+3TC+LPV/r(2DFC+LPV/r40/10)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '0f347ba1-cba7-4637-978b-1b920e7f0437', regimen_scheme: 'ABC+3TC+RAL', code: '1TB2', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'ABC+3TC+RAL', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '5c3ca182-b55c-4409-ba6e-9a2586f0e7d1', regimen_scheme: '3TC+RAL+DRV/r', code: '3L_3TC', openmrs_uuid: '', active: false, description: '3TC+RAL+DRV/r', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '0104ded8-054e-41ed-a669-6c11e1d5fec2', regimen_scheme: 'TDF+3TC+DTG', code: '1aLTLD', openmrs_uuid: 'e3f6bb60-e2cf-46cb-a9da-27d634ba8607', active: true, description: 'TDF+3TC+DTG', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -1327,7 +1327,7 @@ class BootStrap {
         therapeuticRegimenList.add(new LinkedHashMap(id: '9FC3ABE1-925E-43F2-A2F4-D01C9B67BA89', regimen_scheme: '2as Optimizadas ATV/r+RAL', code: '2Op2', openmrs_uuid: '', active: true, description: '2as Optimizadas ATV/r+RAL', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '1F7B72CB-DF9D-4FFB-BA00-7D6B847223AA', regimen_scheme: '2as Optimizadas DRV+RTV', code: '2Op3', openmrs_uuid: '', active: true, description: '2as Optimizadas DRV+RTV', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: 'B34FEE8D-52B8-40B2-819C-66CA29FC5ADC', regimen_scheme: '3a Linha adaptada DRV+RAL+RTV', code: '3op1', openmrs_uuid: '', active: true, description: '3a Linha adaptada DRV+RAL+RTV', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
-        therapeuticRegimenList.add(new LinkedHashMap(id: '05D2C1BF-A824-410B-B627-211302400213', regimen_scheme: 'ABC+3TC+DTG (2DFC ped + DTG10)', code: 'X7APed', openmrs_uuid: '', active: true, description: 'ABC+3TC+DTG (2DFC ped + DTG10)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '05D2C1BF-A824-410B-B627-211302400213', regimen_scheme: 'ABC+3TC+DTG (2DFC ped + DTG10)', code: 'X7APed', openmrs_uuid: 'af15246d-30b8-4aff-8391-ca2b58e2c88b', active: true, description: 'ABC+3TC+DTG (2DFC ped + DTG10)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '7D18A417-7CCE-47C2-A1EF-6212356FA7FE', regimen_scheme: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)', code: 'A2Fped', openmrs_uuid: '', active: true, description: 'AZT+3TC+LPV/r (2FDC+LPV/r Baby)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '678A48E0-6B7B-438D-B5CD-EFFA4557F5E9', regimen_scheme: 'ABC+3TC+LPV/r (2FC+LPV/r)', code: 'ABCPedNew', openmrs_uuid: '', active: false, description: 'ABC+3TC+LPV/r (2FC+LPV/r)', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         therapeuticRegimenList.add(new LinkedHashMap(id: 'E10520F0-E38C-4FD6-A1D8-F4D9DE637F7C', regimen_scheme: 'ABC+dDI250+LPV/r', code: 'C2A2', openmrs_uuid: '', active: false, description: 'ABC+dDI250+LPV/r', clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -1372,12 +1372,9 @@ class BootStrap {
 
         therapeuticRegimenList.add(new LinkedHashMap(id: '', regimen_scheme: 'TDF+3TC PrEP', code: 'TDF+3TC PrEP', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+3TC PrEP', clinical_service_id: '165C876C-F850-436F-B0BB-80D519056BC3'))
 
-
-
         return therapeuticRegimenList
 
     }
-
 
     List<Object> listDrug() {
 

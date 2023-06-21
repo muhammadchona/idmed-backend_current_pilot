@@ -5,6 +5,9 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.doctor.DoctorService
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
@@ -52,15 +55,11 @@ class PrescriptionController extends RestfulController{
 
         if(objectJSON.id){
             prescription.id = UUID.fromString(objectJSON.id)
-            if (objectJSON.patientVisitDetails[index].prescription.prescribedDrugs != null) {
-                item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
-                    item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
-                }
+            prescription.prescribedDrugs.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescribedDrugs[index].id)
             }
-            if (objectJSON.patientVisitDetails[index].prescription.prescriptionDetails != null) {
-                item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
-                    item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
-                }
+            prescription.prescriptionDetails.eachWithIndex { item, index ->
+                item.id = UUID.fromString(objectJSON.prescriptionDetails[index].id)
             }
         }
         if (prescription.hasErrors()) {
@@ -127,6 +126,16 @@ class PrescriptionController extends RestfulController{
         /*JSON.use('deep'){
             render prescriptionService.getAllByClinicId(clinicId, offset, max) as JSON
         }*/
+    }
+
+    // Futuramente reduzir para 2 ultimas prescricoes
+    def getAllPrescriptionByPatientId(String patientId){
+        def patient = Patient.get(patientId)
+        def lastPatientVisit = PatientVisit.findAllByPatient(patient)
+        def patientVisitDetails = PatientVisitDetails.findAllByPatientVisitInList(lastPatientVisit)
+        def prescriptions = Prescription.findAllByIdInList(patientVisitDetails?.prescription?.id)
+
+        render JSONSerializer.setObjectListJsonResponse(prescriptions) as JSON
     }
 
     def getAllLastPrescriptionOfClinic(String clinicId, int offset, int max) {

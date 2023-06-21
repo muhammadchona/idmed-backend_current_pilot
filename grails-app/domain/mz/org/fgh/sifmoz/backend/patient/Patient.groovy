@@ -45,20 +45,15 @@ class Patient extends BaseEntity {
             attributes           : PatientAttribute,
             identifiers          : PatientServiceIdentifier,
             appointments         : Appointment,
-            //            groups: GroupInfo,
-            groupMembers         : GroupMember,
-            patientVisits        : PatientVisit,
             patientTransReference: PatientTransReference
     ]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
-        patientVisits: lazy:true
+        id generator: "assigned"
+        id column: 'id', index: 'Pk_Patient_Idx'
     }
 
     static constraints = {
-        //firstNames unique: ['middleNames', 'lastNames', 'gender', 'dateOfBirth', 'cellphone']
         dateOfBirth(nullable: true, blank: true, validator: { dateofbirth, urc ->
             return dateofbirth != null ? dateofbirth <= new Date() : null
         })
@@ -70,17 +65,11 @@ id column: 'id', index: 'Pk_Idx'
         province nullable: false
         bairro nullable: true
         postoAdministrativo nullable: true
-        attributes nullable: true
-        identifiers nullable: true
-        appointments nullable: true
-        groupMembers nullable: true
         clinic nullable: false
-        patientVisits nullable: true
         hisUuid nullable: true
         his nullable: true
         hisLocation nullable: true
         hisLocationName nullable: true
-        id nullable: false , minSize: 5
     }
 
     def beforeInsert() {

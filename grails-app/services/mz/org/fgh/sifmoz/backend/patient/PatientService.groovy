@@ -15,6 +15,8 @@ abstract class PatientService implements IPatientService{
 
     @Override
     List<Patient> search(Patient patient) {
+        //Check wether identifier exists
+        boolean hasIdentifier = Utilities.listHasElements(patient.identifiers as ArrayList<?>)
         String mainQuery =  "select p from Patient p " +
                             " where (lower(p.firstNames) like lower(:firstNames) OR" +
                             " lower(p.middleNames) like lower(:middleNames) OR " +
@@ -22,20 +24,29 @@ abstract class PatientService implements IPatientService{
                             " AND p.clinic =:clinic"
         String indentifierCondition = " OR EXISTS (select psi " +
                                 "                   from PatientServiceIdentifier psi inner join psi.patient pt " +
-                                "                   where pt.id = p.id and lower(psi.value) like lower(:identifier)) "
-        String searchQuery = mainQuery + (Utilities.listHasElements(patient.identifiers as ArrayList<?>) ? indentifierCondition : "")
+                                "                   where pt.id = p.id and lower(psi.value) like lower(:identifiers)) "
+        String searchQuery = mainQuery + (hasIdentifier? indentifierCondition : "")
 
-        searchQuery += " order by p.firstNames "
+                searchQuery += " order by p.firstNames "
 
         Clinic clinic = Clinic.findById(patient.clinic.id)
+
+        if(hasIdentifier)
 
         return Patient.executeQuery(searchQuery,
                                     [firstNames: "%${patient.firstNames}%",
                                      middleNames: "%${patient.middleNames}%",
                                      lastNames: "%${patient.lastNames}%",
                                      clinic: clinic,
-                                     identifier: (Utilities.listHasElements(patient.identifiers as ArrayList<?>) ? "%${patient.identifiers.getAt(0).value}%" : ""), max: 400]
+                                     identifiers: (Utilities.listHasElements(patient.identifiers as ArrayList<?>) ? "%${patient.identifiers.getAt(0).value}%" : ""), max: 400]
                                     )
+        else
+            return Patient.executeQuery(searchQuery,
+                    [firstNames: "%${patient.firstNames}%",
+                     middleNames: "%${patient.middleNames}%",
+                     lastNames: "%${patient.lastNames}%",
+                     clinic: clinic]
+            )
         //return Patient.findAllByFirstNamesIlikeOrMiddleNamesIlikeOrLastNamesIlike("%${patient.firstNames}%", "%${patient.middleNames}%", "%${patient.lastNames}%")
     }
 

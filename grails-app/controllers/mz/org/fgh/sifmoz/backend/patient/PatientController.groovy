@@ -3,19 +3,27 @@ package mz.org.fgh.sifmoz.backend.patient
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import groovy.json.JsonSlurper
+import mz.org.fgh.sifmoz.backend.appointment.Appointment
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.LocalidadeService
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.PostoAdministrativo
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
+import mz.org.fgh.sifmoz.backend.patientAttribute.PatientAttribute
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifierService
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
+import mz.org.fgh.sifmoz.backend.screening.AdherenceScreening
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.report.ReportGenerator
 import org.hibernate.SessionFactory
@@ -109,8 +117,25 @@ class PatientController extends RestfulController {
         }
 
         @Transactional
-        def update(Patient patient) {
+        def update() {
 
+            def objectJSON = request.JSON
+            Patient patient = Patient.get(objectJSON.id)
+            def patientFromJSON = (parseTo(objectJSON.toString()) as Map) as Patient
+
+            bindData(patient, patientFromJSON, [exclude: ['id', 'clinicId', 'his','hisId', 'provinceId','districtId','bairroId' ,'clinic', 'attributes', 'appointments', 'patientTransReference', 'validated','postoAdministrativoId', 'entity']])
+            List<PatientServiceIdentifier> identifiersList = new ArrayList<>()
+
+            patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
+
+            (objectJSON.identifiers as List).collect { item ->
+                if (item) {
+                    def identifier = PatientServiceIdentifier.get(item.id)
+                    identifier.patient = patient
+                    identifiersList.add(identifier)
+                }
+            }
+            patient.identifiers = identifiersList
             if (patient == null) {
                 render status: NOT_FOUND
                 return
@@ -129,18 +154,16 @@ class PatientController extends RestfulController {
                         if (!patient.bairro.id)
                             patient.bairro.id = UUID.randomUUID().toString()
                         patient.bairro.id = patient.bairro.id
-
                         localidadeService.save(patient.bairro)
                     }
                 }
-
                 patientService.save(patient)
             } catch (ValidationException e) {
                 respond patient.errors
                 return
             }
 
-            respond patient, [status: OK, view: "show"]
+            render JSONSerializer.setJsonLightObjectResponse(Patient.get(patient.id)) as JSON
         }
 
         @Transactional
@@ -218,6 +241,10 @@ class PatientController extends RestfulController {
 
     def getPatientsInClinicSector(String clinicSectorId) {
         render JSONSerializer.setObjectListJsonResponse(patientService.getAllPatientsInClinicSector(ClinicSector.findById(clinicSectorId))) as JSON
+    }
+
+    private static def parseTo(String jsonString) {
+        return new JsonSlurper().parseText(jsonString)
     }
 
 }

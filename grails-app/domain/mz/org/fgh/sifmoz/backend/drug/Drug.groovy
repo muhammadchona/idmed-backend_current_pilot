@@ -23,13 +23,12 @@ class Drug extends BaseEntity {
     String uuidOpenmrs
     ClinicalService clinicalService
     Form form
-    static belongsTo = [Form, TherapeuticRegimen]
+    static belongsTo = [TherapeuticRegimen]
     boolean active
     static hasMany = [stockList: Stock, therapeuticRegimenList: TherapeuticRegimen]
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
-        form lazy: true
+        id column: 'id', index: 'Pk_Idx'
     }
     def beforeInsert() {
         if (!id) {

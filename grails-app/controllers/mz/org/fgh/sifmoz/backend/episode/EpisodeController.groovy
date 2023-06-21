@@ -3,12 +3,18 @@ package mz.org.fgh.sifmoz.backend.episode
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import groovy.json.JsonSlurper
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
+import mz.org.fgh.sifmoz.backend.tansreference.IPatientTransReferenceService
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
+import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReferenceType
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import org.grails.web.converters.marshaller.json.DomainClassMarshaller
 import org.grails.web.converters.marshaller.xml.DeepDomainClassMarshaller
+import org.springframework.validation.BindingResult
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -17,9 +23,10 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class EpisodeController extends RestfulController{
+class EpisodeController extends RestfulController {
 
     IEpisodeService episodeService
+    IPatientTransReferenceService referenceService
 
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -47,7 +54,7 @@ class EpisodeController extends RestfulController{
         episode.beforeInsert()
         episode.validate()
 
-        if(objectJSON.id){
+        if (objectJSON.id) {
             episode.id = UUID.fromString(objectJSON.id)
         }
 
@@ -59,21 +66,27 @@ class EpisodeController extends RestfulController{
 
         try {
             episodeService.save(episode)
+            if (episode.startStopReason.code.equalsIgnoreCase("TRANSFERIDO_PARA") ||
+                    episode.startStopReason.code.equalsIgnoreCase("REFERIDO_DC") ||
+                    episode.startStopReason.code.equalsIgnoreCase("REFERIDO_PARA") ||
+                    episode.startStopReason.code.equalsIgnoreCase("VOLTOU_REFERENCIA"))
+                referenceService.save(patientTransReferenceCloseMobileEpisode(episode))
         } catch (ValidationException e) {
             respond episode.errors
             return
         }
 
-        respond episode, [status: CREATED, view:"show"]
+        respond episode, [status: CREATED, view: "show"]
     }
 
     @Transactional
     def update() {
         def objectJSON = request.JSON
+        def auxEpisode = (parseTo(objectJSON.toString()) as Map) as Episode
         Episode episode = Episode.get(objectJSON.id)
-
+        bindData(episode, auxEpisode, [exclude: ['id']])
         //updating db object
-        episode.properties = objectJSON
+        episode.properties = auxEpisode.properties as BindingResult
         if (episode == null) {
             render status: NOT_FOUND
             return
@@ -91,7 +104,7 @@ class EpisodeController extends RestfulController{
             return
         }
 
-        respond episode, [status: OK, view:"show"]
+        render JSONSerializer.setJsonObjectResponse(episode) as JSON
     }
 
     @Transactional
@@ -126,5 +139,37 @@ class EpisodeController extends RestfulController{
         //JSON.registerObjectMarshaller(DomainClassMarshaller)
         //render episodeService.getLastWithVisitByIndentifier(PatientServiceIdentifier.findById(identifierId), Clinic.findById(cliniId))
         render JSONSerializer.setObjectListJsonResponse(episodeService.getLastWithVisitByClinicAndClinicSector(ClinicSector.findById(clinicSectorId))) as JSON
+    }
+
+    private static def parseTo(String jsonString) {
+        return new JsonSlurper().parseText(jsonString)
+    }
+
+    private static PatientTransReference patientTransReferenceCloseMobileEpisode(Episode episode) {
+
+        def operationType = null
+        def destination = episode.referralClinic
+        if (episode.startStopReason.code.equalsIgnoreCase("TRANSFERIDO_PARA"))
+            operationType = PatientTransReferenceType.findByCode("TRANSFERENCIA")
+        else if (episode.startStopReason.code.equalsIgnoreCase("REFERIDO_DC")) {
+            operationType = PatientTransReferenceType.findByCode("REFERENCIA_DC")
+            destination = episode.clinicSector
+        } else if (episode.startStopReason.code.equalsIgnoreCase("REFERIDO_PARA"))
+            operationType = PatientTransReferenceType.findByCode("REFERENCIA_FP")
+        else if (episode.startStopReason.code.equalsIgnoreCase("VOLTOU_REFERENCIA"))
+            operationType = PatientTransReferenceType.findByCode("VOLTOU_DA_REFERENCIA")
+
+
+        def transReference = new PatientTransReference()
+        transReference.syncStatus = 'P'
+        transReference.operationDate = episode.episodeDate
+        transReference.creationDate = new Date()
+        transReference.operationType = operationType
+        transReference.origin = episode.clinic
+        transReference.destination = destination
+        transReference.patient = episode.patientServiceIdentifier.patient
+        transReference.identifier = episode.patientServiceIdentifier
+
+        return transReference
     }
 }

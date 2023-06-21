@@ -8,6 +8,10 @@ import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugService
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStockService
 import mz.org.fgh.sifmoz.backend.clinic.ClinicService
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.stock.StockService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
@@ -131,5 +135,15 @@ class PackController extends RestfulController{
 
     def getAllLastPackOfClinic(String clinicId, int offset, int max) {
         render JSONSerializer.setObjectListJsonResponse(packService.getAllLastPackOfClinic(clinicId, offset, max)) as JSON
+    }
+
+    // Futuramente reduzir para 2 ultimas prescricoes
+    def getAllPackByPatientId(String patientId){
+        def patient = Patient.get(patientId)
+        def lastPatientVisit = PatientVisit.findAllByPatient(patient)
+        def patientVisitDetails = PatientVisitDetails.findAllByPatientVisitInList(lastPatientVisit)
+        def packs = Pack.findAllByIdInList(patientVisitDetails?.pack?.id)
+
+        render JSONSerializer.setObjectListJsonResponse(packs) as JSON
     }
 }
