@@ -3,10 +3,12 @@ package mz.org.fgh.sifmoz.backend.patientVisitDetails
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisit.IPatientVisitService
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
@@ -15,6 +17,8 @@ import mz.org.fgh.sifmoz.backend.stock.IStockService
 import mz.org.fgh.sifmoz.backend.stock.Stock
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
+import javax.transaction.TransactionalException
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -22,7 +26,7 @@ import static org.springframework.http.HttpStatus.OK
 
 import grails.gorm.transactions.Transactional
 
-class PatientVisitDetailsController extends RestfulController{
+class PatientVisitDetailsController extends RestfulController {
 
     IPatientVisitDetailsService patientVisitDetailsService
     IPatientVisitService patientVisitService
@@ -55,7 +59,7 @@ class PatientVisitDetailsController extends RestfulController{
         patientVisitDetails.beforeInsert()
         patientVisitDetails.validate()
 
-        if(objectJSON.id){
+        if (objectJSON.id) {
             patientVisitDetails.id = UUID.fromString(objectJSON.id)
         }
         if (patientVisitDetails.hasErrors()) {
@@ -72,7 +76,7 @@ class PatientVisitDetailsController extends RestfulController{
             return
         }
 
-        respond patientVisitDetails, [status: CREATED, view:"show"]
+        respond patientVisitDetails, [status: CREATED, view: "show"]
     }
 
     @Transactional
@@ -94,53 +98,30 @@ class PatientVisitDetailsController extends RestfulController{
             return
         }
 
-        respond patientVisitDetails, [status: OK, view:"show"]
+        respond patientVisitDetails, [status: OK, view: "show"]
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable)
     def delete(String id) {
         PatientVisitDetails patientVisitDetail = PatientVisitDetails.findById(id)
-        PatientVisit patientVisit = PatientVisit.findById(patientVisitDetail.patientVisit.id)
-        if (patientVisit.patientVisitDetails.size() == 1) {
-            patientVisit.patientVisitDetails.each {item ->
-                Pack pack = Pack.findById(item.packId)
-                Prescription prescription = Prescription.get(item.prescriptionId)
-                List<PatientVisitDetails> patientVisitDetailsList = PatientVisitDetails.findAllByPrescription(prescription)
-                restoreStock(pack)
-                item.delete()
-                pack.delete()
-                if (patientVisitDetailsList.size() == 1) {
-                    prescription.delete()
-                }
-//                packService.delete(item.packId)
-//                patientVisitDetailsService.delete(item.id)
-//                prescriptionService.delete(item.prescriptionId)
-            }
-  //          patientVisitService.delete(patientVisit.id)
-            patientVisit.delete()
-            render status: NO_CONTENT
+        def patientVisit = PatientVisit.get(patientVisitDetail.patientVisit.id)
+        if (patientVisitDetail == null) {
+            render status: NOT_FOUND
             return
         }
-        else {
-            patientVisitDetail.each {item ->
-                restoreStock(item.pack)
-                item.delete()
-                packService.delete(item.packId)
-                List<PatientVisitDetails> patientVisitDetailsList = PatientVisitDetails.findAllByPrescription(item.prescription)
-                if (patientVisitDetailsList.size() == 1) {
-                    prescriptionService.delete(item.prescriptionId)
-                }
-
-            }
+        try {
+            patientVisitDetailsService.delete(id)
+            restoreStock(patientVisitDetail.pack)
+            packService.delete(patientVisitDetail.pack.id)
+            if(PatientVisitDetails.countByPrescription(patientVisitDetail.prescription) == 1)
+                prescriptionService.delete(patientVisitDetail.prescription.id)
+            render status: NO_CONTENT
+            return
+        } catch (TransactionalException e) {
+            e.printStackTrace()
+            render status: NOT_FOUND
+            return
         }
-        patientVisit.patientVisitDetails.remove(patientVisitDetail)
-        /*
-            if (id == null || patientVisitDetailsService.delete(id) == null) {
-                render status: NOT_FOUND
-                return
-            }
-         */
-        render status: NO_CONTENT
     }
 
     def getAllLastVisitOfClinic(String clinicId, int offset, int max) {
@@ -152,7 +133,11 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     def getAllByEpisodeId(String episodeId, int offset, int max) {
-        render JSONSerializer.setObjectListJsonResponse(patientVisitDetailsService.getAllByEpisodeId(episodeId, offset, max)) as JSON
+        render JSONSerializer.setObjectListJsonResponse(PatientVisitDetails.findAllByEpisode(Episode.get(episodeId))) as JSON
+    }
+
+    def getLastByPatientId(String patientId) {
+        render JSONSerializer.setObjectListJsonResponse(PatientVisitDetails.findAllByPatientVisitInList(PatientVisit.findAllByPatient(Patient.get(patientId)))) as JSON
     }
 
     def getAllofPrecription(String prescriptionId) {
@@ -171,7 +156,7 @@ class PatientVisitDetailsController extends RestfulController{
 
         if (patientVisitDetails.episode.startStopReason.isManutencao() || patientVisitDetails.episode.startStopReason.isTransferido()) {
             patientVisitDetails.prescription.setPatientType(patientVisitDetails.episode.startStopReason.code)
-        }  else if (patientVisitDetails.prescription.patientType == "Alterar") {
+        } else if (patientVisitDetails.prescription.patientType == "Alterar") {
             patientVisitDetails.prescription.setPatientType(Prescription.PATIENT_TYPE_ALTERACAO)
         } else if (patientVisitDetails.episode.startStopReason.isNew() && patientVisit == null) {
             patientVisitDetails.prescription.setPatientType(Prescription.PATIENT_TYPE_NOVO)
@@ -189,7 +174,7 @@ class PatientVisitDetailsController extends RestfulController{
     }
 
     void restoreStock(Pack pack) {
-        if(pack.syncStatus == 'N') {
+        if (pack.syncStatus == 'N') {
             for (PackagedDrug packagedDrug : pack.packagedDrugs) {
                 List<PackagedDrugStock> packagedDrugStocks = PackagedDrugStock.findAllByPackagedDrug(packagedDrug)
                 for (PackagedDrugStock packagedDrugStock : packagedDrugStocks) {

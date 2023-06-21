@@ -12,6 +12,9 @@ class PackagedDrug extends BaseEntity {
     String id
     @JsonManagedReference
     Drug drug
+    double amtPerTime
+    int timesPerDay
+    String form
     double quantitySupplied
     Date nextPickUpDate
     boolean toContinue
@@ -22,12 +25,17 @@ class PackagedDrug extends BaseEntity {
     static hasMany = [packagedDrugStocks: PackagedDrugStock]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+        id generator: "assigned"
+        amtPerTime defaultValue: 1
+        timesPerDay defaultValue: 1
+        form defaultValue: "'dia'"
+        id column: 'id', index: 'Pk_PackagedDrug_Idx'
     }
 
     static constraints = {
-       // quantitySupplied(min:0.0, max: 9999.99, scale: 2)
+        amtPerTime nullable: true
+        timesPerDay nullable: true
+        form nullable: true
         nextPickUpDate nullable: true
         creationDate nullable: true
     }
@@ -42,7 +50,7 @@ id column: 'id', index: 'Pk_Idx'
     List<Menu> hasMenus() {
         List<Menu> menus = new ArrayList<>()
         Menu.withTransaction {
-            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode,groupsMenuCode,stockMenuCode,dashboardMenuCode))
+            menus = Menu.findAllByCodeInList(Arrays.asList(patientMenuCode, groupsMenuCode, stockMenuCode, dashboardMenuCode))
         }
         return menus
     }

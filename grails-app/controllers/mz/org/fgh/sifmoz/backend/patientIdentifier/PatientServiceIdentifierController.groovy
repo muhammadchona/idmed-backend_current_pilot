@@ -3,6 +3,7 @@ package mz.org.fgh.sifmoz.backend.patientIdentifier
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import groovy.json.JsonSlurper
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.episode.Episode
@@ -11,6 +12,7 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
+import org.springframework.validation.BindingResult
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -69,21 +71,25 @@ class PatientServiceIdentifierController extends RestfulController{
             return
         }
 
-        respond patientServiceIdentifier, [status: CREATED, view:"show"]
+        render JSONSerializer.setJsonObjectResponse(patientServiceIdentifier) as JSON
     }
 
     @Transactional
     def update( ) {
         def objectJSON = request.JSON
         PatientServiceIdentifier patientServiceIdentifier = PatientServiceIdentifier.get(objectJSON.id)
+        def patientServiceIdentifierFromJSON = (parseTo(objectJSON.toString()) as Map) as PatientServiceIdentifier
+
+        bindData(patientServiceIdentifier, patientServiceIdentifierFromJSON, [exclude: ['id', 'clinicId', 'patientId', 'identifierTypeId', 'validated', 'serviceId', 'entity']])
+
         def syncStatus = objectJSON["syncStatus"]
         if (patientServiceIdentifier == null) {
             render status: NOT_FOUND
             return
         }
-        patientServiceIdentifier.properties = objectJSON
         patientServiceIdentifier.episodes.eachWithIndex { Episode episode, int i ->
             episode.id = UUID.fromString(objectJSON.episodes[i].id)
+            episode.patientServiceIdentifier = patientServiceIdentifier
         }
 
         if (patientServiceIdentifier == null) {
@@ -104,7 +110,24 @@ class PatientServiceIdentifierController extends RestfulController{
             return
         }
 
-        respond patientServiceIdentifier, [status: OK, view:"show"]
+        def clinic = JSONSerializer.setJsonLightObjectResponse(patientServiceIdentifier.clinic)
+        def patient = JSONSerializer.setJsonLightObjectResponse(patientServiceIdentifier.patient)
+        def service = JSONSerializer.setJsonLightObjectResponse(patientServiceIdentifier.service)
+
+        def result = JSONSerializer.setJsonObjectResponse(patientServiceIdentifier)
+        if (clinic != null) {
+            result.put('clinic', clinic)
+        }
+
+        if (patient != null) {
+            result.put('patient', patient)
+        }
+
+        if (service != null) {
+            result.put('service', service)
+        }
+
+        render result as JSON
     }
 
     @Transactional
@@ -137,4 +160,9 @@ class PatientServiceIdentifierController extends RestfulController{
 //
 //        render JSONSerializer.setObjectListJsonResponse(result) as JSON
 //    }
+
+    private static def parseTo(String jsonString) {
+        return new JsonSlurper().parseText(jsonString)
+    }
+
 }

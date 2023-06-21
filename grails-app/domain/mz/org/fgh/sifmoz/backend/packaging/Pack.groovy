@@ -24,13 +24,15 @@ class Pack extends BaseEntity {
     Clinic clinic
     DispenseMode dispenseMode
     GroupPack groupPack
-    char syncStatus = 'N'
+    char syncStatus
     String providerUuid
 
-    static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
+    static hasMany = [packagedDrugs: PackagedDrug]
+//    static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+        id generator: "assigned"
+        syncStatus defaultValue: 'N'
+        id column: 'id', index: 'Pk_pack_Idx'
     }
 
     static constraints = {
@@ -44,7 +46,6 @@ id column: 'id', index: 'Pk_Idx'
         syncStatus(nullable: true)
         dispenseMode(nullable: false)
         groupPack nullable: true
-        patientVisitDetails nullable: true
         reasonForPackageReturn(nullable: true,maxSize: 500)
     }
 

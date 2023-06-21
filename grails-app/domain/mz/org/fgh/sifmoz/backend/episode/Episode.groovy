@@ -30,17 +30,14 @@ class Episode extends BaseEntity {
     @JsonIgnore
     Clinic referralClinic
 
-    @JsonIgnore
-    @JsonBackReference
-    PatientServiceIdentifier patientServiceIdentifier
-    static belongsTo = [PatientServiceIdentifier]
+    static belongsTo = [patientServiceIdentifier: PatientServiceIdentifier]
 
-    @JsonBackReference
-    static hasMany = [patientVisitDetails: PatientVisitDetails]
+//    @JsonBackReference
+//    static hasMany = [patientVisitDetails: PatientVisitDetails]
 
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_episode_Idx'
     }
 
     static fetchMode = [patientVisitDetails: 'lazy']

@@ -25,7 +25,7 @@ id column: 'id', index: 'Pk_Idx'
     }
 
     static constraints = {
-        lateMotives(nullable: true, maxSize: 50)
+        lateMotives(nullable: true, maxSize: 1000)
         daysWithoutMedicine(nullable: true,blank: true)
         lateDays(nullable: true, blank: true)
     }

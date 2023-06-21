@@ -40,22 +40,23 @@ class Prescription extends BaseEntity{
     byte[] photo
     String photoName
     String photoContentType
-    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
+    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
+//    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
-    public int getLeftDuration () {
-        if (!Utilities.listHasElements(this.patientVisitDetails as ArrayList<?>)) return (this.duration.weeks / 4)
-
-        int usedDuration = 0
-        for (PatientVisitDetails visitDetails : this.patientVisitDetails) {
-            usedDuration += visitDetails.pack.weeksSupply
-        }
-
-        return ((this.duration.weeks - usedDuration) / 4)
-    }
+//    public int getLeftDuration () {
+//        if (!Utilities.listHasElements(this.patientVisitDetails as ArrayList<?>)) return (this.duration.weeks / 4)
+//
+//        int usedDuration = 0
+//        for (PatientVisitDetails visitDetails : this.patientVisitDetails) {
+//            usedDuration += visitDetails.pack.weeksSupply
+//        }
+//
+//        return ((this.duration.weeks - usedDuration) / 4)
+//    }
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
-        patientVisitDetails lazy: true
+       id column: 'id', index: 'Pk_prescription_Idx'
+//        patientVisitDetails lazy: true
    //     prescribedDrugs lazy: true
     //    prescriptionDetails lazy: true
     }
@@ -70,6 +71,7 @@ id column: 'id', index: 'Pk_Idx'
         photo nullable: true, blank: true, maxSize: 1024 * 1024 * 20 //20MB
         photoName nullable: true, blank: true
         photoContentType nullable: true, blank: true
+        patientStatus nullable: true, blank: true
     }
 
     def beforeInsert() {

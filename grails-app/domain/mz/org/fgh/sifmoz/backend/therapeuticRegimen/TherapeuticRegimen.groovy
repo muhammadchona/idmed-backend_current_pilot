@@ -51,26 +51,26 @@ class TherapeuticRegimen extends BaseEntity {
     }
 
     boolean isTARV(){
-        return this.clinicalService.code.contains("TARV")
+        return this.clinicalService?.code?.contains("TARV")
     }
 
     boolean isTPT(){
-        return  this.clinicalService.code.contains("TPT")
+        return  this.clinicalService?.code?.contains("TPT")
     }
 
     boolean isPreP(){
-        return this.clinicalService.code.contains("PREP")
+        return this.clinicalService?.code?.contains("PREP")
     }
 
     boolean isTB() {
-        return this.clinicalService.code.contains("TB")
+        return this.clinicalService?.code?.contains("TB")
     }
 
     boolean isPPE() {
-        return this.clinicalService.code.contains("PPE")
+        return this.clinicalService?.code?.contains("PPE")
     }
 
     boolean isMALARIA() {
-        return this.clinicalService.code.contains("MALARIA")
+        return this.clinicalService?.code?.contains("MALARIA")
     }
 }
