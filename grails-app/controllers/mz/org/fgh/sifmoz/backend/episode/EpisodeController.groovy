@@ -6,7 +6,9 @@ import grails.validation.ValidationException
 import groovy.json.JsonSlurper
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.screening.AdherenceScreening
 import mz.org.fgh.sifmoz.backend.screening.VitalSignsScreening
 import mz.org.fgh.sifmoz.backend.tansreference.IPatientTransReferenceService
 import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
@@ -70,7 +72,7 @@ class EpisodeController extends RestfulController {
                     episode.startStopReason.code.equalsIgnoreCase("REFERIDO_DC") ||
                     episode.startStopReason.code.equalsIgnoreCase("REFERIDO_PARA") ||
                     episode.startStopReason.code.equalsIgnoreCase("VOLTOU_REFERENCIA"))
-                referenceService.save(patientTransReferenceCloseMobileEpisode(episode))
+                patientTransReferenceCloseMobileEpisode(episode).save()
         } catch (ValidationException e) {
             respond episode.errors
             return
@@ -161,6 +163,7 @@ class EpisodeController extends RestfulController {
 
 
         def transReference = new PatientTransReference()
+        transReference.id = UUID.randomUUID().toString()
         transReference.syncStatus = 'P'
         transReference.operationDate = episode.episodeDate
         transReference.creationDate = new Date()

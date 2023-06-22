@@ -38,7 +38,8 @@ class RestOpenMRSClient {
             try {
                 List<String> obsGroups = new ArrayList<>()
                 List<InteroperabilityAttribute> interoperabilityAttributes = Patient.get(patient.id).his.interoperabilityAttributes as List<InteroperabilityAttribute>
-                PrescriptionDetail prescriptionDetail = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id))
+                PatientVisitDetails pvd = PatientVisitDetails.findByPack(pack)
+                PrescriptionDetail prescriptionDetail = PrescriptionDetail.findByPrescription(Prescription.findById(pvd.prescription.id))
 
                 TherapeuticRegimen therapeuticRegimen = null
 
@@ -156,7 +157,8 @@ class RestOpenMRSClient {
         String dispensedAmountUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DISPENSED_AMOUNT_CONCEPT" }.value
         String dosageUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "DOSAGE_CONCEPT_UUID" }.value
         String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILA_NEXT_VISIT_CONCEPT_UUID" }.value
-        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
+        PatientVisitDetails pdv = PatientVisitDetails.findByPack(pack)
+        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pdv.prescription.id)).therapeuticRegimen.openmrsUuid
 
         for (PackagedDrug pd : pack.packagedDrugs) {
             String formulationString = "{\"" +
