@@ -30,8 +30,7 @@ class RestPackService {
 
     static lazyInit = false
 
-    @Scheduled(fixedDelay = 300000000L)
-//    @Scheduled(fixedDelay = 30000L)
+    @Scheduled(fixedDelay = 30000L)
     void schedulerRequestRunning() {
         Pack.withTransaction {
             List<Pack> packList = Pack.findAll().findAll { it.syncStatus == 'R' }

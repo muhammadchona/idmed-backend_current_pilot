@@ -21,8 +21,7 @@ class PatientServiceIdentifier extends BaseEntity {
     ClinicalService service
     Clinic clinic
 
-    Patient patient
-    static belongsTo = [Patient]
+    static belongsTo = [patient: Patient]
 
     static hasMany = [episodes: Episode]
 

@@ -62,142 +62,140 @@ class PatientController extends RestfulController {
         //respond patientService.get(id)
     }
 
-        @Transactional
-        def save() {
-            Patient patient = new Patient()
-            def objectJSON = request.JSON
-            patient = objectJSON as Patient
-            def patientAux = objectJSON as Patient
+    @Transactional
+    def save() {
+        Patient patient = new Patient()
+        def objectJSON = request.JSON
+        patient = objectJSON as Patient
+        patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
+        patient.beforeInsert()
 
-            patient.beforeInsert()
-            patient.identifiers = []
-            patient.validate()
-//            patient = patientAux
+        patient.validate()
 
-            if(objectJSON.id){
-                patient.id = UUID.fromString(objectJSON.id)
-            }
-
-            if (patient.hasErrors()) {
-                transactionStatus.setRollbackOnly()
-                respond patient.errors
-                return
-            }
-
-            try {
-                if (patient.bairro) {
-                    Localidade localidade = Localidade.findByCode(patient.bairro.code)
-                    if (!localidade) {
-                        patient.bairro.id = objectJSON.bairro.id
-                        localidadeService.save(patient.bairro)
-                    }
-                }
-
-                patientService.save(patient)
-
-
-                if (!patientAux.identifiers.isEmpty()) {
-                    patient.identifiers = patientAux.identifiers
-                    patient.identifiers.each { item ->
-                        if(item){
-                            item.id = UUID.randomUUID().toString()
-                            item.patient = patient
-                            patientServiceIdentifierService.save(item)
-                        }
-                    }
-                }
-
-
-            } catch (ValidationException e) {
-                respond patient.errors
-                return
-            }
-
-            respond patient, [status: CREATED, view: "show"]
+        if (objectJSON.id) {
+            patient.id = UUID.fromString(objectJSON.id)
         }
 
-        @Transactional
-        def update() {
+        if (patient.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond patient.errors
+            return
+        }
 
-            def objectJSON = request.JSON
-            Patient patient = Patient.get(objectJSON.id)
-            def patientFromJSON = (parseTo(objectJSON.toString()) as Map) as Patient
+        try {
+            if (patient.bairro) {
+                Localidade localidade = Localidade.findByCode(patient.bairro.code)
+                if (!localidade) {
+                    patient.bairro.id = objectJSON.bairro.id
+                    localidadeService.save(patient.bairro)
+                }
+            }
 
-            bindData(patient, patientFromJSON, [exclude: ['id', 'clinicId', 'his','hisId', 'provinceId','districtId','bairroId' ,'clinic', 'attributes', 'appointments', 'patientTransReference', 'validated','postoAdministrativoId', 'entity']])
-            List<PatientServiceIdentifier> identifiersList = new ArrayList<>()
-
-            patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
+            patientService.save(patient)
 
             (objectJSON.identifiers as List).collect { item ->
                 if (item) {
-                    def identifier = PatientServiceIdentifier.get(item.id)
+                    def identifier = new PatientServiceIdentifier(item as Map)
+                    identifier.patient = null
                     identifier.patient = patient
-                    identifiersList.add(identifier)
+                    identifier.id = item.id
+                    patientServiceIdentifierService.save(identifier)
+                    patient.addToIdentifiers(identifier)
+                }
+
+            }
+
+        } catch (ValidationException e) {
+            respond patient.errors
+            return
+        }
+
+
+        render JSONSerializer.setJsonObjectResponse(patient) as JSON
+    }
+
+    @Transactional
+    def update() {
+
+        def objectJSON = request.JSON
+        def patientFromJSON = (parseTo(objectJSON.toString()) as Map) as Patient
+        Patient patient = Patient.get(objectJSON.id)
+
+        bindData(patient, patientFromJSON, [exclude: ['id', 'clinicId', 'his', 'hisId', 'provinceId', 'districtId', 'bairroId', 'clinic', 'attributes', 'appointments', 'patientTransReference', 'validated', 'postoAdministrativoId', 'entity']])
+        List<PatientServiceIdentifier> identifiersList = new ArrayList<>()
+
+        patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
+
+        (objectJSON.identifiers as List).collect { item ->
+            if (item) {
+                def identifier = PatientServiceIdentifier.get(item.id)
+                identifier.patient = patient
+                identifiersList.add(identifier)
+            }
+        }
+        patient.identifiers = identifiersList
+        if (patient == null) {
+            render status: NOT_FOUND
+            return
+        }
+
+        if (patient.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond patient.errors
+            return
+        }
+
+        try {
+            if (patient.bairro) {
+                Localidade localidade = Localidade.findByCode(patient.bairro.code)
+                if (!localidade) {
+                    if (!patient.bairro.id)
+                        patient.bairro.id = UUID.randomUUID().toString()
+                    patient.bairro.id = patient.bairro.id
+                    localidadeService.save(patient.bairro)
                 }
             }
-            patient.identifiers = identifiersList
-            if (patient == null) {
-                render status: NOT_FOUND
-                return
-            }
-
-            if (patient.hasErrors()) {
-                transactionStatus.setRollbackOnly()
-                respond patient.errors
-                return
-            }
-
-            try {
-                if (patient.bairro) {
-                    Localidade localidade = Localidade.findByCode(patient.bairro.code)
-                    if (!localidade) {
-                        if (!patient.bairro.id)
-                            patient.bairro.id = UUID.randomUUID().toString()
-                        patient.bairro.id = patient.bairro.id
-                        localidadeService.save(patient.bairro)
-                    }
-                }
-                patientService.save(patient)
-            } catch (ValidationException e) {
-                respond patient.errors
-                return
-            }
-
-            render JSONSerializer.setJsonLightObjectResponse(Patient.get(patient.id)) as JSON
+            patientService.save(patient)
+        } catch (ValidationException e) {
+            respond patient.errors
+            return
         }
 
-        @Transactional
-        def delete(Long id) {
-            if (id == null || patientService.delete(id) == null) {
-                render status: NOT_FOUND
-                return
-            }
+        render JSONSerializer.setJsonLightObjectResponse(Patient.get(patient.id)) as JSON
+    }
 
-            render status: NO_CONTENT
+    @Transactional
+    def delete(Long id) {
+        if (id == null || patientService.delete(id) == null) {
+            render status: NOT_FOUND
+            return
         }
 
-        def getByClinicId(String clinicId, int offset, int max) {
-            List<String> toIncludeProps = new ArrayList<>()
-            toIncludeProps.add("identifiers")
-            toIncludeProps.add("clinic")
-           // patientService.getAllByClinicId(clinicId, offset, max)
-            //render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
-            render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
-            //respond patientService.getAllByClinicId(clinicId, offset, max)
-        }
+        render status: NO_CONTENT
+    }
+
+    def getByClinicId(String clinicId, int offset, int max) {
+        List<String> toIncludeProps = new ArrayList<>()
+        toIncludeProps.add("identifiers")
+        toIncludeProps.add("clinic")
+        // patientService.getAllByClinicId(clinicId, offset, max)
+        //render JSONSerializer.setLightObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max), toIncludeProps) as JSON
+        render JSONSerializer.setObjectListJsonResponse(patientService.getAllByClinicId(clinicId, offset, max)) as JSON
+        //respond patientService.getAllByClinicId(clinicId, offset, max)
+    }
 
     def search() {
         Patient patient = new Patient()
         def objectJSON = request.JSON
         patient = objectJSON as Patient
 
-        List<Patient> patientList = patientService.search(patient)
-        def include = ['province' , 'district','episodes']
-        def childInclude = ['name', 'code']
-        def exclude = []
-     //   render patientList as JSON, include: include ,exclude: exclude
-        render JSONSerializer.setLightObjectListJsonResponse(patientList, include ) as JSON
-       // render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
+        List<Patient> patientList = Patient.findAllByFirstNamesIlikeOrLastNamesIlike("%"+patient?.firstNames+"%","%"+patient?.lastNames+"%")
+
+        if(!patient?.identifiers?.empty){
+            patientList = Patient.findAllByIdInListOrIdInList(patientList?.id, PatientServiceIdentifier.findAllByValueIlike("%"+patient?.identifiers?.first()?.value+"%")?.patient?.id)
+        }
+
+         render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
 
     def searchByParam(String searchString, String clinicId) {
@@ -211,7 +209,7 @@ class PatientController extends RestfulController {
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
         InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
 
-       render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, "session", "GET")
+        render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, "session", "GET")
 
     }
 
@@ -221,7 +219,7 @@ class PatientController extends RestfulController {
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
         InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
 
-        String urlPath = "patient?q="+nid.replaceAll("-","/") + "&v=full&limit=100"
+        String urlPath = "patient?q=" + nid.replaceAll("-", "/") + "&v=full&limit=100"
 
         render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, urlPath, "GET")
 
@@ -233,7 +231,7 @@ class PatientController extends RestfulController {
         InteroperabilityType interoperabilityType = InteroperabilityType.findByCode("URL_BASE")
         InteroperabilityAttribute interoperabilityAttribute = InteroperabilityAttribute.findByHealthInformationSystemAndInteroperabilityType(healthInformationSystem, interoperabilityType)
 
-        String urlPath = "programenrollment?patient="+uuid+ "&v=default"
+        String urlPath = "programenrollment?patient=" + uuid + "&v=default"
 
         render RestOpenMRSClient.getResponseOpenMRSClient(openmrsBase64, null, interoperabilityAttribute.value, urlPath, "GET")
 
