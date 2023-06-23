@@ -25,7 +25,7 @@ class ClinicalService extends BaseEntity {
     static hasMany = [attributes: ClinicalServiceAttribute,
                        clinicSectors: ClinicSector]
 
-    static fetchMode = [clinicSectors: 'eager', attributes: 'eager'] // Se um service for carregado, vira com seus clinicSectors e seus attributes
+//    static fetchMode = [clinicSectors: 'eager', attributes: 'eager'] // Se um service for carregado, vira com seus clinicSectors e seus attributes
 
     static mapping = {
         id generator: "assigned"
