@@ -13,6 +13,7 @@ import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Localidade
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
@@ -144,26 +145,31 @@ class PatientVisitController extends RestfulController {
             if (existingPatientVisit != null) {
                 visit.vitalSignsScreenings.each { item ->
                     item.visit = existingPatientVisit
-                    vitalSignsScreeningService.save(item)
+//                    vitalSignsScreeningService.save(item)
+                    item.save()
                 }
                 if (visit.patient.gender.startsWith('F')) {
                     visit.pregnancyScreenings.each { item ->
                         item.visit = existingPatientVisit
-                        pregnancyScreeningService.save(item)
+//                        pregnancyScreeningService.save(item)
+                       item.save()
                     }
                     existingPatientVisit.pregnancyScreenings = visit.pregnancyScreenings
                 }
                 visit.ramScreenings.each { item ->
                     item.visit = existingPatientVisit
-                    ramScreeningService.save(item)
+//                    ramScreeningService.save(item)
+                    item.save()
                 }
                 visit.adherenceScreenings.each { item ->
                     item.visit = existingPatientVisit
-                    adherenceScreeningService.save(item)
+//                    adherenceScreeningService.save(item)
+                    item.save()
                 }
                 visit.tbScreenings.each { item ->
                     item.visit = existingPatientVisit
 //                    tbScreeningService.save(item)
+                    item.save()
                 }
                 visit.patientVisitDetails.each { item ->
                     item.patientVisit = existingPatientVisit
