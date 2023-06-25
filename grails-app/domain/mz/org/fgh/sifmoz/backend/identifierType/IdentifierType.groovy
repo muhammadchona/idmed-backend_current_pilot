@@ -11,7 +11,7 @@ class IdentifierType extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_IdentifierType_Idx'
     }
 
     def beforeInsert() {

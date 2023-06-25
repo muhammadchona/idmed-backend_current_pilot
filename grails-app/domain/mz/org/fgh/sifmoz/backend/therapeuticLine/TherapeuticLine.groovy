@@ -10,7 +10,7 @@ class TherapeuticLine extends BaseEntity {
     String uuid = UUID.randomUUID().toString()
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_TherapeuticLine_Idx'
     }
 
     def beforeInsert() {

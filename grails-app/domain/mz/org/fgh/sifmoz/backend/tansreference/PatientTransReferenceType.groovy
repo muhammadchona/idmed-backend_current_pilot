@@ -11,7 +11,7 @@ class PatientTransReferenceType extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_PatientTransReferenceType_Idx'
     }
 
     def beforeInsert() {

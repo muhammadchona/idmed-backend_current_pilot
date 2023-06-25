@@ -29,7 +29,7 @@ class ClinicalService extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-        id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_ClinicalService_Idx'
         clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
         clinicSectors cascade :"all-delete-orphan"
 //        attributes cascade :"all-delete-orphan"

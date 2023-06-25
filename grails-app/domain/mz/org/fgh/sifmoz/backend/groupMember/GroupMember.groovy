@@ -19,7 +19,7 @@ class GroupMember extends BaseEntity {
     static belongsTo = [group: GroupInfo]
     static mapping = {
         id generator: "assigned"
-        id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_GroupMember_Idx'
     }
 
     static constraints = {

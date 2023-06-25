@@ -17,7 +17,7 @@ class InteroperabilityAttribute extends BaseEntity {
 
        static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_InteroperabilityAttribute_Idx'
     }
 
     def beforeInsert() {
