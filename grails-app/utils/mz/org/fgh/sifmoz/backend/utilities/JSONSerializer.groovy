@@ -261,11 +261,11 @@ class JSONSerializer {
         return new JSONObject(new JSONSerializer(object).getJSONLevel0())
     }
 
-    static JSONArray setLightObjectListJsonResponse(List objectList, List<String> toInclude) {
+    static JSONArray setLightObjectListJsonResponse(List objectList) {
         JSONArray patientList = new JSONArray()
 
         for (object in objectList) {
-            JSONObject jo = new JSONObject(new JSONSerializer(object, true, toInclude).getJSON())
+            JSONObject jo = new JSONObject(new JSONSerializer(object).getJSONLevel0())
             patientList.add(jo)
         }
 

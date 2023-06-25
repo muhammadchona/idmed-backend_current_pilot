@@ -27,7 +27,7 @@ class TBScreening extends BaseEntity {
 
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_TBScreening_Idx'
     }
 
     static constraints = {

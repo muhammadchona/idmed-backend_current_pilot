@@ -97,9 +97,9 @@ class PatientVisitController extends RestfulController {
                 item.prescription.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.id)
                 item.prescription.prescribedDrugs.eachWithIndex { item2, index2 ->
                     item2.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].id)
-                    item2.drug = Drug.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.id)
-                    item2.drug.form = Form.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.form_id)
-                    item2.drug.clinicalService = ClinicalService.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.clinical_service_id)
+//                    item2.drug = Drug.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.id)
+//                    item2.drug.form = Form.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.form_id)
+//                    item2.drug.clinicalService = ClinicalService.get(objectJSON.patientVisitDetails[index].prescription.prescribedDrugs[index2].drug.clinical_service_id)
                 }
                 item.prescription.prescriptionDetails.eachWithIndex { item3, index3 ->
                     item3.id = UUID.fromString(objectJSON.patientVisitDetails[index].prescription.prescriptionDetails[index3].id)
@@ -107,10 +107,10 @@ class PatientVisitController extends RestfulController {
                 item.pack.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.id)
                 item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
                     item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
-                    item4.drug.stockList = null
-                    item4.drug = Drug.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.id)
-                    item4.drug.form = Form.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.form_id)
-                    item4.drug.clinicalService = ClinicalService.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.clinical_service_id)
+//                    item4.drug.stockList = null
+//                    item4.drug = Drug.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.id)
+//                    item4.drug.form = Form.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.form_id)
+//                    item4.drug.clinicalService = ClinicalService.get(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].drug.clinical_service_id)
                     item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
                         item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
                     }
@@ -375,7 +375,7 @@ class PatientVisitController extends RestfulController {
             if (item.pack) {
                 item.pack.packagedDrugs.eachWithIndex { item4, index4 ->
                     item4.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].id)
-                    item4.drug.stockList = null
+//                    item4.drug.stockList = null
                     item4.packagedDrugStocks.eachWithIndex { item5, index5 ->
                         item5.id = UUID.fromString(objectJSON.patientVisitDetails[index].pack.packagedDrugs[index4].packagedDrugStocks[index5].id)
                     }

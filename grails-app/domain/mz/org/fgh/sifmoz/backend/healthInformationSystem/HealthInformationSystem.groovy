@@ -17,7 +17,7 @@ class HealthInformationSystem extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_HealthInformationSystem_Idx'
         interoperabilityAttributes (cascade: "all-delete-orphan")
     }
 

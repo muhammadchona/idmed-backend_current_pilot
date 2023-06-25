@@ -23,7 +23,7 @@ class PrescribedDrug extends BaseEntity {
 
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_PrescribedDrug_Idx'
     }
     static constraints = {
         timesPerDay(min: 1)

@@ -28,7 +28,7 @@ class Drug extends BaseEntity {
     static hasMany = [stockList: Stock, therapeuticRegimenList: TherapeuticRegimen]
     static mapping = {
         id generator: "assigned"
-        id column: 'id', index: 'Pk_Idx'
+        id column: 'id', index: 'Pk_Drug_Idx'
     }
     def beforeInsert() {
         if (!id) {

@@ -19,7 +19,7 @@ class NationalClinic extends BaseEntity {
     static hasMany = [clinics: Clinic]
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_Idx'
+id column: 'id', index: 'Pk_NationalClinic_Idx'
     }
 
     static constraints = {
