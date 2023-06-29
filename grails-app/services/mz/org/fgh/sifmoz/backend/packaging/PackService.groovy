@@ -246,15 +246,15 @@ abstract class PackService implements IPackService{
                 "pat.dateOfBirth," +
                 "pat.cellphone," +
                 "psi.value," +
-                "(select max(pk4.pickupDate) from Pack pk4 " +
-                "inner join pk4.patientVisitDetails as pvd2 " +
+                "(select max(pk4.pickupDate) from " +
+                "PatientVisitDetails as pvd2  inner join  pvd2.pack as pk4 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 "+
                 "inner join ep3.patientServiceIdentifier as psi3 "+
                 "inner join psi3.service as s3 "  +
                 "where psi.patient = psi3.patient and s3.code = 'TARV') as pickupDate, " +
-                "(select max(pk4.nextPickUpDate) from Pack pk4 " +
-                "inner join pk4.patientVisitDetails as pvd2 " +
+                "(select max(pk4.nextPickUpDate) from " +
+                "PatientVisitDetails pvd2  inner join  pvd2.pack as pk4 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 "+
                 "inner join ep3.patientServiceIdentifier as psi3 "+
@@ -263,7 +263,7 @@ abstract class PackService implements IPackService{
                 "regimenThe.description," +
                 "lineThe.description, " +
                 "pre.patientType " +
-                "from Pack p inner join p.patientVisitDetails pvd " +
+                "from PatientVisitDetails as pvd  inner join  pvd.pack  as p " +
                 "inner join pvd.patientVisit pv " +
                 "inner join pv.patient pat " +
                 "inner join pvd.episode ep " +
