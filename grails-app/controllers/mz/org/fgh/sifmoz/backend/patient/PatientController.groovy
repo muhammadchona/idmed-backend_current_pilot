@@ -207,7 +207,8 @@ class PatientController extends RestfulController {
     }
 
     def searchByParam(String searchString, String clinicId) {
-        List<Patient> patientList = patientService.search(searchString, clinicId)
+        String replacedString = searchString.replace("-", "/");
+        List<Patient> patientList = patientService.search(replacedString, clinicId)
         render JSONSerializer.setObjectListJsonResponse(patientList) as JSON
     }
 
