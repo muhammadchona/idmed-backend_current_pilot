@@ -118,9 +118,6 @@ class RoleController extends RestfulController {
                     return
                 }
                 role.properties = objectJSON
-//                role.menus.eachWithIndex {menu, index ->
-//                    menu.id = UUID.fromString(objectJSON.menus[index].id)
-//                }
             }
         if (role.hasErrors()) {
             transactionStatus.setRollbackOnly()

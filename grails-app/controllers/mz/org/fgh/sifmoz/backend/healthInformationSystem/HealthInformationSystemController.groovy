@@ -4,7 +4,6 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
-import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -62,15 +61,15 @@ class HealthInformationSystemController extends RestfulController{
             return
         }
 
-//        respond healthInformationSystem, [status: CREATED, view:"show"]
-        render JSONSerializer.setJsonObjectResponse(HealthInformationSystem.get(healthInformationSystem.id)) as JSON
+        respond healthInformationSystem, [status: CREATED, view:"show"]
     }
 
     @Transactional
     def update() {
         HealthInformationSystem healthInformationSystem
-        InteroperabilityAttribute interoperabilityAttribute
         def objectJSON = request.JSON
+
+        println(objectJSON)
 
         if(objectJSON.id){
             healthInformationSystem = HealthInformationSystem.get(objectJSON.id)
@@ -79,9 +78,6 @@ class HealthInformationSystemController extends RestfulController{
                 return
             }
             healthInformationSystem.properties = objectJSON
-            healthInformationSystem.interoperabilityAttributes.eachWithIndex {attribute, index ->
-                attribute.id = UUID.fromString(objectJSON.interoperabilityAttributes[index].id)
-            }
         }
 
         if (healthInformationSystem.hasErrors()) {
@@ -97,8 +93,7 @@ class HealthInformationSystemController extends RestfulController{
             return
         }
 
-//        respond healthInformationSystem, [status: OK, view:"show"]
-        render JSONSerializer.setJsonObjectResponse(HealthInformationSystem.get(healthInformationSystem.id)) as JSON
+        respond healthInformationSystem, [status: OK, view:"show"]
     }
 
     @Transactional

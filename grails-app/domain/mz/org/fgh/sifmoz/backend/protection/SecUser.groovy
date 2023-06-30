@@ -31,8 +31,7 @@ class SecUser implements Serializable, IRoleMenu {
 
     static transients = ['roles']
 
-//    static belongsTo = [ClinicSector]
-//    static hasMany = [clinics: Clinic, clinicSectors: ClinicSector]
+    // static belongsTo = [Clinic, ClinicSector]
     static hasMany = [clinics: Clinic, clinicSectors: ClinicSector]
 
 
@@ -56,12 +55,12 @@ class SecUser implements Serializable, IRoleMenu {
         email nullable: true, blank: true
         openmrsPassword nullable: true, blank: true
         roles bindable: true
-        clinicSectors bindable: true
     }
 
     static mapping = {
 	    password column: '`password`'
         clinics  joinTable: [name: "clinic_users", key: "sec_user_id", column: "clinic_id"]
+        clinicSectors  joinTable: [name: "clinic_sector_users", key: "sec_user_id", column: "clinic_sector_id"]
      //   id generator: "assigned"
 id column: 'id', index: 'Pk_SecUser_Idx'
     }
