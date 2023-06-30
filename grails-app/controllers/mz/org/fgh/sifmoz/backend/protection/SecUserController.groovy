@@ -3,6 +3,9 @@ package mz.org.fgh.sifmoz.backend.protection
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSectorUsers
+import mz.org.fgh.sifmoz.backend.service.ClinicalService
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -55,12 +58,20 @@ class SecUserController extends RestfulController {
                             SecUserRole.create(secUser, secRole)
                         }
                     }
+            if( secUser.clinicSectors != null && secUser.accountLocked == false) {
+                ClinicSectorUsers.removeAll(secUser)
+                for(ClinicSector clinicSector : secUser.clinicSectors) {
+                    ClinicSector secSector= ClinicSector.get(clinicSector.id)
+                    ClinicSectorUsers.create(secUser, secSector)
+                }
+            }
         } catch (ValidationException e) {
             respond secUser.errors
             return
         }
 
-        respond secUser, [status: CREATED, view:"show"]
+//        respond secUser, [status: CREATED, view:"show"]
+        render JSONSerializer.setJsonObjectResponse(SecUser.get(secUser.id)) as JSON
     }
 
     @Transactional
@@ -77,12 +88,27 @@ class SecUserController extends RestfulController {
 
         try {
             secUserService.save(secUser)
+            if( secUser.roles != null && secUser.accountLocked == false && secUser.roles.length > 0) {
+                SecUserRole.removeAll(secUser)
+                for(String role : secUser.roles) {
+                    Role secRole= Role.findByAuthority(role)
+                    SecUserRole.create(secUser, secRole)
+                }
+            }
+            if( secUser.clinicSectors != null && secUser.accountLocked == false) {
+                ClinicSectorUsers.removeAll(secUser)
+                for (ClinicSector clinicSector : secUser.clinicSectors) {
+                    ClinicSector secSector = ClinicSector.get(clinicSector.id)
+                    ClinicSectorUsers.create(secUser, secSector)
+                }
+            }
         } catch (ValidationException e) {
             respond secUser.errors
             return
         }
 
-        respond secUser, [status: OK, view:"show"]
+//        respond secUser, [status: OK, view:"show"]
+        render JSONSerializer.setJsonObjectResponse(SecUser.get(secUser.id)) as JSON
     }
 
     @Transactional
