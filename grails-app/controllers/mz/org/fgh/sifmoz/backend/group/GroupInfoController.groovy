@@ -8,6 +8,8 @@ import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMemberService
 import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -157,16 +159,20 @@ class GroupInfoController extends RestfulController{
 
         Episode lastPatientEpisode = episodeService.getLastEpisodeByIdentifier(patient, serviceCode)
 
+        PatientVisitDetails patientVisitDetailsByEpisode = PatientVisitDetails.findByEpisode(lastPatientEpisode)
+
         if (lastPatientEpisode == null) {
-            msg = "O paciente selecionado não possui episódios."
-            render msg
+            msg = "O paciente que pretende adicionar não pertence ao serviço ${serviceCode}."
+           // render msg
         } else if (!lastPatientEpisode.startStopReason.isStartReason) {
             msg = "O Último episódio do paciente não é de inicio."
-            render msg
-        }else
-        if (patient.isActiveOnGroup(serviceCode, patientActiveGroups)) {
+           // render msg
+        } else if (patientVisitDetailsByEpisode == null) {
+            msg = "O Paciente que pretende adicionar não tem nenhuma Dispensa no serviço ${serviceCode}."
+           // render msg
+        } else if (patient.isActiveOnGroup(serviceCode, patientActiveGroups)) {
             msg = "O paciente selecionado ja se encontra associado a um grupo activo do serviço [" + serviceCode + "]"
-            render msg
+           // render msg
         }
         render msg
     }

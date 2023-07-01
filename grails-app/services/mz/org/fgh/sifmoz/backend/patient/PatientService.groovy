@@ -102,7 +102,7 @@ abstract class PatientService implements IPatientService{
 
         patients.each{ p ->
             p.identifiers = []
-            p.patientVisits = []
+          //  p.patientVisits = []
         }
         return patients
     }

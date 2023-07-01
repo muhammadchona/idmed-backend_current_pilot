@@ -116,10 +116,10 @@ abstract class EpisodeService implements IEpisodeService{
                 //"and ep.clinic = :clinic" +
                 "order by ep.episodeDate desc", [clinicSector: clinicSector])
         episodes.each { it ->
-            PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getLastVisitByEpisodeId(it.id)
-            patientVisitDetails.setPrescription(Prescription.findById(patientVisitDetails.prescription.id))
-            it.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
-            it.getPatientVisitDetails().add(patientVisitDetails)
+   //         PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getLastVisitByEpisodeId(it.id)
+   //         patientVisitDetails.setPrescription(Prescription.findById(patientVisitDetails.prescription.id))
+      //      it.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
+      //      it.getPatientVisitDetails().add(patientVisitDetails)
         }
         return episodes
     }
