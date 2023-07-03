@@ -47,7 +47,7 @@ class ClinicSectorController extends RestfulController{
         if(objectJSON.id){
             clinicSector.id = UUID.fromString(objectJSON.id)
         }
-
+        clinicSector.syncStatus = 'P'
         if (clinicSector.hasErrors()) {
             transactionStatus.setRollbackOnly()
             respond clinicSector.errors
