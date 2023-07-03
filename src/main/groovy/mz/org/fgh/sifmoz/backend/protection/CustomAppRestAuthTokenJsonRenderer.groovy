@@ -21,7 +21,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
         def secUser = null
         def source = ''
         def rolesMenus = new ArrayList()
-        def userClinicSectors = new HashSet()
+        def clinicSectorUsers = new HashSet()
 
 
         SecUser.withTransaction {
@@ -41,7 +41,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
             secUsers.add(secUser)
            // userClinicSectors = secUser.clinicSectors
             for (ClinicSector clinicSector : secUser.clinicSectors) {
-                userClinicSectors.add(clinicSector.code)
+                clinicSectorUsers.add(clinicSector.code)
             }
         }
 
@@ -59,7 +59,7 @@ class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
                 mainEntity   : mainEntityAssociated,
                 source       : source,
                 menus        : rolesMenus,
-                userClinicSectors: userClinicSectors
+                clinicSectorUsers: clinicSectorUsers
 
         ]
 
