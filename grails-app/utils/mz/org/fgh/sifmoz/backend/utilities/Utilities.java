@@ -140,9 +140,9 @@ public class Utilities {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        java.sql.Date strDate = null;
+        Date strDate = null;
         try {
-            strDate = (java.sql.Date) dateFormat.parse(formatToYYYYMMDD(date));
+            strDate = dateFormat.parse(formatToYYYYMMDD(date));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

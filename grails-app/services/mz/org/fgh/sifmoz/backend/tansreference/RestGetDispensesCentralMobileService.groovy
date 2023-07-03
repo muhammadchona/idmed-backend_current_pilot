@@ -37,6 +37,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -72,53 +73,53 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
     static lazyInit = false
 
 
-
-    //@Scheduled(cron = "0 0 */2 * * ?")
+    @Scheduled(fixedDelay = 60000L)
     void execute() {
-        if (!this.isProvincial()) {
-            Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
-          //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "mobile")
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")
-          //  String urlPath = "/sync_temp_dispense?mainclinicuuid=eq."+clinic.getUuid()+"&syncstatus=eq.P" + "&order=pickupdate.desc";
-            String urlPath = "/sync_temp_dispense?syncstatus=eq.P" + "&order=pickupdate.desc";
-            LOGGER.info("Iniciando a Busca de Dispensas")
-            def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer,urlPath)
-            LOGGER.info(MESSAGE)
-            for (Object dispense : response) {
+        Pack.withTransaction {
+            if (!this.isProvincial()) {
+                Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
+                //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "MOBILE")
+                ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
+                //  String urlPath = "/sync_temp_dispense?mainclinicuuid=eq."+clinic.getUuid()+"&syncstatus=eq.P" + "&order=pickupdate.desc";
+                String urlPath = "/sync_temp_dispense?syncstatus=eq.P" + "&order=pickupdate.desc";
+                LOGGER.info("Iniciando a Busca de Dispensas")
+                def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer, urlPath)
+                LOGGER.info(MESSAGE)
+                for (Object dispense : response) {
 
-                String message = String.format(FORMAT_STRING,
-                        dispense.getAt("id").toString() ,
-                        dispense.getAt("patientfirstname").toString(),
-                        dispense.getAt("patientid").toString())
-                LOGGER.info("Processando" +message);
+//                    String message = String.format(FORMAT_STRING,
+////                            dispense.getAt("id").toString(),
+//                            dispense.getAt("patientfirstname").toString(),
+//                            dispense.getAt("patientid").toString())
+//                    LOGGER.info("Processando" + message);
 
-                    PatientServiceIdentifier patientServiceIdentifier = PatientServiceIdentifier.findByValue(dispense.getAt('patientid'))
+                    PatientServiceIdentifier patientServiceIdentifier = PatientServiceIdentifier.findByValue(dispense.getAt('patientid').toString())
 
-                    if(patientServiceIdentifier != null) {
+                    if (patientServiceIdentifier != null) {
                         Episode episode = Episode.findByPatientServiceIdentifier(patientServiceIdentifier)
 
                         PatientVisit visit = PatientVisit.findByVisitDate(ConvertDateUtils.createDate(dispense.getAt("pickupdate").toString(), "yyyy-MM-dd"))
 
-                        if(visit == null) {
+                        if (visit == null) {
                             Prescription idmedPrescription = createIdmedPrescription(dispense)
-                            Pack idmedPack = createIdmedPack(dispense,idmedPrescription)
-                            createIdmedVisit(dispense,idmedPrescription,idmedPack,episode,patientServiceIdentifier)
+                            Pack idmedPack = createIdmedPack(dispense, idmedPrescription)
+                            createIdmedVisit(dispense, idmedPrescription, idmedPack, episode, patientServiceIdentifier)
                         } else {
                             Prescription prescriptionEx = visit.getPatientVisitDetails().getAt(0).getPrescription()
                             Pack dispenseEx = visit.getPatientVisitDetails().getAt(0).getPack()
-                            addDrugToPrescription(dispense , prescriptionEx)
-                            addDrugToPack(dispense,dispenseEx)
+                            addDrugToPrescription(dispense, prescriptionEx)
+                            addDrugToPack(dispense, dispenseEx)
                         }
 
                         def path = "/sync_temp_dispense?id=eq." + dispense.getAt("id")
                         println(path)
                         String obj = '{"syncstatus":"U"}'
 
-                        restProvincialServerClient.patchRequestProvincialServerClient(provincialServer, path,obj)
+                        restProvincialServerClient.patchRequestProvincialServerClient(provincialServer, path, obj)
                     } else {
-                        LOGGER.info("Servico de Saude Nao encontrado Para o paciente com o nid:"+ dispense.getAt("patientid").toString());
+                        LOGGER.info("Servico de Saude Nao encontrado Para o paciente com o nid:" + dispense.getAt("patientid").toString());
                     }
-
+                }
             }
         }
     }
@@ -162,11 +163,11 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         prescriptionDetail.setTherapeuticRegimen(TherapeuticRegimen.findByCode("TDF+3TC+DTG"))
         prescriptionDetail.setPrescription(prescription)
 
-        PrescribedDrug prescribedDrug = setPrescribedDrug(dispense , prescription)
+        PrescribedDrug prescribedDrug = setPrescribedDrug(dispense, prescription)
 
         prescription.setPrescriptionDetails(new HashSet<>(Arrays.asList(prescriptionDetail)))
         prescription.setPrescribedDrugs(new HashSet<>(Arrays.asList(prescribedDrug)))
-       return  prescriptionService.save(prescription)
+        return prescriptionService.save(prescription)
     }
 
     private Pack createIdmedPack(Object dispense, Prescription prescription) {
@@ -181,13 +182,13 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         dispenseIdmed.setPackDate(ConvertDateUtils.createDate(dispense.getAt("pickupdate").toString(), "yyyy-MM-dd"))
         dispenseIdmed.syncStatus = 'S'
         dispenseIdmed.setDispenseMode(DispenseMode.findByCode("DD_FP"))
-        dispenseIdmed.setWeeksSupply(dispense.getAt("weekssupply"))
+        dispenseIdmed.setWeeksSupply(dispense.getAt("weekssupply") == null || dispense.getAt("weekssupply") == "" ? 0 : Integer.valueOf(dispense.getAt("weekssupply").toString()))
         dispenseIdmed.setStockReturned(0)
         dispenseIdmed.setPackageReturned(0)
-        PackagedDrug packagedDrug = setPackagedDrug(dispense,dispenseIdmed)
+        PackagedDrug packagedDrug = setPackagedDrug(dispense, dispenseIdmed)
 
         dispenseIdmed.setPackagedDrugs(new HashSet<>(Arrays.asList(packagedDrug)))
-       return packService.save(dispenseIdmed)
+        return packService.save(dispenseIdmed)
     }
 
     private PatientVisit createIdmedVisit(Object dispense, Prescription prescription, Pack dispenseIdmed, Episode episode, PatientServiceIdentifier patientServiceIdentifier) {
@@ -208,10 +209,10 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
 
         patientVisitDetails.setPatientVisit(patientVisit)
         patientVisit.setPatientVisitDetails(new HashSet<>(Arrays.asList(patientVisitDetails)))
-       return patientVisitService.save(patientVisit)
+        return patientVisitService.save(patientVisit)
     }
 
-    private PrescribedDrug setPrescribedDrug (Object dispense , Prescription prescription){
+    private PrescribedDrug setPrescribedDrug(Object dispense, Prescription prescription) {
         PrescribedDrug prescribedDrug = new PrescribedDrug()
         prescribedDrug.setPrescription(prescription)
         prescribedDrug.setDrug(Drug.findByName(dispense.getAt('drugname').toString()))
@@ -231,7 +232,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         return prescribedDrug
     }
 
-    private PackagedDrug setPackagedDrug(Object dispense , Pack dispenseIdmed) {
+    private PackagedDrug setPackagedDrug(Object dispense, Pack dispenseIdmed) {
         //Quantidade Levadae e Prescrita
         String inHand = dispense.get("qtyinhand").toString();
 
@@ -248,13 +249,13 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
     }
 
 
-    private void addDrugToPrescription (Object dispense , Prescription prescription) {
-        PrescribedDrug prescribedDrug = setPrescribedDrug(dispense,prescription)
+    private void addDrugToPrescription(Object dispense, Prescription prescription) {
+        PrescribedDrug prescribedDrug = setPrescribedDrug(dispense, prescription)
         prescribedDrugService.save(prescribedDrug)
     }
 
-    private void addDrugToPack (Object dispense , Pack dispenseIdmed) {
-        PackagedDrug packagedDrug = setPackagedDrug(dispense,dispenseIdmed)
+    private void addDrugToPack(Object dispense, Pack dispenseIdmed) {
+        PackagedDrug packagedDrug = setPackagedDrug(dispense, dispenseIdmed)
         packagedDrugService.save(packagedDrug)
     }
 
