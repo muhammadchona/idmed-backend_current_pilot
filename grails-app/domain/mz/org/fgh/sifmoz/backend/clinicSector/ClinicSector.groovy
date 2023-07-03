@@ -15,6 +15,7 @@ class ClinicSector extends BaseEntity {
     String description
     String uuid = UUID.randomUUID().toString()
     boolean active
+    String syncStatus
     ClinicSectorType clinicSectorType
 
     @JsonIgnore
@@ -25,7 +26,8 @@ class ClinicSector extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-id column: 'id', index: 'Pk_ClinicSector_Idx'
+        id column: 'id', index: 'Pk_ClinicSector_Idx'
+        syncStatus defaultValue: 'S'
         clinicalService joinTable: [name:"clinical_service_clinic_sectors", key:"clinic_sector_id", column:"clinical_service_id"]
         users  joinTable: [name: "clinic_sector_users", key: "clinic_sector_id", column: "sec_user_id"]
     }
