@@ -189,21 +189,23 @@ class PatientController extends RestfulController {
         def objectJSON = request.JSON
         patient = objectJSON as Patient
 
-        List<Patient> patientList = Patient.findAllByFirstNamesIlikeOrLastNamesIlike("%"+patient?.firstNames+"%","%"+patient?.lastNames+"%")
+        List<Patient> patientList = Patient.findAllByFirstNamesIlikeOrLastNamesIlike("%" + patient?.firstNames + "%", "%" + patient?.lastNames + "%")
 
-        if(!patient?.identifiers?.empty){
-            patientList = Patient.findAllByIdInListOrIdInList(patientList?.id, PatientServiceIdentifier.findAllByValueIlike("%"+patient?.identifiers?.first()?.value+"%")?.patient?.id)
+        if (!patient?.identifiers?.empty) {
+            if (patient.identifiers.first().value != null)
+                if (!patient.identifiers.first().value.trim().isEmpty())
+                    patientList = Patient.findAllByIdInListAndIdInList(patientList?.id, PatientServiceIdentifier.findAllByValueIlike("%" + patient?.identifiers?.first()?.value + "%")?.patient?.id)
         }
 
         def result = JSONSerializer.setLightObjectListJsonResponse(patientList)
 
-        (result as List).collect{ rs ->
+        (result as List).collect { rs ->
             def auxPatient = Patient.get(rs.id)
-            if(auxPatient.identifiers.size() > 0)
+            if (auxPatient.identifiers.size() > 0)
                 rs.put('identifiers', auxPatient.identifiers)
         }
 
-         render result as JSON
+        render result as JSON
     }
 
     def searchByParam(String searchString, String clinicId) {

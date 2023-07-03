@@ -2,6 +2,11 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import mz.org.fgh.sifmoz.backend.drug.Drug
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
@@ -46,134 +51,152 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    //@Scheduled(fixedDelay = 30000L)
+    @Scheduled(fixedDelay = 60000L)
     void execute() {
+        PatientTransReference.withTransaction {
+            if (!this.isProvincial()) {
+                Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
+                List<PatientTransReferenceType> patientTransReferenceTypes = PatientTransReferenceType.findAllByCodeInList(Arrays.asList('REFERENCIA_FP', 'REFERENCIA_DC'))
+                List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationTypeInList('P', patientTransReferenceTypes)
 
-        if(!this.isProvincial()) {
-            Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
-            List <PatientTransReferenceType> patientTransReferenceTypes = PatientTransReferenceType.findAllByCodeInList(Arrays.asList('REFERENCIA_FP','REFERENCIA_DC'))
-            List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationTypeInList('P',patientTransReferenceTypes)
-
-            // Alterar para a linha abaixo quando for em Producao
+                // Alterar para a linha abaixo quando for em Producao
 //            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.code , "MOBILE")
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12" , "MOBILE")
+                ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
 
-            char SyncP = 'P'
-            char SyncS = 'S'
-            char False = 'F'
+                char SyncP = 'P'
+                char SyncS = 'S'
+                char False = 'F'
 
-            LOGGER.info("Iniciando o Envio de Pacientes" )
-            LOGGER.info(MESSAGE)
+                LOGGER.info("Iniciando o Envio de Pacientes")
+                LOGGER.info(MESSAGE)
 
-            for (PatientTransReference pt : patientsTransferees) {
-                String message = String.format(FORMAT_STRING,
-                        pt.matchId ,
-                        pt.patient.firstNames,
-                        pt.identifier.value)
-                LOGGER.info("Processando" +message);
-                try {
+                for (PatientTransReference pt : patientsTransferees) {
+                    String message = String.format(FORMAT_STRING,
+                            pt.matchId,
+                            pt.patient.firstNames,
+                            pt.identifier.value)
+                    LOGGER.info("Processando" + message);
+                    try {
 
-                    SyncTempPatient syncTempPatient = new SyncTempPatient()
+                        SyncTempPatient syncTempPatient = new SyncTempPatient()
 
-                    Episode episode = episodeService.getLastInitialEpisodeByIdentifier(pt.identifier.id)
-                    PatientVisitDetails lastVisitDetails = visitDetailsService.getLastVisitByEpisodeId(episode.id)
+                        Episode episode = Episode.findAllByPatientServiceIdentifier(pt.identifier).last()
+                        PatientVisitDetails lastVisitDetails = PatientVisitDetails.findAllByEpisode(episode).last()
+                        Prescription lastPrescription = Prescription.get(lastVisitDetails.prescription.id)
+                        Pack lastPack = Pack.get(lastVisitDetails.pack.id)
+//                        Episode episode = episodeService.getLastInitialEpisodeByIdentifier(pt.identifier.id)
+//                        PatientVisitDetails lastVisitDetails = visitDetailsService.getLastVisitByEpisodeId(episode.id)
 
-                    syncTempPatient.setId(Integer.parseInt( pt.matchId.toString()))
-                    syncTempPatient.setAccountstatus(false)
-                    syncTempPatient.setCellphone(pt.identifier.patient.cellphone)
-                    syncTempPatient.setDateofbirth(pt.identifier.patient.dateOfBirth)
+                        syncTempPatient.setId(Integer.parseInt(pt.matchId.toString()))
+                        syncTempPatient.setAccountstatus(false)
+                        syncTempPatient.setCellphone(pt.identifier.patient.cellphone)
+                        syncTempPatient.setDateofbirth(pt.identifier.patient.dateOfBirth)
 
 
-                    // destination passou a ser uuid de fp ou dispensa comunitaria
+                        // destination passou a ser uuid de fp ou dispensa comunitaria
 
-                    if(pt.operationType.code.equals("REFERENCIA_FP")) {
-                        Clinic clinicDestination = Clinic.findByUuid(pt.destination)
-                        syncTempPatient.setClinicname(clinicDestination.clinicName)
-                        syncTempPatient.setClinicuuid(clinicDestination.uuid)
-                        // syncTempPatient.setClinic(clinicDestination.matchId)
-                    } else if(pt.operationType.code.equals("REFERENCIA_DC")) {
-                        ClinicSector clinicSectorDestination = ClinicSector.findByUuid(pt.destination)
-                        syncTempPatient.setClinicname(clinicSectorDestination.clinicName)
-                        syncTempPatient.setClinicuuid(clinicSectorDestination.uuid)
-                    }
-                    syncTempPatient.setClinic(0)
-                    syncTempPatient.setMainclinic(0)
-                    syncTempPatient.setMainclinicname(pt.origin.clinicName)
-                    syncTempPatient.setMainclinicuuid(pt.origin.uuid)
-                    syncTempPatient.setFirstnames(pt.identifier.patient.firstNames)
-                    syncTempPatient.setHomephone(pt.identifier.patient.alternativeCellphone)
-                    syncTempPatient.setLastname(pt.identifier.patient.lastNames)
-                    syncTempPatient.setProvince(pt.identifier.patient.province.description)
-                    syncTempPatient.setPatientid(pt.identifier.value)
-                    if(pt.identifier.patient.gender == 'Masculino') {
-                        syncTempPatient.setSex("M")
-                    } else {
-                        syncTempPatient.setSex("F")
-                    }
-                    syncTempPatient.setSyncstatus(SyncP)
-                    syncTempPatient.setWorkphone('')
-                    syncTempPatient.setAddress1(pt.identifier.patient.address)
-                    syncTempPatient.setAddress2(pt.identifier.patient.addressReference)
-                    syncTempPatient.setAddress3('')
-                    syncTempPatient.setRace('')
-                    syncTempPatient.setUuidopenmrs(pt.identifier.patient.hisUuid)
-                    syncTempPatient.setDatainiciotarv(Utilities.dateformatToYYYYMMDD(pt.identifier.startDate))
-                    syncTempPatient.setSyncuuid(UUID.randomUUID().toString())
-                    syncTempPatient.setPrescriptiondate(lastVisitDetails.prescription.prescriptionDate)
-                    syncTempPatient.setDuration(lastVisitDetails.prescription.duration.weeks)
-                    syncTempPatient.setPrescriptionenddate(lastVisitDetails.prescription.expiryDate)
-                    syncTempPatient.setRegimenome(lastVisitDetails.prescription.prescriptionDetails[0].therapeuticRegimen.regimenScheme)
-                  //  syncTempPatient.setLinhanome(lastVisitDetails.prescription.prescriptionDetails[0].therapeuticLine.description)
-                    if (lastVisitDetails.prescription.prescriptionDetails[0].therapeuticLine.description.contains("1")) {
-                        syncTempPatient.setLinhanome("1ª Linha")
-                    } else if (lastVisitDetails.prescription.prescriptionDetails[0].therapeuticLine.description.contains("2")) {
-                        syncTempPatient.setLinhanome("2ª Linha")
-                    } else if (lastVisitDetails.prescription.prescriptionDetails[0].therapeuticLine.description.contains("3")) {
-                        syncTempPatient.setLinhanome("3ª Linha")
-                    }
-                    if (lastVisitDetails.prescription.prescriptionDetails[0].dispenseType.code == 'DM') {
-                        syncTempPatient.setDispensasemestral(0)
-                        syncTempPatient.setDispensatrimestral(0)
-                    } else if (lastVisitDetails.prescription.prescriptionDetails[0].dispenseType.code == 'DT') {
-                        syncTempPatient.setDispensasemestral(0)
-                        syncTempPatient.setDispensatrimestral(1)
-                    } else if (lastVisitDetails.prescription.prescriptionDetails[0].dispenseType.code == 'DS') {
-                        syncTempPatient.setDispensasemestral(1)
-                        syncTempPatient.setDispensatrimestral(0)
-                    }
-                    syncTempPatient.setPrescriptionid(lastVisitDetails.prescription.prescriptionSeq)
-                    syncTempPatient.setPrescricaoespecial('F')
-                    syncTempPatient.setMotivocriacaoespecial('')
-                    if (!lastVisitDetails.prescription.getPrescribedDrugs().isEmpty()) {
-
+                        if (pt.operationType.code.equals("REFERENCIA_FP")) {
+                            Clinic clinicDestination = Clinic.findByUuid(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
+                            syncTempPatient.setClinicname(clinicDestination.clinicName)
+                            syncTempPatient.setClinicuuid(clinicDestination.uuid)
+                            // syncTempPatient.setClinic(clinicDestination.matchId)
+                        } else if (pt.operationType.code.equals("REFERENCIA_DC")) {
+                            ClinicSector clinicSectorDestination = ClinicSector.findByUuid(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
+                            syncTempPatient.setClinicname(clinicSectorDestination.description)
+                            syncTempPatient.setClinicuuid(clinicSectorDestination.uuid)
+                        }
+                        syncTempPatient.setClinic(0)
+                        syncTempPatient.setMainclinic(0)
+                        syncTempPatient.setMainclinicname(pt.origin.clinicName)
+                        syncTempPatient.setMainclinicuuid(pt.origin.uuid)
+                        syncTempPatient.setFirstnames(pt.identifier.patient.firstNames)
+                        syncTempPatient.setHomephone(pt.identifier.patient.alternativeCellphone)
+                        syncTempPatient.setLastname(pt.identifier.patient.lastNames)
+                        syncTempPatient.setProvince(pt.identifier.patient.province.description)
+                        syncTempPatient.setPatientid(pt.identifier.value)
+                        if (pt.identifier.patient.gender == 'Masculino') {
+                            syncTempPatient.setSex("M")
+                        } else {
+                            syncTempPatient.setSex("F")
+                        }
+                        syncTempPatient.setSyncstatus(SyncP)
+                        syncTempPatient.setWorkphone('')
+                        syncTempPatient.setAddress1(pt.identifier.patient.address)
+                        syncTempPatient.setAddress2(pt.identifier.patient.addressReference)
+                        syncTempPatient.setAddress3('')
+                        syncTempPatient.setRace('')
+                        syncTempPatient.setUuidopenmrs(pt.identifier.patient.hisUuid)
+                        syncTempPatient.setDatainiciotarv(Utilities.dateformatToYYYYMMDD(pt.identifier.startDate))
+                        syncTempPatient.setSyncuuid(UUID.randomUUID().toString())
+                        syncTempPatient.setPrescriptiondate(lastPrescription.prescriptionDate)
+                        syncTempPatient.setDuration(lastPrescription.duration.weeks)
+                        syncTempPatient.setPrescriptionenddate(lastPrescription.expiryDate)
+                        syncTempPatient.setRegimenome(lastPrescription.prescriptionDetails[0].therapeuticRegimen.regimenScheme)
+                        //  syncTempPatient.setLinhanome(lastPrescription.prescriptionDetails[0].therapeuticLine.description)
+                        if (lastPrescription.prescriptionDetails[0].therapeuticLine.description.contains("1")) {
+                            syncTempPatient.setLinhanome("1ª Linha")
+                        } else if (lastPrescription.prescriptionDetails[0].therapeuticLine.description.contains("2")) {
+                            syncTempPatient.setLinhanome("2ª Linha")
+                        } else if (lastPrescription.prescriptionDetails[0].therapeuticLine.description.contains("3")) {
+                            syncTempPatient.setLinhanome("3ª Linha")
+                        }
+                        if (lastPrescription.prescriptionDetails[0].dispenseType.code == 'DM') {
+                            syncTempPatient.setDispensasemestral(0)
+                            syncTempPatient.setDispensatrimestral(0)
+                        } else if (lastPrescription.prescriptionDetails[0].dispenseType.code == 'DT') {
+                            syncTempPatient.setDispensasemestral(0)
+                            syncTempPatient.setDispensatrimestral(1)
+                        } else if (lastPrescription.prescriptionDetails[0].dispenseType.code == 'DS') {
+                            syncTempPatient.setDispensasemestral(1)
+                            syncTempPatient.setDispensatrimestral(0)
+                        }
+                        syncTempPatient.setPrescriptionid(lastPrescription.prescriptionSeq)
+                        syncTempPatient.setPrescricaoespecial('F')
+                        syncTempPatient.setMotivocriacaoespecial('')
                         Map<String, Object> pd = new HashMap<String, Object>()
                         ArrayList listPD = new ArrayList()
+                        if (!lastPrescription?.getPrescribedDrugs()?.isEmpty()) {
 
-                        for (PrescribedDrug prescribedDrugs : lastVisitDetails.prescription.getPrescribedDrugs()) {
-                            pd.put("drugId", prescribedDrugs.getDrug().getId())
-                            pd.put("drugcode", prescribedDrugs.getDrug().getFnmCode())
-                            pd.put("timesperday", prescribedDrugs.getTimesPerDay())
-                            listPD.add(pd);
+                            for (PrescribedDrug prescribedDrugs : lastPrescription.getPrescribedDrugs()) {
+                                pd.put("drugId", prescribedDrugs.getDrug().getId())
+                                pd.put("drugcode", prescribedDrugs.getDrug().getFnmCode())
+                                pd.put("timesperday", prescribedDrugs.getTimesPerDay())
+                                listPD.add(pd);
+                            }
+                        } else if (!lastPack?.packagedDrugs?.isEmpty()) {
+                            for (PackagedDrug packagedDrug : lastPack?.packagedDrugs) {
+                                Drug drug = Drug.get(packagedDrug.drug.id)
+                                pd.put("drugId", drug.id)
+                                pd.put("drugcode", drug.fnmCode)
+                                pd.put("timesperday", packagedDrug.getTimesPerDay())
+                                listPD.add(pd);
+                            }
                         }
-                        syncTempPatient.setJsonprescribeddrugs(listPD.toString().replace("[[","[").replace("]]","]"));
+                        syncTempPatient.setJsonprescribeddrugs(listPD.toString().replace("[[", "[").replace("]]", "]"));
                         syncTempPatient.setEstadopaciente('Activo');
                         syncTempPatient.setExclusaopaciente(false);
                         syncTempPatient.setModified(False)
                         def obj = Utilities.parseToJSON(syncTempPatient)
-                     def response =  restProvincialServerClient.postRequestProvincialServerClient(provincialServer,"/sync_temp_patients", obj)
-                        if(!response.contains("Wrong")){
+                        def response = restProvincialServerClient.postRequestProvincialServerClient(provincialServer, "/sync_temp_patients", obj)
+                        if (!response.contains("Wrong")) {
                             if (Integer.parseInt(response) == HttpURLConnection.HTTP_CREATED) {
                                 // def ptToUpdate = PatientTransReference.findById(pt.id)
                                 pt.syncStatus = SyncS
                                 patientTransReferenceService.save(pt)
+                            } else if (Integer.parseInt(response) == HttpURLConnection.HTTP_CONFLICT) {
+                                def newUrlPath = "/sync_temp_patients?id=eq." + syncTempPatient.getId() + "&mainclinicname=eq." + syncTempPatient.getMainclinicname().replaceAll(" ", "%20");
+                                def responsePatch = restProvincialServerClient.patchRequestProvincialServerClient(provincialServer, newUrlPath, obj)
+                                if (!responsePatch.contains("Wrong")) {
+                                    pt.syncStatus = SyncS
+                                    patientTransReferenceService.save(pt)
+                                }
                             }
                         }
-
+                    } catch (Exception e) {
+                        e.printStackTrace()
+                    } finally {
+                        continue
                     }
-                } catch (Exception e) {
-                    e.printStackTrace()
-                } finally {
-                    continue
                 }
             }
         }

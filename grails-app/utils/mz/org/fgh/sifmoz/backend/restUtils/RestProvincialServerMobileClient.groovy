@@ -45,7 +45,7 @@ class RestProvincialServerMobileClient {
         return result
     }
 
-    static def patchRequestProvincialServerClient(ProvincialServer provincialServer ,String urlPath, String object) {
+    static def patchRequestProvincialServerClient(ProvincialServer provincialServer ,String urlPath, StringEntity object) {
         String restUrlBase = provincialServer.getUrlPath()+provincialServer.getPort()
         String restUrl = provincialServer.getUrlPath()+provincialServer.getPort()+urlPath
         String result = ""
@@ -57,7 +57,7 @@ class RestProvincialServerMobileClient {
             request.setHeader("Content-type", "application/json");
             request.setHeader("Authorization", "Bearer " + PostgrestAuthenticationUtils.getJWTPermission(restUrlBase,provincialServer.getUsername(), provincialServer.getPassword()))
             request.setHeader("Accept-Encoding", "gzip, deflate, br");
-            request.setEntity(new StringEntity(object))
+            request.setEntity(object)
             CloseableHttpResponse response = client.execute(request)
 
 

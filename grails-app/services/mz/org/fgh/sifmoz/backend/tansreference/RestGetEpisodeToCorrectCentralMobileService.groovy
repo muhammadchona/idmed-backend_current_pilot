@@ -48,7 +48,7 @@ class RestGetEpisodeToCorrectCentralMobileService extends SynchronizerTask{
 
             Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
 //          ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "mobile")
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")
+            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12" , "MOBILE")
             String urlPath = "/sync_temp_patients?mainclinicuuid=eq."+clinic.getUuid()+"&modified=eq.T"; //addClinicuuid
             def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer,urlPath)
             LOGGER.info("Iniciando a Busca de Pacientes Para Corrigir")
