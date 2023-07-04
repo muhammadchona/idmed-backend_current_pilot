@@ -1,7 +1,11 @@
 package mz.org.fgh.sifmoz.backend.clinicSector
 
 import grails.gorm.transactions.Transactional
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
+import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.restUtils.RestProvincialServerMobileClient
 import mz.org.fgh.sifmoz.backend.tansreference.PatientTransReference
@@ -9,6 +13,7 @@ import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.apache.http.HttpResponse
 import org.apache.http.entity.StringEntity
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
@@ -17,13 +22,10 @@ class RestClinicSectorService extends SynchronizerTask {
     RestProvincialServerMobileClient restProvincialServerClient = new RestProvincialServerMobileClient()
     IClinicSectorService clinicSectorService
 
-    def serviceMethod() {
+    static lazyInit = false
 
-    }
-
-    @Override
     @Scheduled(fixedDelay = 30000L)
-    void execute() {
+    void schedulerRequestRunning() {
         ClinicSector.withTransaction {
             if (!this.isProvincial()) {
                 Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
@@ -54,9 +56,14 @@ class RestClinicSectorService extends SynchronizerTask {
                             if (clinicSector.clinicSectorType.code.equalsIgnoreCase(("BRIGADA_MOVEL")))
                                 sectorTypeID = 5
 
-                            String clinicJSONObject = "{\"id\": \"" + getRandomNumber() + "\", \"code\": \"" + clinicSector.getCode() + "\", \"sectorname\": \"" + clinicSector.getDescription() + "\", "
-                            +"\"clinicsectortype\":\"" + sectorTypeID + "\", \"telephone\":\"\", "
-                            +"\"clinic\":\"" + clinicSector.getClinic().getUuid() + "\",\"clinicuuid\":\"" + clinicSector.getClinic().getUuid() + "\",\"uuid\":\"" + clinicSector.getUuid() + "\"}";
+                            String clinicJSONObject = "{\"id\": \"" + getRandomNumber() +
+                                    "\", \"code\": \"" + clinicSector.getCode() +
+                                    "\", \"sectorname\": \"" + clinicSector.getDescription() +
+                                    "\", \"clinicsectortype\":\"" + sectorTypeID +
+                                    "\", \"telephone\": \""+
+                                    "\", \"clinic\":\"" + clinicSector.getClinic().getUuid() +
+                                    "\", \"clinicuuid\":\"" + clinicSector.getClinic().getUuid() +
+                                    "\", \"uuid\":\"" + clinicSector.getUuid() + "\"}";
 
                             StringEntity inputAddDispense = new StringEntity(clinicJSONObject, "UTF-8");
                             inputAddDispense.setContentType("application/json");
@@ -80,18 +87,27 @@ class RestClinicSectorService extends SynchronizerTask {
     }
 
     def postClinicFirst(Clinic clinic, provincialServer){
-        String facilitytype = "Unidade Sanitária";
+        String facilitytype = "Unidade Sanitária"
 
-        String clinicJSONObject = "{\"id\": \"" + getRandomNumber() + "\", \"mainclinic\": \"" + false + "\", \"notes\": \"" + clinic.getNotes() + "\", "
-        + "\"code\":\"" + clinic.getCode() + "\", \"telephone\":\"" + clinic.getTelephone() + "\", \"facilitytype\":\"" + facilitytype + "\", "
-        + "\"clinicname\":\"" + clinic.getClinicName() + "\",\"province\":\"" + clinic?.province?.description + "\",\"district\":\"" + clinic?.district?.description + "\", "
-        + "\"subdistrict\":\"-\",\"uuid\":\"" + clinic.getUuid() + "\"}";
+        Province province = Province.get(clinic.province.id)
+        District district = District.get(clinic.district.id)
+
+        String clinicJSONObject = "{\"id\": \"" + getRandomNumber() +
+                "\", \"mainclinic\": \"" + false +
+                "\", \"notes\": \"" + clinic.getNotes() +
+                "\", \"code\":\"" + clinic.getCode() +
+                "\", \"telephone\":\"" + clinic.getTelephone() +
+                "\", \"facilitytype\":\"" + facilitytype +
+                "\", \"clinicname\":\"" + clinic.getClinicName() +
+                "\", \"province\":\"" + province?.description +
+                "\", \"district\":\"" + district?.description +
+                "\", \"subdistrict\":\"-\",\"uuid\":\"" + clinic.getUuid() + "\"}";
 
         StringEntity inputAddDispense = new StringEntity(clinicJSONObject, "UTF-8");
 
         inputAddDispense.setContentType("application/json");
 
-        def response = restProvincialServerClient.postRequestProvincialServerClient(provincialServer, "/clinic", inputAddDispense)
+        def response = restProvincialServerClient.postRequestProvincialServerClient(provincialServer as ProvincialServer, "/clinic", inputAddDispense)
 
         return !response.contains("Wrong")
 
@@ -103,5 +119,10 @@ class RestClinicSectorService extends SynchronizerTask {
         int high = 1000000000;
         int genId = r.nextInt(high - low) + low;
         return genId
+    }
+
+    @Override
+    void execute() {
+
     }
 }
