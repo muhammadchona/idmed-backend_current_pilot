@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientVisit.PatientVisit
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
@@ -80,12 +81,11 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
 
                         SyncTempPatient syncTempPatient = new SyncTempPatient()
 
-                        Episode episode = Episode.findAllByPatientServiceIdentifier(pt.identifier).last()
-                        PatientVisitDetails lastVisitDetails = PatientVisitDetails.findAllByEpisode(episode).last()
+                        Patient patient = Patient.get(pt.identifier.patient.id)
+                        List<PatientVisit> patientVisitList = PatientVisit.findAllByPatient(patient)
+                        PatientVisitDetails lastVisitDetails = PatientVisitDetails.findAllByPatientVisitInList(patientVisitList).last()
                         Prescription lastPrescription = Prescription.get(lastVisitDetails.prescription.id)
                         Pack lastPack = Pack.get(lastVisitDetails.pack.id)
-//                        Episode episode = episodeService.getLastInitialEpisodeByIdentifier(pt.identifier.id)
-//                        PatientVisitDetails lastVisitDetails = visitDetailsService.getLastVisitByEpisodeId(episode.id)
 
                         syncTempPatient.setId(Integer.parseInt(pt.matchId.toString()))
                         syncTempPatient.setAccountstatus(false)
