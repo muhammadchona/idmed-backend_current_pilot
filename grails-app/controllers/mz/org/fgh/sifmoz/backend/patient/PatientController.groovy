@@ -193,8 +193,12 @@ class PatientController extends RestfulController {
 
         if (!patient?.identifiers?.empty) {
             if (patient.identifiers.first().value != null)
-                if (!patient.identifiers.first().value.trim().isEmpty())
+                if (!patient.identifiers.first().value.trim().isEmpty()) {
                     patientList = Patient.findAllByIdInListAndIdInList(patientList?.id, PatientServiceIdentifier.findAllByValueIlike("%" + patient?.identifiers?.first()?.value + "%")?.patient?.id)
+                    if (patientList.isEmpty()) {
+                        patientList = Patient.findAllByIdInList(PatientServiceIdentifier.findAllByValueIlike("%" + patient?.identifiers?.first()?.value + "%")?.patient?.id)
+                    }
+                }
         }
 
         def result = JSONSerializer.setLightObjectListJsonResponse(patientList)
