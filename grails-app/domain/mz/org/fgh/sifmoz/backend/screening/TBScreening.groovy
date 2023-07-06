@@ -26,8 +26,8 @@ class TBScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_TBScreening_Idx'
+        id generator: "assigned"
+        id column: 'id', index: 'Pk_TBScreening_Idx'
     }
 
     static constraints = {

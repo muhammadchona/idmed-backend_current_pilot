@@ -18,8 +18,8 @@ class RAMScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_RAMScreening_Idx'
+        id generator: "assigned"
+        id column: 'id', index: 'Pk_RAMScreening_Idx'
     }
 
     static constraints = {
