@@ -32,20 +32,10 @@ class PatientVisit extends BaseEntity {
     static mapping = {
        id generator: "assigned"
        id column: 'id', index: 'Pk_patientVisit_Idx'
-        patientVisitDetails cascade: 'all-delete-orphan'
-        adherenceScreenings cascade: 'all-delete-orphan'
-        vitalSignsScreenings cascade: 'all-delete-orphan'
-        pregnancyScreenings cascade: 'all-delete-orphan'
-        tbScreenings cascade: 'all-delete-orphan'
-        ramScreenings cascade: 'all-delete-orphan'
     }
 
     static constraints = {
-        adherenceScreenings nullable: true
-        vitalSignsScreenings nullable: true
-        pregnancyScreenings nullable: true
-        tbScreenings nullable: true
-        ramScreenings nullable: true
+
     }
 
     def beforeInsert() {
