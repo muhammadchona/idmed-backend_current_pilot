@@ -77,9 +77,6 @@ class HealthInformationSystemController extends RestfulController{
                 return
             }
             healthInformationSystem.properties = objectJSON
-            healthInformationSystem.interoperabilityAttributes.eachWithIndex {attribute, index ->
-                attribute.id = UUID.fromString(objectJSON.interoperabilityAttributes[index].id)
-            }
         }
 
         if (healthInformationSystem.hasErrors()) {
