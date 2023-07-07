@@ -124,16 +124,18 @@ class PatientController extends RestfulController {
         bindData(patient, patientFromJSON, [exclude: ['id', 'clinicId', 'his', 'hisId', 'provinceId', 'districtId', 'bairroId', 'clinic', 'attributes', 'appointments', 'patientTransReference', 'validated', 'postoAdministrativoId', 'entity']])
         List<PatientServiceIdentifier> identifiersList = new ArrayList<>()
 
-        patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
+        if (patient.identifiers != null) {
+            patient.identifiers = [].withDefault { new PatientServiceIdentifier() }
 
-        (objectJSON.identifiers as List).collect { item ->
-            if (item) {
-                def identifier = PatientServiceIdentifier.get(item.id)
-                identifier.patient = patient
-                identifiersList.add(identifier)
+            (objectJSON.identifiers as List).collect { item ->
+                if (item) {
+                    def identifier = PatientServiceIdentifier.get(item.id)
+                    identifier.patient = patient
+                    identifiersList.add(identifier)
+                }
             }
+            patient.identifiers = identifiersList
         }
-        patient.identifiers = identifiersList
         if (patient == null) {
             render status: NOT_FOUND
             return
