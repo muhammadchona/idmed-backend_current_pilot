@@ -18,8 +18,8 @@ class PregnancyScreening extends BaseEntity {
     static belongsTo = [PatientVisit]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_PregnancyScreening_Idx'
+        id generator: "assigned"
+        id column: 'id', index: 'Pk_PregnancyScreening_Idx'
     }
 
     static constraints = {

@@ -119,8 +119,6 @@ environments:
     production:
         dataSource:
             dbCreate: update
-         #   url: jdbc:postgresql://pgpool:5432/idmed
-#            url: jdbc:postgresql://db:5432/sangariveira
             url: jdbc:postgresql://db:5432/idmed
 
 
