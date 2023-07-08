@@ -194,7 +194,6 @@ class JSONSerializer {
             for (int j = 0; this.toInclude.size() - 1 > j; j++) {
                 if (isComposition(this.toInclude[j] && !isSimpleProp(propName))) {
                     String[] exploded = this.toInclude[j].split(java.util.regex.Pattern.quote("."))
-                    System.out.println(exploded)
                     //List<String> compositionList = Utilities.splitString(includePropName, ".")
                     List<String> compositionList = new ArrayList<>()
                     for (int i = 0; i < exploded.length; i++) {

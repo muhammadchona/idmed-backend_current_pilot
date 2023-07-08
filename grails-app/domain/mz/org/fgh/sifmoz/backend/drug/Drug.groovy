@@ -16,9 +16,9 @@ class Drug extends BaseEntity {
     String id
     int packSize
     String name
-    double defaultTreatment // numero de toma
-    int defaultTimes// numero de vezes a tomar
-    String defaultPeriodTreatment //  periofo a tomar --commbo (dia , semana , mes, ano)
+    double defaultTreatment
+    int defaultTimes
+    String defaultPeriodTreatment
     String fnmCode
     String uuidOpenmrs
     ClinicalService clinicalService
@@ -42,10 +42,7 @@ class Drug extends BaseEntity {
         packSize(min: 0)
         uuidOpenmrs nullable: true
         clinicalService nullable: false
-     //   defaultTreatment(min: 1.00)
         defaultTimes(min:1)
-        stockList nullable: true
-        therapeuticRegimenList nullable: true
     }
 
     @Override

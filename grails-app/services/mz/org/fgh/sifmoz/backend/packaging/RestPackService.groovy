@@ -36,7 +36,6 @@ class RestPackService {
             List<Pack> packList = Pack.findAll().findAll { it.syncStatus == 'R' }
 
             for (Pack pack : packList) {
-//                System.out.println('saving {} at {} ' + pack + ' ' + new SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(new Date()))
                 try {
                     RestOpenMRSClient restPost = new RestOpenMRSClient()
                     PatientVisitDetails patientVisitDetails = patientVisitDetailsService.getByPack(pack)

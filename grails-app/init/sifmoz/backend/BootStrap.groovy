@@ -254,12 +254,14 @@ class BootStrap {
 
     void initClinicalServiceAttribute() {
         for (clinicalServiceAttributeObject in listClinicalServiceAttribute()) {
-            if (!ClinicalServiceAttribute.findByClinicalServiceAndClinicalServiceAttributeType(ClinicalService.findById(clinicalServiceAttributeObject.clinicalService), ClinicalServiceAttributeType.findById(clinicalServiceAttributeObject.clinicalServiceAttributeType))) {
-                ClinicalServiceAttribute clinicalServiceAttribute = new ClinicalServiceAttribute()
-                clinicalServiceAttribute.id = clinicalServiceAttributeObject.id
-                clinicalServiceAttribute.clinicalService = ClinicalService.findById(clinicalServiceAttributeObject.clinicalService)
-                clinicalServiceAttribute.clinicalServiceAttributeType = ClinicalServiceAttributeType.findById(clinicalServiceAttributeObject.clinicalServiceAttributeType)
-                clinicalServiceAttribute.save(flush: true, failOnError: true)
+            try {
+                ClinicalService clinicalService = ClinicalService.get(clinicalServiceAttributeObject.clinicalService)
+                clinicalService.addToClinicalServiceAttributes(ClinicalServiceAttributeType.get(clinicalServiceAttributeObject.clinicalServiceAttributeType))
+                clinicalService.save(flush: true, failOnError: true)
+            } catch (Exception e) {
+                e.printStackTrace()
+            } finally {
+                continue
             }
         }
     }
@@ -468,19 +470,19 @@ class BootStrap {
                 therapeuticRegimen1.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
                 therapeuticRegimen1.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
                 therapeuticRegimen1.save(flush: true, failOnError: true)
-            }else {
-            if (!TherapeuticRegimen.findByCode(therapeuticRegimenObject.code.toString().trim())) {
-                TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
-                therapeuticRegimen.id = therapeuticRegimenObject.id
-                therapeuticRegimen.code = therapeuticRegimenObject.code
-                therapeuticRegimen.regimenScheme = therapeuticRegimenObject.regimen_scheme
-                therapeuticRegimen.active = therapeuticRegimenObject.active
-                therapeuticRegimen.description = therapeuticRegimenObject.description
-                therapeuticRegimen.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
-                therapeuticRegimen.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
-                therapeuticRegimen.save(flush: true, failOnError: true)
+            } else {
+                if (!TherapeuticRegimen.findByCode(therapeuticRegimenObject.code.toString().trim())) {
+                    TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
+                    therapeuticRegimen.id = therapeuticRegimenObject.id
+                    therapeuticRegimen.code = therapeuticRegimenObject.code
+                    therapeuticRegimen.regimenScheme = therapeuticRegimenObject.regimen_scheme
+                    therapeuticRegimen.active = therapeuticRegimenObject.active
+                    therapeuticRegimen.description = therapeuticRegimenObject.description
+                    therapeuticRegimen.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
+                    therapeuticRegimen.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
+                    therapeuticRegimen.save(flush: true, failOnError: true)
 
-            }
+                }
             }
         }
     }
@@ -508,7 +510,7 @@ class BootStrap {
                 if (drug1.getClinicalService() == null) {
                     drug1.clinicalService = ClinicalService.findById(drugObject.clinical_service_id)
                     drug1.save(flush: true, failOnError: true)
-                }else {
+                } else {
                     if (drug1.getUuidOpenmrs() == null || drug1.getUuidOpenmrs().trim().empty) {
                         drug1.uuidOpenmrs = drugObject.name
                         drug1.uuidOpenmrs = drugObject.uuid_openmrs
@@ -691,26 +693,26 @@ class BootStrap {
 
     List<Object> listUsers() {
         List<Object> usersList = new ArrayList<>()
-        usersList.add(new LinkedHashMap(username:'admin',password:'admin',fullName: 'admin', contact:'admin', email: 'admin@gmail.com',openmrsPassword: Utilities.getMd5('admin')))
-        usersList.add(new LinkedHashMap(username:'IDMED.FHI',password:'Fhi761',fullName: 'IDMED.FHI',contact: 'IDMED.FHI', email:'IDMED.FHI@gmail.com', openmrsPassword:Utilities.getMd5('Fhi761')))
-        usersList.add(new LinkedHashMap(username:'IDMED.EPIC',password: 'Epic007',fullName: 'IDMED.EPIC',contact: 'IDMED.EPIC', email:'IDMED.EPIC@gmail.com', openmrsPassword:Utilities.getMd5('Epic007')))
-        usersList.add(new LinkedHashMap(username:'IDMED.I-TECH',password: 'I-tech881',fullName: 'IDMED.I-TECH',contact: 'IDMED.I-TECH',email: 'IDMED.I-TECH@gmail.com',openmrsPassword: Utilities.getMd5('I-tech881')))
-        usersList.add(new LinkedHashMap(username:'IDMED.ICAP',password: 'Icap123',fullName: 'IDMED.ICAP',contact: 'IDMED.ICAP',email: 'IDMED.ICAP@gmail.com', openmrsPassword:Utilities.getMd5('Icap123')))
-        usersList.add(new LinkedHashMap(username:'IDMED.CCS',password: 'Ccs452',fullName: 'IDMED.CCS',contact: 'IDMED.CCS', email:'IDMED.CCS@gmail.com',openmrsPassword: Utilities.getMd5('Ccs452')))
-        usersList.add(new LinkedHashMap(username:'IDMED.ARIEL',password: 'Ariel872',fullName: 'IDMED.ARIEL', contact:'IDMED.ARIEL', email:'IDMED.ARIEL@gmail.com',openmrsPassword: Utilities.getMd5('Ariel872')))
-        usersList.add(new LinkedHashMap(username:'IDMED.ECHO',password: 'Echo827',fullName: 'IDMED.ECHO', contact:'IDMED.ECHO', email:'IDMED.ECHO@gmail.com',openmrsPassword: Utilities.getMd5('Echo827')))
-        usersList.add(new LinkedHashMap(username:'IDMED.EGPAF',password: 'Egpaf897',fullName: 'IDMED.EGPAF', contact:'IDMED.EGPAF', email:'IDMED.EGPAF@gmail.com',openmrsPassword: Utilities.getMd5('Egpaf897')))
-        usersList.add(new LinkedHashMap(username:'IDMED.JHPIEGO',password: 'Jhpiego562',fullName: 'IDMED.JHPIEGO', contact:'IDMED.JHPIEGO', email:'IDMED.JHPIEGO@gmail.com', openmrsPassword:Utilities.getMd5('Jhpiego562')))
-        usersList.add(new LinkedHashMap(username:'IDMED.FGH',password: 'Fgh542',fullName: 'IDMED.FGH',contact: 'IDMED.FGH', email:'IDMED.FGH@gmail.com', openmrsPassword:Utilities.getMd5('Fgh542')))
-        usersList.add(new LinkedHashMap(username:'IDMED.USAID',password: 'Usaid098',fullName: 'IDMED.USAID', contact:'IDMED.USAID', email:'IDMED.USAID@gmail.com',openmrsPassword: Utilities.getMd5('Usaid098')))
-        usersList.add(new LinkedHashMap(username:'IDMED.CDC',password: 'Cdc622',fullName: 'IDMED.CDC', contact:'IDMED.CDC', email:'IDMED.CDC@gmail.com',openmrsPassword: Utilities.getMd5('Cdc622')))
-        usersList.add(new LinkedHashMap(username:'IDMED.CMAM',password: 'Cmam252',fullName: 'IDMED.CMAM', contact:'IDMED.CMAM', email:'IDMED.CMAM@gmail.com',openmrsPassword: Utilities.getMd5('Cmam252')))
-        usersList.add(new LinkedHashMap(username:'IDMED.PHIV',password: 'Phiv545',fullName: 'IDMED.PHIV', contact:'IDMED.PHIV', email:'IDMED.PHIV@gmail.com',openmrsPassword:Utilities.getMd5('Phiv545')))
-        usersList.add(new LinkedHashMap(username:'iDMED',password: 'iDMED123',fullName: 'iDMED', contact: 'iDMED', email:'iDMED@gmail.com', openmrsPassword: Utilities.getMd5('iDMED123')))
-        usersList.add(new LinkedHashMap(username:'IDMED.JEMBI',password: 'Jembi123',fullName: 'IDMED.JEMBI', contact:'IDMED.JEMBI', email:'IDMED.JEMBI@gmail.com',openmrsPassword: Utilities.getMd5('Jembi123')))
-        usersList.add(new LinkedHashMap(username:'domingos.bernardo', password:'dBernardo1',fullName: 'domingos.bernardo', contact:'domingos.bernardo', email:'domingos.bernardo@gmail.com',openmrsPassword: Utilities.getMd5('dBernardo1')))
-        usersList.add(new LinkedHashMap(username:'user.sync', password:'user.sync',fullName: 'Usuario Sincronizacao', contact:'USER.SYNC', email:'user.sync@gmail.com',openmrsPassword: Utilities.getMd5('userSync')))
-        usersList.add(new LinkedHashMap(username:'pepfar', password:'Pepfar123',fullName: 'Usuario Pepfar', contact:'', email:'user.pepfar@gmail.com',openmrsPassword: Utilities.getMd5('Pepfar123')))
+        usersList.add(new LinkedHashMap(username: 'admin', password: 'admin', fullName: 'admin', contact: 'admin', email: 'admin@gmail.com', openmrsPassword: Utilities.getMd5('admin')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.FHI', password: 'Fhi761', fullName: 'IDMED.FHI', contact: 'IDMED.FHI', email: 'IDMED.FHI@gmail.com', openmrsPassword: Utilities.getMd5('Fhi761')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.EPIC', password: 'Epic007', fullName: 'IDMED.EPIC', contact: 'IDMED.EPIC', email: 'IDMED.EPIC@gmail.com', openmrsPassword: Utilities.getMd5('Epic007')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.I-TECH', password: 'I-tech881', fullName: 'IDMED.I-TECH', contact: 'IDMED.I-TECH', email: 'IDMED.I-TECH@gmail.com', openmrsPassword: Utilities.getMd5('I-tech881')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.ICAP', password: 'Icap123', fullName: 'IDMED.ICAP', contact: 'IDMED.ICAP', email: 'IDMED.ICAP@gmail.com', openmrsPassword: Utilities.getMd5('Icap123')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.CCS', password: 'Ccs452', fullName: 'IDMED.CCS', contact: 'IDMED.CCS', email: 'IDMED.CCS@gmail.com', openmrsPassword: Utilities.getMd5('Ccs452')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.ARIEL', password: 'Ariel872', fullName: 'IDMED.ARIEL', contact: 'IDMED.ARIEL', email: 'IDMED.ARIEL@gmail.com', openmrsPassword: Utilities.getMd5('Ariel872')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.ECHO', password: 'Echo827', fullName: 'IDMED.ECHO', contact: 'IDMED.ECHO', email: 'IDMED.ECHO@gmail.com', openmrsPassword: Utilities.getMd5('Echo827')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.EGPAF', password: 'Egpaf897', fullName: 'IDMED.EGPAF', contact: 'IDMED.EGPAF', email: 'IDMED.EGPAF@gmail.com', openmrsPassword: Utilities.getMd5('Egpaf897')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.JHPIEGO', password: 'Jhpiego562', fullName: 'IDMED.JHPIEGO', contact: 'IDMED.JHPIEGO', email: 'IDMED.JHPIEGO@gmail.com', openmrsPassword: Utilities.getMd5('Jhpiego562')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.FGH', password: 'Fgh542', fullName: 'IDMED.FGH', contact: 'IDMED.FGH', email: 'IDMED.FGH@gmail.com', openmrsPassword: Utilities.getMd5('Fgh542')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.USAID', password: 'Usaid098', fullName: 'IDMED.USAID', contact: 'IDMED.USAID', email: 'IDMED.USAID@gmail.com', openmrsPassword: Utilities.getMd5('Usaid098')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.CDC', password: 'Cdc622', fullName: 'IDMED.CDC', contact: 'IDMED.CDC', email: 'IDMED.CDC@gmail.com', openmrsPassword: Utilities.getMd5('Cdc622')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.CMAM', password: 'Cmam252', fullName: 'IDMED.CMAM', contact: 'IDMED.CMAM', email: 'IDMED.CMAM@gmail.com', openmrsPassword: Utilities.getMd5('Cmam252')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.PHIV', password: 'Phiv545', fullName: 'IDMED.PHIV', contact: 'IDMED.PHIV', email: 'IDMED.PHIV@gmail.com', openmrsPassword: Utilities.getMd5('Phiv545')))
+        usersList.add(new LinkedHashMap(username: 'iDMED', password: 'iDMED123', fullName: 'iDMED', contact: 'iDMED', email: 'iDMED@gmail.com', openmrsPassword: Utilities.getMd5('iDMED123')))
+        usersList.add(new LinkedHashMap(username: 'IDMED.JEMBI', password: 'Jembi123', fullName: 'IDMED.JEMBI', contact: 'IDMED.JEMBI', email: 'IDMED.JEMBI@gmail.com', openmrsPassword: Utilities.getMd5('Jembi123')))
+        usersList.add(new LinkedHashMap(username: 'domingos.bernardo', password: 'dBernardo1', fullName: 'domingos.bernardo', contact: 'domingos.bernardo', email: 'domingos.bernardo@gmail.com', openmrsPassword: Utilities.getMd5('dBernardo1')))
+        usersList.add(new LinkedHashMap(username: 'user.sync', password: 'user.sync', fullName: 'Usuario Sincronizacao', contact: 'USER.SYNC', email: 'user.sync@gmail.com', openmrsPassword: Utilities.getMd5('userSync')))
+        usersList.add(new LinkedHashMap(username: 'pepfar', password: 'Pepfar123', fullName: 'Usuario Pepfar', contact: '', email: 'user.pepfar@gmail.com', openmrsPassword: Utilities.getMd5('Pepfar123')))
 
         return usersList
     }
@@ -1391,7 +1393,7 @@ class BootStrap {
         listDrug.add(new LinkedHashMap(id: '0de13637-deb3-42d1-8870-b5f4102dc641', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[RPT 150mg cp] Rifapentina 150mg', uuid_openmrs: '', fnm_code: '08L06XZ', default_treatment: 1, default_period_treatment: 'Semana', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: '6cba5522-48f6-4f3e-9ece-e4f2495f79ab', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[LFX 250mg cp] Levofloxacina 250mg ', uuid_openmrs: '', fnm_code: '08H07', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         listDrug.add(new LinkedHashMap(id: 'ebaec112-1b91-4aaa-a865-d5b770b5bebd', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 1, pack_size: 1, name: '[LFX 100mg cp] Levofloxacina 100 mg Disp', uuid_openmrs: '', fnm_code: '08H07Y', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
-      // ARV MEDICATION
+        // ARV MEDICATION
         listDrug.add(new LinkedHashMap(id: 'b40c9f35-16c1-48da-af00-c45096fbf88c', form_id: '74C8F060-1EA4-45E9-94DB-2DE6775E6481', default_times: 2, pack_size: 120, name: '[LPV/RTV] Lopinavir/Ritornavir 40mg/10mg Pellets/Granulos', uuid_openmrs: '08S38Y-0c-0932-4b37-ab53-4aae60820544', fnm_code: '08S38Y', default_treatment: 2, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'ef000f5c-2e4c-4843-b2fb-0a265dc60a6a', form_id: 'AB6442FF-6DA0-46F2-81E1-F28B1A44A31C', default_times: 2, pack_size: 60, name: '[RAL] Raltegravir 400mg', uuid_openmrs: '08S30ZZ-b2-edb5-4815-a4bf-8f0618f029be', fnm_code: '08S30ZZ', default_treatment: 1, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
         listDrug.add(new LinkedHashMap(id: 'd95d079e-a83c-4ca5-86c6-23b99e6fa6a7', form_id: '742F4BC0-E0CC-4602-829B-BEC4EAFB0D2C', default_times: 1, pack_size: 80, name: '[LPV/RTV] Lopinavir/Ritonavir 400mg/100mg 5ml 80ml', uuid_openmrs: '08S39-054-ad23-4d26-8ca1-88308070d08e', fnm_code: '08S39', default_treatment: 0, default_period_treatment: 'Dia', active: true, clinical_service_id: '80A7852B-57DF-4E40-90EC-ABDE8403E01F'))
@@ -2450,7 +2452,7 @@ class BootStrap {
         return clinicList
     }
 
-        List<Object> listMenus() {
+    List<Object> listMenus() {
         List<Object> menus = new ArrayList<>()
         menus.add(new Menu(code: '01', description: 'Pacientes'))
         menus.add(new Menu(code: '02', description: 'Grupos'))

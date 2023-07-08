@@ -17,20 +17,15 @@ class ClinicSector extends BaseEntity {
     boolean active
     String syncStatus
     ClinicSectorType clinicSectorType
-
-    @JsonIgnore
     Clinic clinic
-//    static belongsTo = [ClinicalService]
-    static belongsTo = [ClinicalService, SecUser]
 
-//    static  hasMany = [users: SecUser, clinicalService: ClinicalService]
+    static belongsTo = [ClinicalService]
     static  hasMany = [clinicalService: ClinicalService]
     static mapping = {
         id generator: "assigned"
         id column: 'id', index: 'Pk_ClinicSector_Idx'
         syncStatus defaultValue: 'S'
-        clinicalService joinTable: [name:"clinical_service_clinic_sectors", key:"clinic_sector_id", column:"clinical_service_id"]
-//        users  joinTable: [name: "clinic_sector_users", key: "clinic_sector_id", column: "sec_user_id"]
+//        clinicalService joinTable: [name:"clinical_service_clinic_sectors", key:"clinic_sector_id", column:"clinical_service_id"]
     }
 
     def beforeInsert() {

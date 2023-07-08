@@ -16,10 +16,7 @@ class TherapeuticRegimen extends BaseEntity {
     String code
     String description
     String openmrsUuid
-    @JsonBackReference
-    ClinicalService clinicalService
-    static belongsTo = [ClinicalService]
-    @JsonIgnore
+    static belongsTo = [clinicalService: ClinicalService]
     static hasMany = [drugs: Drug]
 
     static mapping = {
@@ -37,7 +34,6 @@ class TherapeuticRegimen extends BaseEntity {
         code nullable: false, unique: true
         regimenScheme nullable: false
         description nullable: true
-        clinicalService nullable: true
         openmrsUuid nullable: true
     }
 

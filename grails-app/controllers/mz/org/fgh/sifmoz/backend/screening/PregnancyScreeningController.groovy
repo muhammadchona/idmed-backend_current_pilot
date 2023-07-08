@@ -97,7 +97,6 @@ class PregnancyScreeningController extends RestfulController{
     }
 
     def getAllByPatientVisit(String patientVisitId, int offset, int max) {
-        System.out.println(patientVisitId)
         render JSONSerializer.setObjectListJsonResponse(PregnancyScreening.findAllByVisit(PatientVisit.findById(patientVisitId))) as JSON
     }
 }
