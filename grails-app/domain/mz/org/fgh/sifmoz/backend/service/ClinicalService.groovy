@@ -1,12 +1,11 @@
 package mz.org.fgh.sifmoz.backend.service
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import mz.org.fgh.sifmoz.backend.base.BaseEntity
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.protection.Menu
 import mz.org.fgh.sifmoz.backend.serviceattribute.ClinicalServiceAttribute
+import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeType
 import mz.org.fgh.sifmoz.backend.therapeuticRegimen.TherapeuticRegimen
 
 class ClinicalService extends BaseEntity {
@@ -14,25 +13,17 @@ class ClinicalService extends BaseEntity {
     String id
     String code
     String description
-    @JsonManagedReference
     IdentifierType identifierType
     boolean active
-    List<TherapeuticRegimen> therapeuticRegimens
 
-    static transients = ['therapeuticRegimens']
-
-    @JsonManagedReference
-    static hasMany = [attributes: ClinicalServiceAttribute,
-                       clinicSectors: ClinicSector]
-
-//    static fetchMode = [clinicSectors: 'eager', attributes: 'eager'] // Se um service for carregado, vira com seus clinicSectors e seus attributes
+    static belongsTo = [ClinicalServiceAttributeType]
+    static hasMany = [clinicalServiceAttributes: ClinicalServiceAttributeType, therapeuticRegimens: TherapeuticRegimen, clinicSectors: ClinicSector]
 
     static mapping = {
         id generator: "assigned"
         id column: 'id', index: 'Pk_ClinicalService_Idx'
-        clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
-        clinicSectors cascade :"all-delete-orphan"
-//        attributes cascade :"all-delete-orphan"
+//        clinicSectors joinTable: [name:"clinical_service_clinic_sectors", key:"clinical_service_id", column:"clinic_sector_id"]
+//        clinicSectors cascade :"all-delete-orphan"
     }
 
     def beforeInsert() {
@@ -44,8 +35,6 @@ class ClinicalService extends BaseEntity {
     static constraints = {
         code nullable: false, unique: true
         description nullable: false
-        attributes nullable: true
-        clinicSectors nullable: true
     }
 
     boolean isPrep() {

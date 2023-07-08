@@ -9,16 +9,12 @@ import mz.org.fgh.sifmoz.backend.serviceattributetype.ClinicalServiceAttributeTy
 
 class ClinicalServiceAttribute extends BaseEntity {
     String id
-    @JsonManagedReference
     ClinicalServiceAttributeType clinicalServiceAttributeType
 
-    @JsonIgnore
-    ClinicalService clinicalService
-    static belongsTo = [ClinicalService]
+    static belongsTo = [clinicalService: ClinicalService]
 
     static mapping = {
-       id generator: "assigned"
-id column: 'id', index: 'Pk_ClinicalServiceAttribute_Idx'
+        id generator: "assigned"
     }
 
     static constraints = {

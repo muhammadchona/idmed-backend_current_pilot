@@ -36,7 +36,6 @@ class RestProvincialServerMobileClient {
             request.setEntity(object)
             CloseableHttpResponse response = client.execute(request)
 
-            System.out.println(response.getStatusLine().getStatusCode());
             result = response.getStatusLine().getStatusCode()
         } catch (Exception e) {
             result = "-> Red <-\t" + "Wrong domain - Exception: " + e.getMessage();
@@ -61,7 +60,6 @@ class RestProvincialServerMobileClient {
             CloseableHttpResponse response = client.execute(request)
 
 
-            System.out.println(response.getStatusLine().getStatusCode());
             result = response.getStatusLine().getStatusCode()
         } catch (Exception e) {
             result = "-> Red <-\t" + "Wrong domain - Exception: " + e.getMessage();
@@ -87,10 +85,8 @@ class RestProvincialServerMobileClient {
 
             if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) { // success
                 String result1 = EntityUtils.toString(response.getEntity());
-                System.out.println(result1);
                 return new JSONArray(result1)
             }
-            System.out.println(response.getStatusLine().getStatusCode());
             result = response.getStatusLine().getStatusCode()
 
         } catch (Exception e) {
