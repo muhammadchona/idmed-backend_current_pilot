@@ -26,9 +26,6 @@ class PackagedDrug extends BaseEntity {
 
     static mapping = {
         id generator: "assigned"
-        amtPerTime defaultValue: 1
-        timesPerDay defaultValue: 1
-        form defaultValue: "'dia'"
         id column: 'id', index: 'Pk_PackagedDrug_Idx'
     }
 
