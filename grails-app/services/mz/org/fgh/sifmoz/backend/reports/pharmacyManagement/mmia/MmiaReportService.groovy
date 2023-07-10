@@ -10,6 +10,9 @@ import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
 import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
@@ -26,6 +29,8 @@ abstract class MmiaReportService implements IMmiaReportService {
     IPackService packService
     @Autowired
     IReportProcessMonitorService reportProcessMonitorService
+    @Autowired
+    IPatientVisitDetailsService iPatientVisitDetailsService
 
     @Override
     void processReport(ReportSearchParams searchParams, MmiaReport curMmiaReport, ReportProcessMonitor processMonitor) {
@@ -39,56 +44,56 @@ abstract class MmiaReportService implements IMmiaReportService {
             percentageUnit = 65/packList.size()
             int adult = 0
             for (Pack pack : packList) {
-
-                for (PatientServiceIdentifier identifier : pack.getPatientVisitDetails().getAt(0).getPatientVisit().getPatient().getIdentifiers()) {
+                PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getByPack(pack)
+                for (PatientServiceIdentifier identifier : patientVisitDetails.getPatientVisit().getPatient().getIdentifiers()) {
                     if (identifier.getService().isPrep()) {
                         curMmiaReport.addTotalPacientesPREP()
                     }
                 }
 
-                if(patientHashSet.add(pack.getPatientVisitDetails().getAt(0).getPatientVisit().getPatient())) {
-                    Date birthDate = pack.getPatientVisitDetails().getAt(0).getPatientVisit().getPatient().getDateOfBirth()
+                if(patientHashSet.add(patientVisitDetails.getPatientVisit().getPatient())) {
+                    Date birthDate =patientVisitDetails.getPatientVisit().getPatient().getDateOfBirth()
                     if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 18) {
                         curMmiaReport.addTotalPacientesAdulto()
                     } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 0 &&ConvertDateUtils.getAgeByLocalDates(birthDate,searchParams.getEndDate()) <= 4) {
-                      //  println(adult++)
+                        //  println(adult++)
                         curMmiaReport.addTotalPacientes04()
                     } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 5 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) <= 9) {
                         curMmiaReport.addTotalPacientes59()
                     } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  >= 10 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  <= 14) {
                         curMmiaReport.addTotalPacientes1014()
                     }
-                    if (pack.getPatientVisitDetails().getAt(0).getPrescription().patientType == "NOVO") {
+                    if (patientVisitDetails.getPrescription().patientType == "NOVO") {
                         curMmiaReport.addTotalPacientesInicio()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getPrescription().patientType == "MANUTENCAO") {
+                    } else if (patientVisitDetails.getPrescription().patientType == "MANUTENCAO") {
                         curMmiaReport.addTotalPacientesManter()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getEpisode().getStartStopReason().isAlteracao()) {
+                    } else if (patientVisitDetails.getEpisode().getStartStopReason().isAlteracao()) {
                         curMmiaReport.addTotalPacientesAlterar()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getEpisode().getStartStopReason().isTransito()) {
+                    } else if (patientVisitDetails.getEpisode().getStartStopReason().isTransito()) {
                         curMmiaReport.addTotalPacientesTransito()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getPrescription().patientType == "TRANSFERENCIA") {
+                    } else if (patientVisitDetails.getPrescription().patientType == "TRANSFERENCIA") {
                         curMmiaReport.addTotalPacientesTransferido()
                     }
 
-                    PrescriptionDetail detail = pack.getPatientVisitDetails().getAt(0).getPrescription().getPrescriptionDetails().getAt(0)
+                    PrescriptionDetail detail = patientVisitDetails.getPrescription().getPrescriptionDetails().getAt(0)
                     if (existsOnMmiaRegimensArray(detail, regimenSubReportList)) {
-                        doDetailsCount(detail, regimenSubReportList, pack.getPatientVisitDetails().getAt(0).getEpisode().getStartStopReason().isReferido())
+                        doDetailsCount(detail, regimenSubReportList, patientVisitDetails.getEpisode().getStartStopReason().isReferido())
                     } else {
-                        initNewMmiaRegimenRecord(detail, regimenSubReportList, searchParams, pack.getPatientVisitDetails().getAt(0).getEpisode().getStartStopReason().isTransferido())
+                        initNewMmiaRegimenRecord(detail, regimenSubReportList, searchParams, patientVisitDetails.getEpisode().getStartStopReason().isTransferido())
                     }
 
 
-                    if (pack.getPatientVisitDetails().getAt(0).getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDM()) {
+                    if (patientVisitDetails.getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDM()) {
                         curMmiaReport.addTotalDM()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDT()) {
+                    } else if (patientVisitDetails.getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDT()) {
                         curMmiaReport.addTotalDtM0()
-                    } else if (pack.getPatientVisitDetails().getAt(0).getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDS()) {
+                    } else if (patientVisitDetails.getPrescription().getPrescriptionDetails().getAt(0).getDispenseType().isDS()) {
                         curMmiaReport.addTotalDsM0()
                     }
 
                     processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
                     reportProcessMonitorService.save(processMonitor)
-              //  println(counter++)
+                    //  println(counter++)
                 }
             }
             curMmiaReport.setDsM1(countPacks(DispenseType.DS, determineDate(searchParams.getStartDate(), -1), determineDate(searchParams.getEndDate(), -1), searchParams))
