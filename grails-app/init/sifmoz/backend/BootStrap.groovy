@@ -460,7 +460,7 @@ class BootStrap {
     void initTherapeuticRegimen() {
         for (therapeuticRegimenObject in listTherapeuticRegimen()) {
 
-            TherapeuticRegimen therapeuticRegimen1 = TherapeuticRegimen.findById(therapeuticRegimenObject.id)
+            TherapeuticRegimen therapeuticRegimen1 = TherapeuticRegimen.findById(therapeuticRegimenObject.id.toString().trim())
 
             if (therapeuticRegimen1) {
                 therapeuticRegimen1.code = therapeuticRegimenObject.code
@@ -471,7 +471,7 @@ class BootStrap {
                 therapeuticRegimen1.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
                 therapeuticRegimen1.save(flush: true, failOnError: true)
             } else {
-                if (!TherapeuticRegimen.findByCode(therapeuticRegimenObject.code.toString().trim())) {
+                if (!TherapeuticRegimen.findByCodeAndId(therapeuticRegimenObject.code.toString().trim(),therapeuticRegimenObject.id.toString().trim())) {
                     TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
                     therapeuticRegimen.id = therapeuticRegimenObject.id
                     therapeuticRegimen.code = therapeuticRegimenObject.code
@@ -1373,7 +1373,7 @@ class BootStrap {
         therapeuticRegimenList.add(new LinkedHashMap(id: '3754b576-a8d1-4c4e-86de-8f9b3d475d21', regimen_scheme: 'TPT - MR- LFX250', code: 'TPT - MR- LFX250', openmrs_uuid: 'e1d4b30a-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TPT - MR- LFX250', clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
         therapeuticRegimenList.add(new LinkedHashMap(id: '3116136c-675c-4936-af9b-c8976a624c14', regimen_scheme: 'TTPT - INH300', code: 'TPT - INH300', openmrs_uuid: 'e1d43e52-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TPT - INH300', clinical_service_id: '6D12193B-7D5D-4665-8FC6-A03855986FBD'))
 
-        therapeuticRegimenList.add(new LinkedHashMap(id: '', regimen_scheme: 'TDF+3TC PrEP', code: 'TDF+3TC PrEP', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+3TC PrEP', clinical_service_id: '165C876C-F850-436F-B0BB-80D519056BC3'))
+        therapeuticRegimenList.add(new LinkedHashMap(id: '017b6045-2c7c-437c-96c1-8e0867c6b579', regimen_scheme: 'TDF+3TC PrEP', code: 'TDF+3TC PrEP', openmrs_uuid: 'e1e59e0e-1d5f-11e0-b929-000c29ad1d07', active: true, description: 'TDF+3TC PrEP', clinical_service_id: '165C876C-F850-436F-B0BB-80D519056BC3'))
 
         return therapeuticRegimenList
 
