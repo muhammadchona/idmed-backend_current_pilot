@@ -55,6 +55,7 @@ class SecUser implements Serializable, IRoleMenu {
         username nullable: false, blank: false, unique: true
         email nullable: true, blank: true
         openmrsPassword nullable: true, blank: true
+        contact nullable: true, blank: true
         roles bindable: true
         clinicSectors bindable: true
     }

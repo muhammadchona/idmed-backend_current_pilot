@@ -67,7 +67,6 @@ class HealthInformationSystemController extends RestfulController{
     @Transactional
     def update() {
         HealthInformationSystem healthInformationSystem
-        InteroperabilityAttribute interoperabilityAttribute
         def objectJSON = request.JSON
 
         if(objectJSON.id){
@@ -91,8 +90,16 @@ class HealthInformationSystemController extends RestfulController{
             respond healthInformationSystem.errors
             return
         }
+        def result = JSONSerializer.setJsonObjectResponse(HealthInformationSystem.get(healthInformationSystem.id))
+        def interoperabilityAttributesJSON = JSONSerializer.setLightObjectListJsonResponse(healthInformationSystem.interoperabilityAttributes as List)
 
-        render JSONSerializer.setJsonObjectResponse(HealthInformationSystem.get(healthInformationSystem.id)) as JSON
+        if(interoperabilityAttributesJSON.length() > 0){
+            result.put('interoperabilityAttributes', interoperabilityAttributesJSON)
+        }else{
+            result.remove('interoperabilityAttributesJSON')
+        }
+        
+        render result as JSON
     }
 
     @Transactional
