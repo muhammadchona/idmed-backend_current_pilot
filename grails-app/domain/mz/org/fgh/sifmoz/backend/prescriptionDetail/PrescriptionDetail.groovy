@@ -20,7 +20,7 @@ class PrescriptionDetail extends BaseEntity {
 
     static mapping = {
        id generator: "assigned"
-id column: 'id', index: 'Pk_PrescriptionDetail_Idx'
+       id column: 'id', index: 'Pk_PrescriptionDetail_Idx'
     }
 
     static constraints = {
