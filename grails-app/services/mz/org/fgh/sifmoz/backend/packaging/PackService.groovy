@@ -41,9 +41,9 @@ abstract class PackService implements IPackService{
     int countPacksByDispenseTypeAndServiceOnPeriod(DispenseType dispenseType, ClinicalService service, Clinic clinic, Date startDate, Date endDate) {
         int value = 0
         def count =Pack.executeQuery("select count(*) " +
-                "from Pack as pk " +
+                "from  PatientVisitDetails as pvd  " +
+                "inner join  pvd.pack as pk " +
                 "inner join pk.clinic as cl " +
-                "inner join pk.patientVisitDetails as pvd " +
                 "inner join pvd.prescription as pr " +
                 "inner join pvd.episode as ep " +
                 "inner join pr.prescriptionDetails as prd " +
@@ -62,16 +62,16 @@ abstract class PackService implements IPackService{
     @Override
     List<Pack> getPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate) {
         List<Pack> packList = Pack.executeQuery("select pk " +
-                "from Pack as pk " +
-                "inner join pk.patientVisitDetails as pvd " +
+                "from PatientVisitDetails as pvd " +
+                "inner join  pvd.pack as pk  " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as rsn " +
-              //  "inner join pvd.patientVisit as pv " +
-              //  "inner join pvd.prescription as pr " +
-              //  "inner join pr.prescriptionDetails as prd " +
-            //    "inner join pv.patient as pt " +
-             //   "inner join pt.identifiers as pid " +
-            //    "inner join pid.service as svc " +
+                //  "inner join pvd.patientVisit as pv " +
+                //  "inner join pvd.prescription as pr " +
+                //  "inner join pr.prescriptionDetails as prd " +
+                //    "inner join pv.patient as pt " +
+                //   "inner join pt.identifiers as pid " +
+                //    "inner join pid.service as svc " +
                 "where pk.pickupDate >= :startDate " +
                 "       and pk.pickupDate <= :endDate " +
                 "       and pk.clinic= :clinic " +
@@ -84,8 +84,8 @@ abstract class PackService implements IPackService{
     int countPacksByServiceOnPeriod(ClinicalService service, Clinic clinic, Date startDate, Date endDate) {
         int value = 0
         def count = Pack.executeQuery("select count(*) " +
-                "from Pack as pk " +
-                "inner join pk.patientVisitDetails as pvd " +
+                "from PatientVisitDetails as pvd" +
+                "inner join  pvd.pack as pk  " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as rsn " +
                 "inner join pvd.patientVisit as pv " +
@@ -107,8 +107,8 @@ abstract class PackService implements IPackService{
     @Override
     List<Pack> getPacksOfReferredPatientsByClinicalServiceAndClinicOnPeriod(ClinicalService clinicalService,Clinic clinic, Date startDate, Date endDate) {
 
-        return Pack.executeQuery("select pk from Pack pk " +
-                "inner join pk.patientVisitDetails as pvd " +
+        return Pack.executeQuery("select pk from PatientVisitDetails as pvd " +
+                "inner join Pack pk" +
                 "inner join pvd.patientVisit as pv " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as stp " +
@@ -202,8 +202,8 @@ abstract class PackService implements IPackService{
                 "max(pack.next_pick_up_date) as dateMissedPickUp," +
                 "pat.cellphone as contact," +
                 "EXTRACT(DAY FROM (:endDate - (pack.next_pick_up_date + INTERVAL '0 days'))) as dayssinceexpected " +
-                "FROM pack pack " +
-                "INNER JOIN patient_visit_details pvd on pvd.pack_id = pack.id " +
+                "FROM patient_visit_details pvd  " +
+                "INNER JOIN  pack pack on pvd.pack_id = pack.id " +
                 "INNER JOIN patient_visit pv on pv.id = pvd.patient_visit_id " +
                 "INNER JOIN patient pat on pat.id = pv.patient_id " +
                 "INNER JOIN patient_service_identifier psi ON psi.patient_id = pat.id " +
@@ -230,7 +230,7 @@ abstract class PackService implements IPackService{
         Session session = sessionFactory.getCurrentSession()
         def query = session.createSQLQuery(queryString)
         query.setParameter("endDate", endDate)
-    //    query.setParameter("days", 3)
+        //    query.setParameter("days", 3)
         query.setParameter("csCode", clinicalService.code)
         query.setParameter("idCode", clinicalService.identifierType.code)
         List<Object[]> list = query.list()

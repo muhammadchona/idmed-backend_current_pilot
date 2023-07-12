@@ -28,10 +28,8 @@ class Pack extends BaseEntity {
     String providerUuid
 
     static hasMany = [packagedDrugs: PackagedDrug]
-//    static hasMany = [packagedDrugs: PackagedDrug, patientVisitDetails: PatientVisitDetails]
     static mapping = {
         id generator: "assigned"
-        syncStatus defaultValue: 'N'
         id column: 'id', index: 'Pk_pack_Idx'
     }
 
