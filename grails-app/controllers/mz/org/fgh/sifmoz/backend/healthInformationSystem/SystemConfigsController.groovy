@@ -121,6 +121,7 @@ class SystemConfigsController {
                 clinicSector.description = clinicSectorObject.description
                 clinicSector.active = clinicSectorObject.active
                 clinicSector.uuid = clinicSectorObject.uuid
+                clinicSector.syncStatus  = 'S'
                 clinicSector.clinicSectorType = ClinicSectorType.findById(clinicSectorObject.clinicSectorType_id)
                 clinicSector.clinic = Clinic.findByMainClinic(true)
                 clinicSector.save(flush: true, failOnError: true)

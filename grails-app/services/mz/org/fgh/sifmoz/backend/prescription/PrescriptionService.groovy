@@ -73,18 +73,18 @@ abstract class PrescriptionService implements IPrescriptionService{
 
         return map
     }
-
-    Map<String ,Prescription> getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(Clinic clinic, ClinicalService clinicalService, Date endDate) {
-        List<Prescription> prescriptions = Prescription.executeQuery("select pk from Prescription pk " +
-                "inner join pk.patientVisitDetails as pvd " +
+   //select pk from Prescription pk
+    Map<String ,PatientVisitDetails> getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(Clinic clinic, ClinicalService clinicalService, Date endDate) {
+        List<PatientVisitDetails> patientVisitDetailsList = Prescription.executeQuery("select pvd from PatientVisitDetails pvd " +
+                "inner join pvd.prescription as pk " +
                 "inner join pvd.patientVisit as pv " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.patientServiceIdentifier as psi " +
                 "inner join psi.patient as p " +
                 "inner join psi.service as s " +
                 "inner join ep.clinic c " +
-                "where c.id= ?0 and s.id = ?1 and pk.prescriptionDate < ?2 and pk.prescriptionDate = (select max(pk2.prescriptionDate) from Prescription pk2 " +
-                "inner join pk2.patientVisitDetails as pvd2 " +
+                "where c.id= ?0 and s.id = ?1 and pk.prescriptionDate < ?2 and pk.prescriptionDate = (select max(pk2.prescriptionDate) from PatientVisitDetails pvd2 " +
+                "inner join pvd2.prescription as pk2 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep2 " +
                 "inner join ep2.patientServiceIdentifier as psi2 " +
@@ -93,9 +93,9 @@ abstract class PrescriptionService implements IPrescriptionService{
                 "inner join psi2.service as s2 " +
                 "where p.id=p2.id and c2.id= ?0 and s2.id = ?1 and pk2.prescriptionDate < ?2) order by pk.prescriptionDate desc ",[clinic.id, clinicalService.id,endDate])
 
-        Map<String, Prescription> map = new HashMap<String, Prescription>()
-        for  (Prescription prescription: prescriptions) {
-            map.put(prescription.getPatientVisitDetails().getAt(0).patientVisit.patient.id, prescription)
+        Map<String, PatientVisitDetails> map = new HashMap<String, PatientVisitDetails>()
+        for  (PatientVisitDetails patientVisitDetail: patientVisitDetailsList) {
+            map.put(patientVisitDetail.patientVisit.patient.id, patientVisitDetail)
         }
 
         return map

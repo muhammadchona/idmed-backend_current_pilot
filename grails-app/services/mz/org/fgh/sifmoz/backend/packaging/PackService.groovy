@@ -131,15 +131,15 @@ abstract class PackService implements IPackService{
         def list = Pack.executeQuery("select ep as episode," +
                 "pk.nextPickUpDate as dateMissedPickUp, " +
                 "p.cellphone as contact, " +
-                "(select pk4.pickupDate from Pack pk4 " +
-                "inner join pk4.patientVisitDetails as pvd2 " +
+                "(select pk4.pickupDate from PatientVisitDetails pvd2 " +
+                "inner join pvd2.pack as pk4 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 " +
                 "inner join ep3.patientServiceIdentifier as psi3 " +
                 "inner join psi3.service as s3 " +
                 "where psi.patient = psi3.patient and s3.code = :serviceCode and pk4.pickupDate > pk.nextPickUpDate and pk4.pickupDate <= :endDate) as returnedPickUp " +
-                "from Pack pk " +
-                "inner join pk.patientVisitDetails as pvd " +
+                "from PatientVisitDetails pvd " +
+                "inner join pk.pack as pvd " +
                 "inner join pvd.patientVisit as pv " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as stp " +
@@ -153,8 +153,8 @@ abstract class PackService implements IPackService{
                 "inner join ep2.startStopReason as stp2 " +
                 "inner join psi2.service as s2 " +
                 "where stp.code = 'REFERIDO_PARA' and s2.code = :serviceCode and ep2.episodeDate >= :startDate and ep2.episodeDate <= :endDate) " +
-                "and pk.nextPickUpDate in (select max(pk2.nextPickUpDate) from Pack pk2 " +
-                "inner join pk2.patientVisitDetails as pvd2 " +
+                "and pk.nextPickUpDate in (select max(pk2.nextPickUpDate) from PatientVisitDetails pvd2 " +
+                "inner join pvd2.pack as pk2 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 " +
                 "inner join ep3.patientServiceIdentifier as psi3 " +

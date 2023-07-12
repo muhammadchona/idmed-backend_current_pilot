@@ -141,11 +141,11 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
              //   pack.setPatientVisitDetails(patientVisitDetailsSet)
              //   existingPatientVisit.patientVisitDetails.add(patientVisitDetails)
             }
-            pack.setPatientVisitDetails(patientVisitDetailsSet)
+         //   pack.setPatientVisitDetails(patientVisitDetailsSet)
             patientVisitDetailsSet.add(patientVisitDetails)
             pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
             pack.setClinic(clinic)
-
+            pack.syncStatus = 'N'
             pack.validate()
 
             if (!pack.hasErrors()) {
