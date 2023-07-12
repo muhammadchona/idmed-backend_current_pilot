@@ -60,7 +60,7 @@ class RestPackService {
 
                         deleteErrorLog(patientVisitDetails)
                     } else {
-                        saveErrorLog(pack, patient, responsePost, convertToJson)
+                        saveErrorLog(pack, patientVisitDetails, patient, responsePost, convertToJson)
                     }
                 } catch (Exception e) {
                     e.printStackTrace()
@@ -71,11 +71,10 @@ class RestPackService {
         }
     }
 
-    def saveErrorLog(Pack pack, Patient patient, String errorResponse, String jSONRequest) {
+    def saveErrorLog(Pack pack,  PatientVisitDetails patientVisitDetails, Patient patient, String errorResponse, String jSONRequest) {
         try {
             OpenmrsErrorLog errorLog = new OpenmrsErrorLog()
             errorLog.beforeInsert()
-            PatientVisitDetails patientVisitDetails = PatientVisitDetails.findByPack(pack)
             Episode episode = Episode.get(patientVisitDetails.episode.id)
             PatientServiceIdentifier identifier = PatientServiceIdentifier.get(episode.patientServiceIdentifier.id)
             ClinicalService service = ClinicalService.get(identifier.service.id)
@@ -94,7 +93,7 @@ class RestPackService {
     }
 
     def deleteErrorLog(PatientVisitDetails patientVisitDetails) {
-        OpenmrsErrorLog patientVisitDetailsinLog = OpenmrsErrorLog.findByPatientVisitDetails(patientVisitDetails.id)
+        OpenmrsErrorLog patientVisitDetailsinLog = OpenmrsErrorLog.findWhere(patientVisitDetails:patientVisitDetails.id)
         if (patientVisitDetailsinLog) {
             patientVisitDetailsinLog.delete()
         }
