@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.episode.Episode
+import mz.org.fgh.sifmoz.backend.openmrsErrorLog.OpenmrsErrorLog
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrugStock
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
@@ -113,6 +114,7 @@ class PatientVisitDetailsController extends RestfulController {
             patientVisitDetailsService.delete(id)
             restoreStock(patientVisitDetail.pack)
             packService.delete(patientVisitDetail.pack.id)
+            updateErrorLog(id)
             if(PatientVisitDetails.countByPrescription(patientVisitDetail.prescription) == 1)
                 prescriptionService.delete(patientVisitDetail.prescription.id)
             render status: NO_CONTENT
@@ -183,6 +185,14 @@ class PatientVisitDetailsController extends RestfulController {
                     stockService.save(stock)
                 }
             }
+        }
+    }
+
+    def updateErrorLog(String patientVisitDetails){
+        OpenmrsErrorLog patientVisitDetailsInLog = OpenmrsErrorLog.findByPatientVisitDetails(patientVisitDetails)
+        if(patientVisitDetailsInLog){
+            patientVisitDetailsInLog.returnPickupDate = new Date()
+            patientVisitDetailsInLog.save()
         }
     }
 }

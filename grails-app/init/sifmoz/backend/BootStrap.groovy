@@ -461,17 +461,10 @@ class BootStrap {
         for (therapeuticRegimenObject in listTherapeuticRegimen()) {
 
             TherapeuticRegimen therapeuticRegimen1 = TherapeuticRegimen.findById(therapeuticRegimenObject.id.toString().trim())
+            TherapeuticRegimen therapeuticRegimen2 = TherapeuticRegimen.findByCode(therapeuticRegimenObject.code)
 
-            if (therapeuticRegimen1) {
-                therapeuticRegimen1.code = therapeuticRegimenObject.code
-                therapeuticRegimen1.regimenScheme = therapeuticRegimenObject.regimen_scheme
-                therapeuticRegimen1.active = therapeuticRegimenObject.active
-                therapeuticRegimen1.description = therapeuticRegimenObject.description
-                therapeuticRegimen1.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
-                therapeuticRegimen1.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
-                therapeuticRegimen1.save(flush: true, failOnError: true)
-            } else {
-                if (!TherapeuticRegimen.findByCodeAndId(therapeuticRegimenObject.code.toString().trim(),therapeuticRegimenObject.id.toString().trim())) {
+            if (!therapeuticRegimen1)
+                if(!therapeuticRegimen2){
                     TherapeuticRegimen therapeuticRegimen = new TherapeuticRegimen()
                     therapeuticRegimen.id = therapeuticRegimenObject.id
                     therapeuticRegimen.code = therapeuticRegimenObject.code
@@ -481,11 +474,9 @@ class BootStrap {
                     therapeuticRegimen.openmrsUuid = therapeuticRegimenObject.openmrs_uuid
                     therapeuticRegimen.clinicalService = ClinicalService.findById(therapeuticRegimenObject.clinical_service_id)
                     therapeuticRegimen.save(flush: true, failOnError: true)
-
                 }
             }
         }
-    }
 
     void initDrug() {
         for (drugObject in listDrug()) {
