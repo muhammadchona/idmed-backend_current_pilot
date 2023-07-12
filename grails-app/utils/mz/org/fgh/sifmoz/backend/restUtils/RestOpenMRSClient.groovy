@@ -161,6 +161,9 @@ class RestOpenMRSClient {
         String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pdv.prescription.id)).therapeuticRegimen.openmrsUuid
 
         for (PackagedDrug pd : pack.packagedDrugs) {
+            //posologia
+            customizedDosage = "Tomar " + String.valueOf(pd.timesPerDay) +" "+pd.drug.form.description+" "+String.valueOf(pd.amtPerTime).replace(".0","")+" vez(es) por "+pd.drug.defaultPeriodTreatment
+
             String formulationString = "{\"" +
                     "person\":\"" + patient.hisUuid + "\"," +
                     "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
@@ -173,7 +176,7 @@ class RestOpenMRSClient {
                     "person\":\"" + patient.hisUuid + "\"," +
                     "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
                     "\"concept\":\"e1de2ca0-1d5f-11e0-b929-000c29ad1d07\"," +
-                    "\"value\":\"" + pd.quantitySupplied.intValue() + "\"," +
+                    "\"value\":\"" + (pd.quantitySupplied.intValue() * pd.drug.packSize) + "\"," +
                     "\"comment\":\"IDMED\"" +
                     "}"
 
@@ -181,7 +184,15 @@ class RestOpenMRSClient {
                     "person\":\"" + patient.hisUuid + "\"," +
                     "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
                     "\"concept\":\"e1de28ae-1d5f-11e0-b929-000c29ad1d07\"," +
-                    "\"value\":\"" + pd.getDrug().getDefaultTimes() + "\"," +
+                    "\"value\":\"outraPosologia\"," +
+                    "\"comment\":\"IDMED\"" +
+                    "}"
+
+            String posologyString = "{\"" +
+                    "person\":\"" + patient.hisUuid + "\"," +
+                    "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
+                    "\"concept\":\"a46a603e-788d-4edc-9465-5f2fa69f060e\"," +
+                    "\"value\":\""+customizedDosage+"\"," +
                     "\"comment\":\"IDMED\"" +
                     "}"
 
@@ -190,19 +201,10 @@ class RestOpenMRSClient {
                     "\"obsDatetime\":\"" + Utilities.formatToYYYYMMDD(pack.pickupDate) + "\"," +
                     "\"concept\":\"5ad593a4-bea2-4eef-ac88-11654e79d9da\"," +
                     "\"comment\":\"IDMED\"," +
-                    "\"groupMembers\": [" + formulationString + "," + quantityString + "," + dosageString + "]" +
+                    "\"groupMembers\": [" + formulationString + "," + quantityString + "," + dosageString + "," + posologyString + "]" +
                     "}"
 
             obsGroups.add(obsGroup)
-            //posologia
-            customizedDosage = "Tomar "
-            customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTreatment()))
-            customizedDosage.concat(" ")
-            customizedDosage.concat(pd.getDrug().getForm().getDescription())
-            customizedDosage.concat(" ")
-            customizedDosage.concat(String.valueOf(pd.getDrug().getDefaultTimes()))
-            customizedDosage.concat(" ")
-            customizedDosage.concat(pd.getDrug().getDefaultPeriodTreatment())
 
             //Dispensed amount
             packSize = packSize + pd.getQuantitySupplied().intValue()
