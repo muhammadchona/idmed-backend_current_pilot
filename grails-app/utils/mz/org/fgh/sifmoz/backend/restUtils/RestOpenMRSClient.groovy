@@ -72,6 +72,7 @@ class RestOpenMRSClient {
     static def requestOpenMRSClient(String base64code, String object, String urlBase, String urlPath, String method) {
         String restUrl = urlBase.concat(urlPath)
         String result = ""
+        String messageResponse = ""
         int code = 200
         try {
             String userCredentials = base64code
@@ -85,26 +86,21 @@ class RestOpenMRSClient {
             connection.setRequestProperty("Content-Type", "application/json; utf-8")
             connection.setDoInput(true)
             connection.setDoOutput(true);
-//            connection.setConnectTimeout(3000)
-            // Send post request
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream())
             wr.writeBytes(object)
             wr.flush()
             wr.close()
-
-//            connection.connect()
+            messageResponse = connection.getResponseMessage()
             code = connection.getResponseCode()
             connection.disconnect()
             if (code == 201) {
-                result = "-> Green <-\t" + "Code: " + code;
+                result = "-> Green <-\t" + "Code: " + code +"\n"+ messageResponse
             } else {
-                result = "-> Yellow <-\t" + "Code: " + code;
-                logger.error("Erro no objecto JSON ": object)
+                result = "-> Yellow <-\t" + "Code: " + code +"\n"+ messageResponse
             }
-        } catch (Exception e) {object
+        } catch (Exception e) {
             result = "-> Red <-\t" + "Wrong domain - Exception: " + e.getMessage();
         }
-        println(result)
         return result
     }
 
