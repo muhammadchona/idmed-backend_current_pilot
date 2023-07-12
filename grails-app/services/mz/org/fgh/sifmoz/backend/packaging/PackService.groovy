@@ -132,14 +132,14 @@ abstract class PackService implements IPackService{
                 "pk.nextPickUpDate as dateMissedPickUp, " +
                 "p.cellphone as contact, " +
                 "(select pk4.pickupDate from PatientVisitDetails pvd2 " +
-                "inner join pvd2.pack pk4 " +
+                "inner join pvd2.pack as pk4 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 " +
                 "inner join ep3.patientServiceIdentifier as psi3 " +
                 "inner join psi3.service as s3 " +
                 "where psi.patient = psi3.patient and s3.code = :serviceCode and pk4.pickupDate > pk.nextPickUpDate and pk4.pickupDate <= :endDate) as returnedPickUp " +
-                "from PatientVisitDetails as pvd  " +
-                "inner join  pvd.pack pk" +
+                "from PatientVisitDetails pvd " +
+                "inner join pk.pack as pvd " +
                 "inner join pvd.patientVisit as pv " +
                 "inner join pvd.episode as ep " +
                 "inner join ep.startStopReason as stp " +
@@ -154,7 +154,7 @@ abstract class PackService implements IPackService{
                 "inner join psi2.service as s2 " +
                 "where stp.code = 'REFERIDO_PARA' and s2.code = :serviceCode and ep2.episodeDate >= :startDate and ep2.episodeDate <= :endDate) " +
                 "and pk.nextPickUpDate in (select max(pk2.nextPickUpDate) from PatientVisitDetails pvd2 " +
-                "inner join pvd2.pack pk2 " +
+                "inner join pvd2.pack as pk2 " +
                 "inner join pvd2.patientVisit as pv2 " +
                 "inner join pvd2.episode as ep3 " +
                 "inner join ep3.patientServiceIdentifier as psi3 " +
@@ -162,7 +162,7 @@ abstract class PackService implements IPackService{
                 "where psi.patient = psi3.patient and s3.code = :serviceCode and pk2.nextPickUpDate  >= :startDate and pk2.nextPickUpDate <= :endDate)",
                 [serviceCode:clinicalService.code,clinicId:clinic.id,startDate:startDate,endDate:endDate,days: 3])
 
-        return list
+       return list
     }
 
     @Override

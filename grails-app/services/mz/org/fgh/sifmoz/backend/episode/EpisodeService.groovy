@@ -78,8 +78,8 @@ abstract class EpisodeService implements IEpisodeService{
         Episode episode = episodes.get(0)
         PatientVisitDetails patientVisitDetails = iPatientVisitDetailsService.getLastVisitByEpisodeId(episode.id)
         patientVisitDetails.setPrescription(Prescription.findById(patientVisitDetails.prescription.id))
-        episode.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
-        episode.getPatientVisitDetails().add(patientVisitDetails)
+       // episode.setPatientVisitDetails(new HashSet<PatientVisitDetails>())
+       // episode.getPatientVisitDetails().add(patientVisitDetails)
         return episode
     }
 

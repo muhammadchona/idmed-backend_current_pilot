@@ -27,6 +27,6 @@ interface IPrescriptionService {
 
     Map<String ,Prescription> getLastPrescriptionsByClinicAndClinicalService(Clinic clinic, ClinicalService clinicalService)
 
-    Map<String ,Prescription> getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(Clinic clinic, ClinicalService clinicalService, Date endDate)
+    Map<String ,PatientVisitDetails> getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(Clinic clinic, ClinicalService clinicalService, Date endDate)
 
 }
