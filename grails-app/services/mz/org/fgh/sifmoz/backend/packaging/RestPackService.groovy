@@ -33,7 +33,7 @@ class RestPackService {
     @Scheduled(fixedDelay = 30000L)
     void schedulerRequestRunning() {
         Pack.withTransaction {
-            List<Pack> packList = Pack.findAll().findAll { it.syncStatus == 'R' }
+            List<Pack> packList = Pack.findAllWhere(syncStatus: 'R' as char)
 
             for (Pack pack : packList) {
                 try {
@@ -41,7 +41,11 @@ class RestPackService {
                     PatientVisitDetails patientVisitDetails = patientVisitDetailsService.getByPack(pack)
                     PatientVisit patientVisit = PatientVisit.get(patientVisitDetails.patientVisit.id)
                     Patient patient = Patient.get(patientVisit.patient.id)
-                    if (patient.his == null ) return
+                    if (patient.his == null ){
+                        pack.setSyncStatus('N' as char)
+                        pack.save()
+                        return
+                    }
                     HealthInformationSystem his = HealthInformationSystem.get(patient.his.id)
                     String urlBase = his.interoperabilityAttributes.find { it.interoperabilityType.code == "URL_BASE" }.value
                     String convertToJson = restPost.createOpenMRSDispense(pack, patient)
