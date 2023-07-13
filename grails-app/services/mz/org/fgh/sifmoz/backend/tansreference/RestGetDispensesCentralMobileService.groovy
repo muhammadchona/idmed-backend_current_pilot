@@ -171,6 +171,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
     }
 
     private Pack createIdmedPack(Object dispense, Prescription prescription) {
+        Pack lastPack = Pack.last()
         Pack dispenseIdmed = new Pack()
         dispenseIdmed.setClinic(prescription.getClinic())
         dispenseIdmed.setModified(false)
@@ -180,7 +181,8 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         // check
         dispenseIdmed.setDateLeft()
         dispenseIdmed.setPackDate(ConvertDateUtils.createDate(dispense.getAt("pickupdate").toString(), "yyyy-MM-dd"))
-        dispenseIdmed.syncStatus = 'S'
+        dispenseIdmed.syncStatus = 'R'
+        dispenseIdmed.providerUuid = lastPack.providerUuid
         dispenseIdmed.setDispenseMode(DispenseMode.findByCode("DD_FP"))
         dispenseIdmed.setWeeksSupply(dispense.getAt("weekssupply") == null || dispense.getAt("weekssupply") == "" ? 0 : Integer.valueOf(dispense.getAt("weekssupply").toString()))
         dispenseIdmed.setStockReturned(0)
