@@ -101,7 +101,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                             syncTempPatient.setClinicuuid(clinicDestination.uuid)
                             // syncTempPatient.setClinic(clinicDestination.matchId)
                         } else if (pt.operationType.code.equals("REFERENCIA_DC")) {
-                            ClinicSector clinicSectorDestination = ClinicSector.findByUuid(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
+                            ClinicSector clinicSectorDestination = ClinicSector.findById(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
                             syncTempPatient.setClinicname(clinicSectorDestination != null ? clinicSectorDestination.description : 'Desconhecido')
                             syncTempPatient.setClinicuuid(clinicSectorDestination != null ? clinicSectorDestination.uuid : 'Desconhecido')
                         }
