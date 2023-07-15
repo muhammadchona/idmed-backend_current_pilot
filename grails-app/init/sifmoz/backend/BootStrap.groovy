@@ -822,6 +822,7 @@ class BootStrap {
         dispenseModeList.add(new LinkedHashMap(id: '870e2d25-c5ef-4e36-89db-0a4a37af214e', code: 'DC_PS', openmrs_uuid: '870e2d25-c5ef-4e36-89db-0a4a37af214e', description: 'Distribuição Comunitária pelo Provedor de Saúde'))
         dispenseModeList.add(new LinkedHashMap(id: 'd6ad74a1-ff67-4b81-afa1-a0d906462623', code: 'DC_BM_FHN', openmrs_uuid: 'd6ad74a1-ff67-4b81-afa1-a0d906462623', description: 'Brigadas Móveis - Distribuição durante o final do dia'))
         dispenseModeList.add(new LinkedHashMap(id: '0843c71b-be47-4de2-ba16-a08db52c1136', code: 'DC_APE', openmrs_uuid: '0843c71b-be47-4de2-ba16-a08db52c1136', description: 'Distribuição Comunitária pelos APEs'))
+        dispenseModeList.add(new LinkedHashMap(id: 'd2eaec39-9c48-443b-a8d5-b2b163d42c53', code: 'DD_FP', openmrs_uuid: 'd2eaec39-9c48-443b-a8d5-b2b163d42c53', description: 'FARMAC/Farmácia Privada'))
 
         return dispenseModeList
     }

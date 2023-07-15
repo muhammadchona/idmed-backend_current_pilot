@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
@@ -81,13 +82,29 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
                 Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
                 //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "MOBILE")
                 ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
-                //  String urlPath = "/sync_temp_dispense?mainclinicuuid=eq."+clinic.getUuid()+"&syncstatus=eq.P" + "&order=pickupdate.desc";
-                String urlPath = "/sync_temp_dispense?syncstatus=eq.P" + "&order=pickupdate.desc";
+                String urlPath = "/sync_temp_dispense?mainclinicuuid=eq." + clinic.getUuid() + "&syncstatus=eq.P" + "&order=pickupdate.desc";
                 LOGGER.info("Iniciando a Busca de Dispensas")
                 def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer, urlPath)
                 LOGGER.info(MESSAGE)
                 for (Object dispense : response) {
                     PatientServiceIdentifier patientServiceIdentifier = PatientServiceIdentifier.findByValue(dispense.getAt('patientid').toString())
+                    def clinicuuid = dispense.getAt('clinicuuid').toString()
+                    def dispenseMode = DispenseMode.findByCode('US_FP_FHN')
+                    def priviteClinic = Clinic.findByUuid(clinicuuid)
+
+                    if (priviteClinic)
+                        dispenseMode = DispenseMode.findByCode('DD_FP')
+                    else {
+                        def clinicSector = ClinicSector.findByUuid(clinicuuid)
+                        if (clinicSector?.clinicSectorType?.code?.equalsIgnoreCase("PROVEDOR"))
+                            dispenseMode = DispenseMode.findByCode('DC_PS')
+                        if (clinicSector?.clinicSectorType?.code?.equalsIgnoreCase("APE"))
+                            dispenseMode = DispenseMode.findByCode('DC_APE')
+                        if (clinicSector?.clinicSectorType?.code?.equalsIgnoreCase("CLINICA_MOVEL"))
+                            dispenseMode = DispenseMode.findByCode('DC_CM_HN')
+                        if (clinicSector?.clinicSectorType?.code?.equalsIgnoreCase("BRIGADA_MOVEL"))
+                            dispenseMode = DispenseMode.findByCode('DC_BM_HN')
+                    }
 
                     if (patientServiceIdentifier != null) {
                         def startStop = StartStopReason.findAllByIsStartReason(true)
@@ -95,7 +112,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
                         def prescriprionDate = ConvertDateUtils.createDate(dispense.getAt("date").toString(), "yyyy-MM-dd")
                         def patientVisitDetailsList = PatientVisitDetails.findAllByEpisode(episode)
 
-                        if(patientVisitDetailsList.isEmpty()){
+                        if (patientVisitDetailsList.isEmpty()) {
                             episode = Episode.findAllByPatientServiceIdentifierAndStartStopReasonInList(patientServiceIdentifier, startStop, [sort: 'episodeDate', order: 'desc']).first()
                             patientVisitDetailsList = PatientVisitDetails.findAllByEpisode(episode)
                         }
@@ -104,17 +121,17 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
                         if (!lastPrescriprion)
                             lastPrescriprion = createIdmedPrescription(dispense, patientVisitDetailsList.prescription.id)
 
-                        Pack idmedPack = createIdmedPack(dispense, lastPrescriprion, episode)
+                        Pack idmedPack = createIdmedPack(dispense, lastPrescriprion, episode, dispenseMode)
                         createIdmedVisit(dispense, lastPrescriprion, idmedPack, episode, patientServiceIdentifier)
 
-                        def path = "/sync_temp_dispense?id=eq." + dispense.getAt("id")
+                        def path = "/sync_temp_dispense?mainclinicuuid=eq." + clinic.getUuid() + "&id=eq." + dispense.getAt("id")
                         println(path)
                         String obj = '{"syncstatus":"U"}'
                         def convertedObj = new StringEntity(obj, "UTF-8");
 
                         restProvincialServerClient.patchRequestProvincialServerClient(provincialServer, path, convertedObj)
                     } else {
-                       LOGGER.info("Servico de Saude Nao encontrado Para o paciente com o nid:" + dispense.getAt("patientid").toString());
+                        LOGGER.info("Servico de Saude Nao encontrado Para o paciente com o nid:" + dispense.getAt("patientid").toString());
                     }
                 }
             }
@@ -126,53 +143,53 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         def prescriprionDate = ConvertDateUtils.createDate(dispense.getAt("date").toString(), "yyyy-MM-dd")
         def lastPrescription = Prescription.findAllByIdInList(prescriprionList, [sort: 'prescriptionDate', order: 'desc']).first()
 
-            Prescription prescription = new Prescription()
-            prescription.beforeInsert()
-            prescription.setPrescriptionDate(prescriprionDate)
-            prescription.setExpiryDate(dispense.getAt("expiryDate") != null ? ConvertDateUtils.createDate(dispense.getAt("expiryDate").toString(), "yyyy-MM-dd") : null)
-            prescription.setNotes(dispense.getAt("notes").toString())
-            if (dispense.getAt("modified").toString().contains("T")) {
-                prescription.setModified(true)
-            } else {
-                prescription.setModified(false)
-            }
-            prescription.setPrescriptionSeq(dispense.getAt("prescriptionid").toString())
-            prescription.setDoctor(lastPrescription.doctor)
-            prescription.setClinic(Clinic.findByUuid(dispense.getAt("mainclinicuuid").toString()))
-            prescription.setPatientStatus(dispense.getAt('tipodt').toString())
-            prescription.setPatientType(lastPrescription.patientType)
-            prescription.setDuration(Duration.findByWeeks(dispense.getAt('duration').toString() as int))
+        Prescription prescription = new Prescription()
+        prescription.beforeInsert()
+        prescription.setPrescriptionDate(prescriprionDate)
+        prescription.setExpiryDate(dispense.getAt("expiryDate") != null ? ConvertDateUtils.createDate(dispense.getAt("expiryDate").toString(), "yyyy-MM-dd") : null)
+        prescription.setNotes(dispense.getAt("notes").toString())
+        if (dispense.getAt("modified").toString().contains("T")) {
+            prescription.setModified(true)
+        } else {
+            prescription.setModified(false)
+        }
+        prescription.setPrescriptionSeq(dispense.getAt("prescriptionid").toString())
+        prescription.setDoctor(lastPrescription.doctor)
+        prescription.setClinic(Clinic.findByUuid(dispense.getAt("mainclinicuuid").toString()))
+        prescription.setPatientStatus(dispense.getAt('tipodt').toString())
+        prescription.setPatientType(lastPrescription.patientType)
+        prescription.setDuration(Duration.findByWeeks(dispense.getAt('duration').toString() as int))
 
-            PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
-            prescriptionDetail.beforeInsert()
-            prescriptionDetail.setReasonForUpdate(dispense.getAt("reasonforupdate").toString())
-            if (dispense.getAt("dispensatrimestral").toString().contains("1")) {
-                prescriptionDetail.setDispenseType(DispenseType.findByCode("DT"))
-            } else if (dispense.getAt("dispensasemestral").toString().contains("1")) {
-                prescriptionDetail.setDispenseType(DispenseType.findByCode("DS"))
-            } else {
-                prescriptionDetail.setDispenseType(DispenseType.findByCode("DM"))
-            }
-
-            if (dispense.getAt("linhanome").toString().contains("1")) {
-                prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("1"));
-            } else if (dispense.get("linhanome").toString().contains("2")) {
-                prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("2"));
-            } else if (dispense.get("linhanome").toString().contains("3")) {
-                prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("3"));
-            }
-            prescriptionDetail.setTherapeuticRegimen(TherapeuticRegimen.findByRegimenScheme(dispense.getAt("regimenome").toString()))
-            prescriptionDetail.setPrescription(prescription)
-
-            PrescribedDrug prescribedDrug = setPrescribedDrug(dispense, prescription)
-
-            prescription.addToPrescriptionDetails(prescriptionDetail)
-            prescription.addToPrescribedDrugs(prescribedDrug)
-            prescription.save()
-            return prescription
+        PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
+        prescriptionDetail.beforeInsert()
+        prescriptionDetail.setReasonForUpdate(dispense.getAt("reasonforupdate").toString())
+        if (dispense.getAt("dispensatrimestral").toString().contains("1")) {
+            prescriptionDetail.setDispenseType(DispenseType.findByCode("DT"))
+        } else if (dispense.getAt("dispensasemestral").toString().contains("1")) {
+            prescriptionDetail.setDispenseType(DispenseType.findByCode("DS"))
+        } else {
+            prescriptionDetail.setDispenseType(DispenseType.findByCode("DM"))
         }
 
-    private Pack createIdmedPack(Object dispense, Prescription prescription, Episode episode) {
+        if (dispense.getAt("linhanome").toString().contains("1")) {
+            prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("1"));
+        } else if (dispense.get("linhanome").toString().contains("2")) {
+            prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("2"));
+        } else if (dispense.get("linhanome").toString().contains("3")) {
+            prescriptionDetail.setTherapeuticLine(TherapeuticLine.findByCode("3"));
+        }
+        prescriptionDetail.setTherapeuticRegimen(TherapeuticRegimen.findByRegimenScheme(dispense.getAt("regimenome").toString()))
+        prescriptionDetail.setPrescription(prescription)
+
+        PrescribedDrug prescribedDrug = setPrescribedDrug(dispense, prescription)
+
+        prescription.addToPrescriptionDetails(prescriptionDetail)
+        prescription.addToPrescribedDrugs(prescribedDrug)
+        prescription.save()
+        return prescription
+    }
+
+    private Pack createIdmedPack(Object dispense, Prescription prescription, Episode episode, DispenseMode dispenseMode) {
         def pickUpDate = ConvertDateUtils.createDate(dispense.getAt("pickupdate").toString(), "yyyy-MM-dd")
         def patientVisitDetailsList = PatientVisitDetails.findAllByEpisode(episode)
 
@@ -181,8 +198,8 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         if (lastPack) {
             addDrugToPack(dispense, lastPack)
             return lastPack
-        }else{
-            lastPack = Pack.findAllByIdInList( patientVisitDetailsList.pack.id).first()
+        } else {
+            lastPack = Pack.findAllByIdInList(patientVisitDetailsList.pack.id).first()
             Pack dispenseIdmed = new Pack()
             dispenseIdmed.beforeInsert()
             dispenseIdmed.setClinic(prescription.getClinic())
@@ -195,7 +212,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
             dispenseIdmed.setPackDate(ConvertDateUtils.createDate(dispense.getAt("pickupdate").toString(), "yyyy-MM-dd"))
             dispenseIdmed.syncStatus = 'R'
             dispenseIdmed.providerUuid = lastPack.providerUuid
-            dispenseIdmed.setDispenseMode(DispenseMode.findByCode("DD_FP"))
+            dispenseIdmed.setDispenseMode(dispenseMode)
             dispenseIdmed.setWeeksSupply(dispense.getAt("weekssupply") == null || dispense.getAt("weekssupply") == "" ? 0 : Integer.valueOf(dispense.getAt("weekssupply").toString()))
             dispenseIdmed.setStockReturned(0)
             dispenseIdmed.setPackageReturned(0)
@@ -215,7 +232,7 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         def patientVisit = PatientVisit.findByVisitDateAndPatient(pickUpDate, patientServiceIdentifier.patient)
 
 
-        if(!patientVisit){
+        if (!patientVisit) {
             patientVisit = new PatientVisit()
             patientVisit.beforeInsert()
             patientVisit.setClinic(prescription.getClinic())
@@ -273,9 +290,9 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
         packagedDrug.setDrug(Drug.findByName(dispense.getAt('drugname').toString()))
         packagedDrug.setQuantitySupplied(Double.parseDouble(inHand))
         packagedDrug.setPack(dispenseIdmed)
+        packagedDrug.setToContinue(true)
         return packagedDrug
     }
-
 
     private void addDrugToPrescription(Object dispense, Prescription prescription) {
         PrescribedDrug prescribedDrug = setPrescribedDrug(dispense, prescription)
