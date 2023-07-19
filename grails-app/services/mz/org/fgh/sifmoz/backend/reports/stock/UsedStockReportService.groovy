@@ -146,12 +146,12 @@ abstract class UsedStockReportService implements IUsedStockReportService {
         reportTemp.setFnName(String.valueOf(item[1]))
         reportTemp.setDrugName(String.valueOf(item[2]))
         reportTemp.setDrugId(item[3])
-        reportTemp.setReceivedStock(Integer.valueOf(String.valueOf(item[4]))) //initial entrance
-        reportTemp.setStockIssued(Integer.valueOf(String.valueOf(item[5]))) //outcomes
-        reportTemp.setAdjustment(Integer.valueOf(String.valueOf(item[6])))
-        reportTemp.setActualStock(Integer.valueOf(String.valueOf(item[7]))) //inventario
-        reportTemp.setDestroyedStock(Long.valueOf(item[8])) //ver
-        reportTemp.setBalance(Integer.valueOf(String.valueOf(item[10])))
+        reportTemp.setReceivedStock((long)  Double.parseDouble( String.valueOf(item[4]))) //initial entrance
+        reportTemp.setStockIssued((long)  Double.parseDouble( String.valueOf(item[5]))) //outcomes
+        reportTemp.setAdjustment((long)  Double.parseDouble( String.valueOf(item[6])))
+        reportTemp.setActualStock((long)  Double.parseDouble( String.valueOf(item[7]))) //inventario
+        reportTemp.setDestroyedStock((long)  Double.parseDouble( String.valueOf(item[8]))) //ver
+        reportTemp.setBalance((long)  Double.parseDouble( String.valueOf(item[10])))
 
         processMonitor.setProgress(processMonitor.getProgress() + percentageUnit)
         if (100 == processMonitor.progress.intValue() || 99 == processMonitor.progress.intValue()) {
