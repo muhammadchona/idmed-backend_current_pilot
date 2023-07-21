@@ -47,14 +47,22 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
             MigrationLog patientMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.patientid, "Patient")
             MigrationLog prescriptionMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.prescriptionid, "Prescription")
             MigrationLog episodeMigrationLog
+            Episode episodeStartDate
             Episode episode
             if (this.episodeid > 0) {
                     episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
-
+                if (episodeMigrationLog == null) {
+                    if(this.tipodedoenca == "TB" || this.tipodedoenca == "PREP" || this.tipodedoenca == "TARV") {
+                        ClinicalService clinicalService = ClinicalService.findByCode(this.tipodedoenca == "TB" ? "TPT" : this.tipodedoenca)
+                        PatientServiceIdentifier psiLocal = PatientServiceIdentifier.findByPatientAndService(
+                                Patient.findById(patientMigrationLog.iDMEDId), clinicalService)
+                        episodeStartDate = Episode.findByPatientServiceIdentifierAndEpisodeTypeAndEpisodeDateNotGreaterThan(psiLocal, EpisodeType.findByCode("INICIO"),ConvertDateUtils.getDateAtEndOfDay(this.pickupdatepack))
+                }
+                }
             }
             if (patientMigrationLog == null) throw new RuntimeException("MigrationLog of Patient " + this.patientid + " not found.")
             if (prescriptionMigrationLog == null) throw new RuntimeException("MigrationLog of Prescription " + this.prescriptionid + " not found.")
-            if (episodeMigrationLog == null && this.episodeid > 0) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
+            if (episodeMigrationLog == null && this.episodeid > 0 && episodeStartDate == null) throw new RuntimeException("MigrationLog of Episode " + this.episodeid + " not found.")
 
 
             if (episodeMigrationLog != null) {
@@ -62,7 +70,7 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
                     ClinicalService clinicalService = ClinicalService.findByCode(this.tipodedoenca == "TB" ? "TPT" : this.tipodedoenca)
                     PatientServiceIdentifier psiLocal = PatientServiceIdentifier.findByPatientAndService(
                             Patient.findById(patientMigrationLog.iDMEDId),clinicalService)
-                    episode = Episode.findByPatientServiceIdentifierAndEpisodeType(psiLocal, EpisodeType.findByCode("INICIO"))
+                    episode = Episode.findByPatientServiceIdentifierAndEpisodeTypeAndEpisodeDateNotGreaterThan(psiLocal, EpisodeType.findByCode("INICIO"), ConvertDateUtils.getDateAtEndOfDay(this.pickupdatepack))
                 } else {
                     episode = Episode.findById(episodeMigrationLog.getiDMEDId())
                 }
@@ -141,10 +149,11 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
              //   pack.setPatientVisitDetails(patientVisitDetailsSet)
              //   existingPatientVisit.patientVisitDetails.add(patientVisitDetails)
             }
-         //   pack.setPatientVisitDetails(patientVisitDetailsSet)
+          //  pack.setPatientVisitDetails(patientVisitDetailsSet)
             patientVisitDetailsSet.add(patientVisitDetails)
             pack.setDispenseMode(dsmode == null ? DispenseMode.findByCode("US_FP_HN") : dsmode)
             pack.setClinic(clinic)
+          //  pack.syncStatus = 'S'
             pack.syncStatus = 'N'
             pack.validate()
 

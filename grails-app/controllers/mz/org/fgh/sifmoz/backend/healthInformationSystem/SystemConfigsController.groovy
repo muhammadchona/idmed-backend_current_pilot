@@ -117,6 +117,7 @@ class SystemConfigsController {
             if (!ClinicSector.findById(clinicSectorObject.id)) {
                 ClinicSector clinicSector = new ClinicSector()
                 clinicSector.id = clinicSectorObject.id
+                clinicSector.syncStatus = 'S'
                 clinicSector.code = clinicSectorObject.code
                 clinicSector.description = clinicSectorObject.description
                 clinicSector.active = clinicSectorObject.active

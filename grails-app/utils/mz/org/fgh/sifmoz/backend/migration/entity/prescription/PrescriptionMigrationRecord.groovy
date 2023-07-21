@@ -53,7 +53,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
     private String therapeuticlinecode
     private String therapeuticregimencode
     private String reasonforupdate
-
+    private String motivomudanca //adcionar na viewPrescription
     private Integer episodeid
 
 
@@ -96,10 +96,27 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             } else {
                 psi.setEpisodes(Episode.findAllByPatientServiceIdentifier(psi) as Set<Episode>)
             }
-
+            Prescription prescription = getMigratedRecord()
+            PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
+          //  Episode newEpisode
             Episode episode
+            prescription.setPatientType("N/A")
             if (!psi.hasEpisodes() && this.episodeid > 0) {
-                episode = createEpisodeFromMigrationData(clinic, psi)
+                if (this.reasonforupdate == "Alterar") { // Novo Paciente - Epsiodio
+                    prescriptionDetail.reasonForUpdate = this.motivomudanca
+                    prescription.patientType = "Alterar"
+                    episode = createEpisodeFromMigrationData(clinic, psi)
+                } else if (this.reasonforupdate == "Transito") { // Quando for isso criar episodio de transito
+                    episode = this.createEpisodeByStartStopReason(psi , StartStopReason.TRANSITO,'INICIO')
+                } else if (this.reasonforupdate == "Transfer de") {
+                    episode = this.createEpisodeByStartStopReason(psi , StartStopReason.TRANSFERIDO_DE, 'INICIO')
+                } else if (this.reasonforupdate == "Re-Inicio" || this.reasonforupdate == "Reiniciar") { // Continua e Manter - Criar episodio de Reinicio se o paciente ja tiver nao fazer nada
+                    episode = this.createEpisodeByStartStopReason(psi , StartStopReason.REINICIO_TRATAMETO,'INICIO')
+                } else if (this.reasonforupdate == "Fim (F)") { // Continua e Manter - Criar episodio de Reinicio se o paciente ja tiver nao fazer nada
+                    episode = this.createEpisodeByStartStopReason(psi , StartStopReason.TERMINO_DO_TRATAMENTO,'FIM')
+                } else {
+                    episode = createEpisodeFromMigrationData(clinic, psi)
+                }
             } else {
                 MigrationLog episodeMigrationLog = MigrationLog.findBySourceIdAndSourceEntityAndIDMEDIdIsNotNull(this.episodeid, "Episode")
                 if (episodeMigrationLog != null) {
@@ -122,7 +139,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             EpisodeMigrationRecord episodeMigrationRecord = createEpisodeMigrationRecord(episode)
 
-            Prescription prescription = getMigratedRecord()
+
             prescription.setClinic(clinic)
 
             Doctor doctor = Doctor.findByFirstnamesIlikeAndLastnameIlike("%Generic%", "%Provider%")
@@ -149,29 +166,11 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
                 prescription.setNotes(this.notesprescription)
             }
             prescription.setPrescriptionDate(this.prescriptiondate)
-            String patientType = null
-            if (this.reasonforupdate == "Manter") {
-                patientType = Prescription.PATIENT_TYPE_MANUTENCAO
-            } else if (this.reasonforupdate == "Inicia" || this.reasonforupdate == "Inicio (I)") {
-                patientType = Prescription.PATIENT_TYPE_NOVO
-            } else if (this.reasonforupdate == "Alterar") {
-                patientType = Prescription.PATIENT_TYPE_ALTERACAO
-            } else if (this.reasonforupdate == "Transfer de") {
-                patientType = Prescription.PATIENT_TYPE_TRANSFERENCIA
-            } else if (this.reasonforupdate == "Re-Inicio" || this.reasonforupdate == "Reiniciar") {
-                patientType = Prescription.PATIENT_TYPE_RE_INICIO
-            } else if (this.reasonforupdate == "Continua (C)") {
-                patientType = Prescription.PATIENT_TYPE_CONTINUA
-            } else if (this.reasonforupdate == "Fim (F)") {
-                patientType = Prescription.PATIENT_TYPE_FIM
-            } else if (this.reasonforupdate == "Transito") {
-                patientType = Prescription.PATIENT_TYPE_TRANSITO
-            }
 
-            prescription.setPatientType(patientType)
+            //    prescription.setPatientType(patientType)
             prescription.setPatientStatus("")
 
-            PrescriptionDetail prescriptionDetail = new PrescriptionDetail()
+
             prescriptionDetail.setPrescription(prescription)
             TherapeuticLine therapeuticLine = getLinhaTerapeutica(this.therapeuticlinecode)
             prescriptionDetail.setTherapeuticLine(therapeuticLine)
@@ -182,6 +181,20 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
             prescription.setPrescriptionDetails(new ArrayList<>() as Set<PrescriptionDetail>)
             prescription.getPrescriptionDetails().add(prescriptionDetail)
 
+            /*
+            if (this.reasonforupdate == "Alterar") { // Novo Paciente - Epsiodio
+                prescriptionDetail.reasonForUpdate = this.motivomudanca
+                prescription.changeLine = "Alterar"
+            } else if (this.reasonforupdate == "Transito") { // Quando for isso criar episodio de transito
+                newEpisode = this.createEpisodeByStartStopReason(psi , StartStopReason.TRANSITO,'INICIO')
+            } else if (this.reasonforupdate == "Transfer de") {
+                newEpisode = this.createEpisodeByStartStopReason(psi , StartStopReason.TRANSFERIDO_DE, 'INICIO')
+            } else if (this.reasonforupdate == "Re-Inicio" || this.reasonforupdate == "Reiniciar") { // Continua e Manter - Criar episodio de Reinicio se o paciente ja tiver nao fazer nada
+                newEpisode = this.createEpisodeByStartStopReason(psi , StartStopReason.REINICIO_TRATAMETO,'INICIO')
+            } else if (this.reasonforupdate == "Fim (F)") { // Continua e Manter - Criar episodio de Reinicio se o paciente ja tiver nao fazer nada
+                newEpisode = this.createEpisodeByStartStopReason(psi , StartStopReason.TERMINO_DO_TRATAMENTO,'FIM')
+            }
+*/
             prescription.validate()
 
             if (!Utilities.stringHasValue(psi.id)) {
@@ -338,5 +351,20 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
         genericEpisode.setClinicSector(clinicSector)
         genericEpisode.setPatientServiceIdentifier(patientServiceIdentifier)
         return genericEpisode
+    }
+
+    Episode createEpisodeByStartStopReason (PatientServiceIdentifier patientServiceIdentifier, String reasonCode,String codeEpType) {
+        Episode migrationEpisode = new Episode()
+     //   migrationEpisode.id = UUID.randomUUID()
+        migrationEpisode.startStopReason = StartStopReason.findByCode(reasonCode)
+        migrationEpisode.episodeType = EpisodeType.findByCode(codeEpType)
+        migrationEpisode.patientServiceIdentifier = patientServiceIdentifier
+        migrationEpisode.clinic = patientServiceIdentifier.clinic
+        migrationEpisode.clinicSector = ClinicSector.findByCode(getClinicSectorCode())
+        migrationEpisode.episodeDate = this.prescriptiondate
+        migrationEpisode.creationDate = new Date()
+        migrationEpisode.notes = 'Episodio de Transito'
+      //  migrationEpisode.save()
+        return migrationEpisode
     }
 }

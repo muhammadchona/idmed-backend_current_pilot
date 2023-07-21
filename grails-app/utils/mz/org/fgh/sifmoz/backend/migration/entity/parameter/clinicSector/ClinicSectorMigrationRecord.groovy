@@ -24,7 +24,7 @@ class ClinicSectorMigrationRecord extends AbstractMigrationRecord {
 
      String uuid
 
-     String clinicSectortype
+     String clinicsectortype
 
      String clinicuuid
 
@@ -39,7 +39,8 @@ class ClinicSectorMigrationRecord extends AbstractMigrationRecord {
             getMigratedRecord().setDescription(this.sectorname)
             getMigratedRecord().setUuid(this.uuid)
             getMigratedRecord().setClinic(Clinic.findByMainClinic(true))
-            getMigratedRecord().setClinicSectorType(ClinicSectorType.findByCode(this.clinicSectortype))
+            getMigratedRecord().setClinicSectorType(ClinicSectorType.findByCode(this.clinicsectortype))
+            getMigratedRecord().setSyncStatus('S')
             getMigratedRecord().setActive(true)
 
             if (Utilities.listHasElements(logs)) return logs
