@@ -249,8 +249,9 @@ class RestOpenMRSClient {
         String regimeUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_REGIMEN_CONCEPT_UUID" }.value
         String returnVisitUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_TPT_PATIENT_TYPE_UUID" }.value
         String tipoDispensaUuid = interoperabilityAttributes.find { it.interoperabilityType.code == "FILT_DISPENSED_TYPE_CONCEPT_UUID" }.value
-        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).therapeuticRegimen.openmrsUuid
-        String strCodeDispenseType = PrescriptionDetail.findByPrescription(Prescription.findById(pack.patientVisitDetails.first().prescription.id)).dispenseType.code
+        PatientVisitDetails pdv = PatientVisitDetails.findByPack(pack)
+        String strRegimenAnswerUuid = PrescriptionDetail.findByPrescription(Prescription.findById(pdv.prescription.id)).therapeuticRegimen.openmrsUuid
+        String strCodeDispenseType = PrescriptionDetail.findByPrescription(Prescription.findById(pdv.prescription.id)).dispenseType.code
         PatientVisitDetails patientVisitDetails = PatientVisitDetails.findByPack(pack)
         String strDispenseType = interoperabilityAttributes.find { it.interoperabilityType.code == "MONTHLY_DISPENSED_TYPE_CONCEPT_UUID" }.value
         boolean packContinue = pack.packagedDrugs.first().getToContinue()

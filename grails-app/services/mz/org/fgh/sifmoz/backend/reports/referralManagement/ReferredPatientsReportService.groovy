@@ -9,6 +9,7 @@ import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.packaging.IPackService
 import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.IPrescriptionService
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
@@ -39,7 +40,7 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
 
         Clinic clinic = Clinic.findById(searchParams.clinicId)
         ClinicalService clinicalService = ClinicalService.findById(searchParams.clinicalService)
-        Map<String , Prescription> prescriptionMap= prescriptionService.getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(clinic,clinicalService,searchParams.endDate)
+        Map<String , PatientVisitDetails> patientVisitDetailsMap= prescriptionService.getLastPrescriptionsByClinicAndClinicalServiceAndEndDate(clinic,clinicalService,searchParams.endDate)
         List<Episode> episodes = episodeService.getEpisodeOfReferralOrBackReferral(clinic,clinicalService,searchParams.reportType,searchParams.startDate,searchParams.endDate)
         println(episodes)
         double percentageUnit
@@ -51,8 +52,9 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
         }
         List<ReferredPatientsReport> referencesToCreate = new ArrayList<>()
         for (Episode episode:episodes) {
-            Prescription lastPrescription = prescriptionMap.get(episode.patientServiceIdentifier.patient.id)
+            Prescription lastPrescription = patientVisitDetailsMap.get(episode.patientServiceIdentifier.patient.id).getPrescription()
             PrescriptionDetail prescriptionDetail = lastPrescription.prescriptionDetails.getAt(0)
+            Pack lastPack = patientVisitDetailsMap.get(episode.patientServiceIdentifier.patient.id).getPack()
 
             ReferredPatientsReport referredPatient = setGenericInfo(searchParams,clinic,episode)
             if (searchParams.reportType.equals('REFERIDO_PARA')) {
@@ -60,11 +62,11 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
                 referredPatient.setLastPrescriptionDate(lastPrescription.prescriptionDate)
                 referredPatient.setDispenseType(prescriptionDetail.dispenseType.description)
                 referredPatient.setTherapeuticalRegimen(prescriptionDetail.therapeuticRegimen.description)
-                referredPatient.setNextPickUpDate(lastPrescription.patientVisitDetails.getAt(0).pack.nextPickUpDate)
+                referredPatient.setNextPickUpDate(lastPack.nextPickUpDate)
             } else {
                 referredPatient.setDateBackUs(episode.episodeDate)
                 referredPatient.setReferrenceDate(episodeService.getEpisodeOfReferralByPatientServiceIdentfierAndBelowEpisodeDate(episode.patientServiceIdentifier,episode.episodeDate).episodeDate)
-                referredPatient.setLastPickUpDate(lastPrescription.patientVisitDetails.getAt(0).pack.pickupDate)
+                referredPatient.setLastPickUpDate(lastPack.pickupDate)
                 referredPatient.setNotes(episode.notes)
             }
             referencesToCreate.add(referredPatient)
@@ -91,9 +93,10 @@ abstract class ReferredPatientsReportService implements IReferredPatientsReportS
             percentageUnit = 100/packs.size()
         }
         for (Pack pack:packs) {
-            Prescription prescription = pack.patientVisitDetails.getAt(0).prescription
+            PatientVisitDetails patientVisitDetail = PatientVisitDetails.findByPack(pack)
+            Prescription prescription = patientVisitDetail.prescription
             PrescriptionDetail prescriptionDetail = prescription.prescriptionDetails.getAt(0)
-            Episode episode = pack.patientVisitDetails.getAt(0).episode
+            Episode episode = patientVisitDetail.episode
 
             ReferredPatientsReport referredPatientDispense = setGenericInfo(searchParams,clinic,episode)
             referredPatientDispense.setDispenseType(prescriptionDetail.dispenseType.description)
