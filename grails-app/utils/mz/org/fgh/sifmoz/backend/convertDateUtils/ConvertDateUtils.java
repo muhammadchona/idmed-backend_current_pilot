@@ -753,4 +753,14 @@ public class ConvertDateUtils {
 
       return Period.between(localDateStartDate , localDateEndDate).getYears();
     }
+
+    public static Date convertDDMMYYYYToYYYYMMDD(String dataPorConverter){
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.parse(dataPorConverter);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

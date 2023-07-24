@@ -172,6 +172,7 @@ class EpisodeController extends RestfulController {
         transReference.destination = destination
         transReference.patient = episode.patientServiceIdentifier.patient
         transReference.identifier = episode.patientServiceIdentifier
+        transReference.patientStatus = 'Activo'
 
         return transReference
     }

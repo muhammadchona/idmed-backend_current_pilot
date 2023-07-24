@@ -4,6 +4,9 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
+import mz.org.fgh.sifmoz.backend.clinic.Clinic
+import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
@@ -101,5 +104,43 @@ class PatientTransReferenceController extends RestfulController{
       render JSONSerializer.setJsonObjectResponse(patientTransReferenceService.getPatientTransReferenceDetailsByNid(nid)) as JSON
     //      render  patientTransReferenceService.getPatientTransReferenceDetailsByNid(nid) as JSON
 
+    }
+
+    @Transactional
+    def saveReferenceLostFolowUp(){
+
+
+        def objectJSON = request.JSON
+        def clinic = Clinic.findByMainClinic(true)
+        def patientIdentifier = PatientServiceIdentifier.findByValue(objectJSON.identifier)
+        def lastPickupString = ConvertDateUtils.convertDDMMYYYYToYYYYMMDD(objectJSON.lastPickup)
+
+        PatientTransReference patientTransReference = new PatientTransReference()
+        patientTransReference.beforeInsertId()
+        patientTransReference.syncStatus = 'P'
+        patientTransReference.operationDate =  lastPickupString != null ? lastPickupString : new Date()
+        patientTransReference.creationDate = new Date()
+        patientTransReference.operationType =  PatientTransReferenceType.findByCode("REFERENCIA_DC")
+        patientTransReference.origin = clinic
+        patientTransReference.destination = clinic.id
+        patientTransReference.patient = patientIdentifier?.patient
+        patientTransReference.identifier = patientIdentifier
+        patientTransReference.patientStatus = objectJSON.status
+
+        patientTransReference.validate()
+
+        if (patientTransReference.hasErrors()) {
+            transactionStatus.setRollbackOnly()
+            respond patientTransReference.errors
+            return
+        }
+
+        try {
+            patientTransReferenceService.save(patientTransReference)
+        } catch (ValidationException e) {
+            respond patientTransReference.errors
+            return
+        }
+        respond patientTransReference, [status: CREATED, view:"show"]
     }
 }

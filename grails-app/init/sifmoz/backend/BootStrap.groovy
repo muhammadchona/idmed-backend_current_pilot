@@ -120,7 +120,7 @@ class BootStrap {
             initClinicalServiceAttribute()
         }
 
-        Menu.withNewTransaction {
+        Menu.withTransaction {
             initMenus()
 
         }
@@ -146,6 +146,7 @@ class BootStrap {
         new Menu(code: '06', description: 'Administração').save()
         new Menu(code: '07', description: 'Migração').save()
         new Menu(code: '08', description: 'Tela Inicial').save()
+        new Menu(code: '09', description: 'DCProvedor').save()
     }
 
     void initRequestMaps() {
@@ -172,7 +173,8 @@ class BootStrap {
 
     void initUserManagement() {
 
-        Role adminRole = Role.findByAuthority('ROLE_ADMIN')
+        def adminRole = Role.findByAuthorityIlike("%ROLE_ADMIN%")
+//        Role adminRole = Role.findByAuthority('ROLE_ADMIN')
 
         if (!adminRole) {
             adminRole = new Role('ROLE_ADMIN', 'Admin', 'Role_Admin', true)
@@ -2454,6 +2456,7 @@ class BootStrap {
         menus.add(new Menu(code: '06', description: 'Administração'))
         menus.add(new Menu(code: '07', description: 'Migração'))
         menus.add(new Menu(code: '08', description: 'Tela Inicial'))
+        menus.add(new Menu(code: '09', description: 'DCProvedor'))
 
         return menus
     }

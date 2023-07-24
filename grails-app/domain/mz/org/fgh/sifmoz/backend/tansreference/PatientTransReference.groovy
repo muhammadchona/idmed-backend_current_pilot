@@ -18,6 +18,7 @@ class PatientTransReference extends BaseEntity{
     Date operationDate
     Date creationDate
     Long matchId
+    String patientStatus
 
     static belongsTo = [patient: Patient]
     static mapping = {
@@ -27,6 +28,7 @@ class PatientTransReference extends BaseEntity{
 
     static constraints = {
         matchId nullable: true
+        patientStatus nullable: true, blank: true
     }
 
     def beforeInsertId() {
@@ -37,7 +39,7 @@ class PatientTransReference extends BaseEntity{
 
     def beforeInsert() {
         if (matchId == null) {
-         def  patientTransReference =  PatientTransReference.findAll( [sort: ['matchId': 'desc']])
+         def  patientTransReference =  findAll( [sort: ['matchId': 'desc']])
             if (patientTransReference.size() == 0) {
                 matchId = 1
             } else {

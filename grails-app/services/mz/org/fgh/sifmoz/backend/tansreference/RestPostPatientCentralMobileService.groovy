@@ -2,6 +2,7 @@ package mz.org.fgh.sifmoz.backend.tansreference
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
@@ -61,7 +62,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                 List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationTypeInList('P', patientTransReferenceTypes)
 
                 // Alterar para a linha abaixo quando for em Producao
-//            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.code , "MOBILE")
+//              ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.code , "MOBILE")
                 ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
 
                 char SyncP = 'P'
@@ -132,7 +133,7 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                         syncTempPatient.setDuration(lastPrescription.duration.weeks)
                         syncTempPatient.setPrescriptionenddate(lastPrescription.expiryDate)
                         syncTempPatient.setRegimenome(lastPrescription.prescriptionDetails[0].therapeuticRegimen.regimenScheme)
-                        //  syncTempPatient.setLinhanome(lastPrescription.prescriptionDetails[0].therapeuticLine.description)
+
                         if (lastPrescription.prescriptionDetails[0].therapeuticLine.description.contains("1")) {
                             syncTempPatient.setLinhanome("1ª Linha")
                         } else if (lastPrescription.prescriptionDetails[0].therapeuticLine.description.contains("2")) {
@@ -173,7 +174,8 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                             }
                         }
                         syncTempPatient.setJsonprescribeddrugs(listPD.toString().replace("[[", "[").replace("]]", "]"));
-                        syncTempPatient.setEstadopaciente('Activo');
+
+                        syncTempPatient.setEstadopaciente(pt.patientStatus);
                         syncTempPatient.setExclusaopaciente(false);
                         syncTempPatient.setModified(False)
                         def obj = Utilities.parseToJSON(syncTempPatient)
@@ -199,6 +201,40 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                     }
                 }
             }
+            //remove all sent followup patients after 5 days
+            removeOldFollowupReference()
+        }
+    }
+
+    def removeOldFollowupReference(){
+        List<PatientTransReference> missingPatientTransReferenceList = PatientTransReference.findAllBySyncStatusAndPatientStatus("S","Faltoso")
+        List<PatientTransReference> lostTofollowupPatientTransReferenceList = PatientTransReference.findAllBySyncStatusAndPatientStatus("S","Abandono")
+
+        for(PatientTransReference transReference : missingPatientTransReferenceList){
+            try{
+                findPatientAndRemove(transReference)
+            }catch (Exception e){
+                e.printStackTrace()
+            }finally {
+                continue
+            }
+        }
+
+        for(PatientTransReference transReference : lostTofollowupPatientTransReferenceList){
+            try{
+                findPatientAndRemove(transReference)
+            }catch (Exception e){
+                e.printStackTrace()
+            }finally {
+                continue
+            }
+        }
+    }
+
+    def findPatientAndRemove(PatientTransReference transReference){
+        def daysLeft = ConvertDateUtils.dateDiff(new Date(), transReference.creationDate)
+        if(daysLeft >= 5){
+            transReference.delete()
         }
     }
 }
