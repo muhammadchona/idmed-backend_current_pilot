@@ -26,6 +26,10 @@ public abstract class SynchronizerTask implements ISynchronizerTask {
     }
 
     protected String getUsOrProvince() {
-        return instalationConfig.getDescription();
+        return  instalationConfig.getDescription();
+    }
+
+    protected SystemConfigs getInstalationConfig() {
+        return  instalationConfig;
     }
 }
