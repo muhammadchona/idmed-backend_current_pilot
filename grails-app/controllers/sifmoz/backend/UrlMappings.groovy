@@ -11,6 +11,7 @@ class UrlMappings {
         patch "/api/$controller/$id(.$format)?"(action:"patch")
         patch "/api/inventory/close/$id(.$format)?"(controller:'inventory', action:'close')
         post "/api/patient/search(.$format)?"(controller:'patient', action:'search')
+        post "/api/patientTransReference/folowup(.$format)?"(controller:'patientTransReference', action:'saveReferenceLostFolowUp')
         get "/api/patient/searchByParam/$searchString/$clinicId(.$format)?"(controller:'patient', action:'searchByParam')
         get "/api/dashBoard/getRegisteredPatientByDispenseType/$year/$clinicId/$serviceCode(.$format)?"(controller:'dashBoard', action:'getRegisteredPatientByDispenseType')
         get "/api/dashBoard/getPatientsFirstDispenseByGender/$year/$clinicId/$serviceCode(.$format)?"(controller:'dashBoard', action:'getPatientsFirstDispenseByGender')
