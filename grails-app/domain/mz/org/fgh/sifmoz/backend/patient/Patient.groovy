@@ -39,6 +39,7 @@ class Patient extends BaseEntity {
     PostoAdministrativo postoAdministrativo
 
     Clinic clinic
+    Date creationDate = new Date()
     static belongsTo = [Clinic]
 
     static hasMany = [
@@ -70,6 +71,7 @@ class Patient extends BaseEntity {
         his nullable: true
         hisLocation nullable: true
         hisLocationName nullable: true
+        creationDate nullable: true
     }
 
     def beforeInsert() {

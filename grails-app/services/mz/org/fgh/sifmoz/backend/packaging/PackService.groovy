@@ -337,7 +337,7 @@ abstract class PackService implements IPackService{
                 "         ELSE 'DS - TRANSPORTE'" +
                 "           END " +
                 "        WHEN dt.code = 'DM' THEN " +
-                "        CASE WHEN  pack2.pickup_date >= :startDate THEN 'DS' " +
+                "        CASE WHEN  pack2.pickup_date >= :startDate THEN 'DM' " +
                 "          ELSE 'DM - TRANSPORTE' " +
                 "          END " +
                 "     END AS tipodispensa," +

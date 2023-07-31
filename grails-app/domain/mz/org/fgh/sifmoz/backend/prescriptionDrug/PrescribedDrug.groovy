@@ -12,7 +12,8 @@ class PrescribedDrug extends BaseEntity {
     String id
     double amtPerTime
     int timesPerDay
-    int qtyPrescribed
+   // int qtyPrescribed
+    int prescribedQty
     String form
     boolean modified
     @JsonManagedReference
@@ -27,6 +28,7 @@ id column: 'id', index: 'Pk_PrescribedDrug_Idx'
     }
     static constraints = {
         timesPerDay(min: 1)
+      //  prescribedQty(min: 1)
     }
 
     def beforeInsert() {

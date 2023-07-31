@@ -9,7 +9,7 @@ class PackagedDrugStock extends BaseEntity {
     String id
     Drug drug
     double quantitySupplied
-    Date creationDate
+    Date creationDate = new Date()
     Stock stock
     static belongsTo = [packagedDrug: PackagedDrug]
 
@@ -19,6 +19,7 @@ id column: 'id', index: 'Pk_PackagedDrugStock_Idx'
     }
 
     static constraints = {
+        creationDate nullable: true
     }
 
     def beforeInsert() {

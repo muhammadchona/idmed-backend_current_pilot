@@ -53,14 +53,14 @@ class RestGetPatientMobileCentralService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    //@Scheduled(cron = "0 0 */2 * * ?")
+    //@Scheduled(fixedDelay = 90000L)
     void execute() {
       //  PatientTransReference.withTransaction {
 
-        if (!this.isProvincial()) {
+        if (this.instalationConfig != null && !this.isProvincial()) {
             Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code, "mobile")
-            String urlPath = "/sync_mobile_patient?clinicuuid=eq."+clinicLoged.getUuid()+"syncstatus=eq.S"; //addClinicuuid
+           ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code, MOBILE_SERVER)
+           String urlPath = "/sync_mobile_patient?clinicuuid=eq."+clinicLoged.getUuid()+"syncstatus=eq.S"; //addClinicuuid
 
             LOGGER.info("Iniciando a Busca de Novos Pacientes" )
             def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer, urlPath)

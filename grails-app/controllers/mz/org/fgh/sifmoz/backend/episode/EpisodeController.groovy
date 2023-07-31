@@ -155,7 +155,7 @@ class EpisodeController extends RestfulController {
             operationType = PatientTransReferenceType.findByCode("TRANSFERENCIA")
         else if (episode.startStopReason.code.equalsIgnoreCase("REFERIDO_DC")) {
             operationType = PatientTransReferenceType.findByCode("REFERENCIA_DC")
-            destination = episode.clinicSector
+            destination = episode.clinicSector.uuid
         } else if (episode.startStopReason.code.equalsIgnoreCase("REFERIDO_PARA"))
             operationType = PatientTransReferenceType.findByCode("REFERENCIA_FP")
         else if (episode.startStopReason.code.equalsIgnoreCase("VOLTOU_REFERENCIA"))

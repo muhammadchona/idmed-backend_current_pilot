@@ -45,14 +45,14 @@ class RestGetEpisodeCentralMobileService extends SynchronizerTask {
             "Id Episodio",
             "patientUuid");
 
-    //@Scheduled(cron = "0 0 */2 * * ?")
+   //@Scheduled(fixedDelay = 90000L)
     void execute() {
 
-        if (!this.isProvincial()) {
+        if (this.instalationConfig != null && !this.isProvincial()) {
 
             Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
-          //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "mobile")
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")
+          ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, MOBILE_SERVER)
+           // ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("Test" , "mobile")
             String urlPath = "/sync_temp_episode?usuuid=eq."+clinic.getUuid()+"&syncstatus=eq.S"; // addClinicUUid
             LOGGER.info("Iniciando a Busca de Episodios de Fim")
             def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer,urlPath)

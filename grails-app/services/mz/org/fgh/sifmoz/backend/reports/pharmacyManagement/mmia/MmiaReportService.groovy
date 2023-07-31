@@ -12,7 +12,6 @@ import mz.org.fgh.sifmoz.backend.patient.Patient
 import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
-import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
@@ -52,16 +51,18 @@ abstract class MmiaReportService implements IMmiaReportService {
                 }
 
                 if(patientHashSet.add(patientVisitDetails.getPatientVisit().getPatient())) {
-                    Date birthDate =patientVisitDetails.getPatientVisit().getPatient().getDateOfBirth()
-                    if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 18) {
-                        curMmiaReport.addTotalPacientesAdulto()
-                    } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 0 &&ConvertDateUtils.getAgeByLocalDates(birthDate,searchParams.getEndDate()) <= 4) {
-                        //  println(adult++)
-                        curMmiaReport.addTotalPacientes04()
-                    } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 5 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) <= 9) {
-                        curMmiaReport.addTotalPacientes59()
-                    } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  >= 10 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  <= 14) {
-                        curMmiaReport.addTotalPacientes1014()
+                    Date birthDate = patientVisitDetails.getPatientVisit().getPatient().getDateOfBirth()
+                    if (birthDate != null) {
+                        if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 18) {
+                            curMmiaReport.addTotalPacientesAdulto()
+                        } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 0 &&ConvertDateUtils.getAgeByLocalDates(birthDate,searchParams.getEndDate()) <= 4) {
+                            //  println(adult++)
+                            curMmiaReport.addTotalPacientes04()
+                        } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) >= 5 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate()) <= 9) {
+                            curMmiaReport.addTotalPacientes59()
+                        } else if (ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  >= 10 && ConvertDateUtils.getAgeByLocalDates(birthDate , searchParams.getEndDate())  <= 14) {
+                            curMmiaReport.addTotalPacientes1014()
+                        }
                     }
                     if (patientVisitDetails.getPrescription().patientType == "NOVO") {
                         curMmiaReport.addTotalPacientesInicio()

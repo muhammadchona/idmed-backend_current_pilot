@@ -27,7 +27,7 @@ class RestClinicSectorService extends SynchronizerTask {
     @Scheduled(fixedDelay = 30000L)
     void schedulerRequestRunning() {
         ClinicSector.withTransaction {
-            if (!this.isProvincial()) {
+            if (this.instalationConfig != null &&  !this.isProvincial()) {
                 Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
                 List<ClinicSector> clinicSectorList = ClinicSector.findAllBySyncStatus('P')
 

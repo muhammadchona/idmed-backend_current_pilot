@@ -18,6 +18,7 @@ class GroupInfo extends BaseEntity {
     Clinic clinic
     GroupType groupType
     ClinicalService service
+    Date creationDate = new Date()
 
     static hasMany = [members: GroupMember, packHeaders: GroupPackHeader]
     static mapping = {
@@ -34,6 +35,7 @@ id column: 'id', index: 'Pk_GroupInfo_Idx'
         })
         endDate(nullable: true, blank: true)
         packHeaders nullable: true
+        creationDate nullable: true
     }
 
     public boolean isActive() {

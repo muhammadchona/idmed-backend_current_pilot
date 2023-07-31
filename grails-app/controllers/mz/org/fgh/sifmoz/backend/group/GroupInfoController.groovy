@@ -132,8 +132,14 @@ class GroupInfoController extends RestfulController{
             respond group.errors
             return
         }
-
-        respond group, [status: OK, view:"show"]
+        def memberListJson = JSONSerializer.setObjectListJsonResponse(group.members as List)
+        def result = JSONSerializer.setJsonObjectResponse(group)
+        if (memberListJson)
+            result.put('members', memberListJson)
+        else
+            result.remove('members')
+        render result as JSON
+      //  respond group, [status: OK, view:"show"]
     }
 
     @Transactional

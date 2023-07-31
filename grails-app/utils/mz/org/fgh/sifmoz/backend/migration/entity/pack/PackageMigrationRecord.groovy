@@ -71,6 +71,9 @@ class PackageMigrationRecord extends AbstractMigrationRecord{
                     PatientServiceIdentifier psiLocal = PatientServiceIdentifier.findByPatientAndService(
                             Patient.findById(patientMigrationLog.iDMEDId),clinicalService)
                     episode = Episode.findByPatientServiceIdentifierAndEpisodeTypeAndEpisodeDateNotGreaterThan(psiLocal, EpisodeType.findByCode("INICIO"), ConvertDateUtils.getDateAtEndOfDay(this.pickupdatepack))
+               if (episode == null) {
+                   episode = Episode.findById(episodeMigrationLog.getiDMEDId())
+                  }
                 } else {
                     episode = Episode.findById(episodeMigrationLog.getiDMEDId())
                 }

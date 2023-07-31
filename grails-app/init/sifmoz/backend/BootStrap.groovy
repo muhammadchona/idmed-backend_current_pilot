@@ -25,7 +25,15 @@ import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationService
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
+import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
+import mz.org.fgh.sifmoz.backend.packaging.Pack
+import mz.org.fgh.sifmoz.backend.patient.Patient
+import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
+import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescription.SpetialPrescriptionMotive
+import mz.org.fgh.sifmoz.backend.prescriptionDetail.PrescriptionDetail
+import mz.org.fgh.sifmoz.backend.prescriptionDrug.PrescribedDrug
 import mz.org.fgh.sifmoz.backend.protection.*
 import mz.org.fgh.sifmoz.backend.provincialServer.ProvincialServer
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
@@ -128,6 +136,13 @@ class BootStrap {
         SecUser.withTransaction {
             initUserManagement()
             springSecurityService.clearCachedRequestmaps()
+        }
+        Pack.withTransaction {
+           resolvePackWithoutPackagedDrugs()
+        }
+
+        Prescription.withTransaction {
+            resolvePrescriptionsWithoutPrescribedDrugs()
         }
 
     }
@@ -600,11 +615,11 @@ class BootStrap {
                 clinic.save(flush: true, failOnError: true)
             }
         }
-
+/*
         for (clinicObject in listClinic4()) {
             if (!Clinic.findById(clinicObject.uuid)) {
                 Clinic clinic = new Clinic()
-                clinic.id = clinicObject.uuid
+                clinic.id = clinicObject.uui
                 clinic.code = clinicObject.site_nid
                 clinic.notes = "SISMA CODE: ".concat(clinicObject.sisma_id)
                 clinic.clinicName = clinicObject.sitename
@@ -617,6 +632,7 @@ class BootStrap {
                 clinic.save(flush: true, failOnError: true)
             }
         }
+ */
     }
 
     void initSystemConfigs() {
@@ -2461,4 +2477,118 @@ class BootStrap {
         return menus
     }
 
+    void resolvePackWithoutPackagedDrugs() {
+        def lisPack = Pack.findAllByPackagedDrugsIsEmpty()
+        for (Pack pack : lisPack) {
+
+            PatientVisitDetails patientVisitDetails = PatientVisitDetails.findByPack(pack)
+            Prescription prescription = Prescription.findById(patientVisitDetails.prescription.id)
+            PrescriptionDetail prescriptionDetail = PrescriptionDetail.findByPrescription(prescription)
+
+            TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.findById(prescriptionDetail.therapeuticRegimen.id)
+            DispenseType dispenseType = DispenseType.findById(prescriptionDetail.dispenseType.id)
+            def selectedDrug = null
+
+            def listAssociatedDrugs = therapeuticRegimen.drugs
+            PackagedDrug packagedDrug = new PackagedDrug()
+
+            if (listAssociatedDrugs.size() == 1) {
+                selectedDrug = listAssociatedDrugs.first()
+            }
+
+            for (Drug drug : listAssociatedDrugs) {
+
+                if (dispenseType.code.equalsIgnoreCase("DM")) {
+                    packagedDrug.quantitySupplied = 1
+                    if (drug.packSize <= 60) {
+                        selectedDrug = drug
+                    }
+                } else if (dispenseType.code.equalsIgnoreCase("DT")) {
+                    packagedDrug.quantitySupplied = 3
+                    if (drug.packSize == 90) {
+                        selectedDrug = drug
+                    }
+                } else {
+                    packagedDrug.quantitySupplied = 0
+                    selectedDrug = listAssociatedDrugs.first()
+                }
+            }
+
+            if (selectedDrug == null && listAssociatedDrugs.size() > 0)
+                selectedDrug = listAssociatedDrugs.first()
+
+            if (selectedDrug == null)
+                selectedDrug = Drug.findById("4d2c441c-4393-489e-bd4c-bab5c7456a78")
+
+            packagedDrug.id = UUID.randomUUID().toString()
+            packagedDrug.drug = selectedDrug
+            packagedDrug.amtPerTime = selectedDrug.defaultTreatment
+            packagedDrug.timesPerDay = selectedDrug.defaultTimes
+            packagedDrug.form = selectedDrug.defaultPeriodTreatment
+            packagedDrug.nextPickUpDate = pack.nextPickUpDate
+            packagedDrug.toContinue = true
+            packagedDrug.creationDate = new Date()
+            packagedDrug.pack = pack
+            pack.addToPackagedDrugs(packagedDrug)
+            pack.save(flush: true, failOnError: true)
+        }
+    }
+
+    void resolvePrescriptionsWithoutPrescribedDrugs() {
+        def lisPrescription = Prescription.findAllByPrescribedDrugsIsEmptyAndCreationDateIsNotNull()
+        for (Prescription prescription : lisPrescription) {
+
+            PrescriptionDetail prescriptionDetail = PrescriptionDetail.findByPrescription(prescription)
+
+            TherapeuticRegimen therapeuticRegimen = TherapeuticRegimen.findById(prescriptionDetail.therapeuticRegimen.id)
+            DispenseType dispenseType = DispenseType.findById(prescriptionDetail.dispenseType.id)
+            def selectedDrug = null
+
+            def listAssociatedDrugs = therapeuticRegimen.drugs
+            PrescribedDrug prescribedDrug = new PrescribedDrug()
+
+            if(listAssociatedDrugs.size() == 1){
+                selectedDrug = listAssociatedDrugs.first()
+            }
+
+            for( Drug drug : listAssociatedDrugs){
+
+                if(dispenseType.code.equalsIgnoreCase("DM")){
+                    prescribedDrug.prescribedQty = 1
+                    if(drug.packSize <= 60){
+                        selectedDrug = drug
+                    }
+                }else if(dispenseType.code.equalsIgnoreCase("DT")){
+                    prescribedDrug.prescribedQty = 3
+                    if(drug.packSize == 90){
+                        selectedDrug = drug
+                    }
+                }else{
+                    prescribedDrug.prescribedQty = 0
+                    selectedDrug = listAssociatedDrugs.first()
+                }
+            }
+
+            if(selectedDrug == null && listAssociatedDrugs.size() > 0)
+                selectedDrug = listAssociatedDrugs.first()
+
+            if(selectedDrug == null)
+                selectedDrug = Drug.findById("4d2c441c-4393-489e-bd4c-bab5c7456a78")
+
+            prescribedDrug.id = UUID.randomUUID().toString()
+            prescribedDrug.drug = selectedDrug
+            prescribedDrug.amtPerTime = selectedDrug.defaultTreatment
+            prescribedDrug.timesPerDay = selectedDrug.defaultTimes
+            prescribedDrug.form = selectedDrug.defaultPeriodTreatment
+            prescribedDrug.modified = false
+            prescribedDrug.prescription = prescription
+            prescription.addToPrescribedDrugs(prescribedDrug)
+            prescription.save(flush: true, failOnError: true)
+        }
+    }
+
+    void resolvePatientsWithNoServiceIdentifierButInVisit() {
+      def listPatientsWithoutPatientServiceIdentifier = Patient.findAllByIdentifiersIsEmptyAnd()
+    }
 }
+

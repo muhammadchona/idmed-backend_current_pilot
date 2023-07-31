@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.RestfulController
 import grails.validation.ValidationException
 import mz.org.fgh.sifmoz.backend.groupMember.GroupMember
+import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -39,7 +40,16 @@ class groupMemberPrescriptionController extends RestfulController{
     }
 
     def getByMemberId(String memberId) {
-        GroupMemberPrescription groupMemberPrescription = GroupMemberPrescription.findByMemberAndUsed(GroupMember.findById(memberId), false)
+        List<GroupMemberPrescription> groupMemberPrescriptions = GroupMemberPrescription.findAllByMember(GroupMember.findById(memberId))
+        def latestGroupMemberPrescription  = null
+        groupMemberPrescriptions.each {it ->
+            if (latestGroupMemberPrescription == null ) {
+                latestGroupMemberPrescription = it;
+            } else if (it.prescription.prescriptionDate > latestGroupMemberPrescription.prescription.prescriptionDate) {
+                latestGroupMemberPrescription = it;
+            }
+        }
+        def groupMemberPrescription = latestGroupMemberPrescription
         if (groupMemberPrescription == null)
             render status: NO_CONTENT
         else
@@ -80,11 +90,16 @@ class groupMemberPrescriptionController extends RestfulController{
             return
         }
         def groupMemberPrescriptionJson = JSONSerializer.setJsonObjectResponse(groupPrescription.prescription as Object)
+        def groupMemberJson = JSONSerializer.setJsonObjectResponse(groupPrescription.member as Object)
         def result = JSONSerializer.setJsonObjectResponse(groupPrescription)
         if (groupMemberPrescriptionJson)
             result.put('prescription', groupMemberPrescriptionJson)
         else
             result.remove('prescription')
+        if (groupMemberJson)
+            result.put('member', groupMemberJson)
+        else
+            result.remove('member')
         render result as JSON
      //   respond groupPrescription, [status: CREATED, view:"show"]
     }

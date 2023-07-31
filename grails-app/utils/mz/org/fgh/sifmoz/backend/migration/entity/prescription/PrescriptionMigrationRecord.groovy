@@ -70,7 +70,7 @@ class PrescriptionMigrationRecord extends AbstractMigrationRecord {
 
             if (psi == null ) {
                 psi = new PatientServiceIdentifier()
-                psi.setStartDate(this.prescriptiondate)
+                psi.setStartDate(this.startdate)
                 psi.setPatient(patient);
                 psi.setClinic(clinic)
                 psi.setService(clinicalService)

@@ -10,6 +10,7 @@ import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.utilities.JSONSerializer
 import mz.org.fgh.sifmoz.backend.utilities.Utilities
 
+import static org.springframework.http.HttpStatus.CONFLICT
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -114,7 +115,10 @@ class PatientTransReferenceController extends RestfulController{
         def clinic = Clinic.findByMainClinic(true)
         def patientIdentifier = PatientServiceIdentifier.findByValue(objectJSON.identifier)
         def lastPickupString = ConvertDateUtils.convertDDMMYYYYToYYYYMMDD(objectJSON.lastPickup)
-
+         def patientTransreferenceExists = PatientTransReference.findByIdentifierAndOperationDate(patientIdentifier , lastPickupString)
+       if (patientTransreferenceExists != null)  {
+           render status: CONFLICT
+       } else {
         PatientTransReference patientTransReference = new PatientTransReference()
         patientTransReference.beforeInsertId()
         patientTransReference.syncStatus = 'P'
@@ -142,5 +146,6 @@ class PatientTransReferenceController extends RestfulController{
             return
         }
         respond patientTransReference, [status: CREATED, view:"show"]
+       }
     }
 }

@@ -12,6 +12,14 @@ public class PackageMigrationSearchParams extends AbstractMigrationSearchParams<
     @Override
     public List<PackageMigrationRecord> doSearch(long limit) {
         JSONArray jsonArray = getRestServiceProvider().get("/package_migration_vw?limit="+limit);
+        if (jsonArray == null) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            jsonArray = getRestServiceProvider().get("/package_migration_vw?limit="+limit);
+        }
         this.searchResults.clear();
         PackageMigrationRecord[] patientMigrationRecords = gson.fromJson(jsonArray.toString(), PackageMigrationRecord[].class);
         if (patientMigrationRecords != null && patientMigrationRecords.length > 0) {

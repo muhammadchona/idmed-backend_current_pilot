@@ -40,6 +40,7 @@ class Prescription extends BaseEntity{
     byte[] photo
     String photoName
     String photoContentType
+    Date creationDate = new Date()
     static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail]
 //    static hasMany = [prescribedDrugs: PrescribedDrug, prescriptionDetails: PrescriptionDetail, patientVisitDetails: PatientVisitDetails]
 
@@ -72,6 +73,7 @@ class Prescription extends BaseEntity{
         photoName nullable: true, blank: true
         photoContentType nullable: true, blank: true
         patientStatus nullable: true, blank: true
+        creationDate nullable: true
     }
 
     def beforeInsert() {

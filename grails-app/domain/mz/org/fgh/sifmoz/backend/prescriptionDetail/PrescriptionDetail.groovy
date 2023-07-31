@@ -16,6 +16,7 @@ class PrescriptionDetail extends BaseEntity {
     DispenseType dispenseType
     Prescription prescription
     SpetialPrescriptionMotive spetialPrescriptionMotive
+    Date creationDate = new Date()
     static belongsTo = [Prescription]
 
     static mapping = {
@@ -28,6 +29,7 @@ class PrescriptionDetail extends BaseEntity {
         therapeuticRegimen nullable: true
         therapeuticLine nullable: true
         spetialPrescriptionMotive nullable: true
+        creationDate nullable: true
     }
 
     def beforeInsert() {
