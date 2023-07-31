@@ -18,7 +18,7 @@ class PackagedDrug extends BaseEntity {
     double quantitySupplied
     Date nextPickUpDate
     boolean toContinue
-    Date creationDate
+    Date creationDate = new Date()
     Pack pack
     static belongsTo = [Pack]
 

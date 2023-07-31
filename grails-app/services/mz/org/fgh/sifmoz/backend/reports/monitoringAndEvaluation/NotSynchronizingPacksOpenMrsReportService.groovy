@@ -2,11 +2,8 @@ package mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation
 
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.openmrsErrorLog.OpenmrsErrorLog
-import mz.org.fgh.sifmoz.backend.openmrsErrorLog.OpenmrsErrorLogService
-import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.reports.common.IReportProcessMonitorService
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
 import org.springframework.beans.factory.annotation.Autowired
@@ -62,8 +59,8 @@ abstract class NotSynchronizingPacksOpenMrsReportService implements INotSynchron
     }
 
     @Override
-    List<ArvDailyRegisterReportTemp> getReportDataByReportId(String reportId) {
-        return ArvDailyRegisterReportTemp.findAllByReportId(reportId)
+    List<NotSynchronizingPacksOpenMrsReport> getReportDataByReportId(String reportId) {
+        return NotSynchronizingPacksOpenMrsReport.findAllByReportId(reportId)
     }
 
     private ReportProcessMonitor setProcessMonitor(ReportProcessMonitor processMonitor) {

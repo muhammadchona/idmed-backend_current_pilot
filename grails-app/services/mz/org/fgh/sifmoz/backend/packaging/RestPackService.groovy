@@ -13,12 +13,7 @@ import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.restUtils.RestOpenMRSClient
 import mz.org.fgh.sifmoz.backend.service.ClinicalService
-import org.apache.logging.log4j.LogManager
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
-
-import java.text.SimpleDateFormat
-import java.util.logging.Logger
 
 @Slf4j
 @CompileStatic
@@ -34,7 +29,7 @@ class RestPackService {
 
     static lazyInit = false
 
-    @Scheduled(fixedDelay = 30000L)
+    //@Scheduled(fixedDelay = 30000L)
     void schedulerRequestRunning() {
         Pack.withTransaction {
             List<Pack> packList = Pack.findAllWhere(syncStatus: 'R' as char)
@@ -78,6 +73,9 @@ class RestPackService {
             Episode episode = Episode.get(patientVisitDetails.episode.id)
             PatientServiceIdentifier identifier = PatientServiceIdentifier.get(episode.patientServiceIdentifier.id)
             ClinicalService service = ClinicalService.get(identifier.service.id)
+            OpenmrsErrorLog openmrsLogExists = OpenmrsErrorLog.find {
+                 patientVisitDetails.id
+            }
             errorLog.patient = patient.id
             errorLog.nid = identifier.value
             errorLog.servicoClinico = service.description
@@ -86,16 +84,18 @@ class RestPackService {
             errorLog.returnPickupDate = null
             errorLog.errorDescription = errorResponse
             errorLog.jsonRequest = jSONRequest
-            errorLog.save()
+            if (openmrsLogExists == null)   errorLog.save()
         } catch (Exception e) {
             e.printStackTrace()
         }
     }
 
     def deleteErrorLog(PatientVisitDetails patientVisitDetails) {
-        OpenmrsErrorLog patientVisitDetailsinLog = OpenmrsErrorLog.findWhere(patientVisitDetails:patientVisitDetails.id)
-        if (patientVisitDetailsinLog) {
-            patientVisitDetailsinLog.delete()
+        List<OpenmrsErrorLog> patientVisitDetailsinLog = OpenmrsErrorLog.findAllWhere(patientVisitDetails:patientVisitDetails.id)
+        patientVisitDetailsinLog.each {it ->
+            if (it) {
+                it.delete()
+            }
         }
     }
 

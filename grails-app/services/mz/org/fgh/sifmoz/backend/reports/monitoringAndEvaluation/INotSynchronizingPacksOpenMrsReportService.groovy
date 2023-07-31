@@ -3,6 +3,8 @@ package mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation
 import grails.gorm.services.Service
 import mz.org.fgh.sifmoz.backend.multithread.ReportSearchParams
 import mz.org.fgh.sifmoz.backend.reports.common.ReportProcessMonitor
+import mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation.ArvDailyRegisterReportTemp
+import mz.org.fgh.sifmoz.backend.reports.monitoringAndEvaluation.NotSynchronizingPacksOpenMrsReport
 
 
 interface INotSynchronizingPacksOpenMrsReportService {
@@ -19,7 +21,7 @@ interface INotSynchronizingPacksOpenMrsReportService {
 
     void processReportRecords(ReportSearchParams searchParams, ReportProcessMonitor processMonitor)
 
-    List<ArvDailyRegisterReportTemp> getReportDataByReportId(String reportId)
+    List<NotSynchronizingPacksOpenMrsReport> getReportDataByReportId(String reportId)
 
 
 }

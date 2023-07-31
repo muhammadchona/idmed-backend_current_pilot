@@ -51,7 +51,7 @@ public class PrescribedDrugsMigrationRecord extends AbstractMigrationRecord {
             prescribedDrug.setModified(this.modified == "T")
             prescribedDrug.setPrescription(savedPrescription)
             prescribedDrug.setAmtPerTime(this.amtpertime)
-            prescribedDrug.setQtyPrescribed(this.amtpertime * this.timesperday as int)
+            prescribedDrug.setPrescribedQty(this.amtpertime * this.timesperday as int)
             prescribedDrug.setTimesPerDay(this.timesperday)
             prescribedDrug.setForm(prescribedDrug.getDrug().getDefaultPeriodTreatment())
             if (!prescribedDrug.hasErrors()) {

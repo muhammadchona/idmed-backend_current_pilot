@@ -1,7 +1,6 @@
 package mz.org.fgh.sifmoz.backend.tansreference
 
-import grails.gorm.transactions.Transactional
-import groovy.util.logging.Slf4j
+
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
@@ -12,7 +11,6 @@ import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.task.SynchronizerTask
 import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.clinicSector.ClinicSector
-import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episode.IEpisodeService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.IPatientVisitDetailsService
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
@@ -23,8 +21,6 @@ import mz.org.fgh.sifmoz.backend.utilities.Utilities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 
 //@Transactional
 //@EnableScheduling
@@ -53,17 +49,17 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    @Scheduled(fixedDelay = 60000L)
+    //@Scheduled(fixedDelay = 60000L)
     void execute() {
         PatientTransReference.withTransaction {
-            if (!this.isProvincial()) {
+            if (this.instalationConfig != null && !this.isProvincial()) {
                 Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
                 List<PatientTransReferenceType> patientTransReferenceTypes = PatientTransReferenceType.findAllByCodeInList(Arrays.asList('REFERENCIA_FP', 'REFERENCIA_DC'))
                 List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationTypeInList('P', patientTransReferenceTypes)
 
                 // Alterar para a linha abaixo quando for em Producao
-//              ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.code , "MOBILE")
-                ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
+               ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code , MOBILE_SERVER)
+       //         ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
 
                 char SyncP = 'P'
                 char SyncS = 'S'
@@ -104,7 +100,8 @@ class RestPostPatientCentralMobileService extends SynchronizerTask {
                         } else if (pt.operationType.code.equals("REFERENCIA_DC")) {
                             ClinicSector clinicSectorDestination = ClinicSector.findById(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
                             syncTempPatient.setClinicname(clinicSectorDestination != null ? clinicSectorDestination.description : 'Desconhecido')
-                            syncTempPatient.setClinicuuid(clinicSectorDestination != null ? clinicSectorDestination.uuid : 'Desconhecido')
+                          //  syncTempPatient.setClinicuuid(clinicSectorDestination != null ? clinicSectorDestination.uuid : 'Desconhecido')
+                            syncTempPatient.setClinicuuid(pt.destination.contains(":") ? pt.destination.substring(pt.destination.indexOf(":") + 1).trim() : pt.destination.trim())
                         }
                         syncTempPatient.setClinic(0)
                         syncTempPatient.setMainclinic(0)

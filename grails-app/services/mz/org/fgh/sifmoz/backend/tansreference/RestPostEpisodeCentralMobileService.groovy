@@ -16,7 +16,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -45,11 +44,11 @@ class RestPostEpisodeCentralMobileService extends SynchronizerTask {
             "Nome",
             "NID");
 
-    @Scheduled(fixedDelay = 90000L)
+    //@Scheduled(fixedDelay = 90000L)
     void execute() {
-        if (!this.isProvincial()) {
+        if (this.instalationConfig != null && !this.isProvincial()) {
         Clinic clinicLoged = Clinic.findByUuid(this.getUsOrProvince())
-        ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code, "mobile")
+        ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinicLoged.getProvince().code, MOBILE_SERVER)
 
             PatientTransReferenceType patientTransReferenceType = PatientTransReferenceType.findByCode("VOLTOU_DA_REFERENCIA")
             List<PatientTransReference> patientsTransferees = PatientTransReference.findAllBySyncStatusAndOperationType('P',patientTransReferenceType)
@@ -77,9 +76,9 @@ class RestPostEpisodeCentralMobileService extends SynchronizerTask {
                     syncTempEpisode.setStopdate(pt.operationDate)
                     syncTempEpisode.setStopreason(episode.startStopReason.reason)
                     syncTempEpisode.setStopnotes(episode.notes)
-                    syncTempEpisode.setPatientuuid("9f3006d2-33e8-4f65-b769-af26102b3154")  //pt.identifier.patient.hisUuid
-                    syncTempEpisode.setClinicuuid("9f3006d2-33e8-4f65-b769-af26102b3154") //pt.identifier.clinic.uuid
-                    syncTempEpisode.setUsuuid("9f3006d2-33e8-4f65-b769-af26102b3154")
+                    syncTempEpisode.setPatientuuid(pt.identifier.patient.hisUuid)  //pt.identifier.patient.hisUuid
+                    syncTempEpisode.setClinicuuid(pt.identifier.clinic.uuid) //pt.identifier.clinic.uuid
+                    syncTempEpisode.setUsuuid(pt.identifier.clinic.uuid)
                     syncTempEpisode.setSyncstatus(syncStatus)
 
                     def obj = Utilities.parseToJSON(syncTempEpisode)

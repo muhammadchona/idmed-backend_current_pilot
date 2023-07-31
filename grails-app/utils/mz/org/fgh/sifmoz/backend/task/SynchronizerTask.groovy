@@ -11,6 +11,8 @@ public abstract class SynchronizerTask implements ISynchronizerTask {
 
     SystemConfigs instalationConfig;
 
+    public final static String MOBILE_SERVER = "MOBILE";
+
     public SynchronizerTask() {
         if (systemConfigsService != null) {
             instalationConfig = systemConfigsService.getByKey("INSTALATION_TYPE")

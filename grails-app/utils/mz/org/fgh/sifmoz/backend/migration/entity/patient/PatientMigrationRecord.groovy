@@ -5,6 +5,7 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic;
 import mz.org.fgh.sifmoz.backend.clinic.ClinicService;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province;
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.ProvinceService
+import mz.org.fgh.sifmoz.backend.healthInformationSystem.HealthInformationSystem
 import mz.org.fgh.sifmoz.backend.migration.common.MigrationError;
 import mz.org.fgh.sifmoz.backend.migrationLog.MigrationLog;
 import mz.org.fgh.sifmoz.backend.patient.Patient;
@@ -74,6 +75,7 @@ public class PatientMigrationRecord extends AbstractMigrationRecord {
         getMigratedRecord().setLastNames(this.getLastname())
         getMigratedRecord().setGender(this.getSex() == 'M' ? "Masculino" : "Feminino")
         getMigratedRecord().setDistrict(getMigratedRecord().getClinic().getDistrict())
+        getMigratedRecord().setHis(HealthInformationSystem.findByAbbreviation('OpenMRS'))
         if (Utilities.listHasElements(logs)) return logs
             if (getMigratedRecord().id == null || getMigratedRecord().id.length() <= 0)  getMigratedRecord().setId(UUID.randomUUID().toString())
             getMigratedRecord().validate()

@@ -17,6 +17,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -42,13 +43,13 @@ class RestGetEpisodeToCorrectCentralMobileService extends SynchronizerTask{
 
     static lazyInit = false
 
-    //@Scheduled(cron = "0 0 */2 * * ?")
+    //@Scheduled(fixedDelay = 90000L)
     void execute() {
-        if (!this.isProvincial()) {
+        if (this.instalationConfig != null && !this.isProvincial()) {
 
             Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
-//          ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "mobile")
-            ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12" , "MOBILE")
+          ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, MOBILE_SERVER)
+        //    ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12" , "MOBILE")
             String urlPath = "/sync_temp_patients?mainclinicuuid=eq."+clinic.getUuid()+"&modified=eq.T"; //addClinicuuid
             def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer,urlPath)
             LOGGER.info("Iniciando a Busca de Pacientes Para Corrigir")

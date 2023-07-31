@@ -26,7 +26,7 @@ class Pack extends BaseEntity {
     GroupPack groupPack
     char syncStatus
     String providerUuid
-
+    Date creationDate = new Date()
     static hasMany = [packagedDrugs: PackagedDrug]
     static mapping = {
         id generator: "assigned"
@@ -45,6 +45,7 @@ class Pack extends BaseEntity {
         dispenseMode(nullable: false)
         groupPack nullable: true
         reasonForPackageReturn(nullable: true,maxSize: 500)
+        creationDate nullable: true
     }
 
     def beforeInsert() {

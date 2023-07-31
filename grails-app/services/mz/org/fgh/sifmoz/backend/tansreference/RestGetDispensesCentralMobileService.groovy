@@ -8,7 +8,6 @@ import mz.org.fgh.sifmoz.backend.clinic.Clinic
 import mz.org.fgh.sifmoz.backend.convertDateUtils.ConvertDateUtils
 import mz.org.fgh.sifmoz.backend.dispenseMode.DispenseMode
 import mz.org.fgh.sifmoz.backend.dispenseType.DispenseType
-import mz.org.fgh.sifmoz.backend.doctor.Doctor
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.duration.Duration
 import mz.org.fgh.sifmoz.backend.episode.Episode
@@ -39,7 +38,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 
 @Transactional
 @EnableScheduling
@@ -75,13 +73,13 @@ class RestGetDispensesCentralMobileService extends SynchronizerTask {
     static lazyInit = false
 
 
-    @Scheduled(fixedDelay = 60000L)
+   //@Scheduled(fixedDelay = 60000L)
     void execute() {
         Pack.withTransaction {
-            if (!this.isProvincial()) {
+            if (this.instalationConfig != null && !this.isProvincial()) {
                 Clinic clinic = Clinic.findByUuid(this.getUsOrProvince())
-                //  ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, "MOBILE")
-                ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
+                 ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination(clinic.getProvince().code, MOBILE_SERVER)
+        //        ProvincialServer provincialServer = ProvincialServer.findByCodeAndDestination("12", "MOBILE")
                 String urlPath = "/sync_temp_dispense?mainclinicuuid=eq." + clinic.getUuid() + "&syncstatus=eq.P" + "&order=pickupdate.desc";
                 LOGGER.info("Iniciando a Busca de Dispensas")
                 def response = restProvincialServerClient.getRequestProvincialServerClient(provincialServer, urlPath)
