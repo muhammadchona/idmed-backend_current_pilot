@@ -11,6 +11,7 @@ class StockEntrance extends BaseEntity {
     Date dateReceived
     Clinic clinic
     Date creationDate
+    String notes
     static hasMany = [stocks: Stock]
 
     static mapping = {
@@ -24,6 +25,7 @@ id column: 'id', index: 'Pk_StockEntrance_Idx'
             return ((dateReceived <= new Date()))
         })
         creationDate nullable: true
+        notes nullable: true
     }
 
     @Override
