@@ -96,6 +96,7 @@ micronaut:
                 - text/javascript
 ---
 hibernate:
+    enable_lazy_load_no_trans: true
     cache:
         queries: false
         use_second_level_cache: false
@@ -111,7 +112,15 @@ environments:
     development:
         dataSource:
             dbCreate: update
-            url: jdbc:postgresql://localhost:2345/sangariveira
+            url: jdbc:postgresql://localhost:2345/coalane_migrated
+        dataSources:
+            second:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                driverClassName: org.postgresql.Driver
+                dbCreate: update
+                url: jdbc:postgresql://localhost:2345/coalane
+                hibernate:
+                    readOnly: true
     test:
         dataSource:
             dbCreate: update
@@ -120,5 +129,11 @@ environments:
         dataSource:
             dbCreate: update
             url: jdbc:postgresql://db:5432/idmed
-
-
+        dataSources:
+            second:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                driverClassName: org.postgresql.Driver
+                dbCreate: update
+                url: jdbc:postgresql://db:5432/idmedusada
+                hibernate:
+                    readOnly: true
