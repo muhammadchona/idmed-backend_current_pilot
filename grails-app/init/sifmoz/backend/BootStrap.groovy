@@ -23,13 +23,12 @@ import mz.org.fgh.sifmoz.backend.healthInformationSystem.SystemConfigs
 import mz.org.fgh.sifmoz.backend.identifierType.IdentifierType
 import mz.org.fgh.sifmoz.backend.interoperabilityAttribute.InteroperabilityAttribute
 import mz.org.fgh.sifmoz.backend.interoperabilityType.InteroperabilityType
+import mz.org.fgh.sifmoz.backend.migration.fromDataSource.DataSourceMigrationService
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationService
 import mz.org.fgh.sifmoz.backend.migration.stage.MigrationStage
 import mz.org.fgh.sifmoz.backend.multithread.ExecutorThreadProvider
 import mz.org.fgh.sifmoz.backend.packagedDrug.PackagedDrug
 import mz.org.fgh.sifmoz.backend.packaging.Pack
-import mz.org.fgh.sifmoz.backend.patient.Patient
-import mz.org.fgh.sifmoz.backend.patientIdentifier.PatientServiceIdentifier
 import mz.org.fgh.sifmoz.backend.patientVisitDetails.PatientVisitDetails
 import mz.org.fgh.sifmoz.backend.prescription.Prescription
 import mz.org.fgh.sifmoz.backend.prescription.SpetialPrescriptionMotive
@@ -52,6 +51,7 @@ class BootStrap {
 
     GrailsApplication grailsApplication
     SpringSecurityService springSecurityService
+    DataSourceMigrationService dataSourceMigrationService
 
     def init = { servletContext ->
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
@@ -147,15 +147,21 @@ class BootStrap {
             resolvePrescriptionsWithoutPrescribedDrugs()
         }
 
+
         PatientServiceIdentifier.withTransaction {
             // adjustServiceDate()
         }
+      
         Patient.withTransaction {
            // resolvePatientsAddMatchId()
         }
 
-    }
+        dataSourceMigrationService.loadAndSaveClinicSectorMigrationService()
+        dataSourceMigrationService.loadAndSaveDoctorsMigrationService()
+        dataSourceMigrationService.loadAndSavePatientVisitDetailsMigrationService()
+        dataSourceMigrationService.loadAndSavePatientVisitMigrationService()
 
+    }
 
     def destroy = {
     }
@@ -230,6 +236,11 @@ class BootStrap {
     }
 
     void initFacilityType() {
+
+//        def datasoures = MultipleDataSourceSupport.getDatasourceNames(PatientVisitDetails as PersistentEntity)
+//        def defaulDatasource = MultipleDataSourceSupport.getDefaultDataSource(PatientVisitDetails as PersistentEntity)
+
+
         for (facilityTypeObject in listFacilityType()) {
             if (!FacilityType.findByCode(facilityTypeObject.code)) {
                 FacilityType facilityType = new FacilityType()
@@ -1046,6 +1057,7 @@ class BootStrap {
         interoperabilityTypeList.add(new LinkedHashMap(id: 'D3B4942C-514B-47A5-BAED-F3A47A466E09', code: 'URL_BASE', description: 'URL BASE'))
         interoperabilityTypeList.add(new LinkedHashMap(id: 'CFCA8326-0AB9-46D0-B5CE-1E277E564823', code: 'URL_BASE_REPORTING_REST', description: 'URL BASE REPORTING REST'))
         interoperabilityTypeList.add(new LinkedHashMap(id: '0718F9D9-39A8-405A-8092-5BDDE4204B25', code: 'OPENMRS_VERSION', description: 'OPENMRS VERSION'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: 'c5531ee8-2d73-4006-829a-e46645391c60', code: 'OPENMRS_LOCATION_UUID', description: 'OPENMRS LOCATION UUID'))
         interoperabilityTypeList.add(new LinkedHashMap(id: 'CEBEF157-57B9-4442-A1E3-59FA92E818D6', code: 'FORM_FILA_UUID', description: 'FILA FORM UUID'))
         interoperabilityTypeList.add(new LinkedHashMap(id: '73715EBA-8BDD-4C55-8895-C01FB0D5AF57', code: 'FILA_REGIMEN_CONCEPT_UUID', description: 'FILA REGIMEN CONCEPT UUID'))
         interoperabilityTypeList.add(new LinkedHashMap(id: 'EE650283-C62F-43E7-8835-A7B7A9706119', code: 'FILA_VISIT_CONCEPT_UUID', description: 'FILA VISIT CONCEPT UUID'))
@@ -1072,6 +1084,13 @@ class BootStrap {
         interoperabilityTypeList.add(new LinkedHashMap(id: 'B2AAF0F5-D23B-4DD4-95BA-0ACCC0656A9C', code: 'FILT_ENCOUNTER_TYPE_CONCEPT_UUID', description: 'FILT ENCOUNTER TYPE CONCEPT UUID'))
         interoperabilityTypeList.add(new LinkedHashMap(id: '94094FC8-99F1-4A23-8E2A-1E823E30B6D7', code: 'UNIVERSAL_PROVIDER_UUID', description: 'UNIVERSAL PROVIDER UUID'))
 
+        interoperabilityTypeList.add(new LinkedHashMap(id: '302bca64-9bfd-4fa8-8e29-be08cdfd0e92', code: 'PATIENT_IDENTIFIER_TYPE_NID_UUID', description: 'PATIENT IDENTIFIER TYPE NID UUID'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: 'b5907b94-8924-4ad3-8028-3722d787e79e', code: 'PATIENT_IDENTIFIER_TYPE_PREP_UUID', description: 'PATIENT IDENTIFIER TYPE PREP UUID'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: '1b221e2b-69b4-4bd7-a0a0-56ffeae9137e', code: 'PATIENT_IDENTIFIER_TYPE_CCR_UUID', description: 'PATIENT IDENTIFIER TYPE CCR UUID'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: '07e09518-00a7-4e8e-9a55-ce405660c118', code: 'PATIENT_IDENTIFIER_TYPE_CRAM_UUID', description: 'PATIENT IDENTIFIER TYPE CRAM UUID'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: 'e4d42149-d962-4a15-bcd2-7cecad5ce73c', code: 'PATIENT_IDENTIFIER_TYPE_TB_UUID', description: 'PATIENT IDENTIFIER TYPE TB UUID'))
+        interoperabilityTypeList.add(new LinkedHashMap(id: '7908d8f2-f158-44cc-97b5-f289545791e8', code: 'PATIENT_IDENTIFIER_TYPE_NUIC_UUID', description: 'PATIENT IDENTIFIER TYPE NUIC UUID'))
+
         return interoperabilityTypeList
     }
 
@@ -1081,6 +1100,7 @@ class BootStrap {
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'CA5B9D8A-F0B4-4957-B249-63A75214CD0C', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'http://localhost/openmrs/ws/rest/v1/', interoperabilityType: InteroperabilityType.findById('D3B4942C-514B-47A5-BAED-F3A47A466E09')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: '34C5A7BB-E7DE-4CFB-B349-2BC36FD4FFCA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'http://localhost/openmrs/ws/rest/v1/reportingrest/cohort/ba36b483-c17c-454d-9a3a-f060a933c6da', interoperabilityType: InteroperabilityType.findById('CFCA8326-0AB9-46D0-B5CE-1E277E564823')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'CE34FBAD-D1F1-4C8E-A823-CBCF3137A0BA', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '2.x', interoperabilityType: InteroperabilityType.findById('0718F9D9-39A8-405A-8092-5BDDE4204B25')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'b9437cf5-0b50-482f-8e92-20ff4d6f5e6d', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '22a0d433-b9fd-46c1-9387-97e225f8014f', interoperabilityType: InteroperabilityType.findById('c5531ee8-2d73-4006-829a-e46645391c60')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: '876FA63C-8F5F-42FB-A2D5-24F1BFEDD3ED', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '49857ace-1a92-4980-8313-1067714df151', interoperabilityType: InteroperabilityType.findById('CEBEF157-57B9-4442-A1E3-59FA92E818D6')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'AF6051CD-7AB6-4841-A47D-2D6608095822', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1d83e4e-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('73715EBA-8BDD-4C55-8895-C01FB0D5AF57')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'FFB2BE0D-2191-41A1-88A4-78ACADE251D4', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e1e2efd8-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('EE650283-C62F-43E7-8835-A7B7A9706119')))
@@ -1106,6 +1126,14 @@ class BootStrap {
         interoperabilityAttributeList.add(new LinkedHashMap(id: '9881585A-79F3-4756-AD05-7968775BF98C', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e279133c-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('329B13FD-82BE-429F-ABD3-A0B72051332C')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: '5143CEA0-EAD7-4A1C-8D0D-DC1697B23AA3', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '24bd60e2-a1c9-4159-a24f-12af15b77510', interoperabilityType: InteroperabilityType.findById('B2AAF0F5-D23B-4DD4-95BA-0ACCC0656A9C')))
         interoperabilityAttributeList.add(new LinkedHashMap(id: 'C60F7C25-7198-4605-BDD4-FF6DF3309AB2', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '7013d271-1bc2-4a50-bed6-8932044bc18f', interoperabilityType: InteroperabilityType.findById('94094FC8-99F1-4A23-8E2A-1E823E30B6D7')))
+
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'eeaf1b98-5b87-489f-876d-8da6c49b3da4', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e2b966d0-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('302bca64-9bfd-4fa8-8e29-be08cdfd0e92')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'b89bfeef-cc93-43b9-879b-2b67e967c9c5', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'bce7c891-27e9-42ec-abb0-aec3a641175e', interoperabilityType: InteroperabilityType.findById('b5907b94-8924-4ad3-8028-3722d787e79e')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '09a67454-5089-4e05-bddd-251159c29f3f', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e2b97b70-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('1b221e2b-69b4-4bd7-a0a0-56ffeae9137e')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: 'ee1d6717-d944-4b93-a232-a4170c06cffb', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: '1c72703d-fb55-439e-af4f-ef39a1049e19', interoperabilityType: InteroperabilityType.findById('07e09518-00a7-4e8e-9a55-ce405660c118')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '049a1f1d-efa3-4082-b09c-5614a12d312e', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e2b97e40-1d5f-11e0-b929-000c29ad1d07', interoperabilityType: InteroperabilityType.findById('e4d42149-d962-4a15-bcd2-7cecad5ce73c')))
+        interoperabilityAttributeList.add(new LinkedHashMap(id: '13def87c-89df-4dc8-a257-596e615befff', healthInformationSystem: HealthInformationSystem.findById('ff8080817d9aa854017d9e2809b50008'), value: 'e89c8925-35cc-4a29-9002-6b36bf3fd47f', interoperabilityType: InteroperabilityType.findById('7908d8f2-f158-44cc-97b5-f289545791e8')))
+
 
         return interoperabilityAttributeList
     }
@@ -2611,6 +2639,7 @@ class BootStrap {
         }
     }
 
+
     void resolvePatientsWithNoServiceIdentifierButInVisit() {
       def listPatientsWithoutPatientServiceIdentifier = Patient.findAllByIdentifiersIsEmptyAnd()
     }
@@ -2625,5 +2654,6 @@ class BootStrap {
             print(matchId++)
         }
     }
+
 }
 
