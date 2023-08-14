@@ -13,6 +13,7 @@ import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.District
 import mz.org.fgh.sifmoz.backend.distribuicaoAdministrativa.Province
 import mz.org.fgh.sifmoz.backend.drug.Drug
 import mz.org.fgh.sifmoz.backend.duration.Duration
+import mz.org.fgh.sifmoz.backend.episode.Episode
 import mz.org.fgh.sifmoz.backend.episodeType.EpisodeType
 import mz.org.fgh.sifmoz.backend.facilityType.FacilityType
 import mz.org.fgh.sifmoz.backend.form.Form
@@ -53,6 +54,7 @@ class BootStrap {
     DataSourceMigrationService dataSourceMigrationService
 
     def init = { servletContext ->
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
         FacilityType.withTransaction { initFacilityType() }
 
@@ -145,11 +147,20 @@ class BootStrap {
             resolvePrescriptionsWithoutPrescribedDrugs()
         }
 
-// Bloco de Codigo por Remover
+
+        PatientServiceIdentifier.withTransaction {
+            // adjustServiceDate()
+        }
+      
+        Patient.withTransaction {
+           // resolvePatientsAddMatchId()
+        }
+
         dataSourceMigrationService.loadAndSaveClinicSectorMigrationService()
         dataSourceMigrationService.loadAndSaveDoctorsMigrationService()
         dataSourceMigrationService.loadAndSavePatientVisitDetailsMigrationService()
         dataSourceMigrationService.loadAndSavePatientVisitMigrationService()
+
     }
 
     def destroy = {
@@ -196,7 +207,7 @@ class BootStrap {
 //        Role adminRole = Role.findByAuthority('ROLE_ADMIN')
 
         if (!adminRole) {
-            adminRole = new Role('ROLE_ADMIN', 'Admin', 'Role_Admin', true)
+            adminRole = new Role('ROLE_ADMIN', 'Admin', 'ROLE_ADMIN', true)
             for (Menu menu : Menu.findAll()) {
                 adminRole.menus.add(menu)
             }
@@ -705,6 +716,21 @@ class BootStrap {
                 provincialServer.username = provincialServerObject.username
                 provincialServer.password = provincialServerObject.password
                 provincialServer.save(flush: true, failOnError: true)
+            }
+        }
+    }
+
+    void adjustServiceDate(){
+
+        def listPatientService = PatientServiceIdentifier.list()
+        for(PatientServiceIdentifier patientServiceIdentifier : listPatientService){
+
+            if(!patientServiceIdentifier.episodes.isEmpty()){
+                Episode episode = Episode.findAllByIdInList(patientServiceIdentifier.episodes.id,[sort: "episodeDate", order: "desc"]).first()
+                if(episode.episodeDate < patientServiceIdentifier.startDate){
+                    patientServiceIdentifier.startDate = episode.episodeDate
+                    patientServiceIdentifier.save(flush: true, failOnError: true)
+                }
             }
         }
     }
@@ -2612,5 +2638,22 @@ class BootStrap {
             prescription.save(flush: true, failOnError: true)
         }
     }
+
+
+    void resolvePatientsWithNoServiceIdentifierButInVisit() {
+      def listPatientsWithoutPatientServiceIdentifier = Patient.findAllByIdentifiersIsEmptyAnd()
+    }
+
+    void resolvePatientsAddMatchId() {
+        def listPatientsNoMatchId = Patient.findAllByMatchIdIsNull()
+        def matchId = 1
+        for (Patient patient : listPatientsNoMatchId) {
+             patient.setMatchId(matchId)
+            patient.save(flush: true, failOnError: true)
+            matchId++
+            print(matchId++)
+        }
+    }
+
 }
 

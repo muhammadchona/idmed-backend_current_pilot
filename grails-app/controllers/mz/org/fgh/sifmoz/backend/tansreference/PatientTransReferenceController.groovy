@@ -129,7 +129,7 @@ class PatientTransReferenceController extends RestfulController{
         patientTransReference.destination = clinic.id
         patientTransReference.patient = patientIdentifier?.patient
         patientTransReference.identifier = patientIdentifier
-        patientTransReference.patientStatus = objectJSON.status
+        patientTransReference.patientStatus = objectJSON.type
 
         patientTransReference.validate()
 
