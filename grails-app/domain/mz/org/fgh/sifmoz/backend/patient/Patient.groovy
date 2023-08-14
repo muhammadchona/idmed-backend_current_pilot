@@ -37,6 +37,7 @@ class Patient extends BaseEntity {
     Localidade bairro
     District district
     PostoAdministrativo postoAdministrativo
+    Long matchId
 
     Clinic clinic
     Date creationDate = new Date()
@@ -72,6 +73,7 @@ class Patient extends BaseEntity {
         hisLocation nullable: true
         hisLocationName nullable: true
         creationDate nullable: true
+        matchId nullable: false, unique: true
     }
 
     def beforeInsert() {
@@ -80,6 +82,15 @@ class Patient extends BaseEntity {
         }
         if (!clinic) {
             clinic = Clinic.findByMainClinic(true)
+        }
+        if (matchId == null) {
+            def  patient =  findAll( [sort: ['matchId': 'desc']])
+            if (patient.size() == 0) {
+                matchId = 1
+            } else {
+                matchId = patient.get(0).matchId + 1
+            }
+
         }
     }
     @Override
